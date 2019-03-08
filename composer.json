@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "spotlight",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "Attendance.",
     "keywords": [
         "framework",
         "laravel"

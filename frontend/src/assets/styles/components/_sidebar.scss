@@ -1,0 +1,36 @@
+.sidebar {
+	height: 100vh;
+	position: relative;
+
+	&__nav {
+		width: 64px;
+		min-height: 100vh;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: darkgreen;
+	}
+
+	&__menu {
+		min-width: 128px;
+		min-height: 100vh;
+		padding: 16px 16px 16px 80px;
+		background: #EEE;
+		display: inline-block;
+
+		&__item {
+			&.--header {
+				margin-bottom: 16px;
+			}
+
+			padding: 8px 16px;
+			min-width: 128px;
+			max-width: 250px;
+			border-radius: 2px;
+
+			&:hover {
+				background: rgba(0,0,0,0.12)
+			}
+		}
+	}
+}

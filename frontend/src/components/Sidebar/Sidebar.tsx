@@ -8,11 +8,8 @@ import Icon from '@material-ui/core/Icon'
 export class Sidebar extends React.Component {
 	componentDidMount() {
 		axios.defaults.headers.post['Content-Type'] ='application/json';
-		axios.get('http://localhost:8000/api/staff', {
-			headers: {
-				'Access-Control-Allow-Origin': '*'
-			}
-		})
+		axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+		axios.get('http://localhost:8000/api/staff')
 			.then(res => {
 				const data = res.data
 				console.log(data)

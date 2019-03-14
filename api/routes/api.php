@@ -28,7 +28,8 @@ Route::middleware('auth:api')->group(function() {
 });
 
 // Staff
-Route::get('staff', 'StaffController@index');
+//Route::get('staff', 'StaffController@index');
+Route::get('staff', 'StaffController@index')->middleware('cors');
 Route::get('staff/{id}', 'StaffController@show');
 Route::post('staff', 'StaffController@store');
 Route::put('staff', 'StaffController@store');

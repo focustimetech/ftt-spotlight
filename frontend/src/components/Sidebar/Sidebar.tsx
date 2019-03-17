@@ -2,14 +2,15 @@ import * as React from 'react'
 
 import axios from 'axios'
 
+import Drawer from '@material-ui/core/Drawer'
 import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
-// import { Link } from 'react-router-dom'
-
+import { Link } from 'react-router-dom'
 
 export class Sidebar extends React.Component {
 	componentDidMount() {
+		/*
 		axios.defaults.headers.post['Content-Type'] ='application/json';
 		axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 		axios.get('http://localhost:8000/api/staff')
@@ -17,18 +18,24 @@ export class Sidebar extends React.Component {
 				const data = res.data
 				console.log(data)
 			})
+		*/
 	}
 
 	render() {
 		return (
 			<>
+				<Drawer open={false}>
+					<div className='sidebar_modal'>
+						<h4>Search</h4>
+					</div>
+				</Drawer>
 				<div className='sidebar'>
 					<nav className='sidebar__nav'>
 						<div className='nav_top'>
 							<IconButton><Icon>home</Icon></IconButton>
 							<IconButton><Icon>search</Icon></IconButton>
 							<IconButton><Icon>star</Icon></IconButton>
-							<IconButton><Icon>assignment_turned_in</Icon></IconButton>
+							<IconButton><Icon>how_to_reg</Icon></IconButton>
 						</div>
 						<div className='nav_bottom'>
 							<IconButton><Icon>notifications</Icon></IconButton>

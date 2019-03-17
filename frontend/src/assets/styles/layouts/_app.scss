@@ -1,5 +1,8 @@
 .site-wrap {
 	display: grid;
-	grid-template-columns: auto 1fr;
-	
+	grid-template-columns: 80px 1fr;
+
+	&.--menu_open {
+		grid-template-columns: auto 1fr;
+	}
 }

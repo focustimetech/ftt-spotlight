@@ -1,6 +1,8 @@
 @import "common/global";
 @import "common/variables";
 
+@import "layouts/app";
 
-@import "components/hello";
+@import "components/content";
+@import "components/topnav";
 @import "components/sidebar";

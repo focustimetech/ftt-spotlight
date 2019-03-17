@@ -1,35 +1,55 @@
 .sidebar {
 	height: 100vh;
 	position: relative;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	overflow: hidden;
 
 	&__nav {
 		width: 64px;
-		min-height: 100vh;
-		position: absolute;
-		top: 0;
-		left: 0;
-		background: darkgreen;
+		height: 100vh;
+		padding: 16px 8px;
+		box-sizing: border-box;
+		background: rgb(48,79,254); /* #363636; */
+		color: rgba(255, 255, 255, 0.87);
 	}
 
 	&__menu {
-		min-width: 128px;
-		min-height: 100vh;
-		padding: 16px 16px 16px 80px;
-		background: #EEE;
+		height: 100vh;
+		min-width: 256px;
+		padding: 0;
+		box-sizing: border-box;
 		display: inline-block;
+		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+		overflow-y: auto;
 
-		&__item {
-			&.--header {
-				margin-bottom: 16px;
+		.menu_header {
+			height: 80px;
+			line-height: 48px;
+			padding: 16px 32px;
+			box-sizing: border-box;
+			border-bottom: 1px solid rgba(0,0,0,0);
+
+			h4 {
+				margin: 0;
 			}
+		}
 
-			padding: 8px 16px;
-			min-width: 128px;
-			max-width: 250px;
-			border-radius: 2px;
+		.menu_list {
+			padding: 0 16px;
 
-			&:hover {
-				background: rgba(0,0,0,0.12)
+			&__item {
+				padding: 8px 16px;
+				margin: 4px 0;
+				min-width: 128px;
+				max-width: 224px;
+				height: 32px;
+				line-height: 32px;
+				border-radius: 2px;
+
+				&:hover {
+					background: rgba(0,0,0,0.12)
+				}
 			}
 		}
 	}

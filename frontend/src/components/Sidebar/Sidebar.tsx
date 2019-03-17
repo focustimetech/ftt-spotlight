@@ -2,8 +2,11 @@ import * as React from 'react'
 
 import axios from 'axios'
 
-import IconButton from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
+import IconButton from '@material-ui/core/IconButton'
+
+// import { Link } from 'react-router-dom'
+
 
 export class Sidebar extends React.Component {
 	componentDidMount() {
@@ -14,26 +17,30 @@ export class Sidebar extends React.Component {
 				const data = res.data
 				console.log(data)
 			})
-		console.log('axios did a thing2...')
 	}
 
 	render() {
-		console.log('sidebar rendered')
 		return (
-			<>{/*
+			<>
 				<div className='sidebar'>
 					<nav className='sidebar__nav'>
 						<IconButton><Icon>alarm</Icon></IconButton>
 					</nav>
-					<ul className='sidebar__menu'>
-						<li className='sidebar__menu__item --header'>Spotlight</li>
-						<li className='sidebar__menu__item'>Attendance</li>
-						<li className='sidebar__menu__item'>Reporting</li>
-						<li className='sidebar__menu__item'>Staff</li>
-						<li className='sidebar__menu__item'>Students</li>
-					</ul>
+					<div className='sidebar__menu'>
+						<div className='menu_header'><h4>Spotlight</h4></div>
+						<ul className='menu_list'>
+							<li className='menu_list__item'>My Classroom</li>
+							<li className='menu_list__item'>Staff</li>
+							<li className='menu_list__item'>Students</li>
+							<li className='menu_list__item'>Cohort</li>
+							<li className='menu_list__item'>Class Schedule</li>
+							<li className='menu_list__item'>Appointments</li>
+							<li className='menu_list__item'>Events</li>
+							<li className='menu_list__item'>Reporting</li>
+							<li className='menu_list__item'>Settings</li>
+						</ul>
+					</div>
 				</div>
-			*/}
 			</>
 		)
 	}

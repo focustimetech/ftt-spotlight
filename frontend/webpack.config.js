@@ -10,7 +10,7 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ['.ts', '.tsx', '.js', '.json']
+        extensions: ['.ts', '.tsx', '.js', '.json', 'jpg']
     },
 
     module: {
@@ -25,8 +25,9 @@ module.exports = {
                 test: /\.(scss|css)$/,
                 use: [
                     'style-loader', // Creates style nodes from JS strings
-                    {loader: 'css-loader'},   // Translates CSS into CommonJS
-                    {loader: 'sass-loader'}   // Compiles Sass to CSS, using Node Sass by default
+                    { loader: 'css-loader' },   // Translates CSS into CommonJS
+                    { loader: 'resolve-url-loader' },
+                    { loader: 'sass-loader' }   // Compiles Sass to CSS, using Node Sass by default
                 ]
             }
         ]

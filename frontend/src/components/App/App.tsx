@@ -4,8 +4,8 @@ import * as React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { Content } from '../Content'
+import { Dashboard } from '../Dashboard'
 import { Sidebar } from '../Sidebar/Sidebar'
-import { TopNav } from '../TopNav'
 
 import * as classNames from 'classnames'
 
@@ -34,7 +34,7 @@ export default class App extends React.Component<IProps, IState> {
 				<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
 					<Sidebar />
 					<Content>
-						<TopNav title='Dashboard' onMenuClick={this.toggleMenu} />
+						<Dashboard onMenuClick={this.toggleMenu} />
 					</Content>
 				</div>
 			</>

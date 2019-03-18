@@ -28,15 +28,13 @@ interface IState {
  * @TODO Make the viewSelet prop optional, and do conditional rendering of the Select
  */
 export class TopNav extends React.Component<IProps, IState> {
+	state = {
+		view: this.props.viewOptions[0].value
+	}
+
 	handleViewChange = (e: any): void =>  {
 		this.setState({ view: e.target.value })
 		this.props.onViewChange(e.target.value)
-	}
-
-	componentWillMount() {
-		this.state = {
-			view: this.props.viewOptions[0].value
-		}
 	}
 
 	render() {

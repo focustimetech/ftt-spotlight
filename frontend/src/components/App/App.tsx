@@ -16,14 +16,12 @@ interface IState {
 interface IProps {}
 
 export default class App extends React.Component<IProps, IState> {
-	toggleMenu = (e: any): void => {
-		this.setState({ menuOpen: this.state.menuOpen === false })
+	state = {
+		menuOpen: true
 	}
 
-	componentWillMount() {
-		this.state = {
-			menuOpen: true
-		}
+	toggleMenu = (e: any): void => {
+		this.setState({ menuOpen: this.state.menuOpen === false })
 	}
 
 	render() {

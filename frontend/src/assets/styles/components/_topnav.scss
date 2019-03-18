@@ -2,15 +2,25 @@
 	height: 48px;
 	line-height: 48px;
 	padding: 16px;
-	display: flex;
 	border-bottom: 1px solid #EEE;
+	display: flex;
+	align-items: center;
 
-	h3 {
-		margin-top: 0;
-		margin-bottom: 0;
+	&__title {
+		margin: 0 0 0 8px;
 	}
 
-	&__menu {
-		margin-right: 8px;
+	ul {
+		display: flex;
+		align-items: center;
+		margin-left: 16px;
+
+		li {
+			margin-left: 16px;
+
+			&:first-child {
+				margin-left: 0;
+			}
+		}	
 	}
 }

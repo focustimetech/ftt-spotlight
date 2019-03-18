@@ -52,9 +52,9 @@ export class Sidebar extends React.Component {
 							<li className='menu_list__item'><ListItemIcon><Icon>home</Icon></ListItemIcon>My Classroom</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>supervisor_account</Icon></ListItemIcon>Staff</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>face</Icon></ListItemIcon>Students</li>
+							<li className='menu_list__item'><ListItemIcon><Icon>access_time</Icon></ListItemIcon>Appointments</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>group</Icon></ListItemIcon>Cohort</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>date_range</Icon></ListItemIcon>Class Schedule</li>
-							<li className='menu_list__item'><ListItemIcon><Icon>access_time</Icon></ListItemIcon>Appointments</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>event</Icon></ListItemIcon>Events</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>assessment</Icon></ListItemIcon>Reporting</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>settings</Icon></ListItemIcon>Settings</li>

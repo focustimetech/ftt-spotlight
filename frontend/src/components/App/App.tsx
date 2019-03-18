@@ -18,8 +18,6 @@ interface IProps {}
 export default class App extends React.Component<IProps, IState> {
 	toggleMenu = (e: any): void => {
 		this.setState({ menuOpen: this.state.menuOpen === false })
-		console.log('Menu open?:')
-		console.log(this.state.menuOpen)
 	}
 
 	componentWillMount() {

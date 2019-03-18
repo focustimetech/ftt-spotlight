@@ -1,10 +1,8 @@
 .site-wrap {
-	/*display: grid;
-	grid-template-columns: 80px 1fr;*/
 	display: flex;
 
 	&.--menu_open .sidebar {
 		// grid-template-columns: auto 1fr;
-		width: 80px;
+		width: 320px;
 	}
 }

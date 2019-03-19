@@ -22,9 +22,6 @@ export class Dashboard extends React.Component<IProps> {
 	render() {
 		return (
 			<>
-				<TopNav title='Dashboard' onMenuClick={this.props.onMenuClick} onViewChange={handleChange} viewOptions={this.viewOptions}>
-					<li><IconButton><Icon>search</Icon></IconButton></li>
-				</TopNav>
 				<p>Welcome to my Dashboard!</p>
 			</>
 		)

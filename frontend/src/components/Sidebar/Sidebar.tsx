@@ -32,15 +32,15 @@ export class Sidebar extends React.Component {
 				<div className='sidebar'>
 					<nav className='sidebar__nav'>
 						<div className='nav_top'>
-							<IconButton><Icon>home</Icon></IconButton>
-							<IconButton><Icon>search</Icon></IconButton>
-							<IconButton><Icon>star</Icon></IconButton>
-							<IconButton><Icon>how_to_reg</Icon></IconButton>
+							<IconButton className='nav_button'><Icon>home</Icon></IconButton>
+							<IconButton className='nav_button'><Icon>search</Icon></IconButton>
+							<IconButton className='nav_button'><Icon>star</Icon></IconButton>
+							<IconButton className='nav_button'><Icon>how_to_reg</Icon></IconButton>
 						</div>
 						<div className='nav_bottom'>
-							<IconButton><Icon>notifications</Icon></IconButton>
-							<IconButton><Icon>help</Icon></IconButton>
-							<IconButton><Icon>perm_identity</Icon></IconButton>
+							<IconButton className='nav_button'><Icon>notifications</Icon></IconButton>
+							<IconButton className='nav_button'><Icon>help</Icon></IconButton>
+							<IconButton className='nav_button'><Icon>perm_identity</Icon></IconButton>
 						</div>
 					</nav>
 					<div className='sidebar__menu'>
@@ -49,7 +49,6 @@ export class Sidebar extends React.Component {
 							<h4>Oak Bay High</h4>
 						</div>
 						<ul className='menu_list'>
-							<li className='menu_list__item'><ListItemIcon><Icon>home</Icon></ListItemIcon>My Classroom</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>supervisor_account</Icon></ListItemIcon>Staff</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>face</Icon></ListItemIcon>Students</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>access_time</Icon></ListItemIcon>Appointments</li>
@@ -58,6 +57,7 @@ export class Sidebar extends React.Component {
 							<li className='menu_list__item'><ListItemIcon><Icon>event</Icon></ListItemIcon>Events</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>assessment</Icon></ListItemIcon>Reporting</li>
 							<li className='menu_list__item'><ListItemIcon><Icon>settings</Icon></ListItemIcon>Settings</li>
+							<li className='menu_list__item'><ListItemIcon><Icon>contact_mail</Icon></ListItemIcon>Parents</li>
 						</ul>
 					</div>
 				</div>

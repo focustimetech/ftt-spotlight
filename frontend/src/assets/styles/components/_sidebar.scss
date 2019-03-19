@@ -17,6 +17,10 @@
 		color: $on-primary;
 		position: relative;
 
+		.nav_button {
+			color: inherit;
+		}
+
 		.nav_bottom {
 			position: absolute;
 			bottom: 16px;
@@ -68,6 +72,8 @@
 			padding: 0 16px;
 
 			&__item {
+				display: flex;
+				align-items: center;
 				padding: 8px 16px;
 				margin: 4px 0;
 				min-width: 128px;

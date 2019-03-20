@@ -1,11 +1,12 @@
 import '../../assets/styles/main.scss'
 
 import * as React from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter as Router, Route} from 'react-router-dom'
 
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
 import { Sidebar } from '../Sidebar/Sidebar'
+import { Staff } from '../Staff'
 import { TopNav } from '../TopNav'
 
 import * as classNames from 'classnames'
@@ -29,18 +30,19 @@ export default class App extends React.Component<IProps, IState> {
 		return
 	}
 
-	viewOptions: any = []
-
 	render() {
 		return ( 
 			<>
-				<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
-					<Sidebar />
-					<Content>
-					<TopNav title='Dashboard' onMenuClick={this.toggleMenu} onViewChange={this.handleViewChange} viewOptions={this.viewOptions} />
-						<Dashboard onMenuClick={this.toggleMenu} />
-					</Content>
-				</div>
+				<Router>
+					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
+						<Sidebar />
+						<Content>
+							<TopNav title='Dashboard' onMenuClick={this.toggleMenu} />
+								<Route exact path='/' component={Dashboard} />
+								<Route path='/staff' component={Staff} />
+						</Content>
+					</div>
+				</Router>
 			</>
 		)
 	}

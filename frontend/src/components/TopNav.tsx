@@ -16,22 +16,18 @@ interface IProps {
 	title: string
 	onMenuClick: (e: any) => void
 	viewOptions?: ViewOption[]
-	onViewChange: (e: any) => void
+	onViewChange?: (e: any) => void
 }
 
 interface IState {
-	view: string
+	view: string | null
 }
 
 /**
  * TopNav for the main app view. `props.children` Takes `<li>` elements only.
  * @TODO Make the viewSelet prop optional, and do conditional rendering of the Select
  */
-export class TopNav extends React.Component<IProps, IState> {
-	state = {
-		view: this.props.viewOptions[0].value
-	}
-
+export class TopNav extends React.Component<IProps> {
 	handleViewChange = (e: any): void =>  {
 		this.setState({ view: e.target.value })
 		this.props.onViewChange(e.target.value)
@@ -44,10 +40,10 @@ export class TopNav extends React.Component<IProps, IState> {
 					<IconButton className='top-nav_menu' onClick={this.props.onMenuClick}><Icon>menu</Icon></IconButton>
 					<h3 className='top-nav__title'>{this.props.title}</h3>
 					<ul>
-						{ this.props.viewOptions.length > 0 && 
+						{ !!this.props.viewOptions && 
 							<FormControl variant='outlined'>
 								<Select
-									value={this.state.view}
+									value={this.props.viewOptions[0].value}
 									autoWidth={true}
 									onChange={this.props.onViewChange}
 									input={<OutlinedInput labelWidth={100}/>}

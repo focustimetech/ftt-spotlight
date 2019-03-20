@@ -71,27 +71,40 @@
 		.menu_list {
 			padding: 0 16px;
 
-			&__item {
-				display: flex;
-				align-items: center;
-				padding: 8px 16px;
-				margin: 4px 0;
-				min-width: 128px;
-				max-width: 224px;
-				height: 32px;
-				line-height: 32px;
-				border-radius: 2px;
-				font-weight: 500;
-				cursor: pointer;
-				user-select: none;
+			&__link {
+				color: inherit;
 
-				&:hover {
-					background: $primary-light
+				.list_item {
+					display: flex;
+					align-items: center;
+					padding: 8px 16px;
+					margin: 4px 0;
+					min-width: 128px;
+					max-width: 224px;
+					height: 32px;
+					line-height: 32px;
+					border-radius: 2px;
+					font-weight: 500;
+					cursor: pointer;
+					user-select: none;
+					transition: color 0.2s;
+
+					&:hover {
+						background: $primary-light
+					}
+
+					&__icon {
+						color: rgba(0, 0, 0, 0.54);
+					}
 				}
 
-				&.--selected {
+				&.--selected .list_item {
 					color: $primary;
 					background: $primary-light;
+
+					&__icon {
+						color: inherit;
+					}
 				}
 			}
 		}

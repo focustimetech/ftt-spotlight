@@ -6,7 +6,7 @@ import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
 
 interface IProps {
-	onMenuClick: (e: any) => void
+	// onMenuClick: (e: any) => void
 }
 
 const handleChange = (e: any): void => {
@@ -14,10 +14,6 @@ const handleChange = (e: any): void => {
 }
 
 export class Dashboard extends React.Component<IProps> {
-	viewOptions = [
-		{ value: 'students', label: 'Students' },
-		{ value: 'attendance', label: 'Attendance' }
-	]
 
 	render() {
 		return (

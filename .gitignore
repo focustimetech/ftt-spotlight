@@ -10,3 +10,4 @@ api/Homestead.yaml
 api/npm-debug.log
 api/yarn-error.log
 frontend/node_modules
+package-lock.json

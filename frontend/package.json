@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --mode development --inline --hot"
+    "build:dev": "webpack --mode development",
+    "dev-server": "webpack-dev-server --mode development --inline --hot",
+    "prod": "webpack-dev-server --mode production"
   },
   "keywords": [],
   "author": "",
@@ -35,7 +37,7 @@
     "ts-loader": "^5.3.3",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3",
+    "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1"
   }
 }

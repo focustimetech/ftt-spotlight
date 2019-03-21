@@ -6,10 +6,15 @@ import * as classNames from 'classnames'
 import Drawer from '@material-ui/core/Drawer'
 import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 import { Link } from 'react-router-dom'
 
 import { MenuItem } from './MenuItem'
 
+/**
+ * @TODO Need to handle the case where the screen is very narrow,
+ * in which a modal nav manu should be used.
+ */
 export class Sidebar extends React.Component {
 
 	componentDidMount() {
@@ -35,15 +40,15 @@ export class Sidebar extends React.Component {
 				<div className='sidebar'>
 					<nav className='sidebar__nav'>
 						<div className='nav_top'>
-							<Link to='/'><IconButton className='nav_button'><Icon>home</Icon></IconButton></Link>
-							<IconButton className='nav_button'><Icon>search</Icon></IconButton>
-							<IconButton className='nav_button'><Icon>star</Icon></IconButton>
-							<IconButton className='nav_button'><Icon>how_to_reg</Icon></IconButton>
+							<Tooltip title='Spotlight' placement='right'><Link to='/'><IconButton className='nav_button'><Icon>home</Icon></IconButton></Link></Tooltip>
+							<Tooltip title='Search' placement='right'><IconButton className='nav_button'><Icon>search</Icon></IconButton></Tooltip>
+							<Tooltip title='Starred' placement='right'><IconButton className='nav_button'><Icon>star</Icon></IconButton></Tooltip>
+							<Tooltip title='Check-in' placement='right'><IconButton className='nav_button'><Icon>how_to_reg</Icon></IconButton></Tooltip>
 						</div>
 						<div className='nav_bottom'>
-							<IconButton className='nav_button'><Icon>notifications</Icon></IconButton>
-							<IconButton className='nav_button'><Icon>help</Icon></IconButton>
-							<IconButton className='nav_button'><Icon>perm_identity</Icon></IconButton>
+							<Tooltip title='Notification' placement='right'><IconButton className='nav_button'><Icon>notifications</Icon></IconButton></Tooltip>
+							<Tooltip title='Help' placement='right'><IconButton className='nav_button'><Icon>help</Icon></IconButton></Tooltip>
+							<Tooltip title='Account' placement='right'><IconButton className='nav_button'><Icon>perm_identity</Icon></IconButton></Tooltip>
 						</div>
 					</nav>
 					<div className='sidebar__menu'>

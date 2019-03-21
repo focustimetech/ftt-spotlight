@@ -7,20 +7,12 @@ import MenuItem from '@material-ui/core/MenuItem'
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select'
 
-interface ViewOption {
-	value: string
-	label: string
-}
+import { RouteOption } from '../types/app'
 
 interface IProps {
 	title: string
 	onMenuClick: (e: any) => void
-	viewOptions?: ViewOption[]
-	onViewChange?: (e: any) => void
-}
-
-interface IState {
-	view: string | null
+	routeOptions?: RouteOption[]
 }
 
 /**
@@ -28,9 +20,8 @@ interface IState {
  * @TODO Make the viewSelet prop optional, and do conditional rendering of the Select
  */
 export class TopNav extends React.Component<IProps> {
-	handleViewChange = (e: any): void =>  {
-		this.setState({ view: e.target.value })
-		this.props.onViewChange(e.target.value)
+	handleRouteChange = () => {
+		console.log('handleRouteChange()')
 	}
 
 	render() {
@@ -40,16 +31,16 @@ export class TopNav extends React.Component<IProps> {
 					<IconButton className='top-nav_menu' onClick={this.props.onMenuClick}><Icon>menu</Icon></IconButton>
 					<h3 className='top-nav__title'>{this.props.title}</h3>
 					<ul>
-						{ !!this.props.viewOptions && 
+						{ this.props.routeOptions && 
 							<FormControl variant='outlined'>
 								<Select
-									value={this.props.viewOptions[0].value}
+									value={this.props.routeOptions[0].route}
 									autoWidth={true}
-									onChange={this.props.onViewChange}
+									onChange={this.handleRouteChange}
 									input={<OutlinedInput labelWidth={100}/>}
 								>
-									{this.props.viewOptions.map(view =>
-										<MenuItem value={view.value}>{view.label}</MenuItem>
+									{this.props.routeOptions.map(option =>
+										<MenuItem value={option.route}>{option.label}</MenuItem>
 									)}
 								</Select>
 							</FormControl>

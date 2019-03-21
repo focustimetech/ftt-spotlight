@@ -31,11 +31,32 @@ export class CheckInWidget extends React.Component<{}, IState> {
                 <Dialog
                     open={this.state.open}
                     onClose={this.handleClose}
-                    className='check-in-modal'
+                    className='check-in_modal'
+                    scroll='paper'
                 >
-                    <div className='check-in-modal__header'>
+                    <div className='check-in_modal__header'>
+                        <h3>Student Check-in</h3>
                         <IconButton onClick={this.handleClose}><Icon>alarm</Icon></IconButton>
-                        <h4>Student Check-in</h4>
+                    </div>
+                    <div className='check-in_modal__content'>
+                        <div className='check-in_heading'>
+                            <h4>Scan or Enter</h4>
+                        </div>
+                        <div className='text-check-in'>
+                            <div className='text-check-in__entry'>
+                                <a className='entry_label'><Icon>how_to_reg</Icon></a>
+                                <input type='text' placeholder='Student Number' />
+                                <Icon className='entry_icon-return'>alarm</Icon>
+                            </div>
+                        </div>
+                        <div className='check-in_heading'>
+                                <h4>Air Check-in</h4>
+                                <Switch />
+                                <h4 className='air-check-in__status'>Online</h4>
+                            </div>
+                        <div className='air-check-in'>
+                            <p>Waiting for Air Check-ins...</p>
+                        </div>
                     </div>
                 </Dialog>
             </>

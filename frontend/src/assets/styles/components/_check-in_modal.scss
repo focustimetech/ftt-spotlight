@@ -1,0 +1,42 @@
+.check-in_modal {
+    &__header {
+        height: 64px;
+        box-sizing: border-box;
+        padding: 16px;
+        line-height: 64px;
+        border-bottom: 1px solid #EEE;
+        display: flex;
+    }
+
+    &__content {
+        padding: 16px;
+    
+        .check-in_heading {
+            color: red !important;
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+        }
+
+        .text-check-in {
+            &__entry {
+                border: 1px solid #EEE;
+                border-radius: 2px;
+                padding: 0 0 0 48px;
+                position: relative;
+
+                .entry_icon-return {
+                    position: absolute;
+                    right: 8px;
+                }
+            }
+        }
+        
+        .air-check-in {
+            &__status {
+                color: $primary;
+                font-weight: 300;
+            }
+        }   
+    }
+}

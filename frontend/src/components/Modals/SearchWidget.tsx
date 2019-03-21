@@ -12,7 +12,7 @@ interface IState {
 
 export class SearchWidget extends React.Component {
     state = {
-        open: true,
+        open: false,
         searchQuery: ''
     }
 

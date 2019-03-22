@@ -36,7 +36,7 @@ export class CheckInWidget extends React.Component<{}, IState> {
                 >
                     <div className='check-in_modal__header'>
                         <h3>Student Check-in</h3>
-                        <IconButton onClick={this.handleClose}><Icon>alarm</Icon></IconButton>
+                        <IconButton className='icon-close' onClick={this.handleClose}><Icon>close</Icon></IconButton>
                     </div>
                     <div className='check-in_modal__content'>
                         <div className='check-in_heading'>
@@ -44,9 +44,9 @@ export class CheckInWidget extends React.Component<{}, IState> {
                         </div>
                         <div className='text-check-in'>
                             <div className='text-check-in__entry'>
-                                <a className='entry_label'><Icon>how_to_reg</Icon></a>
+                                <a className='entry_check-in_label'><Icon>how_to_reg</Icon></a>
                                 <input type='text' placeholder='Student Number' />
-                                <Icon className='entry_icon-return'>alarm</Icon>
+                                <Icon className='entry_icon-return'>subdirectory_arrow_left</Icon>
                             </div>
                         </div>
                         <div className='check-in_heading'>

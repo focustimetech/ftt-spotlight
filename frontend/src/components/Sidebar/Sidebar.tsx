@@ -2,10 +2,11 @@ import * as React from 'react'
 
 import axios from 'axios'
 import * as classNames from 'classnames'
-import { Link } from 'react-router-dom'
 
+import { AccountWidget } from '../Modals/AccountWidget'
 import { MenuItem } from './MenuItem'
 import { NavItem } from './NavItem'
+import { NotificationsWidget } from '../Modals/NotificationsWidget'
 import { CheckInWidget } from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 
@@ -37,9 +38,10 @@ export class Sidebar extends React.Component {
 						<CheckInWidget />
 					</div>
 					<div className='nav_bottom'>
-						<NavItem title='Notifications' icon='notifications' />
+						<NotificationsWidget />
 						<NavItem title='Help' icon='help' />
-						<NavItem title='Account' icon='perm_identity' />
+						<AccountWidget />
+						{/*<NavItem title='Account' icon='perm_identity' />*/}
 						
 					</div>
 				</nav>

@@ -10,7 +10,7 @@ interface IState {
     searchQuery: string
 }
 
-export class SearchWidget extends React.Component {
+export class SearchWidget extends React.Component<{}, IState> {
     state = {
         open: false,
         searchQuery: ''

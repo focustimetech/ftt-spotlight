@@ -30,9 +30,9 @@ export class Login extends React.Component<{}, IState> {
 		return (
 			<div className='login'>
 				<div className='login__about'>
-					<div className='logo_container'>
+					<a href='https://focustime.ca' className='logo_container'>
 						<h1>Spotlight</h1>
-					</div>
+					</a>
 				</div>
 				<div className='login__credentials'>
 					<div className='login_container'>

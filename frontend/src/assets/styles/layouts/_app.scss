@@ -1,5 +1,6 @@
 .site-wrap {
 	display: flex;
+	display: none;
 
 	&.--menu_open .sidebar {
 		// grid-template-columns: auto 1fr;

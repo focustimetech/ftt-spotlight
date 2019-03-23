@@ -3,52 +3,53 @@ import * as React from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 
+interface User {
+	user: string
+	accountType: string
+}
+
 interface IState {
+	step: string
 	user: string
 	password: string
 }
 
 export class Login extends React.Component<{}, IState> {
 	state = {
+		step: 'user',
 		user: '',
 		password: ''
 	}
 
-/*
-	handleChange = (field: 'user' | 'password', event: any) => {
-		this.setState({
-		})
+	handleChange = (event: any) => {
+		event.preventDefailt()
+		this.setState({ [event.target.name]: event.target.value } as IState)
 	}
-*/
 	
 	render() {
 		return (
 			<div className='login'>
 				<div className='login__about'>
-					<h1>Smart attendance for the internet age.</h1>
-					<h4>Want to know how Spotlight can improve your school?</h4>
-					<Button>Learn More</Button>
+					<div className='logo_container'>
+						<h1>Spotlight</h1>
+					</div>
 				</div>
 				<div className='login__credentials'>
-					<form className='login_form'>
-						<TextField
-							id="outlined-email"
-							label="Email"
-							value={this.state.user}
-							onChange={() => {}}
-							margin="normal"
-							variant="outlined"
-						/>
-						<TextField
-							id="outlined-pass"
-							label="Password"
-							value={this.state.password}
-							onChange={() => {}}
-							margin="normal"
-							variant="outlined"
-						/>
-						<Button>Sign In</Button>
-					</form>
+					<div className='login_container'>
+						<h2>Smart attendance for the internet age.</h2>
+						<h4>Start using powerful tools that let your self directed study blocks succeed.</h4>
+						<form className='login_form'>
+							<TextField
+								name='user'
+								label='Email or Student Number'
+								value={this.state.user}
+								onChange={this.handleChange}
+								margin='normal'
+								variant='outlined'
+							/>
+							<Button color='primary' variant='contained'>Continue</Button>
+						</form>
+					</div>
 				</div>
 			</div>
 		)

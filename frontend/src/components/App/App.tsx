@@ -11,6 +11,9 @@ import { TopNav } from '../TopNav'
 
 import * as classNames from 'classnames'
 
+// FIXME Remove login import
+import { Login } from '../Login'
+
 interface IState {
 	menuOpen: boolean
 }
@@ -34,6 +37,9 @@ export default class App extends React.Component<IProps, IState> {
 		return ( 
 			<>
 				<Router>
+					<div className='login-wrap'>
+						<Login />
+					</div>
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
 						<Sidebar />
 						<Content>

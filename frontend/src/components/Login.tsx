@@ -61,6 +61,7 @@ export class Login extends React.Component<{}, IState> {
 								<>
 									<TextField
 										name='user'
+										type='text'
 										label='Email or Student Number'
 										value={this.state.user}
 										onChange={this.handleChange}
@@ -77,6 +78,7 @@ export class Login extends React.Component<{}, IState> {
 								<>
 									<TextField
 										name='password'
+										type='password'
 										label='Password'
 										value={this.state.password}
 										onChange={this.handleChange}

@@ -15,7 +15,7 @@ interface IProps {
 
 export class NotificationsWidget extends React.Component<IProps> {
     state = {
-        open: false,
+        open: false
     }
 
     handleClickOpen = () => {

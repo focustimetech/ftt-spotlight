@@ -17,8 +17,17 @@
 		color: $on-primary;
 		position: relative;
 
+		.nav_account {
+			padding: 8px;
+		}
 		.nav_button {
 			color: inherit;
+
+			.nav_avatar {
+				width: 32px;
+				height: 32px;
+				font-size: 14px;
+			}
 		}
 
 		.nav_bottom {

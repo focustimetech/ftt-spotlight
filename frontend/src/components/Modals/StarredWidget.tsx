@@ -4,13 +4,19 @@ import Drawer from '@material-ui/core/Drawer'
 import IconButton from '@material-ui/core/IconButton'
 import Icon from '@material-ui/core/Icon'
 import { NavItem } from '../Sidebar/NavItem'
-import { TextField } from '@material-ui/core';
 
 interface IState {
     open: boolean
 }
 
-export class StarredWidget extends React.Component<{}, IState> {
+interface IProps {}
+
+export class StarredWidget extends React.Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props)
+        this.escFunction = this.escFunction.bind(this)
+    }
+
     state = {
         open: false
     }
@@ -23,7 +29,21 @@ export class StarredWidget extends React.Component<{}, IState> {
         this.setState({ open: false })
     }
 
-    render (){
+    escFunction = (event: any) => {
+        if (event.keyCode === 27) {
+            this.setState({ open: false })
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.escFunction, false)
+    }
+
+    componentWillUnmount() {
+
+    }
+
+    render () {
         return (
             <>
                 <NavItem title='Starred' icon='star' onClick={this.handleClickOpen} />

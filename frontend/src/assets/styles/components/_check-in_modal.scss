@@ -2,17 +2,17 @@
     width: 100%;
 
     &__header {
-        height: 64px;
+        height: 80px;
         box-sizing: border-box;
-        padding: 16px 32px;
-        line-height: 64px;
+        padding: 16px;
+        line-height: 80px;
         border-bottom: 1px solid #EEE;
         display: flex;
         align-items: center;
         justify-content: space-between;
 
         .icon-close {
-            margin-right: -16px;
+            margin-left: 8px;
         }
     }
 
@@ -31,40 +31,8 @@
             }
         }
 
-        .text-check-in {
-            &__entry {
-                border: 1px solid #EEE;
-                border-radius: 4px;
-                padding: 0 0 0 48px;
-                height: 48px;
-                line-height: 48px;
-                position: relative;
-
-                input[type=text] {
-                    margin: 0;
-                    border: none;
-                    outline: none;
-                }
-
-                .entry_check-in_label {
-                    position: absolute;
-                    left: 12px;
-                    top: 12px;
-                }
-
-                .entry_icon-return {
-                    position: absolute;
-                    right: 12px;
-                    top: 12px;
-                    color: rgba(0,0,0,0.54)
-                }
-
-                &:hover,
-                &:focus-within {
-                    box-shadow: $box-shadow;
-                }
-            }
-        }
+        
+        
         
         .air-check-in {
             &__status {

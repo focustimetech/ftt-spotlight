@@ -3,9 +3,12 @@ import * as React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Dialog from '@material-ui/core/Dialog'
 import Grow from '@material-ui/core/Grow'
-import Switch from '@material-ui/core/Switch'
 import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import Switch from '@material-ui/core/Switch'
+import TextField from '@material-ui/core/TextField'
+
 
 import { NavItem } from '../Sidebar/NavItem'
 
@@ -21,6 +24,7 @@ interface IState {
     open: boolean
     airCheckInStatus: AirCheckInStatus
     airCheckIns: AirCheckIn[]
+    checkInValue: string
 }
 
 export class CheckInWidget extends React.Component<{}, IState> {
@@ -31,7 +35,8 @@ export class CheckInWidget extends React.Component<{}, IState> {
             name: 'Curtis Upshall',
             day: 'Today',
             time: '9:15am'
-        }]
+        }],
+        checkInValue: ''
     }
 
     handleClickOpen = () => {
@@ -40,6 +45,10 @@ export class CheckInWidget extends React.Component<{}, IState> {
 
     handleClose = () => {
         this.setState({ open: false })
+    }
+
+    handleChange = (event: any) => {
+        this.setState({ checkInValue: event.target.value})
     }
 
     toggleAirCheckIn = () => {
@@ -105,13 +114,18 @@ export class CheckInWidget extends React.Component<{}, IState> {
                         <div className='check-in_heading'>
                             <h4>Scan or Enter</h4>
                         </div>
-                        <div className='text-check-in'>
-                            <div className='text-check-in__entry'>
-                                <a className='entry_check-in_label'><Icon>how_to_reg</Icon></a>
-                                <input type='text' placeholder='Student Number' />
-                                <Icon className='entry_icon-return'>subdirectory_arrow_left</Icon>
-                            </div>
-                        </div>
+                        <TextField
+                            name='check-in'
+                            type='text'
+                            placeholder='Enter Student Numbers'
+                            // startAdornment={<InputAdornment position='start'><Icon>how_to_reg</Icon></InputAdornment>}
+                            variant='standard'
+                            value={this.state.checkInValue}
+                            onChange={this.handleChange}
+                            margin='normal'
+                            autoFocus={true}
+                            fullWidth={true}
+                        />
                         <div className='check-in_heading'>
                                 <h4>Air Check-in</h4>
                                 <Switch 

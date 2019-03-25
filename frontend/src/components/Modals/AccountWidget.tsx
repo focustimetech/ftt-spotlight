@@ -28,16 +28,16 @@ export class AccountWidget extends React.Component<{}, IState> {
     render() {
         return (
             <>
-                <NavItem title='Account' onClick={this.handleClickOpen}>
-                    <Avatar>{this.initials}</Avatar>
+                <NavItem className='nav_account' title='Account' onClick={this.handleClickOpen}>
+                    <Avatar className='nav_avatar'>{this.initials}</Avatar>
+                    <Menu
+                        open={this.state.open}
+                        onClose={this.handleClose}
+                    >
+                        <MenuItem>Profile</MenuItem>
+                        <MenuItem>Sign Out</MenuItem>
+                    </Menu>
                 </NavItem>
-                <Menu
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                >
-                    <MenuItem>Profile</MenuItem>
-                    <MenuItem>Sign Out</MenuItem>
-                </Menu>
             </>
         )
     }

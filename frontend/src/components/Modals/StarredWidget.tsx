@@ -40,7 +40,7 @@ export class StarredWidget extends React.Component<IProps, IState> {
     }
 
     componentWillUnmount() {
-
+        document.removeEventListener('keydown', this.escFunction, false)
     }
 
     render () {

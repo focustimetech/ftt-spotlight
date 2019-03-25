@@ -14,6 +14,11 @@ interface IProps {
 }
 
 export class NotificationsWidget extends React.Component<IProps> {
+    constructor(props: IProps) {
+        super(props)
+        this.escFunction = this.escFunction.bind(this)
+    }
+
     state = {
         open: false
     }
@@ -24,6 +29,20 @@ export class NotificationsWidget extends React.Component<IProps> {
 
     handleClose = () => {
         this.setState({ open: false })
+    }
+
+    escFunction = (event: any) => {
+        if (event.keyCode === 27) {
+            this.setState({ open: false })
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.escFunction, false)
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.escFunction, false)
     }
 
     render (){

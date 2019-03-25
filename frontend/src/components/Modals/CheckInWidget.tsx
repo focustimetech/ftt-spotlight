@@ -118,13 +118,13 @@ export class CheckInWidget extends React.Component<{}, IState> {
                             name='check-in'
                             type='text'
                             placeholder='Enter Student Numbers'
-                            // startAdornment={<InputAdornment position='start'><Icon>how_to_reg</Icon></InputAdornment>}
                             variant='standard'
                             value={this.state.checkInValue}
                             onChange={this.handleChange}
                             margin='normal'
                             autoFocus={true}
                             fullWidth={true}
+                            helperText='Comma separated list or single entry'
                         />
                         <div className='check-in_heading'>
                                 <h4>Air Check-in</h4>

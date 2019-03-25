@@ -21,14 +21,19 @@ interface IState {
     searchResults: SearchGroup[]
 }
 
-export class SearchWidget extends React.Component<{}, IState> {
+interface IProps {}
+
+export class SearchWidget extends React.Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props)
+        this.escFunction = this.escFunction.bind(this)
+    }
+
     state = {
         open: false,
         searchQuery: '',
         searchResults: [] as SearchGroup[]
     }
-
-
 
     handleClickOpen = () => {
         this.setState({ open: true })
@@ -46,6 +51,20 @@ export class SearchWidget extends React.Component<{}, IState> {
 
     search = (query: string) => {
         console.log(`search('${query}')`)
+    }
+
+    escFunction = (event: any) => {
+        if (event.keyCode === 27) {
+            this.setState({ open: false })
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.escFunction, false)
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.escFunction, false)
     }
 
     render (){

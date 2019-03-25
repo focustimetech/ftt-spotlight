@@ -9,6 +9,7 @@ import { NavItem } from './NavItem'
 import { NotificationsWidget } from '../Modals/NotificationsWidget'
 import { CheckInWidget } from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
+import { StarredWidget } from '../Modals/StarredWidget'
 
 /**
  * @TODO Need to handle the case where the screen is very narrow,
@@ -34,7 +35,7 @@ export class Sidebar extends React.Component {
 					<div className='nav_top'>
 						<NavItem title='Spotlight' to='/' icon='home' />
 						<SearchWidget />
-						<NavItem title='Starred' icon='star' />
+						<StarredWidget />
 						<CheckInWidget />
 					</div>
 					<div className='nav_bottom'>

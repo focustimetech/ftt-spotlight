@@ -115,7 +115,7 @@ export class CheckInWidget extends React.Component<{}, IState> {
                         <div className='check-in_heading'>
                                 <h4>Air Check-in</h4>
                                 <Switch 
-                                    checked={['on', 'disabling'].includes(this.state.airCheckInStatus)}
+                                    checked={['on', 'enabling'].includes(this.state.airCheckInStatus)}
                                     onChange={this.toggleAirCheckIn}
                                 />
                                 <Grow in={['enabling', 'disabling'].includes(this.state.airCheckInStatus)}>

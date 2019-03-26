@@ -13,6 +13,7 @@ import * as classNames from 'classnames'
 
 // FIXME Remove login import
 import { Login } from '../Login'
+import { Schedule } from '../Schedule'
 
 interface IState {
 	menuOpen: boolean
@@ -45,6 +46,7 @@ export default class App extends React.Component<IProps, IState> {
 						<Content>
 							<TopNav title='Dashboard' onMenuClick={this.toggleMenu} />
 								<Route exact path='/' component={Dashboard} />
+								<Schedule />
 								<Route path='/staff' component={Staff} />
 						</Content>
 					</div>

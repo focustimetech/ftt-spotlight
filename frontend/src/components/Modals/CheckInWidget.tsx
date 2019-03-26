@@ -1,11 +1,18 @@
 import * as React from 'react'
 
+import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Dialog from '@material-ui/core/Dialog'
 import Grow from '@material-ui/core/Grow'
 import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 
@@ -23,7 +30,6 @@ interface AirCheckIn {
 interface IState {
     open: boolean
     airCheckInStatus: AirCheckInStatus
-    airCheckIns: AirCheckIn[]
     checkInValue: string
 }
 
@@ -31,11 +37,6 @@ export class CheckInWidget extends React.Component<{}, IState> {
     state = {
         open: false,
         airCheckInStatus: 'off' as AirCheckInStatus,
-        airCheckIns: [{
-            name: 'Curtis Upshall',
-            day: 'Today',
-            time: '9:15am'
-        }],
         checkInValue: ''
     }
 
@@ -97,7 +98,7 @@ export class CheckInWidget extends React.Component<{}, IState> {
                 <NavItem
                     title='Check-in'
                     icon='how_to_reg'
-                    badgeCount={this.state.airCheckIns.length}
+                    badgeCount={3}
                     onClick={this.handleClickOpen}
                 />
                 <Dialog
@@ -112,10 +113,14 @@ export class CheckInWidget extends React.Component<{}, IState> {
                     </div>
                     <div className='check-in_modal__content'>
                         <div className='check-in_heading'>
+                            <Icon>alarm</Icon>
                             <h4>Scan or Enter</h4>
+                            <h5>Mr. C. Upshall</h5>
+                            <Button variant='text'>Change</Button>
                         </div>
                         <TextField
                             name='check-in'
+                            className='check-in-input'
                             type='text'
                             placeholder='Enter Student Numbers'
                             variant='standard'
@@ -127,7 +132,9 @@ export class CheckInWidget extends React.Component<{}, IState> {
                             helperText='Comma separated list or single entry'
                         />
                         <div className='check-in_heading'>
+                                <Icon>wifi</Icon>
                                 <h4>Air Check-in</h4>
+                                <h3>Online</h3>
                                 <Switch 
                                     checked={['on', 'enabling'].includes(this.state.airCheckInStatus)}
                                     onChange={this.toggleAirCheckIn}
@@ -135,11 +142,21 @@ export class CheckInWidget extends React.Component<{}, IState> {
                                 <Grow in={['enabling', 'disabling'].includes(this.state.airCheckInStatus)}>
                                     <CircularProgress color='primary' />
                                 </Grow>
-                                <h4 className='air-check-in__status'>Online</h4>
                             </div>
-                        <div className='air-check-in'>
-                            <p>Waiting for Air Check-ins...</p>
-                        </div>
+                        <List dense className='air-check-ins'>
+                            <ListItem button>
+                                <ListItemAvatar><Avatar>CU</Avatar></ListItemAvatar>
+                                <span>Curtis Upshall</span>
+                                <ListItemSecondaryAction>
+                                    <Checkbox color='primary' />
+                                </ListItemSecondaryAction>
+                                <ListItemAvatar><Avatar>VL</Avatar></ListItemAvatar>
+                                <span>Vlad Lyesin</span>
+                                <ListItemSecondaryAction>
+                                    <Checkbox color='primary' />
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        </List>
                     </div>
                 </Dialog>
             </>

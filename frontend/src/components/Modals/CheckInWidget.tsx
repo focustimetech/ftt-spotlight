@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import * as classNames from 'classnames'
+
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -13,13 +15,13 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import Snackbar from '@material-ui/core/Snackbar'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 
-
 import { NavItem } from '../Sidebar/NavItem'
 
-type AirCheckInStatus = 'on' | 'off' | 'enabling' | 'disabling' | 'disabled'
+type AirCheckInStatus = 'on' | 'off' | 'loading'
 
 interface AirCheckIn {
     name: string
@@ -55,38 +57,21 @@ export class CheckInWidget extends React.Component<{}, IState> {
     toggleAirCheckIn = () => {
         switch (this.state.airCheckInStatus) {
             case 'on': {
-                this.setState({ airCheckInStatus: 'disabling' }, () => {
+                this.setState({ airCheckInStatus: 'loading' }, () => {
                     setTimeout(() => {
                         this.setState({ airCheckInStatus: 'off' })
-                    }, 2000)
+                    }, 500)
                 })
                 return
             }
             case 'off': {
-                this.setState({ airCheckInStatus: 'enabling' }, () => {
+                this.setState({ airCheckInStatus: 'loading' }, () => {
                     setTimeout(() => {
                         this.setState({ airCheckInStatus: 'on' })
-                    }, 2000)
+                    }, 500)
                 })
                 return
             }
-            case 'enabling': {
-                this.setState({ airCheckInStatus: 'disabling' }, () => {
-                    setTimeout(() => {
-                        this.setState({ airCheckInStatus: 'off' })
-                    }, 2000)
-                })
-                return
-            }
-            case 'disabling': {
-                this.setState({ airCheckInStatus: 'disabling' }, () => {
-                    setTimeout(() => {
-                        this.setState({ airCheckInStatus: 'on' })
-                    }, 2000)
-                })
-                return
-            }
-            case 'disabled':
             default:
                 return
         }
@@ -114,32 +99,35 @@ export class CheckInWidget extends React.Component<{}, IState> {
                     <div className='check-in_modal__content'>
                         <div className='check-in_heading'>
                             <Icon>alarm</Icon>
-                            <h4>Scan or Enter</h4>
-                            <h5>Mr. C. Upshall</h5>
-                            <Button variant='text'>Change</Button>
+                            <h4 className='heading_type'>Scan or Enter</h4>
                         </div>
-                        <TextField
-                            name='check-in'
-                            className='check-in-input'
-                            type='text'
-                            placeholder='Enter Student Numbers'
-                            variant='standard'
-                            value={this.state.checkInValue}
-                            onChange={this.handleChange}
-                            margin='normal'
-                            autoFocus={true}
-                            fullWidth={true}
-                            helperText='Comma separated list or single entry'
-                        />
+                        <div className='check-in-input'>
+                            <TextField
+                                name='check-in'
+                                type='text'
+                                placeholder='Enter Student Numbers'
+                                variant='outlined'
+                                value={this.state.checkInValue}
+                                onChange={this.handleChange}
+                                margin='normal'
+                                autoFocus={true}
+                                fullWidth={true}
+                                helperText='Comma separated list or single entry'
+                            />
+                        </div>
                         <div className='check-in_heading'>
                                 <Icon>wifi</Icon>
-                                <h4>Air Check-in</h4>
-                                <h3>Online</h3>
+                                <h4 className='heading_type'>Air Check-in</h4>
+                                <h3 className={classNames(
+                                    'heading_status',
+                                    { '--online': this.state.airCheckInStatus === 'on'}
+                                )}>{this.state.airCheckInStatus === 'on' ? 'Online' : 'Offline'}</h3>
                                 <Switch 
-                                    checked={['on', 'enabling'].includes(this.state.airCheckInStatus)}
+                                    checked={this.state.airCheckInStatus === 'on'}
                                     onChange={this.toggleAirCheckIn}
+                                    color='primary'
                                 />
-                                <Grow in={['enabling', 'disabling'].includes(this.state.airCheckInStatus)}>
+                                <Grow in={this.state.airCheckInStatus === 'loading'}>
                                     <CircularProgress color='primary' />
                                 </Grow>
                             </div>
@@ -150,6 +138,8 @@ export class CheckInWidget extends React.Component<{}, IState> {
                                 <ListItemSecondaryAction>
                                     <Checkbox color='primary' />
                                 </ListItemSecondaryAction>
+                            </ListItem>
+                            <ListItem button>
                                 <ListItemAvatar><Avatar>VL</Avatar></ListItemAvatar>
                                 <span>Vlad Lyesin</span>
                                 <ListItemSecondaryAction>

@@ -51241,6 +51241,7 @@ var ListItemAvatar_1 = __webpack_require__(/*! @material-ui/core/ListItemAvatar 
 var ListItemSecondaryAction_1 = __webpack_require__(/*! @material-ui/core/ListItemSecondaryAction */ "./node_modules/@material-ui/core/ListItemSecondaryAction/index.js");
 var Switch_1 = __webpack_require__(/*! @material-ui/core/Switch */ "./node_modules/@material-ui/core/Switch/index.js");
 var TextField_1 = __webpack_require__(/*! @material-ui/core/TextField */ "./node_modules/@material-ui/core/TextField/index.js");
+var Tooltip_1 = __webpack_require__(/*! @material-ui/core/Tooltip */ "./node_modules/@material-ui/core/Tooltip/index.js");
 var NavItem_1 = __webpack_require__(/*! ../Sidebar/NavItem */ "./src/components/Sidebar/NavItem.tsx");
 var CheckInWidget = /** @class */ (function (_super) {
     __extends(CheckInWidget, _super);
@@ -51290,8 +51291,9 @@ var CheckInWidget = /** @class */ (function (_super) {
             React.createElement(Dialog_1.default, { open: this.state.open, onClose: this.handleClose, className: 'check-in_modal', scroll: 'paper' },
                 React.createElement("div", { className: 'check-in_modal__header' },
                     React.createElement("h3", null, "Student Check-in"),
-                    React.createElement(IconButton_1.default, { className: 'icon-close', onClick: this.handleClose },
-                        React.createElement(Icon_1.default, null, "close"))),
+                    React.createElement(Tooltip_1.default, { title: 'Close' },
+                        React.createElement(IconButton_1.default, { className: 'icon-close', onClick: this.handleClose },
+                            React.createElement(Icon_1.default, null, "close")))),
                 React.createElement("div", { className: 'check-in_modal__content' },
                     React.createElement("div", { className: 'check-in_heading' },
                         React.createElement(Icon_1.default, null, "alarm"),

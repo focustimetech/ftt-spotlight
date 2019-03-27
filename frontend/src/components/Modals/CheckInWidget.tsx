@@ -18,6 +18,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import Snackbar from '@material-ui/core/Snackbar'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import { NavItem } from '../Sidebar/NavItem'
 
@@ -94,7 +95,11 @@ export class CheckInWidget extends React.Component<{}, IState> {
                 >
                     <div className='check-in_modal__header'>
                         <h3>Student Check-in</h3>
-                        <IconButton className='icon-close' onClick={this.handleClose}><Icon>close</Icon></IconButton>
+                        <Tooltip title='Close'>
+                            <IconButton className='icon-close' onClick={this.handleClose}>
+                                <Icon>close</Icon>
+                            </IconButton>
+                        </Tooltip>
                     </div>
                     <div className='check-in_modal__content'>
                         <div className='check-in_heading'>

@@ -11,6 +11,6 @@ $factory->define(App\Staff::class, function (Faker $faker) {
         'first_name' => $faker->firstName($gender),
         'last_name' => $faker->lastName($gender),
         'email' => $faker->email(),
-        'password' => bcrypt($faker->password())
+        'password' => bcrypt('password')
     ];
 });

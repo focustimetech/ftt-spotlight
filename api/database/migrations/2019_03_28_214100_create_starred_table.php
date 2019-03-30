@@ -15,14 +15,11 @@ class CreateStarredTable extends Migration
     {
         Schema::create('starred', function (Blueprint $table) {
             $table->increments('id');
-            $table->foriegn('staff_id')->references('id')->on('staff');
-            $table->enum('item_type', [
-                'staff',
-                'student',
-                'cluster',
-                'report'
-            ]);
-            $table->integer('item_id');
+            $table->unsignedInteger('staff_id');
+            $table->string('item_type');
+            $table->unsignedInteger('item_id');
+            // Foreign keys
+            $table->foreign('staff_id')->references('id')->on('staff');
         });
     }
 

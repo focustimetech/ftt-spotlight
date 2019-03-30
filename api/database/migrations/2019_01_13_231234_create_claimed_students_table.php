@@ -17,9 +17,12 @@ class CreateClaimedStudentsTable extends Migration
     public function up()
     {
         Schema::create('claimed_students', function (Blueprint $table) {
-            $table->foriegn('parent_id')->references('id')->on('parents');
-            $table->foreign('student_id')->references('id')->on('student');
+            $table->unsignedInteger('parent_id');
+            $table->unsignedInteger('student_id');
             $table->timestamp('claimed_at'); // When the student was claimed
+            // Foreign keys
+            $table->foreign('parent_id')->references('id')->on('parents');
+            $table->foreign('student_id')->references('id')->on('students');
         });
     }
 

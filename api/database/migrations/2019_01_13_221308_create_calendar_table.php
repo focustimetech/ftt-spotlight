@@ -18,11 +18,13 @@ class CreateCalendarTable extends Migration
     {
         Schema::create('calendar', function (Blueprint $table) {
             $table->date('date'); // Date of change
-            $table->foreign('block_number')->references('block_number')->on('blocks')
+            $table->unsignedInteger('block_number')
                 ->default(NULL); // NULL implies entire day
             $table->integer('event_id'); // The event occuring
             $table->integer('creator'); // Who made the calendar change
             $table->timestamps();
+            // Foreign keys
+            // $table->foreign('block_number')->references('block_number')->on('blocks');
         });
     }
 

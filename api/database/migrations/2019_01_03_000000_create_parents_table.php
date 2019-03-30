@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCoursesTable extends Migration
+/**
+ * Encodes parents using the app.
+ */
+class CreateParentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +16,9 @@ class CreateCoursesTable extends Migration
      */
     public function up()
     {
-        Schema::create('courses', function (Blueprint $table) {
+        Schema::create('parents', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('short_name');
-            $table->integer('owner'); // teacher_id
+            $table->string('email');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateCoursesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('courses');
+        Schema::dropIfExists('parents');
     }
 }

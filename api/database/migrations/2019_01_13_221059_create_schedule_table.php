@@ -20,8 +20,8 @@ class CreateScheduleTable extends Migration
             $table->date('date') // Date of assignment, in case of substitutes
                 ->default(NULL); // NULL implies default block relationship
             $table->integer('block_number'); // When course occurs
-            $table->integer('course_id'); // The course occuring
-            $table->integer('staff_id'); // Who teaches the course
+            $table->foreign('course_id')->references('id')->on('courses'); // The course occuring
+            $table->foregin('staff_id')->references('id')->on('staff'); // Who teaches the course
         });
     }
 

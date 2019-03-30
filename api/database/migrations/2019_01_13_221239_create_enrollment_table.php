@@ -17,13 +17,13 @@ class CreateEnrollmentTable extends Migration
     public function up()
     {
         Schema::create('enrollment', function (Blueprint $table) {
-            $table->increments('enrollment_id');
-            $table->integer('student_id'); // Student enrolled
-            $table->integer('course_id'); // Course enrolled in
-            $table->timestamp('enrolled'); // Date + time student enrolled
-            $table->timestamp('dropped') // Date + time student dropped
+            $table->increments('id');
+            $table->foregin('student_id')->references('id')->on('students'); // Student enrolled
+            $table->foreign('course_id')->references('id')->on('courses'); // Course enrolled in
+            $table->timestamp('enrolled_at'); // Date + time student enrolled
+            $table->timestamp('dropped_at') // Date + time student dropped
                 ->nullable(); // NULL implies still enrolled
-            $table->integer('enrolled_by'); // Teacher who enrolled the student
+            $table->foreign('enrolled_by')->references('id')->on('staff'); // Teacher who enrolled the student
         });
     }
 

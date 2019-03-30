@@ -18,7 +18,7 @@ class CreateCalendarTable extends Migration
     {
         Schema::create('calendar', function (Blueprint $table) {
             $table->date('date'); // Date of change
-            $table->integer('block_number') // Block being affected
+            $table->foreign('block_number')->references('block_number')->on('blocks')
                 ->default(NULL); // NULL implies entire day
             $table->integer('event_id'); // The event occuring
             $table->integer('creator'); // Who made the calendar change

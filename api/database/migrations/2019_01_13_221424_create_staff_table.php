@@ -15,8 +15,7 @@ class CreateStaffTable extends Migration
     {
         Schema::create('staff', function (Blueprint $table) {
             $table->increments('id');
-            $table->enum('staff_type', ['teacher', 'administrator'])
-                ->nullable();
+            $table->enum('staff_type', ['teacher', 'administrator']);
             $table->boolean('administrator')
                 ->default(false);
             $table->string('title')

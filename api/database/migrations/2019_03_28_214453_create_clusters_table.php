@@ -16,8 +16,8 @@ class CreateClustersTable extends Migration
         Schema::create('clusters', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('cluster_id');
-            $table->integer('student_id');
+            $table->foreign('cluster_id')->references('id')->on('cluster_legend');
+            $table->foriegn('student_id')->references('id')->on('students');
         });
     }
 

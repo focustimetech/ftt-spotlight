@@ -15,8 +15,7 @@ class CreateStarredTable extends Migration
     {
         Schema::create('starred', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
-            $table->integer('staff_id');
+            $table->foriegn('staff_id')->references('id')->on('staff');
             $table->enum('item_type', [
                 'staff',
                 'student',

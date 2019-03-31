@@ -15,5 +15,10 @@ class Staff extends Model
 	protected $hidden = [
 		'password', 'remember_token'
 	];
+	/*
+	function user() {
+		return App\User::where('id', $this->id)->first();
+	}
+	*/
     
 }

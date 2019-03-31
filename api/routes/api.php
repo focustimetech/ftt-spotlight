@@ -24,12 +24,16 @@ Route::post('login', 'PassportController@login');
 Route::post('register', 'PassportController@register');
 // Middleware
 Route::middleware('auth:api')->group(function() {
-    Route::get('details', 'PassportController@details');
+    Route::get('staff', 'StaffController@index');
+    Route::post('logout', 'AuthController@logout');
 });
 
+// New Auth
+Route::post('login', 'AuthController@login');
+
+
 // Staff
-//Route::get('staff', 'StaffController@index');
-Route::get('staff', 'StaffController@index')->middleware('cors');
+//Route::get('staff', 'StaffController@index')->middleware('cors');
 Route::get('staff/{id}', 'StaffController@show');
 Route::post('staff', 'StaffController@store');
 Route::put('staff', 'StaffController@store');

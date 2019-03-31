@@ -20,7 +20,6 @@ class CreateStudentsTable extends Migration
             $table->string('last_name');
             $table->unsignedInteger('grade');
             $table->string('initials');
-            $table->string('password');
             $table->boolean('disabled')
                 ->default(false);
             $table->timestamps();

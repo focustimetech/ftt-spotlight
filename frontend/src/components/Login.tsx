@@ -1,4 +1,5 @@
 import * as React from 'react'
+import axios from 'axios'
 
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -8,12 +9,36 @@ interface User {
 	accountType: string
 }
 
-type LoginStep = 'user' | 'password' | 'reset'
+interface LoginCredentials {
+	username: string
+	password: string
+}
 
 interface IState {
-	step: LoginStep
 	user: string
 	password: string
+}
+
+const login = (credentials: LoginCredentials) => {
+	console.log('Logging in...')
+	axios.defaults.headers.post['Content-Type'] ='application/json';
+	axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+
+
+	axios.get('http://localhost:8000/api/staff')
+		.then(res => {
+			const data = res.data
+			console.log(data)
+		})
+
+	axios.post('http://localhost:8000/api/login', {
+		username: credentials.username,
+		password: credentials.password
+	})
+		.then(res => {
+			console.log(res)
+		})
+
 }
 
 const selectBackground = () => {
@@ -32,7 +57,6 @@ const selectBackground = () => {
 
 export class Login extends React.Component<{}, IState> {
 	state = {
-		step: 'user' as LoginStep,
 		user: '',
 		password: ''
 	}
@@ -43,14 +67,16 @@ export class Login extends React.Component<{}, IState> {
 	}
 	
 	handleLogin = () => {
-		console.log('handleLogin()')
-		this.setState({ step: 'user' })
+		login({
+			'username': this.state.user,
+			'password': this.state.password
+		})
 	}
 
 	render() {
 		return (
 			<div className='login'>
-				<div className='login__about' style={{backgroundImage: selectBackground()}}>
+				<div className='login__about' /*style={{backgroundImage: selectBackground()}}*/ >
 					<a href='https://focustime.ca' className='logo_container'>
 						<h1>Spotlight</h1>
 					</a>
@@ -80,7 +106,6 @@ export class Login extends React.Component<{}, IState> {
 								onChange={this.handleChange}
 								margin='normal'
 								variant='filled'
-								autoFocus={true}
 								fullWidth={true}
 							/>
 							<div className='button_container'>

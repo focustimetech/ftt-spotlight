@@ -4,10 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-/**
- * Encodes parents using the app.
- */
-class CreateParentsTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,9 +13,12 @@ class CreateParentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('parents', function (Blueprint $table) {
-            $table->increments('parent_id');
-            $table->string('email');
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('username')->unique();
+            $table->string('password');
+            $table->enum('account_type', ['staff', 'student']);
+            $table->unsignedInteger('user_id');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateParentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parents');
+        Schema::dropIfExists('users');
     }
 }

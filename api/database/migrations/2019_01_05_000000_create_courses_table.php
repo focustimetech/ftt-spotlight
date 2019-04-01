@@ -14,11 +14,13 @@ class CreateCoursesTable extends Migration
     public function up()
     {
         Schema::create('courses', function (Blueprint $table) {
-            $table->increments('course_id');
+            $table->increments('id');
             $table->string('name');
             $table->string('short_name');
-            $table->integer('owner'); // teacher_id
+            $table->unsignedInteger('owner');
             $table->timestamps();
+            // Foreign keys
+            $table->foreign('owner')->references('id')->on('staff'); // teacher_id
         });
     }
 

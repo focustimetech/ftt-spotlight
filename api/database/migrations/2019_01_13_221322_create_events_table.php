@@ -22,8 +22,10 @@ class CreateEventsTable extends Migration
             $table->text('description'); // Extra info
             $table->boolean('visible')
                 ->default(true);
-            $table->integer('creator'); // staff_id of creator
+            $table->unsignedInteger('creator'); // staff_id of creator
             $table->timestamps();
+            // Foreign keys
+            $table->foreign('creator')->references('id')->on('staff');
         });
     }
 

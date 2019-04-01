@@ -15,8 +15,7 @@ class CreateStaffTable extends Migration
     {
         Schema::create('staff', function (Blueprint $table) {
             $table->increments('id');
-            $table->enum('staff_type', ['teacher', 'administrator'])
-                ->nullable();
+            $table->enum('staff_type', ['teacher', 'administrator']);
             $table->boolean('administrator')
                 ->default(false);
             $table->string('title')
@@ -25,7 +24,6 @@ class CreateStaffTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
-            $table->string('password');
             $table->timestamps();
         });
     }

@@ -12,9 +12,6 @@ $factory->define(App\Student::class, function (Faker $faker) {
         'last_name' => $last_name,
         'initials' => $initials,
         'grade' => $faker->numberBetween(9, 12),
-        'homeroom' => $faker->numberBetween(1, 45),
-        // 'team' => null,
-        'password' => bcrypt($faker->password()),
         'disabled' => false
     ];
 });

@@ -19,23 +19,24 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 */
 
-//Auth
-Route::post('login', 'PassportController@login');
-Route::post('register', 'PassportController@register');
 // Middleware
 Route::middleware('auth:api')->group(function() {
-    Route::get('details', 'PassportController@details');
+    //Route::get('staff', 'StaffController@index');
+    Route::post('logout', 'AuthController@logout');
 });
 
+// New Auth
+Route::post('login', 'AuthController@login'); //->middleware('cors');
+
+
 // Staff
-//Route::get('staff', 'StaffController@index');
-Route::get('staff', 'StaffController@index')->middleware('cors');
+Route::get('staff', 'StaffController@index'); //->middleware('cors');
 Route::get('staff/{id}', 'StaffController@show');
 Route::post('staff', 'StaffController@store');
 Route::put('staff', 'StaffController@store');
 Route::delete('staff/{id}', 'StaffController@destroy');
 // Students
-Route::get('students', 'StudentsController@fetchAll');
+Route::get('students', 'StudentsController@fetchAll'); //->middleware('cors');
 Route::get('students/disabled', 'StudentsController@fetchDisabled');
 Route::get('student/id/{id}', 'StudentsController@fetchByID');
 Route::get('student/sn/{student_number}', 'StudentsController@fetchBySN');
@@ -52,3 +53,5 @@ Route::delete('block/{id}', 'BlockController@destroy');
 // Ledger
 // Route::get('ledger', 'LedgerController@index');
 Route::post('check-in', 'LedgerController@store');
+
+Route::get('search', 'SearchController@search');

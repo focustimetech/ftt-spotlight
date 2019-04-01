@@ -15,7 +15,7 @@ class CreateBlocksTable extends Migration
     {
         Schema::create('blocks', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('block_number');
+            $table->unsignedInteger('block_number');
             $table->boolean('flex') // Block is either flex or assigned
                 ->default(false);
             $table->string('label'); // e.g. Block A

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\User;
 
 class StaffTableSeeder extends Seeder
 {
@@ -11,6 +12,12 @@ class StaffTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Staff::class, 20)->create();
+        factory(App\Staff::class, 20)->create()->each(function ($teacher) {
+            factory(App\User::class)->create([
+                'user_id' => $teacher->id,
+                'username' => $teacher->email,
+                'account_type' => 'staff'
+            ]);
+        });
     }
 }

@@ -14,17 +14,12 @@ class CreateStudentsTable extends Migration
     public function up()
     {
         Schema::create('students', function (Blueprint $table) {
-            $table->increments('student_id');
+            $table->increments('id');
             $table->integer('student_number');
             $table->string('first_name');
             $table->string('last_name');
-            $table->integer('grade');
-            $table->integer('homeroom');
-            $table->string('team')
-                ->nullable()
-                ->default(null);
+            $table->unsignedInteger('grade');
             $table->string('initials');
-            $table->string('password');
             $table->boolean('disabled')
                 ->default(false);
             $table->timestamps();

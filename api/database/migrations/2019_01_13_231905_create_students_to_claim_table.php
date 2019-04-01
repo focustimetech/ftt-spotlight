@@ -18,15 +18,18 @@ class CreateStudentsToClaimTable extends Migration
     {
         Schema::create('students_to_claim', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('student_id'); // Student to claim
+            $table->unsignedInteger('student_id'); // Student to claim
             $table->string('token') // Used to retreive entry
                 ->unique();
             $table->timestamp('issued_at');
-            $table->integer('issued_by'); // Teacher that 
-            $table->timestamp('expires') // When the token expires
+            $table->unsignedInteger('issued_by'); // Teacher that 
+            $table->timestamp('expires_at') // When the token expires
                 ->nullable();
             $table->boolean('claimed') // False until student is claimed
                 ->default(false);
+            // Foreign keys
+            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('issued_by')->references('id')->on('staff');
         });
     }
 

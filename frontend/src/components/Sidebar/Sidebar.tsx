@@ -1,6 +1,5 @@
 import * as React from 'react'
 
-import axios from 'axios'
 import * as classNames from 'classnames'
 
 import { AccountWidget } from '../Modals/AccountWidget'
@@ -16,18 +15,6 @@ import { StarredWidget } from '../Modals/StarredWidget'
  * in which a modal nav manu should be used.
  */
 export class Sidebar extends React.Component {
-	componentDidMount() {
-		/*
-		axios.defaults.headers.post['Content-Type'] ='application/json';
-		axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-		axios.get('http://localhost:8000/api/staff')
-			.then(res => {
-				const data = res.data
-				console.log(data)
-			})
-		*/
-	}
-
 	render() {
 		return (
 			<div className='sidebar'>

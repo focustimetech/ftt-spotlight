@@ -1,5 +1,5 @@
 # Frontend
-The front-end for Spotlight uses React.
+The front-end for Spotlight, which uses React.
 
 ## Installation
 ```bash

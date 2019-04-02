@@ -4,37 +4,57 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Staff;
-use App\Courses;
+use App\Course;
 use DB;
 
 class SearchController extends Controller
 {
     public function search(Request $request) {
         $query = '%'. $request->get('query'). '%';
+        $limit = 6;
         $result = [
-            'students' => [],
-            'staff' => [],
-            'courses' => []
+            [
+                'label' => 'Students',
+                'values' => DB::table('students')
+                    ->whereRaw("first_name LIKE '$query' OR last_name LIKE '$query' OR CONCAT(first_name, ' ', last_name) LIKE '$query'")
+                    ->limit($limit)
+                    ->get()
+                    ->map(function ($student) {
+                        return [
+                            'value' => $student->first_name. ' '. $student->last_name,
+                            'type' => 'student',
+                            'url' => 'students/'. $student->id
+                        ];
+                    })
+            ],
+            [
+                'label' => 'Staff',
+                'values' => Staff::where('last_name', 'like', $query)
+                    ->limit($limit)
+                    ->get()
+                    ->map(function ($staff) {
+                        return [
+                            'value' => $staff->title. ' '. $staff->first_name. ' '. $staff->last_name,
+                            'type' => 'staff',
+                            'url' => 'staff/'. $staff->id
+                        ];
+                    })
+            ],
+            [
+                'label' => 'Courses',
+                'values' => Course::where('name', 'like', $query)
+                    ->limit($limit)
+                    ->get()
+                    ->map(function ($course) {
+                        return [
+                            'value' => $course->name,
+                            'type' => 'course',
+                            'url' => 'courses/'. $course->short_name // TODO: Add restrictions on short_name. (must be like slug)
+                        ];
+                    })
+            ]
         ];
-        $staff = Staff::where('lastname', 'like', "'$query'");
-        $students = DB::table('students')
-            ->whereRaw("first_name LIKE '$query' OR last_name LIKE '$query' 
-            OR CONCAT(first_name, ' ', last_name) LIKE '$query'")->get();
-        $courses = Course::where('name', 'like', "'$query'");
-        $allResults = [
-            'students' => $students,
-            'staff' => $staff,
-            'courses' => $courses
-        ];
-        // Pepper search results into array s.t. we always have 15 results or less
-        for ($index = 0; count($results) < 15; $index ++) {
-            foreach ($allResults as $key => $collection) {
-                if ($collection[$index]) {
-                    array_push($result[$key], $collection[$index]);
-                }
-                if (count($results) === 15) break;
-            }
-        }
-        return $result; //array_merge($students, $staff, $courses);
+
+        return $result;
     }
 }

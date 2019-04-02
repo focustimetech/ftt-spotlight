@@ -21,8 +21,8 @@ interface IState {
 
 const login = (credentials: LoginCredentials) => {
 	console.log('Logging in...')
-	axios.defaults.headers.post['Content-Type'] ='application/json';
-	axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+	// axios.defaults.headers.post['Content-Type'] ='application/json';
+	// axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 
 	axios.get('http://localhost:8000/api/staff')

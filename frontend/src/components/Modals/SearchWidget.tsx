@@ -1,4 +1,5 @@
 import * as React from 'react'
+import axios from 'axios'
 
 import Drawer from '@material-ui/core/Drawer'
 import IconButton from '@material-ui/core/IconButton'
@@ -6,19 +7,25 @@ import Icon from '@material-ui/core/Icon'
 import { NavItem } from '../Sidebar/NavItem'
 import { TextField } from '@material-ui/core';
 
+
+type QueryState = 'searching' | 'idle'
+
 interface SearchItem {
-    content: string
+    value: string
+    type: string
+    url: string
 }
 
 interface SearchGroup {
-    group: string
-    items: SearchItem[]
+    label: string
+    values: SearchItem[]
 }
 
 interface IState {
     open: boolean
+    queryState: QueryState
     searchQuery: string
-    searchResults: SearchGroup[]
+    searchResults: SearchGroup[] | null
 }
 
 interface IProps {}
@@ -29,10 +36,11 @@ export class SearchWidget extends React.Component<IProps, IState> {
         this.escFunction = this.escFunction.bind(this)
     }
 
-    state = {
+    state: IState = {
         open: false,
+        queryState: 'idle',
         searchQuery: '',
-        searchResults: [] as SearchGroup[]
+        searchResults: null
     }
 
     handleClickOpen = () => {
@@ -50,7 +58,17 @@ export class SearchWidget extends React.Component<IProps, IState> {
     }
 
     search = (query: string) => {
-        console.log(`search('${query}')`)
+        this.setState({ queryState: 'searching' }, () => {
+            axios.get(`http://localhost:8000/api/search?query=${query}`)
+            .then(res => {
+                const data: SearchGroup[] = res.data
+                this.setState({
+                    searchResults: data,
+                    queryState: 'idle'
+                })
+            })
+        })
+        
     }
 
     escFunction = (event: any) => {
@@ -86,9 +104,31 @@ export class SearchWidget extends React.Component<IProps, IState> {
 								autoFocus={true}
 								fullWidth={true}
                             />
+                            {this.state.queryState === 'searching' && <p>Loading...</p>}
                         </div>
                         <div className='sidebar_modal__content'>
-                            <p>Couldn't find anything...</p>
+                            {this.state.searchResults !== null && (
+                                this.state.searchResults.length > 0 ? (
+                                    <ul>{
+                                        this.state.searchResults.map((searchGroup: SearchGroup) => {
+                                            return (
+                                                searchGroup.values.length > 0 && (
+                                                    <>
+                                                        <h6>{searchGroup.label}</h6>
+                                                        <ul>{
+                                                            searchGroup.values.map((searchItem) => {
+                                                                return <a href={searchItem.url}><li>{searchItem.value}</li></a>
+                                                            })
+                                                        }</ul>
+                                                    </>
+                                                )
+                                            )
+                                        })
+                                    }</ul>
+                                ) : (
+                                    <p>No results.</p>
+                                )
+                            )}
                         </div>
 					</div>
 				</Drawer>

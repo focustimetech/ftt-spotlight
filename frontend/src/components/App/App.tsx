@@ -38,10 +38,10 @@ export default class App extends React.Component<IProps, IState> {
 		return ( 
 			<>
 				<Router>
-					<div className='login-wrap'>
+					{/*<div className='login-wrap'>
 						<Login />
-					</div>
-					{/*
+					</div>*/}
+
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
 						<Sidebar />
 						<Content>
@@ -50,7 +50,7 @@ export default class App extends React.Component<IProps, IState> {
 								<Route path='/staff' component={Staff} />
 						</Content>
 					</div>
-					*/}
+
 				</Router>
 			</>
 		)

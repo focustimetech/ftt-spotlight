@@ -4,6 +4,8 @@ import axios from 'axios'
 import Drawer from '@material-ui/core/Drawer'
 import IconButton from '@material-ui/core/IconButton'
 import Icon from '@material-ui/core/Icon'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
 import { NavItem } from '../Sidebar/NavItem'
 import { TextField } from '@material-ui/core';
 
@@ -58,17 +60,22 @@ export class SearchWidget extends React.Component<IProps, IState> {
     }
 
     search = (query: string) => {
-        this.setState({ queryState: 'searching' }, () => {
-            axios.get(`http://localhost:8000/api/search?query=${query}`)
-            .then(res => {
-                const data: SearchGroup[] = res.data
-                this.setState({
-                    searchResults: data,
-                    queryState: 'idle'
+        if (query.length > 0) {
+            this.setState({ queryState: 'searching' }, () => {
+                axios.get(`http://localhost:8000/api/search?query=${query}`)
+                .then(res => {
+                    const data: SearchGroup[] = res.data
+                    this.setState({
+                        searchResults: data,
+                        queryState: 'idle'
+                    })
                 })
             })
-        })
-        
+        } else {
+            this.setState({
+                searchResults: []
+            })
+        }
     }
 
     escFunction = (event: any) => {
@@ -85,7 +92,13 @@ export class SearchWidget extends React.Component<IProps, IState> {
         document.removeEventListener('keydown', this.escFunction, false)
     }
 
-    render (){
+    render () {
+        const resultCount: number = this.state.searchResults ? (
+            this.state.searchResults.reduce((count: number, searchGroup: SearchGroup) => {
+                return count + searchGroup.values.length
+            }, 0)
+        ) : 0
+
         return (
             <>
                 <NavItem title='Search' icon='search' onClick={this.handleClickOpen} />
@@ -106,20 +119,24 @@ export class SearchWidget extends React.Component<IProps, IState> {
                             />
                             {this.state.queryState === 'searching' && <p>Loading...</p>}
                         </div>
-                        <div className='sidebar_modal__content'>
-                            {this.state.searchResults !== null && (
-                                this.state.searchResults.length > 0 ? (
+                        <div className='sidebar_modal__content search_modal__content'>
+                            {this.state.searchResults !== null && this.state.searchQuery.length > 0 && (
+                                resultCount > 0 ? (
                                     <ul>{
                                         this.state.searchResults.map((searchGroup: SearchGroup) => {
                                             return (
                                                 searchGroup.values.length > 0 && (
                                                     <>
-                                                        <h6>{searchGroup.label}</h6>
-                                                        <ul>{
+                                                        <h4 className='search-group_header'>{searchGroup.label}</h4>
+                                                        <List className='search-group_list'>{
                                                             searchGroup.values.map((searchItem) => {
-                                                                return <a href={searchItem.url}><li>{searchItem.value}</li></a>
+                                                                return (
+                                                                    <a href={searchItem.url}>
+                                                                        <ListItem className='search-group_list__item'>{searchItem.value}</ListItem>
+                                                                    </a>
+                                                                )
                                                             })
-                                                        }</ul>
+                                                        }</List>
                                                     </>
                                                 )
                                             )

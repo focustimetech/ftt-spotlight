@@ -29,7 +29,7 @@ export class AccountWidget extends React.Component<{}, IState> {
         return (
             <>
                 <NavItem className='nav_account' title='Account' onClick={this.handleClickOpen}>
-                    <Avatar className='nav_avatar'>{this.initials}</Avatar>
+                    <Avatar className='nav_avatar' color='#FF0000'>{this.initials}</Avatar>
                     <Menu
                         open={this.state.open}
                         onClose={this.handleClose}

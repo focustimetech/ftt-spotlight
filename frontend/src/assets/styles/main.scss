@@ -4,10 +4,13 @@
 @import "layouts/app";
 @import "layouts/login";
 
+@import "components/check-in_modal";
 @import "components/content";
-@import "components/topnav";
+@import "components/empty_state";
+@import "components/notifications_modal";
 @import "components/schedule";
 @import "components/search_modal";
 @import "components/sidebar";
 @import "components/sidebar_modal";
-@import "components/check-in_modal";
+@import "components/starred_modal";
+@import "components/topnav";

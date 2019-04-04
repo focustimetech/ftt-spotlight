@@ -1,6 +1,8 @@
 .search_modal {
 	&__content {
-		padding: 8px 32px 16px 64px;
+		.content-inner {
+			margin-left: 32px;
+		}
 	}
 
 	.search-group_header {

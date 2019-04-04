@@ -6,8 +6,11 @@ import IconButton from '@material-ui/core/IconButton'
 import Icon from '@material-ui/core/Icon'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
+import TextField from '@material-ui/core/TextField';
+
+import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
-import { TextField } from '@material-ui/core';
+
 
 
 type QueryState = 'searching' | 'idle'
@@ -122,7 +125,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
                         <div className='sidebar_modal__content search_modal__content'>
                             {this.state.searchResults !== null && this.state.searchQuery.length > 0 && (
                                 resultCount > 0 ? (
-                                    <ul>{
+                                    <div className='content-inner'>{
                                         this.state.searchResults.map((searchGroup: SearchGroup) => {
                                             return (
                                                 searchGroup.values.length > 0 && (
@@ -141,9 +144,12 @@ export class SearchWidget extends React.Component<IProps, IState> {
                                                 )
                                             )
                                         })
-                                    }</ul>
+                                    }</div>
                                 ) : (
-                                    <p>No results.</p>
+                                    <EmptyStateIcon variant='search'>
+                                        <h2>No search results found</h2>
+                                        <h3>Try again searching something else.</h3>
+                                    </EmptyStateIcon>
                                 )
                             )}
                         </div>

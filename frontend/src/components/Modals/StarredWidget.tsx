@@ -3,6 +3,8 @@ import * as React from 'react'
 import Drawer from '@material-ui/core/Drawer'
 import IconButton from '@material-ui/core/IconButton'
 import Icon from '@material-ui/core/Icon'
+
+import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 
 interface IState {
@@ -53,8 +55,11 @@ export class StarredWidget extends React.Component<IProps, IState> {
                             <IconButton className='button_back' onClick={this.handleClose}><Icon>arrow_back</Icon></IconButton>
                             <h3>Starred</h3>
                         </div>
-                        <div className='sidebar_modal__content'>
-                            <p>Couldn't find anything...</p>
+                        <div className='sidebar_modal__content starred_modal__content'>
+                            <EmptyStateIcon variant='starred'>
+                                <h2>No Starred items found</h2>
+                                <h3>Items you add to your Starred list will appear here.</h3>
+                            </EmptyStateIcon>
                         </div>
 					</div>
 				</Drawer>

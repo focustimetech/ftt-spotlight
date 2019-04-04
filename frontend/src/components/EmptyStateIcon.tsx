@@ -8,7 +8,7 @@ export const EmptyStateIcon = (props: IProps) => {
 	const imageName = `url('src/assets/images/empty-state/${props.variant}.svg')`
 	return (
 		<div className='empty-state-icon'>
-			<div className='empty-state-icon__image' style={{background: imageName}}></div>
+			<div className='empty-state-icon__image' style={{backgroundImage: imageName}}></div>
 			{props.children}
 		</div>
 	)

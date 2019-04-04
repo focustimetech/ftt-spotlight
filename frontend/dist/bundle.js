@@ -35549,7 +35549,7 @@ var React = __webpack_require__(/*! react */ "react");
 exports.EmptyStateIcon = function (props) {
     var imageName = "url('src/assets/images/empty-state/" + props.variant + ".svg')";
     return (React.createElement("div", { className: 'empty-state-icon' },
-        React.createElement("div", { className: 'empty-state-icon__image', style: { background: imageName } }),
+        React.createElement("div", { className: 'empty-state-icon__image', style: { backgroundImage: imageName } }),
         props.children));
 };
 
@@ -35806,7 +35806,7 @@ var NotificationsWidget = /** @class */ (function (_super) {
                             React.createElement(Icon_1.default, null, "arrow_back")),
                         React.createElement("h3", null, "Notifications")),
                     React.createElement("div", { className: 'sidebar_modal__content' },
-                        React.createElement(EmptyStateIcon_1.EmptyStateIcon, { variant: 'no' },
+                        React.createElement(EmptyStateIcon_1.EmptyStateIcon, { variant: 'notifications' },
                             React.createElement("h2", null, "Your inbox is empty"),
                             React.createElement("h3", null, "Notifications that you receive from Spotlight will appear here.")))))));
     };

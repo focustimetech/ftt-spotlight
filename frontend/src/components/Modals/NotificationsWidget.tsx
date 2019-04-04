@@ -63,7 +63,7 @@ export class NotificationsWidget extends React.Component<IProps> {
                             <h3>Notifications</h3>
                         </div>
                         <div className='sidebar_modal__content'>
-                            <EmptyStateIcon variant='no'>
+                            <EmptyStateIcon variant='notifications'>
                                 <h2>Your inbox is empty</h2>
                                 <h3>Notifications that you receive from Spotlight will appear here.</h3>
                             </EmptyStateIcon>

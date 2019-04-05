@@ -21,6 +21,7 @@ export class Dashboard extends React.Component<IProps> {
 	render() {
 		return (
 			<>
+				<TopNav title='Dashboard' />
 				<p>Welcome to my Dashboard!</p>
 			</>
 		)

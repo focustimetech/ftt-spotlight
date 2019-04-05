@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route} from 'react-router-dom'
 
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
+import { Profile } from '../Profile/Profile'
 import { Sidebar } from '../Sidebar/Sidebar'
 import { Staff } from '../Staff'
 import { TopNav } from '../TopNav'
@@ -30,10 +31,6 @@ export default class App extends React.Component<IProps, IState> {
 		this.setState({ menuOpen: this.state.menuOpen === false })
 	}
 
-	handleViewChange = (): void => {
-		return
-	}
-
 	render() {
 		return ( 
 			<>
@@ -45,9 +42,9 @@ export default class App extends React.Component<IProps, IState> {
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
 						<Sidebar />
 						<Content>
-							<TopNav title='Dashboard' onMenuClick={this.toggleMenu} />
-								<Route exact path='/' component={Dashboard} />
-								<Route path='/staff' component={Staff} />
+							<Route exact path='/' component={Dashboard} />
+							<Route path='/staff' component={Staff} />
+							<Route path='/students' component={Profile} />
 						</Content>
 					</div>
 

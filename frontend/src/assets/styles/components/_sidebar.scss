@@ -16,7 +16,7 @@
 		background: $primary;
 		color: $on-primary;
 		position: relative;
-		box-shadow: $elevation2;
+		// box-shadow: $elevation2;
 
 		.nav_account {
 			padding: 8px;
@@ -45,7 +45,7 @@
 		padding: 0;
 		box-sizing: border-box;
 		display: inline-block;
-		// box-shadow: $box-shadow;
+		box-shadow: $elevation2;
 		overflow-y: auto;
 
 		.menu_header {

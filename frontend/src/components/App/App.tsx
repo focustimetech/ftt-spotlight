@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route} from 'react-router-dom'
 
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
-import { Profile } from '../Profile/Profile'
+import { Student } from '../Profile/Student'
 import { Sidebar } from '../Sidebar/Sidebar'
 import { Staff } from '../Staff'
 import { TopNav } from '../TopNav'
@@ -44,7 +44,7 @@ export default class App extends React.Component<IProps, IState> {
 						<Content>
 							<Route exact path='/' component={Dashboard} />
 							<Route path='/staff' component={Staff} />
-							<Route path='/students' component={Profile} />
+							<Route path='/students' component={Student} />
 						</Content>
 					</div>
 

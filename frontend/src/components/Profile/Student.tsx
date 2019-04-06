@@ -2,18 +2,19 @@ import * as React from 'react'
 
 import { Avatar } from '@material-ui/core'
 
+import { NameWidget } from './NameWidget'
 import { TopNav } from '../TopNav'
 
 
-export class Profile extends React.Component {
+export class Student extends React.Component {
 	render () {
 		return (
 			<div className='profile'>
 				<TopNav>
-					<div className='profile_title'>
-						<Avatar>CU</Avatar>
-						<h3>Curtis Upshall</h3>
-					</div>
+					<li className='profile_title'>
+						<Avatar className='profile_avatar'>CU</Avatar>
+						<NameWidget value='Curtis Upshall' />
+					</li>
 				</TopNav>
 				<div className='profile__about'>
 					<h5>About</h5>

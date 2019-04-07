@@ -67,11 +67,14 @@ export class SearchWidget extends React.Component<IProps, IState> {
             this.setState({ queryState: 'searching' }, () => {
                 axios.get(`http://localhost:8000/api/search?query=${query}`)
                 .then(res => {
-                    const data: SearchGroup[] = res.data
-                    this.setState({
-                        searchResults: data,
-                        queryState: 'idle'
-                    })
+                    // Wait to show results until the query matches what was typed in.
+                    if (res.data.query === query) {
+                        const results: SearchGroup[] = res.data.results
+                        this.setState({
+                            searchResults: results,
+                            queryState: 'idle'
+                        })
+                    }
                 })
             })
         } else {

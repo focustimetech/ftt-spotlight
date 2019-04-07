@@ -55,6 +55,9 @@ class SearchController extends Controller
             ]
         ];
 
-        return $result;
+        return [
+            'query' => $request->get('query'),
+            'results' => $result
+        ];
     }
 }

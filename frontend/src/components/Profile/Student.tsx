@@ -83,7 +83,7 @@ export class Student extends React.Component<IProps, IState> {
 						</li>
 						<li>
 							<IconButton>
-								<Icon>more_horiz</Icon>
+								<Icon>more_vert</Icon>
 							</IconButton>
 						</li>
 					</ul>

@@ -1,113 +1,143 @@
-.schedule {
-	width: 100%;
-	padding: 16px 0 0 0;
-	display: flex;
-	flex-flow: row wrap;
-
-	.schedule_row {
-		width: 100%;
+.schedule_container {
+	.schedule_header {
 		display: flex;
+		align-items: center;
 
-		.event,
-		.block {
-			padding: 8px;
-			margin: 0 16px 8px 8px;
-			border-radius: 2px;
-			background: #EEE;
-			color: rgba(0,0,0,0.87);
-			padding-bottom: 8px;
-			box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-			transition: box-shadow 0.2s;
-			cursor: pointer;
+		li {
+			margin-right: 8px;
 
-			&:hover {
-				box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+			.schedule_daterange {
+				margin-right: 8px;
+				border-radius: 2px;
+				padding: 8px 16px;
+				cursor: pointer;
+				transition: background 0.2s;
+				user-select: none;
+	
+				&:hover {
+					background: #EEE;
+				}
+	
+				h3 {
+					font-weight: 400;
+					margin: 0;
+				}
 			}
 		}
+	}
 
-		.label {
+	.schedule {
+		width: 100%;
+		padding: 16px 0 0 0;
+		display: flex;
+		flex-flow: row wrap;
+
+		.schedule_row {
 			width: 100%;
-			color: inherit;
-			padding: 8px 16px;
-			text-align: center;
+			display: flex;
 
-			.day {
-				text-transform: uppercase;
-				margin: 0 0 4px 0;
-				font-weight: 500;
-			}
-
-			.date {
-				display: inline-block;
-				margin: 0;
-				width: 32px;
-				height: 32px;
-				line-height: 32px;
+			.event,
+			.block {
+				font-size: 14px;
 				padding: 8px;
-				border-radius: 50%;
-				background: none;
-				font-weight: 400;
-				font-weight: 400;
+				margin: 0 16px 8px 8px;
+				border-radius: 2px;
+				background: #EEE;
+				color: rgba(0,0,0,0.87);
+				padding-bottom: 8px;
+				box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+				transition: box-shadow 0.2s;
+				cursor: pointer;
+
+				&:hover {
+					box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+				}
 			}
 
-			&.--today {
-				color: $primary;
+			.label {
+				width: 100%;
+				color: inherit;
+				padding: 8px 16px;
+				text-align: center;
+
+				.day {
+					text-transform: uppercase;
+					margin: 0 0 4px 0;
+					font-weight: 500;
+				}
 
 				.date {
-					background: $primary;
-					color: rgba(255,255,255,0.87);
+					display: inline-block;
+					margin: 0;
+					width: 32px;
+					height: 32px;
+					line-height: 32px;
+					padding: 8px;
+					border-radius: 50%;
+					background: none;
+					font-weight: 400;
+					font-weight: 400;
+				}
+
+				&.--today {
+					color: $primary;
+
+					.date {
+						background: $primary;
+						color: rgba(255,255,255,0.87);
+					}
 				}
 			}
-		}
 
-		.schedule_events {
-			width: 100%;
-			padding: 8px 0 0 0;
-			border-right: 1px solid #EEE;
-			border-bottom: 1px solid #EEE;
-			display: flex;
-			flex-flow: column-reverse;
+			.schedule_events {
+				width: 100%;
+				padding: 8px 0 0 0;
+				border-right: 1px solid #EEE;
+				border-bottom: 1px solid #EEE;
+				display: flex;
+				flex-flow: column-reverse;
 
-			&:last-child {
-				border-right: none;
-			}
-		}
-
-		.schedule_blocks {
-			width: 100%;
-			padding: 8px 0 16px;
-			border-right: 1px solid #EEE;
-
-			&:last-child {
-				border-right: none;
+				&:last-child {
+					border-right: none;
+				}
 			}
 
-			.block {
-				min-height: 96px;
-	
-				&.--missed {
-					background: rgba(244,67,54 ,1);
-					color: rgba(255,255,255,0.87)
+			.schedule_blocks {
+				width: 100%;
+				padding: 8px 0 16px;
+				border-right: 1px solid #EEE;
+
+				&:last-child {
+					border-right: none;
 				}
-	
-				&.--attended {
-					background: rgba(76,175,80 ,1);
-					color: rgba(255,255,255,0.87);
-				}
-	
-				&.--void {
-					background: #CCC;
-					color: rgba(75,75,75,0.87);
-				}
-	
-				&.--appointed {
-					background: rgba(255,152,0 ,1);
-					color: rgba(255,255,255,0.87);
-				}
-	
-				&.--now {
-					border: 3px solid $primary-semi-light;
-					border-radius: 4px;
+
+				.block {
+					min-height: 96px;
+		
+					&.--missed {
+						background: rgba(244,67,54 ,1);
+						color: rgba(255,255,255,0.87)
+					}
+		
+					&.--attended {
+						background: rgba(76,175,80 ,1);
+						color: rgba(255,255,255,0.87);
+					}
+		
+					&.--void {
+						background: #CCC;
+						color: rgba(75,75,75,0.87);
+					}
+		
+					&.--appointed {
+						background: rgba(255,152,0 ,1);
+						color: rgba(255,255,255,0.87);
+					}
+		
+					&.--now {
+						border: 3px solid $primary-semi-light;
+						border-radius: 4px;
+					}
 				}
 			}
 		}

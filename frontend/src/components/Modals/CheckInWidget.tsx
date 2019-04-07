@@ -103,7 +103,7 @@ export class CheckInWidget extends React.Component<{}, IState> {
                     </div>
                     <div className='check-in_modal__content'>
                         <div className='check-in_heading'>
-                            <Icon>alarm</Icon>
+                            <Icon>keyboard</Icon>
                             <h4 className='heading_type'>Scan or Enter</h4>
                         </div>
                         <div className='check-in-input'>

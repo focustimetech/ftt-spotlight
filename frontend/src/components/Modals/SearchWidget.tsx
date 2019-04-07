@@ -68,7 +68,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
                 axios.get(`http://localhost:8000/api/search?query=${query}`)
                 .then(res => {
                     // Wait to show results until the query matches what was typed in.
-                    if (res.data.query === query) {
+                    if (res.data.query === this.state.searchQuery) {
                         const results: SearchGroup[] = res.data.results
                         this.setState({
                             searchResults: results,
@@ -79,7 +79,8 @@ export class SearchWidget extends React.Component<IProps, IState> {
             })
         } else {
             this.setState({
-                searchResults: []
+                searchResults: [],
+                queryState: 'idle'
             })
         }
     }

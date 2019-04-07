@@ -1,28 +1,39 @@
 .profile {
-	.profile_avatar {
-		margin-right: 12px;
-	}
-	.name-widget {
-		padding: 4px 8px;
-		margin: -4px -8px;
-		border-radius: 2px;
-		transition: background 0.2s;
-		cursor: text;
 
-		&:hover {
-			background: #EEE;
+	.profile_title {
+		display: flex;
+    	align-items: center;
+		
+		.profile_avatar {
+			margin-right: 12px;
 		}
-
-		h3 {
-			margin: 0;
-		}
-
-		&__actions {
-			margin-left: 4px;
-
-			li {
+	
+		.name-widget {
+			padding: 4px 8px;
+			margin: -4px -8px;
+			border-radius: 2px;
+			transition: background 0.2s;
+			cursor: text;
+	
+			&:hover {
+				background: #EEE;
+			}
+	
+			h3 {
 				margin: 0;
 			}
+	
+			&__actions {
+				margin-left: 4px;
+	
+				li {
+					margin: 0;
+				}
+			}
 		}
+	}
+
+	.--starred {
+		color: $star-color;
 	}
 }

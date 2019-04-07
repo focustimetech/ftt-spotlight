@@ -38,10 +38,10 @@ export default class App extends React.Component<IProps, IState> {
 					{/*<div className='login-wrap'>
 						<Login />
 					</div>*/}
-
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
 						<Sidebar />
 						<Content>
+							<Student />
 							<Route exact path='/' component={Dashboard} />
 							<Route path='/staff' component={Staff} />
 							<Route path='/students' component={Student} />

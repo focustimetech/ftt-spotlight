@@ -38425,7 +38425,7 @@ module.exports = exports['default'];
 
 exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  margin: 0;\n  padding: 0;\n  font-family: 'Segoe UI', 'Roboto', sans-serif; }\n\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0; }\n\na {\n  text-decoration: none;\n  color: inherit; }\n  a:hover, a:active, a:focus {\n    outline: none; }\n\nh1, h2, h3, h4, h5, h6, p {\n  margin: 0 0 8px 0; }\n\n.site-wrap {\n  display: flex; }\n  .site-wrap.--menu_open .sidebar {\n    width: 320px; }\n\n@media only screen and (min-height: 720px) and (min-width: 1366px) {\n  .login-wrap .login {\n    border-radius: 16px !important; } }\n\n.login-wrap {\n  width: 100vw;\n  height: 100vh;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: #F1F1F1; }\n  .login-wrap .login {\n    width: 100%;\n    height: 100%;\n    max-width: 1366px;\n    max-height: 768px;\n    border-radius: 0px;\n    transition: border-radius 0.5s;\n    overflow: hidden;\n    display: grid;\n    grid-template-columns: 1fr 1fr; }\n    .login-wrap .login__about {\n      background-color: #DDD;\n      background-repeat: no-repeat;\n      background-size: cover;\n      background-position: center;\n      position: relative; }\n      .login-wrap .login__about .logo_container {\n        position: absolute;\n        top: 16px;\n        left: 32px;\n        height: 64px;\n        line-height: 64px; }\n        .login-wrap .login__about .logo_container h1 {\n          font-weight: 400;\n          margin: 0;\n          text-shadow: 0px 4px 3px rgba(0, 0, 0, 0.4), 0px 8px 13px rgba(0, 0, 0, 0.1), 0px 18px 23px rgba(0, 0, 0, 0.1);\n          color: rgba(255, 255, 255, 0.87); }\n    .login-wrap .login__credentials {\n      display: flex;\n      flex-flow: column;\n      align-items: center;\n      background: #6200EA;\n      color: rgba(255, 255, 255, 0.87); }\n      .login-wrap .login__credentials .login_container {\n        margin: 120px 0;\n        max-width: 320px; }\n        .login-wrap .login__credentials .login_container h2 {\n          margin: 0 0 8px 0; }\n        .login-wrap .login__credentials .login_container .subtitle_link {\n          margin: 0 0 16px 0;\n          color: rgba(225, 225, 225, 0.86);\n          font-weight: 700; }\n          .login-wrap .login__credentials .login_container .subtitle_link:hover {\n            text-decoration: underline; }\n        .login-wrap .login__credentials .login_container .login_form {\n          background: #FFF;\n          color: rgba(0, 0, 0, 0.87);\n          padding: 32px;\n          border-radius: 4px;\n          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n          margin: 32px 0; }\n          .login-wrap .login__credentials .login_container .login_form h2 {\n            font-weight: 400;\n            text-align: center; }\n          .login-wrap .login__credentials .login_container .login_form .button_container {\n            width: 100%;\n            display: flex;\n            justify-content: flex-end;\n            margin: 16px 0 0 0; }\n            .login-wrap .login__credentials .login_container .login_form .button_container button {\n              margin-left: 16px; }\n        .login-wrap .login__credentials .login_container .links_list {\n          list-style: none;\n          margin: 0;\n          padding: 0;\n          display: flex;\n          justify-content: flex-end; }\n          .login-wrap .login__credentials .login_container .links_list li {\n            margin: 0 0 0 16px;\n            font-weight: 500; }\n\n.check-in_modal {\n  width: 100%; }\n  .check-in_modal__header {\n    height: 64px;\n    width: 600px;\n    box-sizing: border-box;\n    padding: 16px 32px;\n    line-height: 64px;\n    border-bottom: 1px solid #EEE;\n    display: flex;\n    align-items: center;\n    justify-content: space-between; }\n    .check-in_modal__header .icon-close {\n      margin-left: 8px; }\n  .check-in_modal__content {\n    padding: 16px 32px; }\n    .check-in_modal__content .check-in_heading {\n      display: flex;\n      flex-flow: row;\n      align-items: center;\n      margin-bottom: 8px; }\n      .check-in_modal__content .check-in_heading .heading_type {\n        font-weight: 500;\n        text-transform: uppercase;\n        margin: 0 16px 0 8px; }\n      .check-in_modal__content .check-in_heading .heading_status {\n        font-weight: 400;\n        color: rgba(0, 0, 0, 0.54);\n        margin: 0 8px 0 0;\n        transition: color 0.2s; }\n        .check-in_modal__content .check-in_heading .heading_status.--online {\n          color: #6200EA; }\n    .check-in_modal__content .check-in-input,\n    .check-in_modal__content .air-check-ins {\n      margin: 0 16px; }\n\n.content {\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n  position: relative;\n  padding: 0 64px;\n  flex-grow: 1; }\n\n.empty-state-icon {\n  width: 100%;\n  margin: 40px 0 0;\n  text-align: center; }\n  .empty-state-icon__image {\n    display: block;\n    background-size: contain;\n    background-repeat: no-repeat;\n    width: 120px;\n    height: 120px;\n    margin: 0 auto 16px; }\n  .empty-state-icon h3 {\n    font-weight: 500; }\n\n.notifications_modal__content .content-inner {\n  margin-left: 32px; }\n\n.profile .profile_avatar {\n  margin-right: 12px; }\n\n.profile .name-widget {\n  padding: 4px 8px;\n  margin: -4px -8px;\n  border-radius: 2px;\n  transition: background 0.2s;\n  cursor: text; }\n  .profile .name-widget:hover {\n    background: #EEE; }\n  .profile .name-widget h3 {\n    margin: 0; }\n  .profile .name-widget__actions {\n    margin-left: 4px; }\n    .profile .name-widget__actions li {\n      margin: 0; }\n\n.schedule {\n  width: 100%;\n  padding: 16px 0 0 0;\n  display: table; }\n  .schedule .schedule_row {\n    display: table-row; }\n    .schedule .schedule_row .event,\n    .schedule .schedule_row .block {\n      padding: 8px;\n      margin: 0 16px 8px 8px;\n      border-radius: 2px;\n      background: #EEE;\n      color: rgba(0, 0, 0, 0.87);\n      padding-bottom: 8px;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n      transition: box-shadow 0.2s;\n      cursor: pointer; }\n      .schedule .schedule_row .event:hover,\n      .schedule .schedule_row .block:hover {\n        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); }\n    .schedule .schedule_row .label {\n      color: inherit;\n      padding: 8px 16px;\n      text-align: center;\n      display: table-cell; }\n      .schedule .schedule_row .label .day {\n        text-transform: uppercase;\n        margin: 0 0 4px 0;\n        font-weight: 500; }\n      .schedule .schedule_row .label .date {\n        display: inline-block;\n        margin: 0;\n        width: 32px;\n        height: 32px;\n        line-height: 32px;\n        padding: 8px;\n        border-radius: 50%;\n        background: none;\n        font-weight: 400;\n        font-weight: 400; }\n      .schedule .schedule_row .label.--today {\n        color: #6200EA; }\n        .schedule .schedule_row .label.--today .date {\n          background: #6200EA;\n          color: rgba(255, 255, 255, 0.87); }\n    .schedule .schedule_row .schedule_events {\n      display: table-cell;\n      vertical-align: bottom;\n      padding: 8px 0 0 0;\n      border-right: 1px solid #EEE;\n      border-bottom: 1px solid #EEE; }\n      .schedule .schedule_row .schedule_events:last-child {\n        border-right: none; }\n    .schedule .schedule_row .schedule_blocks {\n      display: table-cell;\n      padding: 8px 0 16px;\n      border-right: 1px solid #EEE; }\n      .schedule .schedule_row .schedule_blocks:last-child {\n        border-right: none; }\n      .schedule .schedule_row .schedule_blocks .block {\n        min-height: 96px; }\n        .schedule .schedule_row .schedule_blocks .block.--missed {\n          background: #f44336;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule .schedule_row .schedule_blocks .block.--attended {\n          background: #4caf50;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule .schedule_row .schedule_blocks .block.--void {\n          background: #CCC;\n          color: rgba(75, 75, 75, 0.87); }\n        .schedule .schedule_row .schedule_blocks .block.--appointed {\n          background: #ff9800;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule .schedule_row .schedule_blocks .block.--now {\n          border: 3px solid rgba(98, 0, 234, 0.54);\n          border-radius: 4px; }\n\n.search_modal__content .content-inner {\n  margin-left: 32px; }\n\n.search_modal .search-group_header {\n  font-size: 14px;\n  font-weight: 500;\n  text-transform: uppercase;\n  color: #777; }\n\n.search_modal .search-group_list {\n  margin-bottom: 8px; }\n  .search_modal .search-group_list__item {\n    border-radius: 2px; }\n    .search_modal .search-group_list__item:hover {\n      background: #EEE; }\n\n.sidebar {\n  height: 100vh;\n  width: 80px;\n  position: relative;\n  display: grid;\n  grid-template-columns: auto 1fr;\n  overflow: hidden;\n  flex-shrink: 1;\n  transition: width 0.2s ease-in-out; }\n  .sidebar__nav {\n    width: 64px;\n    height: 100vh;\n    padding: 16px 8px;\n    box-sizing: border-box;\n    background: #6200EA;\n    color: rgba(255, 255, 255, 0.87);\n    position: relative; }\n    .sidebar__nav .nav_account {\n      padding: 8px; }\n    .sidebar__nav .nav_button {\n      color: inherit; }\n      .sidebar__nav .nav_button .nav_avatar {\n        width: 32px;\n        height: 32px;\n        font-size: 14px; }\n    .sidebar__nav .nav_bottom {\n      position: absolute;\n      bottom: 16px; }\n  .sidebar__menu {\n    height: 100vh;\n    min-width: 256px;\n    max-width: 256px;\n    background: #F5F5FF;\n    padding: 0;\n    box-sizing: border-box;\n    display: inline-block;\n    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n    overflow-y: auto; }\n    .sidebar__menu .menu_header {\n      height: 80px;\n      line-height: 48px;\n      margin: 0 32px;\n      padding: 16px 0 16px 56px;\n      box-sizing: border-box;\n      border-bottom: 1px solid rgba(0, 0, 0, 0.12);\n      position: relative; }\n      .sidebar__menu .menu_header__logo {\n        position: absolute;\n        top: 16px;\n        left: 0;\n        width: 48px;\n        height: 48px;\n        background: rgba(98, 0, 234, 0.12);\n        background-repeat: no-repeat;\n        background-size: cover;\n        border-radius: 2px;\n        overflow: hidden; }\n      .sidebar__menu .menu_header h4 {\n        margin: 0;\n        font-weight: 500;\n        letter-spacing: normal;\n        text-transform: uppercase;\n        font-size: 14px; }\n    .sidebar__menu .menu_list {\n      padding: 0 16px; }\n      .sidebar__menu .menu_list__link {\n        color: inherit; }\n        .sidebar__menu .menu_list__link .list_item {\n          display: flex;\n          align-items: center;\n          padding: 8px 16px;\n          margin: 4px 0;\n          min-width: 128px;\n          max-width: 224px;\n          height: 32px;\n          line-height: 32px;\n          border-radius: 2px;\n          font-weight: 500;\n          cursor: pointer;\n          user-select: none;\n          transition: color 0.2s; }\n          .sidebar__menu .menu_list__link .list_item:hover {\n            background: rgba(98, 0, 234, 0.12); }\n          .sidebar__menu .menu_list__link .list_item__icon {\n            color: rgba(0, 0, 0, 0.54); }\n        .sidebar__menu .menu_list__link.--selected .list_item {\n          color: #6200EA;\n          background: rgba(98, 0, 234, 0.12); }\n          .sidebar__menu .menu_list__link.--selected .list_item__icon {\n            color: #6200EA; }\n\n.sidebar_modal {\n  width: 500px; }\n  .sidebar_modal__header {\n    display: flex;\n    align-items: center;\n    padding: 16px 32px 8px 8px; }\n    .sidebar_modal__header .button_back {\n      margin-right: 8px; }\n    .sidebar_modal__header h3 {\n      margin: 0; }\n  .sidebar_modal__content {\n    padding: 8px 32px 16px 32px; }\n\n.starred_modal__content .content-inner {\n  margin-left: 32px; }\n\n.top-nav {\n  height: 48px;\n  line-height: 48px;\n  padding: 16px;\n  border-bottom: 1px solid #EEE;\n  margin-bottom: 16px;\n  display: flex;\n  align-items: center; }\n  .top-nav__title {\n    margin: 0 0 0 8px; }\n  .top-nav ul {\n    display: flex;\n    align-items: center; }\n    .top-nav ul li {\n      margin-left: 16px; }\n      .top-nav ul li:first-child {\n        margin-left: 0; }\n", ""]);
+exports.push([module.i, "body {\n  margin: 0;\n  padding: 0;\n  font-family: 'Segoe UI', 'Roboto', sans-serif; }\n\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0; }\n\na {\n  text-decoration: none;\n  color: inherit; }\n  a:hover, a:active, a:focus {\n    outline: none; }\n\nh1, h2, h3, h4, h5, h6, p {\n  margin: 0 0 8px 0; }\n\n.site-wrap {\n  display: flex; }\n  .site-wrap.--menu_open .sidebar {\n    width: 320px; }\n\n@media only screen and (min-height: 720px) and (min-width: 1366px) {\n  .login-wrap .login {\n    border-radius: 16px !important; } }\n\n.login-wrap {\n  width: 100vw;\n  height: 100vh;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: #F1F1F1; }\n  .login-wrap .login {\n    width: 100%;\n    height: 100%;\n    max-width: 1366px;\n    max-height: 768px;\n    border-radius: 0px;\n    transition: border-radius 0.5s;\n    overflow: hidden;\n    display: grid;\n    grid-template-columns: 1fr 1fr; }\n    .login-wrap .login__about {\n      background-color: #DDD;\n      background-repeat: no-repeat;\n      background-size: cover;\n      background-position: center;\n      position: relative; }\n      .login-wrap .login__about .logo_container {\n        position: absolute;\n        top: 16px;\n        left: 32px;\n        height: 64px;\n        line-height: 64px; }\n        .login-wrap .login__about .logo_container h1 {\n          font-weight: 400;\n          margin: 0;\n          text-shadow: 0px 4px 3px rgba(0, 0, 0, 0.4), 0px 8px 13px rgba(0, 0, 0, 0.1), 0px 18px 23px rgba(0, 0, 0, 0.1);\n          color: rgba(255, 255, 255, 0.87); }\n    .login-wrap .login__credentials {\n      display: flex;\n      flex-flow: column;\n      align-items: center;\n      background: #6200EA;\n      color: rgba(255, 255, 255, 0.87); }\n      .login-wrap .login__credentials .login_container {\n        margin: 120px 0;\n        max-width: 320px; }\n        .login-wrap .login__credentials .login_container h2 {\n          margin: 0 0 8px 0; }\n        .login-wrap .login__credentials .login_container .subtitle_link {\n          margin: 0 0 16px 0;\n          color: rgba(225, 225, 225, 0.86);\n          font-weight: 700; }\n          .login-wrap .login__credentials .login_container .subtitle_link:hover {\n            text-decoration: underline; }\n        .login-wrap .login__credentials .login_container .login_form {\n          background: #FFF;\n          color: rgba(0, 0, 0, 0.87);\n          padding: 32px;\n          border-radius: 4px;\n          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n          margin: 32px 0; }\n          .login-wrap .login__credentials .login_container .login_form h2 {\n            font-weight: 400;\n            text-align: center; }\n          .login-wrap .login__credentials .login_container .login_form .button_container {\n            width: 100%;\n            display: flex;\n            justify-content: flex-end;\n            margin: 16px 0 0 0; }\n            .login-wrap .login__credentials .login_container .login_form .button_container button {\n              margin-left: 16px; }\n        .login-wrap .login__credentials .login_container .links_list {\n          list-style: none;\n          margin: 0;\n          padding: 0;\n          display: flex;\n          justify-content: flex-end; }\n          .login-wrap .login__credentials .login_container .links_list li {\n            margin: 0 0 0 16px;\n            font-weight: 500; }\n\n.check-in_modal {\n  width: 100%; }\n  .check-in_modal__header {\n    height: 64px;\n    width: 600px;\n    box-sizing: border-box;\n    padding: 16px 32px;\n    line-height: 64px;\n    border-bottom: 1px solid #EEE;\n    display: flex;\n    align-items: center;\n    justify-content: space-between; }\n    .check-in_modal__header .icon-close {\n      margin-left: 8px; }\n  .check-in_modal__content {\n    padding: 16px 32px; }\n    .check-in_modal__content .check-in_heading {\n      display: flex;\n      flex-flow: row;\n      align-items: center;\n      margin-bottom: 8px; }\n      .check-in_modal__content .check-in_heading .heading_type {\n        font-weight: 500;\n        text-transform: uppercase;\n        margin: 0 16px 0 8px; }\n      .check-in_modal__content .check-in_heading .heading_status {\n        font-weight: 400;\n        color: rgba(0, 0, 0, 0.54);\n        margin: 0 8px 0 0;\n        transition: color 0.2s; }\n        .check-in_modal__content .check-in_heading .heading_status.--online {\n          color: #6200EA; }\n    .check-in_modal__content .check-in-input,\n    .check-in_modal__content .air-check-ins {\n      margin: 0 16px; }\n\n.content {\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n  position: relative;\n  padding: 0 64px;\n  flex-grow: 1; }\n\n.empty-state-icon {\n  width: 100%;\n  margin: 40px 0 0;\n  text-align: center; }\n  .empty-state-icon__image {\n    display: block;\n    background-size: contain;\n    background-repeat: no-repeat;\n    width: 120px;\n    height: 120px;\n    margin: 0 auto 16px; }\n  .empty-state-icon h3 {\n    font-weight: 500; }\n\n.notifications_modal__content .content-inner {\n  margin-left: 32px; }\n\n.profile .profile_title {\n  display: flex;\n  align-items: center; }\n  .profile .profile_title .profile_avatar {\n    margin-right: 12px; }\n  .profile .profile_title .name-widget {\n    padding: 4px 8px;\n    margin: -4px -8px;\n    border-radius: 2px;\n    transition: background 0.2s;\n    cursor: text; }\n    .profile .profile_title .name-widget:hover {\n      background: #EEE; }\n    .profile .profile_title .name-widget h3 {\n      margin: 0; }\n    .profile .profile_title .name-widget__actions {\n      margin-left: 4px; }\n      .profile .profile_title .name-widget__actions li {\n        margin: 0; }\n\n.profile .--starred {\n  color: #ffd600; }\n\n.schedule {\n  width: 100%;\n  padding: 16px 0 0 0;\n  display: flex;\n  flex-flow: row wrap; }\n  .schedule .schedule_row {\n    width: 100%;\n    display: flex; }\n    .schedule .schedule_row .event,\n    .schedule .schedule_row .block {\n      padding: 8px;\n      margin: 0 16px 8px 8px;\n      border-radius: 2px;\n      background: #EEE;\n      color: rgba(0, 0, 0, 0.87);\n      padding-bottom: 8px;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n      transition: box-shadow 0.2s;\n      cursor: pointer; }\n      .schedule .schedule_row .event:hover,\n      .schedule .schedule_row .block:hover {\n        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); }\n    .schedule .schedule_row .label {\n      width: 100%;\n      color: inherit;\n      padding: 8px 16px;\n      text-align: center; }\n      .schedule .schedule_row .label .day {\n        text-transform: uppercase;\n        margin: 0 0 4px 0;\n        font-weight: 500; }\n      .schedule .schedule_row .label .date {\n        display: inline-block;\n        margin: 0;\n        width: 32px;\n        height: 32px;\n        line-height: 32px;\n        padding: 8px;\n        border-radius: 50%;\n        background: none;\n        font-weight: 400;\n        font-weight: 400; }\n      .schedule .schedule_row .label.--today {\n        color: #6200EA; }\n        .schedule .schedule_row .label.--today .date {\n          background: #6200EA;\n          color: rgba(255, 255, 255, 0.87); }\n    .schedule .schedule_row .schedule_events {\n      width: 100%;\n      padding: 8px 0 0 0;\n      border-right: 1px solid #EEE;\n      border-bottom: 1px solid #EEE;\n      display: flex;\n      flex-flow: column-reverse; }\n      .schedule .schedule_row .schedule_events:last-child {\n        border-right: none; }\n    .schedule .schedule_row .schedule_blocks {\n      width: 100%;\n      padding: 8px 0 16px;\n      border-right: 1px solid #EEE; }\n      .schedule .schedule_row .schedule_blocks:last-child {\n        border-right: none; }\n      .schedule .schedule_row .schedule_blocks .block {\n        min-height: 96px; }\n        .schedule .schedule_row .schedule_blocks .block.--missed {\n          background: #f44336;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule .schedule_row .schedule_blocks .block.--attended {\n          background: #4caf50;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule .schedule_row .schedule_blocks .block.--void {\n          background: #CCC;\n          color: rgba(75, 75, 75, 0.87); }\n        .schedule .schedule_row .schedule_blocks .block.--appointed {\n          background: #ff9800;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule .schedule_row .schedule_blocks .block.--now {\n          border: 3px solid rgba(98, 0, 234, 0.54);\n          border-radius: 4px; }\n\n.search_modal__content .content-inner {\n  margin-left: 32px; }\n\n.search_modal .search-group_header {\n  font-size: 14px;\n  font-weight: 500;\n  text-transform: uppercase;\n  color: #777; }\n\n.search_modal .search-group_list {\n  margin-bottom: 8px; }\n  .search_modal .search-group_list__item {\n    border-radius: 2px; }\n    .search_modal .search-group_list__item:hover {\n      background: #EEE; }\n\n.sidebar {\n  height: 100vh;\n  width: 80px;\n  position: relative;\n  display: grid;\n  grid-template-columns: auto 1fr;\n  overflow: hidden;\n  flex-shrink: 1;\n  transition: width 0.2s ease-in-out; }\n  .sidebar__nav {\n    width: 64px;\n    height: 100vh;\n    padding: 16px 8px;\n    box-sizing: border-box;\n    background: #6200EA;\n    color: rgba(255, 255, 255, 0.87);\n    position: relative; }\n    .sidebar__nav .nav_account {\n      padding: 8px; }\n    .sidebar__nav .nav_button {\n      color: inherit; }\n      .sidebar__nav .nav_button .nav_avatar {\n        width: 32px;\n        height: 32px;\n        font-size: 14px; }\n    .sidebar__nav .nav_bottom {\n      position: absolute;\n      bottom: 16px; }\n  .sidebar__menu {\n    height: 100vh;\n    min-width: 256px;\n    max-width: 256px;\n    background: #F5F5FF;\n    padding: 0;\n    box-sizing: border-box;\n    display: inline-block;\n    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n    overflow-y: auto; }\n    .sidebar__menu .menu_header {\n      height: 80px;\n      line-height: 48px;\n      margin: 0 32px;\n      padding: 16px 0 16px 56px;\n      box-sizing: border-box;\n      border-bottom: 1px solid rgba(0, 0, 0, 0.12);\n      position: relative; }\n      .sidebar__menu .menu_header__logo {\n        position: absolute;\n        top: 16px;\n        left: 0;\n        width: 48px;\n        height: 48px;\n        background: rgba(98, 0, 234, 0.12);\n        background-repeat: no-repeat;\n        background-size: cover;\n        border-radius: 2px;\n        overflow: hidden; }\n      .sidebar__menu .menu_header h4 {\n        margin: 0;\n        font-weight: 500;\n        letter-spacing: normal;\n        text-transform: uppercase;\n        font-size: 14px; }\n    .sidebar__menu .menu_list {\n      padding: 0 16px; }\n      .sidebar__menu .menu_list__link {\n        color: inherit; }\n        .sidebar__menu .menu_list__link .list_item {\n          display: flex;\n          align-items: center;\n          padding: 8px 16px;\n          margin: 4px 0;\n          min-width: 128px;\n          max-width: 224px;\n          height: 32px;\n          line-height: 32px;\n          border-radius: 2px;\n          font-weight: 500;\n          cursor: pointer;\n          user-select: none;\n          transition: color 0.2s; }\n          .sidebar__menu .menu_list__link .list_item:hover {\n            background: rgba(98, 0, 234, 0.12); }\n          .sidebar__menu .menu_list__link .list_item__icon {\n            color: rgba(0, 0, 0, 0.54); }\n        .sidebar__menu .menu_list__link.--selected .list_item {\n          color: #6200EA;\n          background: rgba(98, 0, 234, 0.12); }\n          .sidebar__menu .menu_list__link.--selected .list_item__icon {\n            color: #6200EA; }\n\n.sidebar_modal {\n  width: 500px; }\n  .sidebar_modal__header {\n    display: flex;\n    align-items: center;\n    padding: 16px 32px 8px 8px; }\n    .sidebar_modal__header .button_back {\n      margin-right: 8px; }\n    .sidebar_modal__header h3 {\n      margin: 0; }\n  .sidebar_modal__content {\n    padding: 8px 32px 16px 32px; }\n\n.starred_modal__content .content-inner {\n  margin-left: 32px; }\n\n.top-nav {\n  padding: 16px;\n  border-bottom: 1px solid #EEE;\n  margin-bottom: 16px; }\n  .top-nav.--tabs {\n    display: grid;\n    padding: 0; }\n    .top-nav.--tabs .top-nav__inner {\n      padding: 16px 16px 8px 16px; }\n  .top-nav__inner {\n    height: 48px;\n    line-height: 48px;\n    display: flex;\n    align-items: center;\n    justify-content: space-between; }\n    .top-nav__inner ul {\n      display: flex; }\n      .top-nav__inner ul li {\n        margin-left: 16px; }\n        .top-nav__inner ul li:first-child {\n          margin-left: 0; }\n", ""]);
 
 
 
@@ -52938,6 +52938,7 @@ var App = /** @class */ (function (_super) {
                 React.createElement("div", { className: classNames('site-wrap', { '--menu_open': this.state.menuOpen }) },
                     React.createElement(Sidebar_1.Sidebar, null),
                     React.createElement(Content_1.Content, null,
+                        React.createElement(Student_1.Student, null),
                         React.createElement(react_router_dom_1.Route, { exact: true, path: '/', component: Dashboard_1.Dashboard }),
                         React.createElement(react_router_dom_1.Route, { path: '/staff', component: Staff_1.Staff }),
                         React.createElement(react_router_dom_1.Route, { path: '/students', component: Student_1.Student }))))));
@@ -53026,7 +53027,8 @@ var Dashboard = /** @class */ (function (_super) {
     };
     Dashboard.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
-            React.createElement(TopNav_1.TopNav, { title: 'Dashboard' }),
+            React.createElement(TopNav_1.TopNav, null,
+                React.createElement("h3", null, "Dashboard")),
             React.createElement("p", null, "Welcome to my Dashboard!")));
     };
     return Dashboard;
@@ -53377,11 +53379,14 @@ var SearchWidget = /** @class */ (function (_super) {
                 _this.setState({ queryState: 'searching' }, function () {
                     axios_1.default.get("http://localhost:8000/api/search?query=" + query)
                         .then(function (res) {
-                        var data = res.data;
-                        _this.setState({
-                            searchResults: data,
-                            queryState: 'idle'
-                        });
+                        // Wait to show results until the query matches what was typed in.
+                        if (res.data.query === query) {
+                            var results = res.data.results;
+                            _this.setState({
+                                searchResults: results,
+                                queryState: 'idle'
+                            });
+                        }
                     });
                 });
             }
@@ -53557,18 +53562,14 @@ var NameWidget = /** @class */ (function (_super) {
         };
         _this.handleClose = function () {
             console.log('handleClose()');
-            _this.setState({ open: false, value: null }, function () {
-                console.log('handleClose() Widget is ', _this.state.open === true ? 'open' : 'closed');
-            });
+            _this.setState({ open: false, value: null });
         };
         _this.handleUpdate = function () {
-            console.log('handleUpdate()');
             _this.handleClose();
         };
         return _this;
     }
     NameWidget.prototype.render = function () {
-        console.log('Widget is ', this.state.open === true ? 'open' : 'closed');
         return (React.createElement("div", { className: 'name-widget' }, this.state.open === true ? (React.createElement(React.Fragment, null,
             React.createElement("input", { value: this.state.value || this.props.value, onChange: this.handleChange }),
             this.state.value && (React.createElement("ul", { className: 'name-widget__actions' },
@@ -53610,30 +53611,150 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
+var classNames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
 var NameWidget_1 = __webpack_require__(/*! ./NameWidget */ "./src/components/Profile/NameWidget.tsx");
 var TopNav_1 = __webpack_require__(/*! ../TopNav */ "./src/components/TopNav.tsx");
+var Schedule_1 = __webpack_require__(/*! ../Schedule */ "./src/components/Schedule.tsx");
 var Student = /** @class */ (function (_super) {
     __extends(Student, _super);
     function Student() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.state = {
+            student: _this.props.student || {
+                id: 1,
+                name: 'Curtis Upshall',
+                clusters: [],
+                starred: false
+            },
+            tab: 'schedule'
+        };
+        _this.handleStarredToggle = function () {
+            _this.setState(function (state) {
+                return {
+                    student: __assign({}, state.student, { starred: state.student.starred === false })
+                };
+            }, function () {
+                console.log(_this.state.student);
+            });
+        };
+        _this.handleTabChange = function (event, value) {
+            _this.setState({ tab: value });
+        };
+        return _this;
     }
     Student.prototype.render = function () {
+        var starred = this.state.student.starred;
+        var navTabs = {
+            value: this.state.tab,
+            onChange: this.handleTabChange,
+            tabs: [
+                { value: 'attendance', label: 'Attendance' },
+                { value: 'schedule', label: 'Schedule' },
+                { value: 'appointments', label: 'Appointments' }
+            ]
+        };
         return (React.createElement("div", { className: 'profile' },
-            React.createElement(TopNav_1.TopNav, null,
-                React.createElement("li", { className: 'profile_title' },
-                    React.createElement(core_1.Avatar, { className: 'profile_avatar' }, "CU"),
-                    React.createElement(NameWidget_1.NameWidget, { value: 'Curtis Upshall' }))),
-            React.createElement("div", { className: 'profile__about' },
-                React.createElement("h5", null, "About"),
+            React.createElement(TopNav_1.TopNav, { className: '--tabs', tabs: navTabs },
                 React.createElement("ul", null,
-                    React.createElement("li", null, "Clusters: 5")))));
+                    React.createElement("li", { className: 'profile_title' },
+                        React.createElement(core_1.Avatar, { className: 'profile_avatar' }, "CU"),
+                        React.createElement(NameWidget_1.NameWidget, { value: 'Curtis Upshall' }))),
+                React.createElement("ul", { className: 'right_col' },
+                    React.createElement("li", null,
+                        React.createElement(core_1.IconButton, { onClick: this.handleStarredToggle },
+                            React.createElement(core_1.Icon, { className: classNames({ '--starred': starred }) }, starred ? 'star' : 'star_border'))),
+                    React.createElement("li", null,
+                        React.createElement(core_1.IconButton, null,
+                            React.createElement(core_1.Icon, null, "more_hori"))))),
+            React.createElement(Schedule_1.Schedule, null)));
     };
     return Student;
 }(React.Component));
 exports.Student = Student;
+
+
+/***/ }),
+
+/***/ "./src/components/Schedule.tsx":
+/*!*************************************!*\
+  !*** ./src/components/Schedule.tsx ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "react");
+var Schedule = /** @class */ (function (_super) {
+    __extends(Schedule, _super);
+    function Schedule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Schedule.prototype.render = function () {
+        return (React.createElement("div", { className: 'schedule' },
+            React.createElement("div", { className: 'schedule_row' },
+                React.createElement("div", { className: 'label' },
+                    React.createElement("h5", { className: 'day' }, "Mon"),
+                    React.createElement("h2", { className: 'date' }, "25")),
+                React.createElement("div", { className: 'label --today' },
+                    React.createElement("h5", { className: 'day' }, "Tue"),
+                    React.createElement("h2", { className: 'date' }, "26")),
+                React.createElement("div", { className: 'label' },
+                    React.createElement("h5", { className: 'day' }, "Wed"),
+                    React.createElement("h2", { className: 'date' }, "27"))),
+            React.createElement("div", { className: 'schedule_row' },
+                React.createElement("div", { className: 'schedule_events' },
+                    React.createElement("div", { className: 'event' }, "Assembly"),
+                    React.createElement("div", { className: 'event' }, "Another Assembly :-o")),
+                React.createElement("div", { className: 'schedule_events' }),
+                React.createElement("div", { className: 'schedule_events' },
+                    React.createElement("div", { className: 'event' }, "Friday Breakfast"))),
+            React.createElement("div", { className: 'schedule_row' },
+                React.createElement("div", { className: 'schedule_blocks' },
+                    React.createElement("div", { className: 'block --missed' }, "Hello world"),
+                    React.createElement("div", { className: 'block --attended' }, "Hello world"),
+                    React.createElement("div", { className: 'block --void' }, "Hello world"),
+                    React.createElement("div", { className: 'block --attended' }, "Hello world"),
+                    React.createElement("div", { className: 'block --attended' }, "Hello world")),
+                React.createElement("div", { className: 'schedule_blocks' },
+                    React.createElement("div", { className: 'block --void' }, "Hello world"),
+                    React.createElement("div", { className: 'block --attended' }, "Hello world"),
+                    React.createElement("div", { className: 'block --attended' }, "Hello world")),
+                React.createElement("div", { className: 'schedule_blocks' },
+                    React.createElement("div", { className: 'block --missed' }, "Hello world"),
+                    React.createElement("div", { className: 'block --attended' }, "Hello world")))));
+    };
+    return Schedule;
+}(React.Component));
+exports.Schedule = Schedule;
 
 
 /***/ }),
@@ -53840,18 +53961,18 @@ exports.Staff = Staff;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
-var Icon_1 = __webpack_require__(/*! @material-ui/core/Icon */ "./node_modules/@material-ui/core/Icon/index.js");
-var IconButton_1 = __webpack_require__(/*! @material-ui/core/IconButton */ "./node_modules/@material-ui/core/IconButton/index.js");
+var classNames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
 /**
- * TopNav for the main app view. `props.children` Takes `<li>` elements only.
+ * TopNav for the main app view. `props.children` Takes *only* one or two `<ul>` elements.
  */
 exports.TopNav = function (props) {
     return (React.createElement(React.Fragment, null,
-        React.createElement("div", { className: 'top-nav' },
-            props.onMenuClick && (React.createElement(IconButton_1.default, { className: 'top-nav_menu', onClick: props.onMenuClick },
-                React.createElement(Icon_1.default, null, "menu"))),
-            props.title && (React.createElement("h3", { className: 'top-nav__title' }, props.title)),
-            props.children && (React.createElement("ul", null, props.children)))));
+        React.createElement("div", { className: classNames('top-nav', props.className) },
+            React.createElement("div", { className: 'top-nav__inner' }, props.children),
+            props.tabs && (React.createElement(core_1.Tabs, { className: 'top-nav__tabs', value: props.tabs.value, onChange: props.tabs.onChange, variant: 'fullWidth', indicatorColor: 'primary' }, props.tabs.tabs.map(function (tab) {
+                return React.createElement(core_1.Tab, { value: tab.value, label: tab.label });
+            }))))));
 };
 
 

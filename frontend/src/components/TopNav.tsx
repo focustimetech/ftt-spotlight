@@ -1,36 +1,38 @@
 import * as React from 'react'
+import * as classNames from 'classnames'
 
-import FormControl from '@material-ui/core/FormControl'
-import Icon from '@material-ui/core/Icon'
-import IconButton from '@material-ui/core/IconButton'
-import MenuItem from '@material-ui/core/MenuItem'
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import Select from '@material-ui/core/Select'
+import {
+	Tab,
+	Tabs
+} from '@material-ui/core'
 
-import { RouteOption } from '../types/app'
+import { ITab, ITabs } from '../types/app'
 
 interface IProps {
-	title?: string
-	onMenuClick?: (e: any) => void
-	routeOptions?: RouteOption[]
 	children?: any
+	className?: string
+	tabs?: ITabs
 }
 
 /**
- * TopNav for the main app view. `props.children` Takes `<li>` elements only.
+ * TopNav for the main app view. `props.children` Takes *only* one or two `<ul>` elements.
  */
 export const TopNav = (props: IProps) => {
 	return (
 		<>
-			<div className='top-nav'>
-				{props.onMenuClick && (
-					<IconButton className='top-nav_menu' onClick={props.onMenuClick}><Icon>menu</Icon></IconButton>
-				)}
-				{props.title && (
-					<h3 className='top-nav__title'>{props.title}</h3>
-				)}
-				{props.children && (
-					<ul>{props.children}</ul>
+			<div className={classNames('top-nav', props.className)}>
+				{ /* <IconButton className='top-nav_menu' onClick={props.onMenuClick}><Icon>menu</Icon></IconButton> */}
+				<div className='top-nav__inner'>{props.children}</div>
+				{props.tabs && (
+					<Tabs
+						className='top-nav__tabs'
+						value={props.tabs.value}
+						onChange={props.tabs.onChange}
+						variant='fullWidth'
+						indicatorColor='primary'
+					>{props.tabs.tabs.map((tab: ITab) => {
+						return <Tab value={tab.value} label={tab.label} />
+					})}</Tabs>
 				)}
 			</div>
 		</>

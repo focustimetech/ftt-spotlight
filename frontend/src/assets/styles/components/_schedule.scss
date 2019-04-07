@@ -1,11 +1,12 @@
 .schedule {
 	width: 100%;
 	padding: 16px 0 0 0;
-	display: table;
-	// table-layout: fixed;
+	display: flex;
+	flex-flow: row wrap;
 
 	.schedule_row {
-		display: table-row;
+		width: 100%;
+		display: flex;
 
 		.event,
 		.block {
@@ -25,10 +26,10 @@
 		}
 
 		.label {
+			width: 100%;
 			color: inherit;
 			padding: 8px 16px;
 			text-align: center;
-			display: table-cell;
 
 			.day {
 				text-transform: uppercase;
@@ -60,11 +61,12 @@
 		}
 
 		.schedule_events {
-			display: table-cell;
-			vertical-align: bottom;
+			width: 100%;
 			padding: 8px 0 0 0;
 			border-right: 1px solid #EEE;
 			border-bottom: 1px solid #EEE;
+			display: flex;
+			flex-flow: column-reverse;
 
 			&:last-child {
 				border-right: none;
@@ -72,7 +74,7 @@
 		}
 
 		.schedule_blocks {
-			display: table-cell;
+			width: 100%;
 			padding: 8px 0 16px;
 			border-right: 1px solid #EEE;
 

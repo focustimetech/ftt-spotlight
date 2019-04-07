@@ -34,18 +34,14 @@ export class NameWidget extends React.Component<IProps, IState> {
 
 	handleClose = () => {
 		console.log('handleClose()')
-		this.setState({ open: false, value: null }, () => {
-			console.log('handleClose() Widget is ', this.state.open === true ? 'open' : 'closed')
-		})
+		this.setState({ open: false, value: null })
 	}
 
 	handleUpdate = () => {
-		console.log('handleUpdate()')
 		this.handleClose()
 	}
 
 	render() {
-		console.log('Widget is ', this.state.open === true ? 'open' : 'closed')
 		return (
 			<div className='name-widget'>
 				{this.state.open === true ? (

@@ -53747,18 +53747,26 @@ var Schedule = /** @class */ (function (_super) {
             React.createElement("div", { className: 'schedule' },
                 React.createElement("div", { className: 'schedule_row' },
                     React.createElement("div", { className: 'label' },
-                        React.createElement("h5", { className: 'day' }, "Fri"),
+                        React.createElement("h5", { className: 'day' }, "Mon"),
                         React.createElement("h2", { className: 'date' }, "25")),
-                    React.createElement("div", { className: 'label --today' },
+                    React.createElement("div", { className: 'label' },
                         React.createElement("h5", { className: 'day' }, "Tue"),
                         React.createElement("h2", { className: 'date' }, "26")),
                     React.createElement("div", { className: 'label' },
                         React.createElement("h5", { className: 'day' }, "Wed"),
-                        React.createElement("h2", { className: 'date' }, "27"))),
+                        React.createElement("h2", { className: 'date' }, "27")),
+                    React.createElement("div", { className: 'label --today' },
+                        React.createElement("h5", { className: 'day' }, "Thu"),
+                        React.createElement("h2", { className: 'date' }, "28")),
+                    React.createElement("div", { className: 'label' },
+                        React.createElement("h5", { className: 'day' }, "Fri"),
+                        React.createElement("h2", { className: 'date' }, "29"))),
                 React.createElement("div", { className: 'schedule_row' },
                     React.createElement("div", { className: 'schedule_events' },
                         React.createElement("div", { className: 'event' }, "Assembly"),
                         React.createElement("div", { className: 'event' }, "Another Assembly :-o")),
+                    React.createElement("div", { className: 'schedule_events' }),
+                    React.createElement("div", { className: 'schedule_events' }),
                     React.createElement("div", { className: 'schedule_events' }),
                     React.createElement("div", { className: 'schedule_events' },
                         React.createElement("div", { className: 'event' }, "Friday Breakfast"))),
@@ -53775,7 +53783,15 @@ var Schedule = /** @class */ (function (_super) {
                         React.createElement("div", { className: 'block --attended' }, "Hello world")),
                     React.createElement("div", { className: 'schedule_blocks' },
                         React.createElement("div", { className: 'block --missed' }, "Hello world"),
-                        React.createElement("div", { className: 'block --attended' }, "Hello world"))))));
+                        React.createElement("div", { className: 'block --attended' }, "Hello world")),
+                    React.createElement("div", { className: 'schedule_blocks' },
+                        React.createElement("div", { className: 'block --attended' }, "Hello world"),
+                        React.createElement("div", { className: 'block --pending' }, "Hello world"),
+                        React.createElement("div", { className: 'block --pending' }, "Hello world")),
+                    React.createElement("div", { className: 'schedule_blocks' },
+                        React.createElement("div", { className: 'block --pending' }, "Hello world"),
+                        React.createElement("div", { className: 'block --appointed' }, "Hello world"),
+                        React.createElement("div", { className: 'block --pending' }, "Hello world"))))));
     };
     return Schedule;
 }(React.Component));
@@ -53918,7 +53934,7 @@ var Sidebar = /** @class */ (function (_super) {
                     React.createElement(MenuItem_1.MenuItem, { to: '/staff', icon: 'supervisor_account', label: 'Staff' }),
                     React.createElement(MenuItem_1.MenuItem, { to: '/students', icon: 'face', label: 'Students' }),
                     React.createElement(MenuItem_1.MenuItem, { to: '/appointments', icon: 'access_time', label: 'Appointments' }),
-                    React.createElement(MenuItem_1.MenuItem, { to: '/cohort', icon: 'group', label: 'Cluster' }),
+                    React.createElement(MenuItem_1.MenuItem, { to: '/clusters', icon: 'group', label: 'Cluster' }),
                     React.createElement(MenuItem_1.MenuItem, { to: '/class-schedule', icon: 'date_range', label: 'Class Schedule' }),
                     React.createElement(MenuItem_1.MenuItem, { to: '/event', icon: 'event', label: 'Events' }),
                     React.createElement(MenuItem_1.MenuItem, { to: '/reporting', icon: 'assignment', label: 'Reporting' }),
@@ -53956,6 +53972,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
+var TopNav_1 = __webpack_require__(/*! ./TopNav */ "./src/components/TopNav.tsx");
 var Staff = /** @class */ (function (_super) {
     __extends(Staff, _super);
     function Staff() {
@@ -53966,6 +53983,9 @@ var Staff = /** @class */ (function (_super) {
     };
     Staff.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
+            React.createElement(TopNav_1.TopNav, null,
+                React.createElement("ul", null,
+                    React.createElement("h3", null, "Staff"))),
             React.createElement("p", null, "Welcome to the staff page!")));
     };
     return Staff;

@@ -31,7 +31,7 @@ export class Schedule extends React.Component {
 				<div className='schedule'>
 					<div className='schedule_row'>
 						<div className='label'>
-							<h5 className='day'>Mon</h5>
+							<h5 className='day'>Fri</h5>
 							<h2 className='date'>25</h2>
 						</div>
 						<div className='label --today'>

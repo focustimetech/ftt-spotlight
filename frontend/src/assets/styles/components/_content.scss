@@ -2,5 +2,7 @@
 	box-shadow: $elevation1;
 	position: relative;
 	padding: 0 64px;
-	flex-grow: 1;
+	flex: 1;
+	height: 100vh;
+	overflow: auto;
 }

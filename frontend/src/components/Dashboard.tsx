@@ -16,6 +16,7 @@ const handleChange = (e: any): void => {
 export class Dashboard extends React.Component<IProps> {
 	componentDidMount() {
 		document.title = 'Dashboard - Spotlight'
+		console.log('props', this.props)
 	}
 
 	render() {

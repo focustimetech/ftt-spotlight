@@ -24,13 +24,6 @@ const login = (credentials: LoginCredentials) => {
 	// axios.defaults.headers.post['Content-Type'] ='application/json';
 	// axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
-
-	axios.get('http://localhost:8000/api/staff')
-		.then(res => {
-			const data = res.data
-			console.log(data)
-		})
-
 	axios.post('http://localhost:8000/api/login', {
 		username: credentials.username,
 		password: credentials.password

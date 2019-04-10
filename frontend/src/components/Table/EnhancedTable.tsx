@@ -18,12 +18,6 @@ import { EnhancedTableHead } from './EnhancedTableHead'
 import { EnhancedTableToolbar } from './EnhancedTableToolbar'
 import { ITableHeaderRow } from '../../types/table';
 
-const rows: ITableHeaderRow[] = [
-	{ id: 'name', label: 'Name', isNumeric: false},
-	{ id: 'age', label: 'Age', isNumeric: true},
-	{ id: 'color', label: 'Color', isNumeric: false}
-]
-
 const desc = (a: any, b: any, orderBy: any) => {
 	if (b[orderBy] < a[orderBy]) {
 		return -1
@@ -54,6 +48,12 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 	)
 }
 
+interface IProps {
+	searchable?: boolean
+	rows: ITableHeaderRow[]
+	data: any[]
+}
+
 interface IState {
 	tableQuery: string
 	order: any
@@ -64,19 +64,19 @@ interface IState {
 	rowsPerPage: number
 }
 
-export class EnhancedTable extends React.Component<{}, IState> {
+export class EnhancedTable extends React.Component<IProps, IState> {
 	state: IState = {
 		tableQuery: '',
 		order: 'asc',
-		orderBy: 'age',
+		orderBy: this.props.rows[0].id,
 		selected: [],
-		data: [
-			'James', 25, 'Red',
-			'Bob', 28, 'Green',
-			'Joey', 22, 'Blue'
-		],
+		data: this.props.data,
 		page: 0,
 		rowsPerPage: 5
+	}
+
+	filterTableData = (data: any) => {
+		return data
 	}
 
 	handleRequestSort = (event: any, property: any) => {
@@ -135,17 +135,20 @@ export class EnhancedTable extends React.Component<{}, IState> {
 	}
 
 	render() {
-		const { data, order, orderBy, selected, rowsPerPage, page } = this.state
+		const { order, orderBy, selected, rowsPerPage, page } = this.state
+		const data = this.props.searchable && this.state.tableQuery ? this.filterTableData(this.state.data) : this.state.data
 		const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
 
 		return (
 			<>
-				<TextField
-					placeholder='Search Staff'
-					value={this.state.tableQuery}
-					onChange={this.handleTableQueryChange}
-					variant='standard'
-				/>
+				{this.props.searchable && (
+					<TextField
+						placeholder='Search Staff'
+						value={this.state.tableQuery}
+						onChange={this.handleTableQueryChange}
+						variant='standard'
+					/>
+				)}
 				<EnhancedTableToolbar title='Staff' numSelected={selected.length} />
 				<div>
 					<Table>
@@ -156,7 +159,7 @@ export class EnhancedTable extends React.Component<{}, IState> {
 							onSelectAllClick={this.handleSelectAllClick}
 							onRequestSort={this.handleRequestSort}
 							rowCount={data.length}
-							rows={rows}
+							rows={this.props.rows}
 						/>
 						<TableBody>
 							{stableSort(data, getSorting(order, orderBy))

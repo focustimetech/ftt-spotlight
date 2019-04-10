@@ -53972,6 +53972,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
+var EnhancedTable_1 = __webpack_require__(/*! ./Table/EnhancedTable */ "./src/components/Table/EnhancedTable.tsx");
 var TopNav_1 = __webpack_require__(/*! ./TopNav */ "./src/components/TopNav.tsx");
 var Staff = /** @class */ (function (_super) {
     __extends(Staff, _super);
@@ -53986,11 +53987,216 @@ var Staff = /** @class */ (function (_super) {
             React.createElement(TopNav_1.TopNav, null,
                 React.createElement("ul", null,
                     React.createElement("h3", null, "Staff"))),
-            React.createElement("p", null, "Welcome to the staff page!")));
+            React.createElement("p", null, "Welcome to the staff page!"),
+            React.createElement(EnhancedTable_1.EnhancedTable, null)));
     };
     return Staff;
 }(React.Component));
 exports.Staff = Staff;
+
+
+/***/ }),
+
+/***/ "./src/components/Table/EnhancedTable.tsx":
+/*!************************************************!*\
+  !*** ./src/components/Table/EnhancedTable.tsx ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "react");
+var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
+var EnhancedTableHead_1 = __webpack_require__(/*! ./EnhancedTableHead */ "./src/components/Table/EnhancedTableHead.tsx");
+var EnhancedTableToolbar_1 = __webpack_require__(/*! ./EnhancedTableToolbar */ "./src/components/Table/EnhancedTableToolbar.tsx");
+var rows = [
+    { id: 'name', label: 'Name', isNumeric: false },
+    { id: 'age', label: 'Age', isNumeric: true },
+    { id: 'color', label: 'Color', isNumeric: false }
+];
+var desc = function (a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+};
+var stableSort = function (array, cmp) {
+    var stabilizedThis = array.map(function (item, index) { return [item, index]; });
+    stabilizedThis.sort(function (a, b) {
+        var order = cmp(a[0], b[0]);
+        if (order !== 0) {
+            return order;
+        }
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map(function (item) { return item[0]; });
+};
+var getSorting = function (order, orderBy) {
+    return order === 'desc' ? (function (a, b) { return desc(a, b, orderBy); }) : (function (a, b) { return -desc(a, b, orderBy); });
+};
+var EnhancedTable = /** @class */ (function (_super) {
+    __extends(EnhancedTable, _super);
+    function EnhancedTable() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.state = {
+            tableQuery: '',
+            order: 'asc',
+            orderBy: 'age',
+            selected: [],
+            data: [
+                'James', 25, 'Red',
+                'Bob', 28, 'Green',
+                'Joey', 22, 'Blue'
+            ],
+            page: 0,
+            rowsPerPage: 5
+        };
+        _this.handleRequestSort = function (event, property) {
+            var order = 'desc';
+            if (_this.state.orderBy === property && _this.state.order === 'desc') {
+                order = 'asc';
+            }
+            _this.setState({ order: order, orderBy: property });
+        };
+        _this.handleSelectAllClick = function (event) {
+            if (event.target.checked) {
+                _this.setState(function (state) { return ({ selected: state.data.map(function (n) { return n.id; }) }); });
+                return;
+            }
+            _this.setState({ selected: [] });
+        };
+        _this.handleClick = function (event, id) {
+            var selected = _this.state.selected;
+            var selectedIndex = selected.indexOf(id);
+            var newSelected = [];
+            if (selectedIndex === -1) {
+                newSelected = newSelected.concat(selected, id);
+            }
+            else if (selectedIndex === 0) {
+                newSelected = newSelected.concat(selected.slice(1));
+            }
+            else if (selectedIndex > 0) {
+                newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+            }
+            _this.setState({ selected: newSelected });
+        };
+        _this.handleChangePage = function (event, page) {
+            _this.setState({ page: page });
+        };
+        _this.handleChangeRowsPerPage = function (event) {
+            _this.setState({ rowsPerPage: event.target.value });
+        };
+        _this.isSelected = function (id) {
+            return _this.state.selected.indexOf(id) !== -1;
+        };
+        _this.handleTableQueryChange = function (event) {
+            _this.setState({ tableQuery: event.target.value });
+        };
+        return _this;
+    }
+    EnhancedTable.prototype.render = function () {
+        var _this = this;
+        var _a = this.state, data = _a.data, order = _a.order, orderBy = _a.orderBy, selected = _a.selected, rowsPerPage = _a.rowsPerPage, page = _a.page;
+        var emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+        return (React.createElement(React.Fragment, null,
+            React.createElement(core_1.TextField, { placeholder: 'Search Staff', value: this.state.tableQuery, onChange: this.handleTableQueryChange, variant: 'standard' }),
+            React.createElement(EnhancedTableToolbar_1.EnhancedTableToolbar, { title: 'Staff', numSelected: selected.length }),
+            React.createElement("div", null,
+                React.createElement(core_1.Table, null,
+                    React.createElement(EnhancedTableHead_1.EnhancedTableHead, { numSelected: selected.length, order: order, orderBy: orderBy, onSelectAllClick: this.handleSelectAllClick, onRequestSort: this.handleRequestSort, rowCount: data.length, rows: rows }),
+                    React.createElement(core_1.TableBody, null,
+                        stableSort(data, getSorting(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map(function (n) {
+                            var isSelected = _this.isSelected(n.id);
+                            return (React.createElement(core_1.TableRow, { hover: true, onClick: function (event) { return _this.handleClick(event, n.id); }, role: 'checkbox', "aria-checked": isSelected, tabIndex: -1, key: n.id, selected: isSelected },
+                                React.createElement(core_1.TableCell, { padding: 'checkbox' },
+                                    React.createElement(core_1.Checkbox, { checked: isSelected })),
+                                React.createElement(core_1.TableCell, { component: 'th', scope: 'row', padding: 'none' }, n.name),
+                                React.createElement(core_1.TableCell, { align: 'right' }, n.age),
+                                React.createElement(core_1.TableCell, { align: 'right' }, n.color)));
+                        }),
+                        emptyRows > 0 && (React.createElement(core_1.TableRow, { style: { height: 49 * emptyRows } },
+                            React.createElement(core_1.TableCell, { colSpan: 4 })))))),
+            React.createElement(core_1.TablePagination, { rowsPerPageOptions: [5, 10, 15], component: 'div', count: data.length, rowsPerPage: rowsPerPage, page: page, backIconButtonProps: {
+                    'aria-label': 'Previous Page'
+                }, nextIconButtonProps: {
+                    'aria-label': 'Next Page'
+                }, onChangePage: this.handleChangePage, onChangeRowsPerPage: this.handleChangeRowsPerPage })));
+    };
+    return EnhancedTable;
+}(React.Component));
+exports.EnhancedTable = EnhancedTable;
+
+
+/***/ }),
+
+/***/ "./src/components/Table/EnhancedTableHead.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/Table/EnhancedTableHead.tsx ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "react");
+var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
+exports.EnhancedTableHead = function (props) {
+    var onSelectAllClick = props.onSelectAllClick, order = props.order, orderBy = props.orderBy, numSelected = props.numSelected, rowCount = props.rowCount, rows = props.rows;
+    var createSortHandler = function (event) { return function (property) {
+        props.onRequestSort(event, property);
+    }; };
+    return (React.createElement(core_1.TableHead, null,
+        React.createElement(core_1.TableRow, null,
+            React.createElement(core_1.TableCell, { padding: 'checkbox' },
+                React.createElement(core_1.Checkbox, { indeterminate: numSelected > 0 && numSelected < rowCount, checked: numSelected === rowCount, onChange: onSelectAllClick })),
+            rows.map(function (row) { return (React.createElement(core_1.TableCell, { key: row.id, align: row.isNumeric ? 'right' : 'left', padding: row.disablePadding ? 'none' : 'default', sortDirection: orderBy === row.id ? order : false },
+                React.createElement(core_1.Tooltip, { title: 'Sort by ' + row.sortLabel || false, placement: row.isNumeric ? 'bottom-end' : 'bottom-start', enterDelay: 300 },
+                    React.createElement(core_1.TableSortLabel, { active: orderBy === row.id, direction: order, onClick: createSortHandler }, row.label)))); }))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Table/EnhancedTableToolbar.tsx":
+/*!*******************************************************!*\
+  !*** ./src/components/Table/EnhancedTableToolbar.tsx ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "react");
+var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
+exports.EnhancedTableToolbar = function (props) {
+    var numSelected = props.numSelected, title = props.title;
+    return (React.createElement(core_1.Toolbar, null,
+        React.createElement("div", { className: 'enhanced-table__toolbar' }, numSelected > 0 ? (React.createElement("h6", null,
+            numSelected,
+            " selected")) : (React.createElement("h6", null, title)))));
+};
 
 
 /***/ }),

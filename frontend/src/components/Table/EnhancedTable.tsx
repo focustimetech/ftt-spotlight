@@ -3,6 +3,7 @@ import * as classNames from 'classnames'
 
 import {
 	Checkbox,
+	Paper,
 	Table,
 	TableBody,
 	TableCell,
@@ -29,7 +30,7 @@ const desc = (a: any, b: any, orderBy: any) => {
 }
 
 const stableSort = (array: any[], cmp: any) => {
-	const stabilizedThis = array.map((item, index) => [item, index])
+	const stabilizedThis: any[] = array.map((item, index) => [item, index])
 	stabilizedThis.sort((a: any, b: any) => {
 		const order = cmp(a[0], b[0])
 		if (order !== 0) {
@@ -56,9 +57,9 @@ interface IProps {
 
 interface IState {
 	tableQuery: string
-	order: any
-	orderBy: any
-	selected: any[]
+	order: 'asc' | 'desc'
+	orderBy: string // e.g 'calories'
+	selected: number[] // indexes
 	data: any[]
 	page: number
 	rowsPerPage: number
@@ -79,8 +80,8 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		return data
 	}
 
-	handleRequestSort = (event: any, property: any) => {
-		let order = 'desc'
+	handleRequestSort = (property: any) => {
+		let order: 'asc' | 'desc' = 'desc'
 
 		if (this.state.orderBy === property && this.state.order === 'desc') {
 			order = 'asc'
@@ -140,78 +141,83 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
 
 		return (
-			<>
+			<div className={classNames('enhanced-table', {'--searchable': this.props.searchable})}>
 				{this.props.searchable && (
 					<TextField
+						className='enhanced-table__search'
+						fullWidth
+						onChange={this.handleTableQueryChange}
 						placeholder='Search Staff'
 						value={this.state.tableQuery}
-						onChange={this.handleTableQueryChange}
 						variant='standard'
+						
 					/>
 				)}
-				<EnhancedTableToolbar title='Staff' numSelected={selected.length} />
-				<div>
-					<Table>
-						<EnhancedTableHead
-							numSelected={selected.length}
-							order={order}
-							orderBy={orderBy}
-							onSelectAllClick={this.handleSelectAllClick}
-							onRequestSort={this.handleRequestSort}
-							rowCount={data.length}
-							rows={this.props.rows}
-						/>
-						<TableBody>
-							{stableSort(data, getSorting(order, orderBy))
-								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-								.map(n => {
-									const isSelected = this.isSelected(n.id)
-									return (
-										<TableRow
-											hover
-											onClick={(event: any) => this.handleClick(event, n.id)}
-											role='checkbox'
-											aria-checked={isSelected}
-											tabIndex={-1}
-											key={n.id}
-											selected={isSelected}
-										>
-											<TableCell padding='checkbox'>
-												<Checkbox checked={isSelected} />
-											</TableCell>
-											<TableCell component='th' scope='row' padding='none'>
-												{n.name}
-											</TableCell>
-											<TableCell align='right'>{n.age}</TableCell>
-											<TableCell align='right'>{n.color}</TableCell>
-										</TableRow>
-									)
-								})
-							}
-							{emptyRows > 0 && (
-								<TableRow style={{ height: 49 * emptyRows }}>
-									<TableCell colSpan={4} />
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-				</div>
-				<TablePagination
-					rowsPerPageOptions={[5, 10, 15]}
-					component='div'
-					count={data.length}
-					rowsPerPage={rowsPerPage}
-					page={page}
-					backIconButtonProps={{
-						'aria-label': 'Previous Page'
-					}}
-					nextIconButtonProps={{
-						'aria-label': 'Next Page'
-					}}
-					onChangePage={this.handleChangePage}
-					onChangeRowsPerPage={this.handleChangeRowsPerPage}
-				/>
-			</>
+				<Paper>
+					<EnhancedTableToolbar title='Staff' numSelected={selected.length} />
+					<div>
+						<Table>
+							<EnhancedTableHead
+								numSelected={selected.length}
+								order={order}
+								orderBy={orderBy}
+								onSelectAllClick={this.handleSelectAllClick}
+								onRequestSort={this.handleRequestSort}
+								rowCount={data.length}
+								rows={this.props.rows}
+							/>
+							<TableBody>
+								{stableSort(data, getSorting(order, orderBy))
+									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+									.map(n => {
+										const isSelected = this.isSelected(n.id)
+										return (
+											<TableRow
+												hover
+												onClick={(event: any) => this.handleClick(event, n.id)}
+												role='checkbox'
+												aria-checked={isSelected}
+												tabIndex={-1}
+												key={n.id}
+												selected={isSelected}
+											>
+												<TableCell padding='checkbox'>
+													<Checkbox checked={isSelected} />
+												</TableCell>
+												<TableCell component='th' scope='row' padding='none'>
+													{n.name}
+												</TableCell>
+												<TableCell align='right'>{n.age}</TableCell>
+												<TableCell align='right'>{n.color}</TableCell>
+											</TableRow>
+										)
+									})
+								}
+								{emptyRows > 0 && (
+									<TableRow style={{ height: 49 * emptyRows }}>
+										<TableCell colSpan={4} />
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					</div>
+					<TablePagination
+						rowsPerPageOptions={[5, 10, 15]}
+						component='div'
+						count={data.length}
+						rowsPerPage={rowsPerPage}
+						page={page}
+						backIconButtonProps={{
+							'aria-label': 'Previous Page'
+						}}
+						nextIconButtonProps={{
+							'aria-label': 'Next Page'
+						}}
+						onChangePage={this.handleChangePage}
+						onChangeRowsPerPage={this.handleChangeRowsPerPage}
+					/>
+				</Paper>
+			</div>
 		)
 	}
 }

@@ -12,13 +12,15 @@ export class Staff extends React.Component {
 
 	render() {
 		const data = [
-			'James', 25, 'Red',
-			'Bob', 28, 'Green',
-			'Joey', 22, 'Blue'
+			{id: 0, name: 'James', age: 25, color: 'Red'},
+			{id: 1, name: 'Ryan', age: 28, color: 'Yellow'},
+			{id: 2, name: 'Bob', age: 21, color: 'Green'},
+			{id: 3, name: 'Lisa', age: 22, color: 'Blue'},
+			{id: 4, name: 'Saul', age: 30, color: 'Brown'},
 		]
 
 		const rows: ITableHeaderRow[] = [
-			{ id: 'name', label: 'Name', isNumeric: false},
+			{ id: 'name', label: 'Name', isNumeric: false, disablePadding: true},
 			{ id: 'age', label: 'Age', isNumeric: true},
 			{ id: 'color', label: 'Color', isNumeric: false}
 		]

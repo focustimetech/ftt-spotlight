@@ -13,7 +13,7 @@ import { ITableHeaderRow } from '../../types/table'
 
 interface IProps {
 	numSelected: number
-	onRequestSort: (event: any, property: any) => void
+	onRequestSort: (property: string) => void
 	onSelectAllClick: (event: any) => void
 	order: 'asc' |'desc'
 	orderBy: string
@@ -24,8 +24,9 @@ interface IProps {
 export const EnhancedTableHead = (props: IProps) => {
 	const { onSelectAllClick, order, orderBy, numSelected, rowCount, rows } = props
 
-	const createSortHandler = (event: any) => (property: any) => {
-		props.onRequestSort(event, property)
+	const createSortHandler = (property: string) => {
+		console.log('createSortHandler()')
+		props.onRequestSort(property)
 	}
 	return (
 		<TableHead>
@@ -45,14 +46,14 @@ export const EnhancedTableHead = (props: IProps) => {
 						sortDirection={orderBy === row.id ? order : false}
 					>
 						<Tooltip
-							title={'Sort by ' + row.sortLabel || row.label}
+							title={'Sort by ' + row.label}
 							placement={row.isNumeric ? 'bottom-end' : 'bottom-start'}
 							enterDelay={300}
 						>
 							<TableSortLabel
 								active={orderBy === row.id}
 								direction={order}
-								onClick={createSortHandler}
+								onClick={() => createSortHandler(row.id)}
 							>
 								{row.label}
 							</TableSortLabel>

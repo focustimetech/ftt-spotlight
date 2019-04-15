@@ -16,6 +16,41 @@ interface IState {
 	authState: AuthState
 }
 
+const fakeAuth = {
+	isAuthenticated: false,
+	authenticate(cb?: () => void) {
+		console.log(cb)
+		this.isAuthenticated = true
+		setTimeout(cb, 100) // fake async
+	},
+	signout(cb?: () => void) {
+		console.log(cb)
+		this.isAuthenticated = false
+		setTimeout(cb, 100)
+	}
+}
+
+interface ProtectedRouteProps {
+	component: React.Component
+}
+
+export const ProtectedRoute = ({component: Component}: ProtectedRouteProps, {...rest}) => {
+	return (
+		<Route {...rest} render={(props) => (
+			fakeAuth.isAuthenticated ? (
+				<Component {...props} />
+			) : (
+				<Redirect
+					to={{
+						pathname: '/login',
+						state: { from: props.location }
+					}}
+				/>
+			)
+		)} />
+	)
+}
+
 export default class AppWithAuth extends React.Component<{}, IState> {
 	state: IState = {
 		authState: 'sign-in'
@@ -42,11 +77,11 @@ export default class AppWithAuth extends React.Component<{}, IState> {
 			<Router>
 				<Route
 					path='/login'
-					render={ (props) => <Login {...props} onSignIn={this.handleSignIn} /> }
+					render={ (props) => <Login {...props} onSignIn={() => fakeAuth.authenticate()} /> }
 				/>
 				<Route path='/' render={(props) => {
-					return this.isAuthenticated() ? (
-						<App onSignOut={this.handleSignOut}/>
+					return fakeAuth ? (
+						<App onSignOut={() => fakeAuth.signout()}/>
 					) : (
 						<Redirect
 							to={{

@@ -14,26 +14,6 @@ interface LoginCredentials {
 	password: string
 }
 
-interface IState {
-	user: string
-	password: string
-}
-
-const login = (credentials: LoginCredentials) => {
-	console.log('Logging in...')
-	// axios.defaults.headers.post['Content-Type'] ='application/json';
-	// axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-
-	axios.post('http://localhost:8000/api/login', {
-		username: credentials.username,
-		password: credentials.password
-	})
-		.then(res => {
-			console.log(res)
-		})
-
-}
-
 const selectBackground = () => {
 	const imageList: string[] = [
 		'ali-yahya-782497-unsplash.jpg',
@@ -48,10 +28,36 @@ const selectBackground = () => {
 	return `url('src/assets/images/splash/${imageList[arrayIndex]}')`
 }
 
-export class Login extends React.Component<{}, IState> {
+interface IProps {
+	onSignIn?: () => void
+}
+
+interface IState {
+	user: string
+	password: string
+}
+
+export class Login extends React.Component<IProps, IState> {
 	state = {
 		user: '',
 		password: ''
+	}
+
+	login = (credentials: LoginCredentials) => {
+		this.props.onSignIn()
+		return
+		console.log('Logging in...')
+		// axios.defaults.headers.post['Content-Type'] ='application/json';
+		// axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+	
+		axios.post('http://localhost:8000/api/login', {
+			username: credentials.username,
+			password: credentials.password
+		})
+			.then(res => {
+				console.log(res)
+			})
+	
 	}
 
 	handleChange = (event: any) => {
@@ -60,7 +66,7 @@ export class Login extends React.Component<{}, IState> {
 	}
 	
 	handleLogin = () => {
-		login({
+		this.login({
 			'username': this.state.user,
 			'password': this.state.password
 		})
@@ -68,46 +74,48 @@ export class Login extends React.Component<{}, IState> {
 
 	render() {
 		return (
-			<div className='login'>
-				<div className='login__about' /*style={{backgroundImage: selectBackground()}}*/ >
-					<a href='https://focustime.ca' className='logo_container'>
-						<h1>Spotlight</h1>
-					</a>
-				</div>
-				<div className='login__credentials'>
-					<div className='login_container'>
-						<h2>Smart attendance for the internet age.</h2>
-						<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
-						<form className='login_form'>
-							<h2>Sign in</h2>
-							<TextField
-								name='user'
-								type='text'
-								label='Email or Student Number'
-								value={this.state.user}
-								onChange={this.handleChange}
-								margin='normal'
-								variant='filled'
-								autoFocus={true}
-								fullWidth={true}
-							/>
-							<TextField
-								name='password'
-								type='password'
-								label='Password'
-								value={this.state.password}
-								onChange={this.handleChange}
-								margin='normal'
-								variant='filled'
-								fullWidth={true}
-							/>
-							<div className='button_container'>
-								<Button onClick={() => this.handleLogin()} color='primary' variant='contained'>Sign In</Button>
-							</div>
-						</form>
-						<ul className='links_list'>
-							<a href='https://focustime.ca'><li>Help</li></a>
-						</ul>
+			<div className='login-wrap'>
+				<div className='login'>
+					<div className='login__about' /*style={{backgroundImage: selectBackground()}}*/ >
+						<a href='https://focustime.ca' className='logo_container'>
+							<h1>Spotlight</h1>
+						</a>
+					</div>
+					<div className='login__credentials'>
+						<div className='login_container'>
+							<h2>Smart attendance for the internet age.</h2>
+							<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
+							<form className='login_form'>
+								<h2>Sign in</h2>
+								<TextField
+									name='user'
+									type='text'
+									label='Email or Student Number'
+									value={this.state.user}
+									onChange={this.handleChange}
+									margin='normal'
+									variant='filled'
+									autoFocus={true}
+									fullWidth={true}
+								/>
+								<TextField
+									name='password'
+									type='password'
+									label='Password'
+									value={this.state.password}
+									onChange={this.handleChange}
+									margin='normal'
+									variant='filled'
+									fullWidth={true}
+								/>
+								<div className='button_container'>
+									<Button onClick={() => this.handleLogin()} color='primary' variant='contained'>Sign In</Button>
+								</div>
+							</form>
+							<ul className='links_list'>
+								<a href='https://focustime.ca'><li>Help</li></a>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>

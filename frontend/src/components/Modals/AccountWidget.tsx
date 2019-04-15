@@ -10,7 +10,11 @@ interface IState {
     open: boolean
 }
 
-export class AccountWidget extends React.Component<{}, IState> {
+interface IProps {
+    onSignOut: () => void
+}
+
+export class AccountWidget extends React.Component<IProps, IState> {
     state = {
         open: false
     }
@@ -29,7 +33,7 @@ export class AccountWidget extends React.Component<{}, IState> {
         return (
             <>
                 <NavItem className='nav_account' title='Account' onClick={this.handleClickOpen}>
-                    <Avatar className='nav_avatar' color='#FF0000'>{this.initials}</Avatar>
+                    <Avatar onClick={() => this.props.onSignOut()} className='nav_avatar' color='#FF0000'>{this.initials}</Avatar>
                     <Menu
                         open={this.state.open}
                         onClose={this.handleClose}

@@ -13,24 +13,17 @@ use Illuminate\Http\Request;
 |
 */
 
-/*
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-*/
+// @TODO add names for routes
+Route::post('login', 'AuthController@login');
 
-// Middleware
+// Authenticated Routes
 Route::middleware('auth:api')->group(function() {
-    //Route::get('staff', 'StaffController@index');
+    // Auth
     Route::post('logout', 'AuthController@logout');
 });
 
-// New Auth
-Route::post('login', 'AuthController@login'); //->middleware('cors');
-
-
 // Staff
-Route::get('staff', 'StaffController@index'); //->middleware('cors');
+Route::get('staff', 'StaffController@index');
 Route::get('staff/{id}', 'StaffController@show');
 Route::post('staff', 'StaffController@store');
 Route::put('staff', 'StaffController@store');

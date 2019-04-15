@@ -1,29 +1,34 @@
 import '../../assets/styles/main.scss'
 
 import * as React from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import {
+	BrowserRouter as Router, 
+	Redirect,
+	Route,
+	withRouter
+} from 'react-router-dom'
 
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
 import { Student } from '../Profile/Student'
 import { Sidebar } from '../Sidebar/Sidebar'
 import { Staff } from '../Staff'
-import { TopNav } from '../TopNav'
 
 import * as classNames from 'classnames'
 
 // FIXME Remove login import
-import { Login } from '../Login'
 import { Schedule } from '../Schedule'
 
 interface IState {
 	menuOpen: boolean
 }
 
-interface IProps {}
+interface IProps {
+	onSignOut: () => void
+}
 
 export default class App extends React.Component<IProps, IState> {
-	state = {
+	state: IState = {
 		menuOpen: true
 	}
 
@@ -35,18 +40,17 @@ export default class App extends React.Component<IProps, IState> {
 		return ( 
 			<>
 				<Router>
-					{/*<div className='login-wrap'>
-						<Login />
-					</div>*/}
+					{/*
+					<Route path='/login' render={(props) => <Login {...props} onSignIn={this.handleSignIn} />} />
+					*/}
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
-						<Sidebar />
+						<Sidebar onSignOut={this.props.onSignOut} />
 						<Content>
 							<Route exact path='/' component={Dashboard} />
 							<Route path='/staff' component={Staff} />
 							<Route path='/students' component={Student} />
 						</Content>
 					</div>
-
 				</Router>
 			</>
 		)

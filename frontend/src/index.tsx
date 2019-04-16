@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import App from './components/App/App';
+import AppWithAuth from './components/App/AppWithAuth';
 
 ReactDOM.render (
-	<App />,
+	<AppWithAuth />,
 	document.getElementById('app-root')
 )

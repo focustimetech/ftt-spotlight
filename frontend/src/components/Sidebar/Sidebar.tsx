@@ -10,11 +10,14 @@ import { CheckInWidget } from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import { StarredWidget } from '../Modals/StarredWidget'
 
+interface IProps {
+	onSignOut: () => void
+}
 /**
  * @TODO Need to handle the case where the screen is very narrow,
  * in which a modal nav manu should be used.
  */
-export class Sidebar extends React.Component {
+export class Sidebar extends React.Component<IProps> {
 	render() {
 		return (
 			<div className='sidebar'>
@@ -28,7 +31,7 @@ export class Sidebar extends React.Component {
 					<div className='nav_bottom'>
 						<NotificationsWidget />
 						<NavItem title='Help' icon='help' />
-						<AccountWidget />
+						<AccountWidget onSignOut={this.props.onSignOut} />
 						{/*<NavItem title='Account' icon='perm_identity' />*/}
 						
 					</div>

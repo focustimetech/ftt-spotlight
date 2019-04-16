@@ -1,6 +1,8 @@
 import * as React from 'react'
 import axios from 'axios'
 
+import { Redirect, RouteComponentProps } from 'react-router-dom'
+
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 
@@ -28,23 +30,29 @@ const selectBackground = () => {
 	return `url('src/assets/images/splash/${imageList[arrayIndex]}')`
 }
 
-interface IProps {
-	onSignIn?: () => void
+interface IProps extends RouteComponentProps {
+	onSignIn: (callback?: () => void) => void
 }
 
 interface IState {
 	user: string
 	password: string
+	redirectToReferrer: boolean
 }
 
 export class Login extends React.Component<IProps, IState> {
-	state = {
+	state: IState = {
 		user: '',
-		password: ''
+		password: '',
+		redirectToReferrer: false
 	}
 
 	login = (credentials: LoginCredentials) => {
-		this.props.onSignIn()
+		this.props.onSignIn(() => {
+			this.setState({
+				redirectToReferrer: true
+			})
+		})
 		return
 		console.log('Logging in...')
 		// axios.defaults.headers.post['Content-Type'] ='application/json';
@@ -67,12 +75,19 @@ export class Login extends React.Component<IProps, IState> {
 	
 	handleLogin = () => {
 		this.login({
-			'username': this.state.user,
-			'password': this.state.password
+		'username': this.state.user,
+		'password': this.state.password
 		})
 	}
 
 	render() {
+		const { from } = this.props.location.state || { from: { pathname: '/' } }
+	
+		if (this.state.redirectToReferrer) {
+			console.log(this.props.location)
+			console.log('login redirecting to: ', from)
+			return <Redirect to={from} />
+		}
 		return (
 			<div className='login-wrap'>
 				<div className='login'>

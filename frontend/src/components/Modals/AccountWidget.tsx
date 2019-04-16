@@ -11,7 +11,7 @@ interface IState {
 }
 
 interface IProps {
-    onSignOut: () => void
+    onSignOut: (callback?: () => void) => void
 }
 
 export class AccountWidget extends React.Component<IProps, IState> {

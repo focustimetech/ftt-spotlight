@@ -10,6 +10,7 @@ import {
 
 // import { ProtectedRoute as Route} from './AppWithAuth'
 
+import { ClassSchedule } from '../ClassSchedule'
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
 import { Student } from '../Profile/Student'
@@ -55,6 +56,7 @@ export default class App extends React.Component<IProps, IState> {
 							<Route exact path='/dashboard' component={Dashboard} />
 							<Route path='/staff' component={Staff} />
 							<Route path='/students' component={Student} />
+							<Route path='/class-schedule' component={ClassSchedule} />
 						</Content>
 					</div>
 				</Router>

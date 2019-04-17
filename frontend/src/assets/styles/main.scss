@@ -1,9 +1,12 @@
+/* Main */
 @import "common/global";
 @import "common/variables";
 
+/* Layout */
 @import "layouts/app";
 @import "layouts/login";
 
+/* Components */
 @import "components/check-in_modal";
 @import "components/content";
 @import "components/empty_state";

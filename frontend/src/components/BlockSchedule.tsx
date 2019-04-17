@@ -43,40 +43,25 @@ export class BlockSchedule extends React.Component<IProps, IState> {
 				const blocks: Block[] = res.data.reduce((acc: Block[], block: Block) => {
 					acc[block.day_of_week] = block
 					return acc
-				})
+				}, [])
 				this.setState({ blocks })
 			})
 	}
 
 	render() {
-		const days: string[] = Object.keys(this.state.blocks).map((value: string) => {
-			return WEEK_DAY_NAMES[parseInt(value) - 1]
+		const days: any[] = Object.keys(this.state.blocks).map((value: string) => {
+			return (
+				<div className='label'>
+					<h2 className='date'>{WEEK_DAY_NAMES[parseInt(value) - 1]}</h2>
+				</div>
+			)
 		})
 
 		return (
 			<div className='schedule_container --blocks'>
 				<div className='schedule'>
 					<div className='schedule_row'>
-						<div className='label'>
-							<h5 className='day'>Mon</h5>
-							<h2 className='date'>25</h2>
-						</div>
-						<div className='label'>
-							<h5 className='day'>Tue</h5>
-							<h2 className='date'>26</h2>
-						</div>
-						<div className='label'>
-							<h5 className='day'>Wed</h5>
-							<h2 className='date'>27</h2>
-						</div>
-						<div className='label --today'>
-							<h5 className='day'>Thu</h5>
-							<h2 className='date'>28</h2>
-						</div>
-						<div className='label'>
-							<h5 className='day'>Fri</h5>
-							<h2 className='date'>29</h2>
-						</div>
+						{days}
 					</div>
 					<div className='schedule_row'>
 						<div className='schedule_events'>

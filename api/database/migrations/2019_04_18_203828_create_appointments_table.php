@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePlannedTable extends Migration
+class CreateAppointmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreatePlannedTable extends Migration
      */
     public function up()
     {
-        Schema::create('planned', function (Blueprint $table) {
+        Schema::create('appointments', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('student_id');
             $table->unsignedInteger('staff_id');
             $table->unsignedInteger('block_number');
             $table->date('date');
+            $table->string('memo', 150);
             $table->timestamps();
-            // Foreign keys
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('staff_id')->references('id')->on('staff');
         });
     }
 
@@ -33,6 +31,6 @@ class CreatePlannedTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('planned');
+        Schema::dropIfExists('appointments');
     }
 }

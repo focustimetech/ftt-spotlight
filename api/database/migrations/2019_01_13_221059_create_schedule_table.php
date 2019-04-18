@@ -17,8 +17,8 @@ class CreateScheduleTable extends Migration
     public function up()
     {
         Schema::create('schedule', function (Blueprint $table) {
-            $table->date('date') // Date of assignment, in case of substitutes
-                ->default(NULL); // NULL implies default block relationship
+            //$table->date('date') // Date of assignment, in case of substitutes
+            //    ->default(NULL); // NULL implies default block relationship
             $table->unsignedInteger('block_number');
             $table->unsignedInteger('course_id');
             $table->unsignedInteger('staff_id');

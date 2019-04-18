@@ -45,7 +45,8 @@ class LedgerController extends Controller
     {
         //$student_numbers = ;
 
-        $now = strtotime('2019-02-11 08:45:00'); // time();
+        //$now = strtotime('2019-02-11 08:45:00'); // time();
+        $now = time();
 
         $staff_id = $request->input('staff_id');
         $time = date("H:i:s", $now);

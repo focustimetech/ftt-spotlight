@@ -47,4 +47,8 @@ Route::delete('block/{id}', 'BlockController@destroy');
 // Route::get('ledger', 'LedgerController@index');
 Route::post('check-in', 'LedgerController@store');
 
+// Search
 Route::get('search', 'SearchController@search');
+
+// Student Schedule
+Route::get('student-schedule', 'StudentScheduleController@index');

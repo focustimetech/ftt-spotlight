@@ -52914,6 +52914,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(/*! ../../assets/styles/main.scss */ "./src/assets/styles/main.scss");
 var React = __webpack_require__(/*! react */ "react");
 var react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+// import { ProtectedRoute as Route} from './AppWithAuth'
 var Content_1 = __webpack_require__(/*! ../Content */ "./src/components/Content.tsx");
 var Dashboard_1 = __webpack_require__(/*! ../Dashboard */ "./src/components/Dashboard.tsx");
 var Student_1 = __webpack_require__(/*! ../Profile/Student */ "./src/components/Profile/Student.tsx");
@@ -52936,15 +52937,123 @@ var App = /** @class */ (function (_super) {
         return (React.createElement(React.Fragment, null,
             React.createElement(react_router_dom_1.BrowserRouter, null,
                 React.createElement("div", { className: classNames('site-wrap', { '--menu_open': this.state.menuOpen }) },
-                    React.createElement(Sidebar_1.Sidebar, null),
+                    React.createElement(Sidebar_1.Sidebar, { onSignOut: this.props.onSignOut }),
                     React.createElement(Content_1.Content, null,
-                        React.createElement(react_router_dom_1.Route, { exact: true, path: '/', component: Dashboard_1.Dashboard }),
+                        React.createElement(react_router_dom_1.Route, { path: '/', exact: true, render: function (props) { return (React.createElement(react_router_dom_1.Redirect, { to: '/dashboard' })); } }),
+                        React.createElement(react_router_dom_1.Route, { exact: true, path: '/dashboard', component: Dashboard_1.Dashboard }),
                         React.createElement(react_router_dom_1.Route, { path: '/staff', component: Staff_1.Staff }),
                         React.createElement(react_router_dom_1.Route, { path: '/students', component: Student_1.Student }))))));
     };
     return App;
 }(React.Component));
 exports.default = App;
+
+
+/***/ }),
+
+/***/ "./src/components/App/AppWithAuth.tsx":
+/*!********************************************!*\
+  !*** ./src/components/App/AppWithAuth.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "react");
+var App_1 = __webpack_require__(/*! ./App */ "./src/components/App/App.tsx");
+var Login_1 = __webpack_require__(/*! ../Login */ "./src/components/Login.tsx");
+var react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+var fakeAuth = {
+    isAuthenticated: false,
+    authenticate: function (cb) {
+        console.log('fakeAuth.authenticate()');
+        this.isAuthenticated = true;
+        setTimeout(cb, 100); // fake async
+    },
+    signout: function (cb) {
+        console.log('fakeAuth.signout()');
+        this.isAuthenticated = false;
+        setTimeout(cb, 100);
+    }
+};
+/*
+export const ProtectedRoute = ({component: Component}: ProtectedRouteProps, {...rest}) => {
+    return (
+        <Route {...rest} render={(props) => (
+            fakeAuth.isAuthenticated ? (
+                <Component {...props} />
+            ) : (
+                <Redirect
+                    to={{
+                        pathname: '/login',
+                        state: { from: props.location }
+                    }}
+                />
+            )
+        )} />
+    )
+}
+*/
+var AppWithAuth = /** @class */ (function (_super) {
+    __extends(AppWithAuth, _super);
+    function AppWithAuth() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.state = {
+            authState: 'sign-in'
+        };
+        _this.handleSignIn = function (callback) {
+            console.log('handleSignIn()');
+            _this.setState({ authState: 'signed-in' }, callback);
+        };
+        _this.handleSignOut = function (callback) {
+            _this.setState({ authState: 'sign-in' }, callback);
+        };
+        _this.isAuthenticated = function () {
+            return _this.state.authState === 'signed-in';
+        };
+        return _this;
+    }
+    AppWithAuth.prototype.render = function () {
+        var _this = this;
+        return (React.createElement(react_router_dom_1.BrowserRouter, null,
+            React.createElement(react_router_dom_1.Switch, null,
+                React.createElement(react_router_dom_1.Route, { path: '/login', render: function (props) { return React.createElement(Login_1.Login, __assign({}, props, { onSignIn: _this.handleSignIn })); } }),
+                React.createElement(react_router_dom_1.Route, { path: '/', render: function (props) {
+                        return _this.isAuthenticated() ? (React.createElement(App_1.default, { onSignOut: function () { return _this.handleSignOut(); } })) : (React.createElement(react_router_dom_1.Redirect, { to: {
+                                pathname: '/login',
+                                state: { from: props.location }
+                            } }));
+                    } }))));
+    };
+    return AppWithAuth;
+}(React.Component));
+exports.default = AppWithAuth;
 
 
 /***/ }),
@@ -53059,6 +53168,121 @@ exports.EmptyStateIcon = function (props) {
 
 /***/ }),
 
+/***/ "./src/components/Login.tsx":
+/*!**********************************!*\
+  !*** ./src/components/Login.tsx ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "react");
+var axios_1 = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+var react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+var Button_1 = __webpack_require__(/*! @material-ui/core/Button */ "./node_modules/@material-ui/core/Button/index.js");
+var TextField_1 = __webpack_require__(/*! @material-ui/core/TextField */ "./node_modules/@material-ui/core/TextField/index.js");
+var selectBackground = function () {
+    var imageList = [
+        'ali-yahya-782497-unsplash.jpg',
+        'brooke-cagle-609873-unsplash.jpg',
+        'helloquence-61189-unsplash.jpg',
+        'john-schnobrich-520023-unsplash.jpg',
+        'mimi-thian-737597-unsplash.jpg',
+        'mimi-thian-737711-unsplash.jpg',
+        'priscilla-du-preez-293218-unsplash.jpg'
+    ];
+    var arrayIndex = Math.floor(Math.random() * imageList.length);
+    return "url('src/assets/images/splash/" + imageList[arrayIndex] + "')";
+};
+var Login = /** @class */ (function (_super) {
+    __extends(Login, _super);
+    function Login() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.state = {
+            user: '',
+            password: '',
+            redirectToReferrer: false
+        };
+        _this.login = function (credentials) {
+            _this.props.onSignIn(function () {
+                _this.setState({
+                    redirectToReferrer: true
+                });
+            });
+            return;
+            console.log('Logging in...');
+            // axios.defaults.headers.post['Content-Type'] ='application/json';
+            // axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+            axios_1.default.post('http://localhost:8000/api/login', {
+                username: credentials.username,
+                password: credentials.password
+            })
+                .then(function (res) {
+                console.log(res);
+            });
+        };
+        _this.handleChange = function (event) {
+            var _a;
+            event.preventDefault();
+            _this.setState((_a = {}, _a[event.target.name] = event.target.value, _a));
+        };
+        _this.handleLogin = function () {
+            _this.login({
+                'username': _this.state.user,
+                'password': _this.state.password
+            });
+        };
+        return _this;
+    }
+    Login.prototype.render = function () {
+        var _this = this;
+        var from = (this.props.location.state || { from: { pathname: '/' } }).from;
+        if (this.state.redirectToReferrer) {
+            console.log(this.props.location);
+            console.log('login redirecting to: ', from);
+            return React.createElement(react_router_dom_1.Redirect, { to: from });
+        }
+        return (React.createElement("div", { className: 'login-wrap' },
+            React.createElement("div", { className: 'login' },
+                React.createElement("div", { className: 'login__about' /*style={{backgroundImage: selectBackground()}}*/ },
+                    React.createElement("a", { href: 'https://focustime.ca', className: 'logo_container' },
+                        React.createElement("h1", null, "Spotlight"))),
+                React.createElement("div", { className: 'login__credentials' },
+                    React.createElement("div", { className: 'login_container' },
+                        React.createElement("h2", null, "Smart attendance for the internet age."),
+                        React.createElement("a", { href: 'https://focustime.ca', className: 'subtitle_link' }, "Start using powerful tools that let your self directed study blocks succeed."),
+                        React.createElement("form", { className: 'login_form' },
+                            React.createElement("h2", null, "Sign in"),
+                            React.createElement(TextField_1.default, { name: 'user', type: 'text', label: 'Email or Student Number', value: this.state.user, onChange: this.handleChange, margin: 'normal', variant: 'filled', autoFocus: true, fullWidth: true }),
+                            React.createElement(TextField_1.default, { name: 'password', type: 'password', label: 'Password', value: this.state.password, onChange: this.handleChange, margin: 'normal', variant: 'filled', fullWidth: true }),
+                            React.createElement("div", { className: 'button_container' },
+                                React.createElement(Button_1.default, { onClick: function () { return _this.handleLogin(); }, color: 'primary', variant: 'contained' }, "Sign In"))),
+                        React.createElement("ul", { className: 'links_list' },
+                            React.createElement("a", { href: 'https://focustime.ca' },
+                                React.createElement("li", null, "Help"))))))));
+    };
+    return Login;
+}(React.Component));
+exports.Login = Login;
+
+
+/***/ }),
+
 /***/ "./src/components/Modals/AccountWidget.tsx":
 /*!*************************************************!*\
   !*** ./src/components/Modals/AccountWidget.tsx ***!
@@ -53104,9 +53328,10 @@ var AccountWidget = /** @class */ (function (_super) {
         return _this;
     }
     AccountWidget.prototype.render = function () {
+        var _this = this;
         return (React.createElement(React.Fragment, null,
             React.createElement(NavItem_1.NavItem, { className: 'nav_account', title: 'Account', onClick: this.handleClickOpen },
-                React.createElement(Avatar_1.default, { className: 'nav_avatar', color: '#FF0000' }, this.initials),
+                React.createElement(Avatar_1.default, { onClick: function () { return _this.props.onSignOut(); }, className: 'nav_avatar', color: '#FF0000' }, this.initials),
                 React.createElement(Menu_1.default, { open: this.state.open, onClose: this.handleClose },
                     React.createElement(MenuItem_1.default, null, "Profile"),
                     React.createElement(MenuItem_1.default, null, "Sign Out")))));
@@ -53925,7 +54150,7 @@ var Sidebar = /** @class */ (function (_super) {
                 React.createElement("div", { className: 'nav_bottom' },
                     React.createElement(NotificationsWidget_1.NotificationsWidget, null),
                     React.createElement(NavItem_1.NavItem, { title: 'Help', icon: 'help' }),
-                    React.createElement(AccountWidget_1.AccountWidget, null))),
+                    React.createElement(AccountWidget_1.AccountWidget, { onSignOut: this.props.onSignOut }))),
             React.createElement("div", { className: 'sidebar__menu' },
                 React.createElement("div", { className: 'menu_header' },
                     React.createElement("div", { className: 'menu_header__logo' }),
@@ -54251,8 +54476,8 @@ exports.TopNav = function (props) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
 var ReactDOM = __webpack_require__(/*! react-dom */ "react-dom");
-var App_1 = __webpack_require__(/*! ./components/App/App */ "./src/components/App/App.tsx");
-ReactDOM.render(React.createElement(App_1.default, null), document.getElementById('app-root'));
+var AppWithAuth_1 = __webpack_require__(/*! ./components/App/AppWithAuth */ "./src/components/App/AppWithAuth.tsx");
+ReactDOM.render(React.createElement(AppWithAuth_1.default, null), document.getElementById('app-root'));
 
 
 /***/ }),

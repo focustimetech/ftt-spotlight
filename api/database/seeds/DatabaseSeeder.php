@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ScheduleTableSeeder::class);
         $this->call(StudentsTableSeeder::class);
         $this->call(LedgerTableSeeder::class);
+        $this->call(AppointmentsTableSeeder::class);
 
         //$this->call(EnrollmentTableSeeder::class);
         //$this->call(CalendarTableSeeder::class);

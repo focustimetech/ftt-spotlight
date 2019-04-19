@@ -19,7 +19,7 @@ class CreateAppointmentsTable extends Migration
             $table->unsignedInteger('staff_id');
             $table->unsignedInteger('block_number');
             $table->date('date');
-            $table->string('memo', 150);
+            $table->string('memo', 150)->default('');
             $table->timestamps();
         });
     }

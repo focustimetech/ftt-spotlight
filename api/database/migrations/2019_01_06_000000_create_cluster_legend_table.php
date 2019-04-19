@@ -17,6 +17,7 @@ class CreateClusterLegendTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->string('name');
+            $table->boolean('hidden')->default(false);
         });
     }
 

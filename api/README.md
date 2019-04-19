@@ -28,8 +28,8 @@ touch .env
 ```bash
 php artisan migrate
 ```
+ If the migration fails and you need to restart it, run `$ php artisan migrate:fresh`.
 
-    If the migration fails and you need to restart it, run `$ php artisan migrate:fresh`.
   - Now it's time to seed the database with sample data, when applicable:
 
 ```bash

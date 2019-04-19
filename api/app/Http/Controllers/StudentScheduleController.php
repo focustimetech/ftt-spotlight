@@ -13,19 +13,19 @@ class StudentScheduleController extends Controller
      */
     public function index(Request $request)
     {
-        $start_date = strtotime($request->input('start_date')) === strtotime('sunday') ? (
+        $start_time = strtotime($request->input('start_date')) === strtotime('sunday') ? (
             date('Y-m-d', strtotime('sunday'))
         ) : (
             date('Y-m-d', strtotime('previous sunday', strtotime($request->input('start_date'))))
         );
+        $end_time = strtotime('+'. $request->input('num_weeks'). ' weeks', $start_time);
         $include_days = $request->input('include_days');
-        $num_weeks = $request->input('num_weeks');
         $student_id = $request->input('student_id');
-
 
         $course_ids = App\Enrollment::where('student_id', $student_id)->pluck('course_id')->toArray();
         $courses = DB::table('courses')->leftJoin('schedule', 'courses.id', '=', 'schedule.course_id')->select('courses.id', 'courses.name', 'schedule.block_number')->whereIn('courses.id', $course_ids)->get();
         $blocks = App\Block::select('block_number', 'flex', 'label', 'day_of_week', 'start', 'end')->whereIn('block_number', $courses->pluck('block_number')->toArray())->get();
+
     }
 
     /**

@@ -24,7 +24,7 @@ class StudentScheduleController extends Controller
 
         $course_ids = \App\Enrollment::where('student_id', $student_id)->pluck('course_id')->toArray();
         $courses = \DB::table('courses')->leftJoin('schedule', 'courses.id', '=', 'schedule.course_id')->select('courses.id', 'courses.name', 'schedule.block_number')->whereIn('courses.id', $course_ids)->get();
-        $blocks = \App\Block::select('block_number', 'flex', 'label', 'day_of_week', 'start', 'end')->whereIn('block_number', $courses->pluck('block_number')->toArray())->get();
+        $blocks = \App\Block::select('block_number', 'flex', 'label', 'day_of_week', 'start', 'end')->whereIn('block_number', $courses->pluck('block_number')->toArray())->orWhere(function($query) {$query->where('flex', 1);})->get();
         $appointments = \App\Appointment::select('staff_id', 'block_number', 'date', 'memo')->where('student_id', $student_id)->get();
         $ledger_entries = \App\LedgerEntry::select('date', 'time', 'block_number', 'staff_id')->where('student_id', $student_id)->get();
         $plans = []; //\App\SchedulePlan::select('staff_id, date, block_number')->where('student_id', $student_id)->get();
@@ -48,10 +48,11 @@ class StudentScheduleController extends Controller
                     foreach ($blocks_of_day as $block) {
                         $day_block = [];
                         $day_block['appointments'] = $appointments->where('block_Number', $block->block_number)->where('date', $date);
-                        $day_block['course'] = //$courses->firstWhere('block_number', $block->block_number); // this is wrong
-                        $day_block['flex'] = $block->flex == true;
+                        $day_block['course'] = $block->getCourseFromStudentID($student_id);
+                        $day_block['block'] = $block;
+                        // $day_block['flex'] = $block->flex == true;
                         $day_block['log'] = $ledger_entries->where('date', $date)->where('block_number', $block->block_number)->first();
-                        if ($day_block['flex'] === true) {
+                        if ($block->flex == true) {
                             $day_block['plans'] = $plans->where('date', $date)->where('block_number', $block->block_number);
                         }
                         if (false) {

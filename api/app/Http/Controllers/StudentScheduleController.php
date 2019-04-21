@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\Block as BlockResource;
+use App\Http\Resources\Course as CourseResource;
 
 class StudentScheduleController extends Controller
 {
@@ -28,6 +29,7 @@ class StudentScheduleController extends Controller
         $courses = $student->getCourses();
         $blocks = $student->getBlocks(true);
         $appointments = $student->getAppointments();
+        //var_dump($appointments);
         $ledger_entries = $student->getLedgerEntries();
         $plans = $student->getPlans(); //\App\SchedulePlan::select('staff_id, date, block_number')->where('student_id', $student_id)->get();
 
@@ -50,8 +52,12 @@ class StudentScheduleController extends Controller
                     foreach ($blocks_of_day as $block) {
                         $day_block = [];
                         $day_block['appointments'] = $appointments->where('block_number', $block->block_number)->where('date', $date);
-                        $day_block['course'] = $block->getCourseFromStudentID($student->id);
+                        // @TODO getCourseFromStudentID is stupid. Make this a student method ASAP. // Resovled.
+                        //$day_block['course'] = new CourseResource($block->getCourseFromStudentID($student->id));
                         $day_block['block'] = new BlockResource($block);
+                        if ($day_block['block']['flex'] == false) {
+                            $day_block['course'] = new CourseResource($student->getCourseAtBlock($block->block_number));
+                        }
                         $day_block['log'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_number', $block->block_number))->first();
                         if ($block->flex == true) {
                             $day_block['plans'] = []; //@TODO $plans->where('date', $date)->where('block_number', $block->block_number);
@@ -63,7 +69,7 @@ class StudentScheduleController extends Controller
                             $day_block['memo'] = 'underwater basket weaving'; //TBD
                             // Check if student skipped out on an appointment
                             $appointment_staff_ids = $day_block['appointments']->pluck('staff_id')->toArray();
-                            if (!empty($appointment_staff_ids) && !in_array($appointment_staff_ids, $day_block['log']->staff_id)) {
+                            if (!empty($appointment_staff_ids) && !in_array($day_block['log']->staff_id, $appointment_staff_ids)) {
                                 $day_block['status'] = 'wrong-attended';
                             } else {
                                 $day_block['status'] = 'attended';

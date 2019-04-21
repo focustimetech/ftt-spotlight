@@ -21,6 +21,17 @@ class Student extends Model
     }
 
     /**
+     * Retreives the specific course a student has at a given block
+     */
+    public function getCourseAtBlock($block_number) {
+        $course_ids = $this->getCourseIDs();
+        $course_id = ScheduleEntry::where('block_number', $block_number)
+            ->whereIn('course_id', $course_ids)->pluck('course_id')->first();
+        
+
+        return Course::find($course_id);
+    }
+    /**
      * Returns all blocks that a student participates in.
      */
     public function getBlocks($include_flex = false)

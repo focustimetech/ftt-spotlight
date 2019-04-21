@@ -3,8 +3,10 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Staff as StaffResource;
+use App\Staff;
 
-class Staff extends JsonResource
+class LedgerEntry extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,13 +16,12 @@ class Staff extends JsonResource
      */
     public function toArray($request)
     {
-        //return parent::toArray($request);
+        $staff_id = $this->staff_id;
+        // var_dump($this);
         return [
-            'id' => $this->id,
-            'account_type' => $this->account_type,
-            'administrator' => $this->administrator ? true : false,
-            'name' => $this->getName(),
-            'email' => $this->email
+            'staff' => new StaffResource(Staff::findOrFail($staff_id)),
+            'time' => date('g:i A', strtotime($this->time))
         ];
+        
     }
 }

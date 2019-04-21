@@ -12,17 +12,7 @@ class StudentsTableSeeder extends Seeder
     public function run()
     {
 
-        factory(App\Student::class, 30)->create()->each(function($student) {
-            $block_number_pool = App\Block::select('block_number')->groupBy('block_number')
-            ->where('flex', 0)->get()->pluck('block_number')->toArray();
-
-            foreach($block_number_pool as $block_number) {
-                factory(App\Enrollment::class)->create([
-                    'student_id' => $student->id,
-                    'course_id' => Faker\Factory::create()->randomElement(App\ScheduleEntry::select('course_id')
-                        ->where('block_number', $block_number)->get()->pluck('course_id')->toArray())
-                ]);
-            }
+        factory(App\Student::class, 30)->create();
 
             // Create ledger entries
             /*
@@ -56,6 +46,6 @@ class StudentsTableSeeder extends Seeder
                 $time = strtotime('+1 day', $time); // next day
             } while (strtotime(date('Y-m-d', $time). ' '. $block_time) <= time());
             */
-        });
+
     }
 }

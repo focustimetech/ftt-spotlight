@@ -13,7 +13,7 @@ class ScheduleTableSeeder extends Seeder
     {
         $courses = App\Course::all();
         $block_number_pool = App\Block::select('block_number')->groupBy('block_number')
-        ->where('flex', 0)->get()->pluck('block_number')->toArray();
+            ->where('flex', 0)->get()->pluck('block_number')->toArray();
         $x = 0;
 
         foreach ($courses as $course) {

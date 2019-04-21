@@ -15,12 +15,13 @@ class DatabaseSeeder extends Seeder
         $this->call(BlocksTableSeeder::class);
         $this->call(CoursesTableSeeder::class);
         $this->call(ScheduleTableSeeder::class);
+        $this->call(EnrollmentTableSeeder::class);
         $this->call(StudentsTableSeeder::class);
         $this->call(LedgerTableSeeder::class);
         $this->call(AppointmentsTableSeeder::class);
         // broken $this->call(SchedulePlansTableSeeder::class);
 
-        //$this->call(EnrollmentTableSeeder::class);
+
         //$this->call(CalendarTableSeeder::class);
         //$this->call(EventsTableSeeder::class);
         //$this->call(ParentsTableSeeder::class);

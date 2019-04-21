@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Resources\LedgerEntry as LedgerEntryResource;
+use App\Http\Resources\Block as BlockResource;
+
 class StudentScheduleController extends Controller
 {
     /**
@@ -20,14 +23,13 @@ class StudentScheduleController extends Controller
         );
         $end_time = strtotime('+'. $request->input('num_weeks'). ' weeks', $start_time);
         $include_days = $request->input('include_days');
-        $student_id = $request->input('student_id');
+        $student = \App\Student::find($request->input('student_id'));
 
-        $course_ids = \App\Enrollment::where('student_id', $student_id)->pluck('course_id')->toArray();
-        $courses = \DB::table('courses')->leftJoin('schedule', 'courses.id', '=', 'schedule.course_id')->select('courses.id', 'courses.name', 'schedule.block_number')->whereIn('courses.id', $course_ids)->get();
-        $blocks = \App\Block::select('block_number', 'flex', 'label', 'day_of_week', 'start', 'end')->whereIn('block_number', $courses->pluck('block_number')->toArray())->orWhere(function($query) {$query->where('flex', 1);})->get();
-        $appointments = \App\Appointment::select('staff_id', 'block_number', 'date', 'memo')->where('student_id', $student_id)->get();
-        $ledger_entries = \App\LedgerEntry::select('date', 'time', 'block_number', 'staff_id')->where('student_id', $student_id)->get();
-        $plans = []; //\App\SchedulePlan::select('staff_id, date, block_number')->where('student_id', $student_id)->get();
+        $courses = $student->getCourses();
+        $blocks = $student->getBlocks(true);
+        $appointments = $student->getAppointments();
+        $ledger_entries = $student->getLedgerEntries();
+        $plans = $student->getPlans(); //\App\SchedulePlan::select('staff_id, date, block_number')->where('student_id', $student_id)->get();
 
         $student_schedule = [];
 
@@ -44,16 +46,15 @@ class StudentScheduleController extends Controller
                         'date' => $date,
                         'events' => []
                     ];
-                    $blocks_of_day = $blocks->where('day_of_week', $day_of_week);
+                    $blocks_of_day = $blocks->where('day_of_week', $day_of_week)->sortBy('start_time');
                     foreach ($blocks_of_day as $block) {
                         $day_block = [];
-                        $day_block['appointments'] = $appointments->where('block_Number', $block->block_number)->where('date', $date);
-                        $day_block['course'] = $block->getCourseFromStudentID($student_id);
-                        $day_block['block'] = $block;
-                        // $day_block['flex'] = $block->flex == true;
-                        $day_block['log'] = $ledger_entries->where('date', $date)->where('block_number', $block->block_number)->first();
+                        $day_block['appointments'] = $appointments->where('block_number', $block->block_number)->where('date', $date);
+                        $day_block['course'] = $block->getCourseFromStudentID($student->id);
+                        $day_block['block'] = new BlockResource($block);
+                        $day_block['log'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_number', $block->block_number))->first();
                         if ($block->flex == true) {
-                            $day_block['plans'] = $plans->where('date', $date)->where('block_number', $block->block_number);
+                            $day_block['plans'] = []; //@TODO $plans->where('date', $date)->where('block_number', $block->block_number);
                         }
                         if (false) {
                             // @TODO implement amendments

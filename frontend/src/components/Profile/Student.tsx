@@ -55,6 +55,10 @@ export class Student extends React.Component<IProps, IState> {
 		this.setState({ tab: value })
 	}
 
+	componentDidMount() {
+		// const { match: { params } } = this.props
+	}
+
 	render () {
 		const starred: boolean = this.state.student.starred
 		const navTabs: ITabs = {

@@ -47,6 +47,8 @@ export class Login extends React.Component<IProps, IState> {
 		redirectToReferrer: false
 	}
 
+	backgroundImage: string
+
 	login = (credentials: LoginCredentials) => {
 		this.props.onSignIn(() => {
 			this.setState({
@@ -80,6 +82,10 @@ export class Login extends React.Component<IProps, IState> {
 		})
 	}
 
+	componentDidMount() {
+		this.backgroundImage = selectBackground()
+	}
+
 	render() {
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
 	
@@ -91,7 +97,7 @@ export class Login extends React.Component<IProps, IState> {
 		return (
 			<div className='login-wrap'>
 				<div className='login'>
-					<div className='login__about' /*style={{backgroundImage: selectBackground()}}*/ >
+					<div className='login__about' style={{backgroundImage: this.backgroundImage}} >
 						<a href='https://focustime.ca' className='logo_container'>
 							<h1>Spotlight</h1>
 						</a>

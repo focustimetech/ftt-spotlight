@@ -55,7 +55,8 @@ export default class App extends React.Component<IProps, IState> {
 							)} />
 							<Route exact path='/dashboard' component={Dashboard} />
 							<Route path='/staff' component={Staff} />
-							<Route path='/students' component={Student} />
+							<Route path='/students/:studentID' component={Student} />
+							{/*<Route path='/students' component={StudentList} />*/}
 							<Route path='/class-schedule' component={ClassSchedule} />
 						</Content>
 					</div>

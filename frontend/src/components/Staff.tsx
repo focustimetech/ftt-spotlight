@@ -3,7 +3,7 @@ import * as React from 'react'
 import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
 
-import { ITableHeaderRow } from '../types/table'
+import { ITableHeaderColumn } from '../types/table'
 
 export class Staff extends React.Component {
 	componentDidMount() {
@@ -12,17 +12,23 @@ export class Staff extends React.Component {
 
 	render() {
 		const data = [
-			{id: 0, name: 'James', age: 25, color: 'Red'},
-			{id: 1, name: 'Ryan', age: 28, color: 'Yellow'},
-			{id: 2, name: 'Bob', age: 21, color: 'Green'},
-			{id: 3, name: 'Lisa', age: 22, color: 'Blue'},
-			{id: 4, name: 'Saul', age: 30, color: 'Brown'},
+			{id: 0, name: 'James', attendance: '90.0%', profile: 20},
+			{id: 1, name: 'Ryan', attendance: '53.4%', profile: 21},
+			{id: 2, name: 'Bob', attendance: '70.9%', profile: 22},
+			{id: 3, name: 'Lisa', attendance: '81.2%', profile: 23},
+			{id: 4, name: 'Saul', attendance: '91.6%', profile: 24},
+			{id: 5, name: 'Daniel', attendance: '91.6%', profile: 25},
+			{id: 6, name: 'Howard', attendance: '90.6%', profile: 26},
+			{id: 7, name: 'Joane', attendance: '45.6%', profile: 27},
+			{id: 8, name: 'Kendrick', attendance: '21.2%', profile: 28},
+			{id: 9, name: 'Zach', attendance: '82.0%', profile: 29},
+			{id: 10, name: 'Jackson', attendance: '95.5%', profile: 30},
 		]
 
-		const rows: ITableHeaderRow[] = [
-			{ id: 'name', label: 'Name', isNumeric: false, disablePadding: true},
-			{ id: 'age', label: 'Age', isNumeric: true},
-			{ id: 'color', label: 'Color', isNumeric: false}
+		const columns: ITableHeaderColumn[] = [
+			{ id: 'name', label: 'Student', th: true, isNumeric: false, disablePadding: true, searchable: true},
+			{ id: 'attendance', label: 'Attendance', isNumeric: true},
+			{ id: 'profile', label: 'Profile', isNumeric: false, link: '/student'}
 		]
 
 		return (
@@ -31,7 +37,7 @@ export class Staff extends React.Component {
 					<ul><h3>Staff</h3></ul>
 				</TopNav>
 				<p>Welcome to the staff page!</p>
-				<EnhancedTable rows={rows} data={data} searchable/>
+				<EnhancedTable columns={columns} data={data} searchable={true}/>
 			</>
 		)
 	}

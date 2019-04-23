@@ -9,7 +9,7 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { ITableHeaderRow } from '../../types/table'
+import { ITableHeaderColumn } from '../../types/table'
 
 interface IProps {
 	numSelected: number
@@ -17,12 +17,12 @@ interface IProps {
 	onSelectAllClick: (event: any) => void
 	order: 'asc' |'desc'
 	orderBy: string
-	rows: ITableHeaderRow[]
+	columns: ITableHeaderColumn[]
 	rowCount: number
 }
 
 export const EnhancedTableHead = (props: IProps) => {
-	const { onSelectAllClick, order, orderBy, numSelected, rowCount, rows } = props
+	const { onSelectAllClick, order, orderBy, numSelected, rowCount, columns } = props
 
 	const createSortHandler = (property: string) => {
 		console.log('createSortHandler()')
@@ -38,24 +38,24 @@ export const EnhancedTableHead = (props: IProps) => {
 						onChange={onSelectAllClick}
 					/>
 				</TableCell>
-				{rows.map((row: ITableHeaderRow) => (
+				{columns.map((column: ITableHeaderColumn) => (
 					<TableCell
-						key={row.id}
-						align={row.isNumeric ? 'right' : 'left'}
-						padding={row.disablePadding ? 'none' : 'default'}
-						sortDirection={orderBy === row.id ? order : false}
+						key={column.id}
+						align={column.isNumeric ? 'right' : 'left'}
+						padding={column.disablePadding ? 'none' : 'default'}
+						sortDirection={orderBy === column.id ? order : false}
 					>
 						<Tooltip
-							title={'Sort by ' + row.label}
-							placement={row.isNumeric ? 'bottom-end' : 'bottom-start'}
+							title={'Sort by ' + column.label}
+							placement={column.isNumeric ? 'bottom-end' : 'bottom-start'}
 							enterDelay={300}
 						>
 							<TableSortLabel
-								active={orderBy === row.id}
+								active={orderBy === column.id}
 								direction={order}
-								onClick={() => createSortHandler(row.id)}
+								onClick={() => createSortHandler(column.id)}
 							>
-								{row.label}
+								{column.label}
 							</TableSortLabel>
 						</Tooltip>
 					</TableCell>

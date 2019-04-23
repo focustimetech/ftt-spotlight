@@ -1,8 +1,12 @@
 import * as React from 'react'
 import * as classNames from 'classnames'
 
+import { Link } from 'react-router-dom'
+
 import {
 	Checkbox,
+	Icon,
+	IconButton,
 	Paper,
 	Table,
 	TableBody,
@@ -12,12 +16,13 @@ import {
 	TablePagination,
 	TableRow,
 	TableSortLabel,
-	TextField
+	TextField,
+	Tooltip
 } from '@material-ui/core'
 
 import { EnhancedTableHead } from './EnhancedTableHead'
 import { EnhancedTableToolbar } from './EnhancedTableToolbar'
-import { ITableHeaderRow } from '../../types/table';
+import { ITableHeaderColumn } from '../../types/table';
 
 const desc = (a: any, b: any, orderBy: any) => {
 	if (b[orderBy] < a[orderBy]) {
@@ -49,9 +54,14 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 	)
 }
 
+const matchesQuery = (value: string, query: string): boolean => {
+	// return value.startsWith(query) || value === query || value.endsWith(query)
+	return value.toLowerCase().match(new RegExp(query.toLowerCase(), 'g')) !== null
+}
+
 interface IProps {
 	searchable?: boolean
-	rows: ITableHeaderRow[]
+	columns: ITableHeaderColumn[]
 	data: any[]
 }
 
@@ -69,15 +79,26 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	state: IState = {
 		tableQuery: '',
 		order: 'asc',
-		orderBy: this.props.rows[0].id,
+		orderBy: this.props.columns[0].id,
 		selected: [],
 		data: this.props.data,
 		page: 0,
 		rowsPerPage: 5
 	}
 
-	filterTableData = (data: any) => {
-		return data
+	filterTableData = (): any[] => {
+		const { tableQuery } = this.state
+		const properties: string[] = this.props.columns.reduce((acc: string[], column: ITableHeaderColumn) => {
+			if (column.searchable) {
+				acc.push(column.id);
+			}
+			return acc
+		}, [])
+		return this.state.data.filter((row: any) => {
+			return properties.some((property) => {
+				return matchesQuery(row[property], tableQuery)
+			})
+		})
 	}
 
 	handleRequestSort = (property: any) => {
@@ -137,7 +158,11 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 
 	render() {
 		const { order, orderBy, selected, rowsPerPage, page } = this.state
-		const data = this.props.searchable && this.state.tableQuery ? this.filterTableData(this.state.data) : this.state.data
+		const data = this.props.searchable && this.state.tableQuery.length ? (
+			this.filterTableData()
+		) : (
+			this.state.data
+		)
 		const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
 
 		return (
@@ -164,7 +189,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 								onSelectAllClick={this.handleSelectAllClick}
 								onRequestSort={this.handleRequestSort}
 								rowCount={data.length}
-								rows={this.props.rows}
+								columns={this.props.columns}
 							/>
 							<TableBody>
 								{stableSort(data, getSorting(order, orderBy))
@@ -184,11 +209,27 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 												<TableCell padding='checkbox'>
 													<Checkbox checked={isSelected} />
 												</TableCell>
-												<TableCell component='th' scope='row' padding='none'>
-													{n.name}
-												</TableCell>
-												<TableCell align='right'>{n.age}</TableCell>
-												<TableCell align='right'>{n.color}</TableCell>
+												{this.props.columns.map((column: ITableHeaderColumn) => {
+													if (column.link) {
+														return (
+															<TableCell padding='checkbox'>
+																<Tooltip title={column.label} placement='left'>
+																	<Link to={`${column.link}/${n[column.id]}`}>
+																		<Icon>launch</Icon>
+																	</Link>
+																</Tooltip>
+															</TableCell>
+														)
+													} else if (column.th) {
+														return (
+															<TableCell component='th' scope='row' padding='none'>
+																{n[column.id]}
+															</TableCell>
+														)
+													} else {
+														return <TableCell align='right'>{n[column.id]}</TableCell>
+													}
+												})}
 											</TableRow>
 										)
 									})

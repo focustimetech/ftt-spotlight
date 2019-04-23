@@ -14,7 +14,6 @@ import {
 //cimport { NameWidget } from './NameWidget'
 import { TopNav } from './TopNav'
 import { ITabs } from '../types/app';
-import { Schedule } from './Schedule'
 
 interface IState {
 	tab: NavTab
@@ -59,7 +58,7 @@ export class ClassSchedule extends React.Component<{}, IState> {
 						</li>
 					</ul>
 				</TopNav>
-				<BlockSchedule />
+				{/*<BlockSchedule />*/}
 			</div>
 		)
 	}

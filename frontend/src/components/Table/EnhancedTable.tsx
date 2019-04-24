@@ -22,7 +22,7 @@ import {
 
 import { EnhancedTableHead } from './EnhancedTableHead'
 import { EnhancedTableToolbar } from './EnhancedTableToolbar'
-import { ITableHeaderColumn } from '../../types/table';
+import { ITableFilter, ITableHeaderColumn } from '../../types/table';
 
 const desc = (a: any, b: any, orderBy: any) => {
 	if (b[orderBy] < a[orderBy]) {
@@ -54,10 +54,12 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 	)
 }
 
+/*
 const matchesQuery = (value: string, query: string): boolean => {
 	// return value.startsWith(query) || value === query || value.endsWith(query)
-	return value.toLowerCase().match(new RegExp(query.toLowerCase(), 'g')) !== null
+	return new RegExp(query.toLowerCase(), 'g').test(value.toLowerCase())
 }
+*/
 
 interface IProps {
 	searchable?: boolean
@@ -73,6 +75,8 @@ interface IState {
 	data: any[]
 	page: number
 	rowsPerPage: number
+	filters: ITableFilter[]
+	filterOpen: boolean
 }
 
 export class EnhancedTable extends React.Component<IProps, IState> {
@@ -83,7 +87,21 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		selected: [],
 		data: this.props.data,
 		page: 0,
-		rowsPerPage: 5
+		rowsPerPage: 5,
+		filters: [],
+		filterOpen: false
+	}
+
+	handleFilterOpen = () => {
+		this.setState({ filterOpen: true })
+	}
+
+	handleFilterClose = () => {
+		this.setState({ filterOpen: false })
+	}
+
+	handleFilterChange = (filters: ITableFilter[]) => {
+		this.setState({ filters })
 	}
 
 	filterTableData = (): any[] => {
@@ -96,7 +114,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		}, [])
 		return this.state.data.filter((row: any) => {
 			return properties.some((property) => {
-				return matchesQuery(row[property], tableQuery)
+				return new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
 			})
 		})
 	}
@@ -175,11 +193,18 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						placeholder='Search Staff'
 						value={this.state.tableQuery}
 						variant='standard'
-						
 					/>
 				)}
 				<Paper>
-					<EnhancedTableToolbar title='Staff' numSelected={selected.length} />
+					<EnhancedTableToolbar
+						title='Staff'
+						numSelected={selected.length}
+						filters={this.state.filters}
+						handleFilterOpen={this.handleFilterOpen}
+						handleFilterClose={this.handleFilterClose}
+						handleFilterChange={this.handleFilterChange}
+						filterOpen={this.state.filterOpen}	
+					/>
 					<div>
 						<Table>
 							<EnhancedTableHead

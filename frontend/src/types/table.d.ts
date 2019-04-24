@@ -15,14 +15,16 @@ export type ITableFilter = ITableStringFilter | ITableNumericFilter
 
 export interface ITableStringFilter {
 	id: string
-	type: ITableStringFilterType
+	type: 'string'
+	rule: ITableStringFilterType
 	value: string
 }
 
 export interface ITableNumericFilter {
 	id: string
-	type: ITableNumericFilterType
-	value: number
+	type: 'numeric'
+	rule: ITableNumericFilterType
+	value: string
 }
 
 export type ITableStringFilterType = 

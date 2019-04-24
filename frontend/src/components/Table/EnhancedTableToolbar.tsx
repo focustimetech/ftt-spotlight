@@ -8,13 +8,14 @@ import {
 } from '@material-ui/core'
 
 import { EnhancedTableFilter} from './EnhancedTableFilter'
-import { ITableFilter } from '../../types/table';
+import { ITableFilter, ITableHeaderColumn } from '../../types/table';
 
 interface IProps {
 	numSelected: number
 	title: string
 	filters: ITableFilter[]
 	filterOpen: boolean
+	columns: ITableHeaderColumn[]
 	handleFilterOpen: () => void
 	handleFilterClose: () => void
 	handleFilterChange: (filters: ITableFilter[]) => void
@@ -31,17 +32,18 @@ export const EnhancedTableToolbar = (props: IProps) => {
 				) : (
 					<h5>{title}</h5>
 				)}
+				{filterOpen && (
+					<EnhancedTableFilter
+						filters={props.filters}
+						handleFilterChange={props.handleFilterChange}
+						columns={props.columns}
+					/>
+				)}
 				<ul>
 					<li>
 						<Tooltip title='Filter'>
 							<IconButton onClick={props.handleFilterOpen}>
-								<Icon>filter</Icon>
-								{filterOpen && (
-									<EnhancedTableFilter
-										filters={props.filters}
-										handleFilterChange={props.handleFilterChange}
-									/>
-								)}
+								<Icon>filter_list</Icon>
 							</IconButton>
 						</Tooltip>
 					</li>

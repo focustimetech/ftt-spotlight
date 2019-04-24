@@ -4,4 +4,14 @@
             margin-bottom: 16px;
         }
     }
+
+    .enhanced-table__filters {
+        width: 400px;
+        position: absolute;
+        padding: 16px;
+        background: #FFF;
+        border-radius: 2px;
+        z-index: 100;
+        border: 1px solid #444;
+    }
 }

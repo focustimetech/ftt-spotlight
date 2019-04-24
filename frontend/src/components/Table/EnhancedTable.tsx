@@ -199,6 +199,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 					<EnhancedTableToolbar
 						title='Staff'
 						numSelected={selected.length}
+						columns={this.props.columns}
 						filters={this.state.filters}
 						handleFilterOpen={this.handleFilterOpen}
 						handleFilterClose={this.handleFilterClose}

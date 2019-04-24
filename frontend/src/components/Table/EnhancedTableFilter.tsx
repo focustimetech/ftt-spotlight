@@ -89,6 +89,10 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		return filter
 	}
 
+	onUpdateFilters = () => {
+		this.props.handleFilterChange(this.state.filters)
+	}
+
 	onAddFilter = () => {
 		this.setState((state: IState) => {
 			return {filters: state.filters.concat(this.newFilter()) }
@@ -109,6 +113,34 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		this.setState({ filters: [] })
 	}
 
+	handleChangeFilterID = (value: string, index: number) => {
+		this.setState((state: IState) => {
+			return {
+				filters: state.filters.map((filter, idx) => {
+					if (idx !== index) {
+						return filter
+					} else {
+						const column = this.props.columns.find((column: ITableHeaderColumn) => {
+							return column.id === value
+						})
+						const hasTypeChanged: boolean = filter.type === 'string' ? column.isNumeric : !column.isNumeric
+
+						return {
+							id: value,
+							type: column.isNumeric ? 'numeric' : 'string',
+							rule: hasTypeChanged ? (
+								(column.isNumeric ? numericFilterRules[0].value : stringFilterRules[0].value)
+							) : (
+								filter.rule
+							),
+							value: hasTypeChanged ? '' : filter.value
+						}
+					}
+				})
+			}
+		})
+	}
+
 	render() {
 		return (
 			<Paper className='enhanced-table__filters'>
@@ -122,11 +154,11 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 								numericFilterRules
 							)
 							return (
-								<li key={idx}>
+								<li key={idx} className='filter-rule'>
 									<Select
 										name='id'
 										value={filter.id}
-										onChange={(event: any) => {handleFilterChange(event.target.value, 'id', idx)}}
+										onChange={(event: any) => {this.handleChangeFilterID(event.target.value, idx)}}
 									>
 										{this.props.columns.map((column: ITableHeaderColumn) => {
 											return (

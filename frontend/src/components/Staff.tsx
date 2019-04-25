@@ -26,9 +26,20 @@ export class Staff extends React.Component {
 		]
 
 		const columns: ITableHeaderColumn[] = [
-			{ id: 'name', label: 'Student', th: true, isNumeric: false, disablePadding: true, searchable: true},
-			{ id: 'attendance', label: 'Attendance', isNumeric: true},
-			{ id: 'profile', label: 'Profile', isNumeric: false, link: '/student'}
+			{
+				id: 'name',
+				label: 'Student',
+				th: true,
+				isNumeric: false,
+				disablePadding: true,
+				searchable: true,
+				filterable: false,
+				visible: true
+			},
+			{ id: 'attendance', label: 'Attendance', isNumeric: true, visible: true, filterable: true },
+			{ id: 'profile', label: 'Profile', isNumeric: false, link: '/student', visible: true, filterable: false},
+			{ id: 'first_name', label: 'First Name', isNumeric: false, filterable: true, visible: false},
+			{ id: 'last_name', label: 'Last Name', isNumeric: false, filterable: true, visible: false}
 		]
 
 		return (

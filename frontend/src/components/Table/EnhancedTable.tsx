@@ -222,6 +222,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 									.map(n => {
 										const isSelected = this.isSelected(n.id)
+										const columns = this.props.columns.filter((column: ITableHeaderColumn) => {
+											return column.visible
+										})
 										return (
 											<TableRow
 												hover
@@ -235,7 +238,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 												<TableCell padding='checkbox'>
 													<Checkbox checked={isSelected} />
 												</TableCell>
-												{this.props.columns.map((column: ITableHeaderColumn) => {
+												{columns.map((column: ITableHeaderColumn) => {
 													if (column.link) {
 														return (
 															<TableCell padding='checkbox'>

@@ -22,7 +22,10 @@ interface IProps {
 }
 
 export const EnhancedTableHead = (props: IProps) => {
-	const { onSelectAllClick, order, orderBy, numSelected, rowCount, columns } = props
+	const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props
+	const columns = props.columns.filter((column: ITableHeaderColumn) => {
+		return column.visible
+	})
 
 	const createSortHandler = (property: string) => {
 		console.log('createSortHandler()')

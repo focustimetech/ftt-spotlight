@@ -28,24 +28,32 @@ export const EnhancedTableToolbar = (props: IProps) => {
 		<Toolbar>
 			<div className='enhanced-table__toolbar'>
 				{numSelected > 0 ? (
-					<h5>{numSelected} selected</h5>
+					<h3 className='num-selected'>{numSelected} selected</h3>
 				) : (
-					<h5>{title}</h5>
+					<h3>{title}</h3>
 				)}
 				{filterOpen && (
 					<EnhancedTableFilter
 						filters={props.filters}
 						handleFilterChange={props.handleFilterChange}
-						columns={props.columns}
+						columns={props.columns.filter((column: ITableHeaderColumn) => {
+							return column.filterable
+						})}
+						handleFilterClose={props.handleFilterClose}
 					/>
 				)}
-				<ul>
+				<ul className='enhanced-table__tools'>
 					<li>
 						<Tooltip title='Filter'>
 							<IconButton onClick={props.handleFilterOpen}>
 								<Icon>filter_list</Icon>
 							</IconButton>
 						</Tooltip>
+					</li>
+					<li>
+					<IconButton onClick={props.handleFilterOpen}>
+						<Icon>more_vert</Icon>
+					</IconButton>
 					</li>
 				</ul>
 			</div>

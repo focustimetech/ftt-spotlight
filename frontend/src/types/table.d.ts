@@ -9,6 +9,8 @@ export interface ITableHeaderColumn {
 	link?: string // If set, column renders external links
 	th?: boolean // If set, column is table header
 	searchable?: boolean
+	visible: boolean
+	filterable: boolean
 }
 
 export type ITableFilter = ITableStringFilter | ITableNumericFilter

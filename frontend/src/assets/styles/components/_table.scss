@@ -5,13 +5,82 @@
         }
     }
 
+    &__toolbar {
+        width: 100%;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: space-between;
+
+        h3 {
+            margin: 0;
+
+            &.num-selected {
+                font-weight: 400;
+            }
+        }
+
+        .enhanced-table__tools {
+            display: flex;
+            flex-flow: row;
+        }
+    }
+
     .enhanced-table__filters {
         width: 400px;
         position: absolute;
+        top: 8px;
+        right: 8px;
         padding: 16px;
         background: #FFF;
         border-radius: 2px;
         z-index: 100;
-        border: 1px solid #444;
+
+        .placeholder {
+            margin: 16px;
+            text-align: center;
+        }
+
+        .filters-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+
+            h3 {
+                margin: 0;
+            }
+
+            .filter-actions {
+                display: flex;
+                flex-flow: row;
+
+                .filter-action {
+                    margin-left: 8px;
+
+                    &:last-child {
+                        margin-left: 0;
+                    }
+                }
+            }
+        }
+
+        .filter-rule {
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 8px;
+
+            & > * {
+                margin-left: 8px;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+
+            &:last-child {
+                margin-bottom: 16px;
+            } 
+        }
     }
 }

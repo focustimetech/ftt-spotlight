@@ -7,7 +7,8 @@ import {
 	MenuItem,
 	Paper,
 	Select,
-	TextField
+	TextField,
+	Tooltip
 } from '@material-ui/core'
 
 import {
@@ -48,6 +49,7 @@ interface IProps {
 	filters: ITableFilter[]
 	columns: ITableHeaderColumn[]
 	handleFilterChange: (filters: ITableFilter[]) => void
+	handleFilterClose: () => void
 }
 
 interface IState {
@@ -113,7 +115,7 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		this.setState({ filters: [] })
 	}
 
-	handleChangeFilterID = (value: string, index: number) => {
+	handleChangeFilterID = (value: any, index: number) => {
 		this.setState((state: IState) => {
 			return {
 				filters: state.filters.map((filter, idx) => {
@@ -141,10 +143,58 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		})
 	}
 
+	handleChangeFilterRule = (value: any, index: number) => {
+		this.setState((state: IState) => {
+			return {
+				filters: state.filters.map((filter, idx) => {
+					return index !== idx ? filter : { ...filter, rule: value }
+				})
+			}
+		})
+	}
+
+	handleChangeFilterValue = (value: string, index: number) => {
+		this.setState((state: IState) => {
+			return {
+				filters: state.filters.map((filter, idx) => {
+					return index !== idx ? filter : { ...filter, value }
+				})
+			}
+		})
+	}
+
+	handleClose = () => {
+		this.props.handleFilterClose()
+	}
 	render() {
 		return (
-			<Paper className='enhanced-table__filters'>
-				<h3>Filters</h3>
+			<Paper className='enhanced-table__filters' elevation={6}>
+				<div className='filters-header'>
+					<h3>Filters</h3>
+					<ul className='filter-actions'>
+						<li className='filter-action'>
+							<Tooltip placement='bottom' title='Remove All'>
+								<IconButton onClick={() => this.onRemoveAllFilters()}>
+									<Icon>delete</Icon>
+								</IconButton>
+							</Tooltip>
+						</li>
+						<li className='filter-action'>
+							<Tooltip placement='bottom' title='Apply Filters'>
+								<IconButton onClick={() => this.onUpdateFilters()}>
+									<Icon>check</Icon>
+								</IconButton>
+							</Tooltip>
+						</li>
+						<li className='filter-action'>
+							<Tooltip placement='bottom' title='Cancel'>
+								<IconButton onClick={() => this.handleClose()}>
+									<Icon>close</Icon>
+								</IconButton>
+							</Tooltip>
+						</li>
+					</ul>
+				</div>
 				{this.state.filters.length ? (
 					<ul>
 						{this.state.filters.map((filter: ITableFilter, idx: number) => {
@@ -153,6 +203,7 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 							) : (
 								numericFilterRules
 							)
+
 							return (
 								<li key={idx} className='filter-rule'>
 									<Select
@@ -171,7 +222,7 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 									<Select
 										name='rule'
 										value={filter.rule}
-										onChange={(event: any) => {handleFilterChange(event.target.value, 'rule', idx)}}
+										onChange={(event: any) => this.handleChangeFilterRule(event.target.value, idx)}
 									>	
 										{filterRules.map((filterRule) => (
 											<MenuItem value={filterRule.value}>
@@ -181,7 +232,7 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 									</Select>
 									<TextField
 										variant='standard'
-										onChange={(event: any) => {handleFilterChange(event.target.value, 'value', idx)}}
+										onChange={(event: any) => this.handleChangeFilterValue(event.target.value, idx)}
 										value={filter.value}
 									/>
 									<IconButton onClick={() => this.onRemoveFilter(idx)}><Icon>close</Icon></IconButton>
@@ -190,9 +241,9 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 						})}
 					</ul>
 				) : (
-					<p>No filters added.</p>
+					<p className='placeholder'>No filters added.</p>
 				)}
-				<Button onClick={() => this.onAddFilter()}>Add Filter</Button>
+				<Button variant='contained' color='primary' onClick={() => this.onAddFilter()}>Add Filter</Button>
 			</Paper>
 		)
 	}

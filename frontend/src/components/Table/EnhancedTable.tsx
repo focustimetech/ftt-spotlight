@@ -54,13 +54,6 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 	)
 }
 
-/*
-const matchesQuery = (value: string, query: string): boolean => {
-	// return value.startsWith(query) || value === query || value.endsWith(query)
-	return new RegExp(query.toLowerCase(), 'g').test(value.toLowerCase())
-}
-*/
-
 interface IProps {
 	searchable?: boolean
 	columns: ITableHeaderColumn[]
@@ -170,8 +163,8 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		return this.state.selected.indexOf(id) !== -1
 	}
 
-	handleTableQueryChange = (event: any) => {
-		this.setState({ tableQuery: event.target.value })
+	handleTableQueryChange = (value: string) => {
+		this.setState({ tableQuery: value })
 	}
 
 	render() {
@@ -184,26 +177,19 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
 
 		return (
-			<div className={classNames('enhanced-table', {'--searchable': this.props.searchable})}>
-				{this.props.searchable && (
-					<TextField
-						className='enhanced-table__search'
-						fullWidth
-						onChange={this.handleTableQueryChange}
-						placeholder='Search Staff'
-						value={this.state.tableQuery}
-						variant='standard'
-					/>
-				)}
+			<div className='enhanced-table'>
 				<Paper>
 					<EnhancedTableToolbar
 						title='Staff'
+						searchable={this.props.searchable}
+						tableQuery={this.state.tableQuery}
 						numSelected={selected.length}
 						columns={this.props.columns}
 						filters={this.state.filters}
 						handleFilterOpen={this.handleFilterOpen}
 						handleFilterClose={this.handleFilterClose}
 						handleFilterChange={this.handleFilterChange}
+						handleTableQueryChange={this.handleTableQueryChange}
 						filterOpen={this.state.filterOpen}	
 					/>
 					<div>

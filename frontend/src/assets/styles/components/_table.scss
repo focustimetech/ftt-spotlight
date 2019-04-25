@@ -1,9 +1,4 @@
 .enhanced-table {
-    &.--searchable {
-        .enhanced-table__search {
-            margin-bottom: 16px;
-        }
-    }
 
     &__toolbar {
         width: 100%;
@@ -23,6 +18,7 @@
         .enhanced-table__tools {
             display: flex;
             flex-flow: row;
+            align-items: center;
         }
     }
 
@@ -67,7 +63,7 @@
 
         .filter-rule {
             display: flex;
-            align-items: flex-end;
+            align-items: baseline;
             margin-bottom: 8px;
 
             & > * {

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 
 import {
 	Badge,
@@ -17,6 +18,8 @@ import { ITableFilter, ITableHeaderColumn } from '../../types/table';
 
 interface IProps {
 	numSelected: number
+	numShown: number
+	numTotal: number
 	title: string
 	searchable: boolean
 	tableQuery: string
@@ -57,25 +60,37 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 	}
 
 	render() {
-		const { numSelected, filterOpen, title } = this.props
+		const { numSelected, numShown, numTotal, filterOpen } = this.props
+		let headerString: string
+		if (numSelected > 0 || (numTotal > 0 && numShown < numTotal)) {
+			if (numSelected > 0 && (numTotal > 0 && numShown < numTotal)) {
+				headerString = `Showing ${numShown} of ${numTotal}, ${numSelected} selected`
+			} else if (numSelected > 0) {
+				headerString = `${numSelected} selected`
+			} else {
+				headerString = `Showing ${numShown} of ${numTotal}`
+			}
+		} else {
+			headerString = this.props.title
+		}
 
 		return (
 			<Toolbar>
 				<div className='enhanced-table__toolbar'>
-					{numSelected > 0 ? (
-						<h3 className='num-selected'>{numSelected} selected</h3>
-					) : (
-						<h3>{title}</h3>
+					<h3 className={classNames({
+						'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
+					})}>{headerString}</h3>
+					{this.props.filterOpen && (
+						<EnhancedTableFilter
+							filters={this.props.filters}
+							open={filterOpen}
+							handleFilterChange={this.props.handleFilterChange}
+							columns={this.props.columns.filter((column: ITableHeaderColumn) => {
+								return column.filterable
+							})}
+							handleFilterClose={this.props.handleFilterClose}
+						/>
 					)}
-					<EnhancedTableFilter
-						filters={this.props.filters}
-						open={filterOpen}
-						handleFilterChange={this.props.handleFilterChange}
-						columns={this.props.columns.filter((column: ITableHeaderColumn) => {
-							return column.filterable
-						})}
-						handleFilterClose={this.props.handleFilterClose}
-					/>
 					<ul className='enhanced-table__tools'>
 						{this.props.searchable && (
 							<>

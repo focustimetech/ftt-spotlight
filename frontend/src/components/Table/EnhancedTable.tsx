@@ -94,11 +94,13 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	handleFilterChange = (filters: ITableFilter[]) => {
-		this.setState({ filters })
+		this.setState({ filters }, () => {
+			console.log('Filters', this.state.filters)
+		})
 	}
 
 	filterTableData = (): any[] => {
-		const { tableQuery } = this.state
+		const { tableQuery, filters } = this.state
 		const properties: string[] = this.props.columns.reduce((acc: string[], column: ITableHeaderColumn) => {
 			if (column.searchable) {
 				acc.push(column.id);
@@ -106,9 +108,35 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			return acc
 		}, [])
 		return this.state.data.filter((row: any) => {
-			return properties.some((property) => {
-				return new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
-			})
+			const matchSearch: boolean = tableQuery.length ? (
+				properties.some((property) => {
+					return new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
+				})
+			) : true
+
+			const matchFilters = filters.length ? (
+				filters.some((filter: ITableFilter) => {
+					switch (filter.rule) {
+						case 'contains':
+							// return row[filter.id].contains(filter.value)
+							return false
+						case 'ends-with':
+							return row[filter.id].endsWith(filter.value)
+						case 'equal-to':
+							return row[filter.id] == filter.value
+						case 'greater-than':
+							return row[filter.id] > filter.value
+						case 'less-than':
+							return row[filter.id] < filter.value
+						case 'not-equal-to':
+							return row[filter.id] != filter.value
+						case 'starts-with':
+							return row[filter.id].startsWith(filter.value)
+					}
+				})
+			) : true
+			console.log('matchSearch: ', matchSearch, 'matchFilters: ', matchFilters)
+			return matchSearch && matchFilters
 		})
 	}
 
@@ -124,9 +152,15 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 
 	handleSelectAllClick = (event: any) => {
 		if (event.target.checked) {
-			this.setState((state) => (
-				{ selected: state.data.map(n => n.id) }
-			))
+			console.log('event.target.checked == true')
+			let data: any[]
+			if (this.state.filters.length || this.state.tableQuery.length) {
+				data = this.state.data.map(n => n.id)
+			} else {
+				data = this.filterTableData().map(n => n.id)
+			}
+			console.log('data:', data)
+			this.setState({ selected: data.map(n => n.id) })
 			return
 		}
 		this.setState({ selected: [] })
@@ -168,8 +202,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	render() {
+		console.log(this.state.selected)
 		const { order, orderBy, selected, rowsPerPage, page } = this.state
-		const data = this.props.searchable && this.state.tableQuery.length ? (
+		const data = (this.props.searchable && this.state.tableQuery.length) || this.state.filters.length ? (
 			this.filterTableData()
 		) : (
 			this.state.data
@@ -184,6 +219,8 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						searchable={this.props.searchable}
 						tableQuery={this.state.tableQuery}
 						numSelected={selected.length}
+						numShown={data.length}
+						numTotal={this.props.data.length}
 						columns={this.props.columns}
 						filters={this.state.filters}
 						handleFilterOpen={this.handleFilterOpen}
@@ -258,7 +295,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						</Table>
 					</div>
 					<TablePagination
-						rowsPerPageOptions={[5, 10, 15]}
+						rowsPerPageOptions={[5, 10, 25]}
 						component='div'
 						count={data.length}
 						rowsPerPage={rowsPerPage}

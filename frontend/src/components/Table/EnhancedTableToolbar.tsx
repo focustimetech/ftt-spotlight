@@ -8,13 +8,15 @@ import {
 	Icon,
 	IconButton,
 	InputAdornment,
+	Menu,
+	MenuItem,
 	TextField,
 	Toolbar,
 	Tooltip
 } from '@material-ui/core'
 
 import { EnhancedTableFilter} from './EnhancedTableFilter'
-import { ITableFilter, ITableHeaderColumn } from '../../types/table';
+import { ITableAction, ITableFilter, ITableHeaderColumn } from '../../types/table';
 
 interface IProps {
 	numSelected: number
@@ -26,6 +28,9 @@ interface IProps {
 	filters: ITableFilter[]
 	filterOpen: boolean
 	columns: ITableHeaderColumn[]
+	actions: ITableAction[]
+	handleActionCallback: (id: string) => void
+	handleInvertSelection: () => void
 	handleFilterOpen: () => void
 	handleFilterClose: () => void
 	handleFilterChange: (filters: ITableFilter[]) => void
@@ -34,11 +39,21 @@ interface IProps {
 
 interface IState {
 	searchOpen: boolean
+	menuRef: any
 }
 
 export class EnhancedTableToolbar extends React.Component<IProps> {
 	state: IState  = {
-		searchOpen: false
+		searchOpen: false,
+		menuRef: null
+	}
+
+	handeMenuOpen = (event: any) => {
+		this.setState({ menuRef: event.currentTarget })
+	}
+
+	handleMenuClose = () => {
+		this.setState({ menuRef: null })
 	}
 
 	handleOpenSearch = () => {
@@ -51,6 +66,16 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		})
 	}
 
+	handleInvertSelection = () => {
+		this.props.handleInvertSelection()
+		this.handleMenuClose()
+	}
+
+	handleMenuSelect = (action: ITableAction['id']) => {
+		// this.props.actions
+		this.handleMenuClose()
+	}
+
 	handleTableQueryChange = (event: any) => {
 		if (event.keyCode === 27) {
 			this.handleCloseSearch()
@@ -61,6 +86,10 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 
 	render() {
 		const { numSelected, numShown, numTotal, filterOpen } = this.props
+		const { menuRef } = this.state
+		const menuOpen = Boolean(menuRef)
+		console.log(menuRef)
+
 		let headerString: string
 		if (numSelected > 0 || (numTotal > 0 && numShown < numTotal)) {
 			if (numSelected > 0 && (numTotal > 0 && numShown < numTotal)) {
@@ -80,7 +109,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 					<h3 className={classNames({
 						'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
 					})}>{headerString}</h3>
-					{this.props.filterOpen && (
+					{filterOpen && (
 						<EnhancedTableFilter
 							filters={this.props.filters}
 							open={filterOpen}
@@ -137,9 +166,21 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 							</Tooltip>
 						</li>
 						<li>
-						<IconButton>
+						<IconButton onClick={this.handeMenuOpen}>
 							<Icon>more_vert</Icon>
 						</IconButton>
+						<Menu
+							open={menuOpen}
+							anchorEl={menuRef}
+							onClose={this.handleMenuClose}
+						>
+							<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
+							{this.props.numSelected > 0 && (
+								this.props.actions.map((action: ITableAction) => (
+									<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
+								))
+							)}
+						</Menu>
 						</li>
 					</ul>
 				</div>

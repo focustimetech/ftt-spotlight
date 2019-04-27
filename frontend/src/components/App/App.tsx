@@ -4,7 +4,8 @@ import * as React from 'react'
 import {
 	BrowserRouter as Router, 
 	Redirect,
-	Route
+	Route,
+	Switch
 	// withRouter
 } from 'react-router-dom'
 
@@ -55,8 +56,10 @@ export default class App extends React.Component<IProps, IState> {
 							)} />
 							<Route exact path='/dashboard' component={Dashboard} />
 							<Route path='/staff' component={Staff} />
-							<Route path='/students/:studentID' component={Student} />
-							{/*<Route path='/students' component={StudentList} />*/}
+							<Switch>
+								<Route path='/students/:studentID' component={Student} />
+								<Route path='/students' component={Staff} />
+							</Switch>
 							<Route path='/class-schedule' component={ClassSchedule} />
 						</Content>
 					</div>

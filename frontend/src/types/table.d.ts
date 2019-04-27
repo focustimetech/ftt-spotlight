@@ -41,3 +41,9 @@ export type ITableNumericFilterType =
 	| 'greater-than'
 	| 'equal-to'
 	| 'not-equal-to'
+
+export interface ITableAction {
+	id: string
+	name: string
+	action: (ids: number[]) => void
+} 

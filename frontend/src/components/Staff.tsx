@@ -3,11 +3,15 @@ import * as React from 'react'
 import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
 
-import { ITableHeaderColumn } from '../types/table'
+import { ITableAction, ITableHeaderColumn } from '../types/table'
 
 export class Staff extends React.Component {
 	componentDidMount() {
 		document.title = 'Dashboard - Spotlight'
+	}
+
+	handleCheckIn = (ids: number[]) => {
+		console.log('IDs:', ids)
 	}
 
 	render() {
@@ -40,9 +44,15 @@ export class Staff extends React.Component {
 				visible: true
 			},
 			{ id: 'attendance', label: 'Attendance', isNumeric: true, visible: true, filterable: true },
-			{ id: 'profile', label: 'Profile', isNumeric: false, link: '/student', visible: true, filterable: false},
+			{ id: 'profile', label: 'Profile', isNumeric: false, link: '/students', visible: true, filterable: false},
 			{ id: 'first_name', label: 'First Name', isNumeric: false, filterable: true, visible: false},
 			{ id: 'last_name', label: 'Last Name', isNumeric: false, filterable: true, visible: false}
+		]
+
+		const actions: ITableAction[] = [
+			{ id: 'check-in', name: 'Check In', action: this.handleCheckIn },
+			{ id: 'add-to-cluster', name: 'Add to Cluster', action: this.handleCheckIn },
+			{ id: 'delete', name: 'Delete', action: this.handleCheckIn }
 		]
 
 		return (
@@ -51,7 +61,7 @@ export class Staff extends React.Component {
 					<ul><h3>Staff</h3></ul>
 				</TopNav>
 				<p>Welcome to the staff page!</p>
-				<EnhancedTable columns={columns} data={data} searchable={true}/>
+				<EnhancedTable columns={columns} data={data} actions={actions} searchable={true}/>
 			</>
 		)
 	}

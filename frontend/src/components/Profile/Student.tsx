@@ -1,5 +1,8 @@
 import * as React from 'react'
+
+import axios from 'axios'
 import * as classNames from 'classnames'
+import { RouteComponentProps } from 'react-router-dom'
 
 import {
 	Avatar,
@@ -16,7 +19,7 @@ import { TopNav } from '../TopNav'
 import { ITabs } from '../../types/app';
 import { Schedule } from '../Schedule'
 
-interface IProps {
+interface IProps extends RouteComponentProps{
 	student?: IStudent
 }
 
@@ -56,7 +59,16 @@ export class Student extends React.Component<IProps, IState> {
 	}
 
 	componentDidMount() {
-		// const { match: { params } } = this.props
+		const params: any = this.props.match.params
+		console.log('url: ', params)
+/*
+		axios.post('http://localhost:8000/api/login', {
+			
+		})
+			.then(res => {
+				console.log(res)
+			})
+*/
 	}
 
 	render () {

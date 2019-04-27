@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import {
+	Button,
 	Icon,
 	IconButton,
 	Dialog,
@@ -24,7 +25,7 @@ export class Schedule extends React.Component {
 		return (
 			<div className='schedule_container'>
 				<ul className='schedule_header'>
-					<li><a className='schedule_daterange' onClick={this.handleDateRangeOpen}><h3>Jan 25 — 27, 2019</h3></a></li>
+					<li><a className='schedule_daterange' onClick={this.handleDateRangeOpen}><Button>Jan 25 — 27, 2019</Button></a></li>
 					<li><Tooltip title='Back' placement='top'><IconButton onClick={this.handlePrevious}><Icon>chevron_left</Icon></IconButton></Tooltip></li>
 					<li><Tooltip title='Next' placement='top'><IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton></Tooltip></li>
 				</ul>

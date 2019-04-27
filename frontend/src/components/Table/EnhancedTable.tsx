@@ -22,7 +22,7 @@ import {
 
 import { EnhancedTableHead } from './EnhancedTableHead'
 import { EnhancedTableToolbar } from './EnhancedTableToolbar'
-import { ITableFilter, ITableHeaderColumn } from '../../types/table';
+import { ITableAction, ITableFilter, ITableHeaderColumn } from '../../types/table';
 
 const desc = (a: any, b: any, orderBy: any) => {
 	if (b[orderBy] < a[orderBy]) {
@@ -58,6 +58,7 @@ interface IProps {
 	searchable?: boolean
 	columns: ITableHeaderColumn[]
 	data: any[]
+	actions: ITableAction[]
 }
 
 interface IState {
@@ -82,7 +83,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		page: 0,
 		rowsPerPage: 5,
 		filters: [],
-		filterOpen: false
+		filterOpen: false,
 	}
 
 	handleFilterOpen = () => {
@@ -153,17 +154,25 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	handleSelectAllClick = (event: any) => {
 		if (event.target.checked) {
 			console.log('event.target.checked == true')
-			let data: any[]
-			if (this.state.filters.length || this.state.tableQuery.length) {
-				data = this.state.data.map(n => n.id)
-			} else {
-				data = this.filterTableData().map(n => n.id)
-			}
-			console.log('data:', data)
-			this.setState({ selected: data.map(n => n.id) })
+			this.setState({
+				selected: this.state.filters.length || this.state.tableQuery.length ? (
+					this.filterTableData().map(n => n.id)
+				) : (
+					this.state.data.map(n => n.id)
+				)
+			}, () => {console.log('selected:', this.state.selected)})
 			return
 		}
 		this.setState({ selected: [] })
+	}
+
+	handleInvertSelection = () => {
+		console.log('invertSelection()')
+		this.setState({
+			selected: this.state.data.map(n => n.id).filter((index: number) => {
+				return this.state.selected.indexOf(index) < 0
+			})
+		})
 	}
 
 	handleClick = (event: any, id: number) => {
@@ -222,12 +231,14 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						numShown={data.length}
 						numTotal={this.props.data.length}
 						columns={this.props.columns}
+						actions={this.props.actions}
 						filters={this.state.filters}
+						handleInvertSelection={this.handleInvertSelection}
 						handleFilterOpen={this.handleFilterOpen}
 						handleFilterClose={this.handleFilterClose}
 						handleFilterChange={this.handleFilterChange}
 						handleTableQueryChange={this.handleTableQueryChange}
-						filterOpen={this.state.filterOpen}	
+						filterOpen={this.state.filterOpen}
 					/>
 					<div>
 						<Table>

@@ -69,7 +69,6 @@ interface IState {
 	order: 'asc' | 'desc'
 	orderBy: string // e.g 'calories'
 	selected: number[] // indexes
-	data: any[]
 	page: number
 	rowsPerPage: number
 	filters: ITableFilter[]
@@ -82,7 +81,6 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		order: 'asc',
 		orderBy: this.props.columns[0].id,
 		selected: [],
-		data: this.props.data,
 		page: 0,
 		rowsPerPage: 5,
 		filters: [],
@@ -98,9 +96,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	handleFilterChange = (filters: ITableFilter[]) => {
-		this.setState({ filters }, () => {
-			console.log('Filters', this.state.filters)
-		})
+		this.setState({ filters })
 	}
 
 	filterTableData = (): any[] => {
@@ -111,7 +107,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			}
 			return acc
 		}, [])
-		return this.state.data.filter((row: any) => {
+		return this.props.data.filter((row: any) => {
 			const matchSearch: boolean = tableQuery.length ? (
 				properties.some((property) => {
 					return new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
@@ -141,7 +137,6 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 					}
 				})
 			) : true
-			console.log('matchSearch: ', matchSearch, 'matchFilters: ', matchFilters)
 			return matchSearch && matchFilters
 		})
 	}
@@ -158,23 +153,21 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 
 	handleSelectAllClick = (event: any) => {
 		if (event.target.checked) {
-			console.log('event.target.checked == true')
 			this.setState({
 				selected: this.state.filters.length || this.state.tableQuery.length ? (
 					this.filterTableData().map(n => n.id)
 				) : (
-					this.state.data.map(n => n.id)
+					this.props.data.map(n => n.id)
 				)
-			}, () => {console.log('selected:', this.state.selected)})
+			})
 			return
 		}
 		this.setState({ selected: [] })
 	}
 
 	handleInvertSelection = () => {
-		console.log('invertSelection()')
 		this.setState({
-			selected: this.state.data.map(n => n.id).filter((index: number) => {
+			selected: this.props.data.map(n => n.id).filter((index: number) => {
 				return this.state.selected.indexOf(index) < 0
 			})
 		})
@@ -216,12 +209,11 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		console.log(this.state.selected)
 		const { order, orderBy, selected, rowsPerPage, page } = this.state
 		const data = (this.props.searchable && this.state.tableQuery.length) || this.state.filters.length ? (
 			this.filterTableData()
 		) : (
-			this.state.data
+			this.props.data
 		)
 		const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
 

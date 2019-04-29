@@ -129,18 +129,21 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 						})
 						const hasTypeChanged: boolean = filter.type === 'string' ? column.isNumeric : !column.isNumeric
 						let newFilter: ITableNumericFilter | ITableStringFilter
-						if (hasTypeChanged && column.isNumeric) {
-							newFilter.type = 'numeric'
-							newFilter.rule = hasTypeChanged ? numericFilterRules[0].value : filter.rule
-						} else {
-							newFilter.type = 'string'
-							newFilter.rule = hasTypeChanged ? stringFilterRules[0].value : filter.rule
-						}
-						return {
-							...newFilter,
+						newFilter = {
 							id: value,
-							value: hasTypeChanged ? '' : filter.value
+							value: hasTypeChanged ? '' : filter.value,
+							type: 'string',
+							rule: hasTypeChanged ? stringFilterRules[0].value : filter.rule
 						}
+						if (hasTypeChanged && column.isNumeric) {
+							newFilter =  {
+								id: value,
+								value: hasTypeChanged ? '' : filter.value,
+								type: 'numeric',
+								rule: hasTypeChanged ? numericFilterRules[0].value : filter.rule
+							}
+						} 
+						return newFilter
 					}
 				})
 				return { filters }

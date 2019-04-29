@@ -7,75 +7,63 @@ import {
 	BrowserRouter as Router, 
 	Redirect,
 	Route,
-	Switch,
-	withRouter
+	Switch
 } from 'react-router-dom'
 
 type AuthState = 'signed-in' | 'sign-in' | 'sign-out'
 
-interface IState {
-	authState: AuthState
-}
-
-interface FakeAuth {
+interface Authentication {
 	isAuthenticated: boolean
 	authenticate: (cb?: () =>  void) => void
 	signout: (cb?: () => void) => void 
 }
 
-const fakeAuth: FakeAuth = {
-	isAuthenticated: false,
-	authenticate(cb?: () => void) {
-		console.log('fakeAuth.authenticate()')
-		this.isAuthenticated = true
-		setTimeout(cb, 100) // fake async
-	},
-	signout(cb?: () => void) {
-		console.log('fakeAuth.signout()')
-		this.isAuthenticated = false
-		setTimeout(cb, 100)
-	}
+interface IState {
+	authState: AuthState
 }
-
-interface ProtectedRouteProps {
-	component: React.Component
-}
-
-/*
-export const ProtectedRoute = ({component: Component}: ProtectedRouteProps, {...rest}) => {
-	return (
-		<Route {...rest} render={(props) => (
-			fakeAuth.isAuthenticated ? (
-				<Component {...props} />
-			) : (
-				<Redirect
-					to={{
-						pathname: '/login',
-						state: { from: props.location }
-					}}
-				/>
-			)
-		)} />
-	)
-}
-*/
 
 export default class AppWithAuth extends React.Component<{}, IState> {
 	state: IState = {
-		authState: 'sign-in'
+		authState: 'signed-in'
+	}
+
+	authentication: Authentication = {
+		isAuthenticated: true,
+		authenticate(cb?: () => void) {
+			this.isAuthenticated = true
+			this.call(cb)
+		},
+		signout(cb?: () => void) {
+			this.isAuthenticated = false
+			this.call(cb)
+		}
 	}
 
 	handleSignIn = (callback?: () => void) => {
-		console.log('handleSignIn()')
+		this.authentication.authenticate()
 		this.setState({ authState: 'signed-in' }, callback)
 	}
 
 	handleSignOut = (callback?: () => void) => {
+		this.authentication.signout()
 		this.setState({ authState: 'sign-in' }, callback)
 	}
 
 	isAuthenticated = () => {
-		return this.state.authState === 'signed-in'
+		return this.authentication.isAuthenticated
+	}
+
+	getAuthentication = (): boolean => {
+		const accessToken: string = localStorage.getItem('accessToken')
+		if (accessToken) {
+			return true
+		}
+		this.handleSignOut()
+		return false
+	}
+
+	componentDidMount() {
+
 	}
 
 	render() {

@@ -22,6 +22,7 @@ import {
 
 import { EnhancedTableHead } from './EnhancedTableHead'
 import { EnhancedTableToolbar } from './EnhancedTableToolbar'
+import { EmptyStateIcon } from '../EmptyStateIcon'
 import { ITableAction, ITableFilter, ITableHeaderColumn } from '../../types/table';
 
 const desc = (a: any, b: any, orderBy: any) => {
@@ -55,10 +56,12 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 }
 
 interface IProps {
-	searchable?: boolean
+	title: string
 	columns: ITableHeaderColumn[]
 	data: any[]
 	actions: ITableAction[]
+	searchable?: boolean
+	showEmptyTable?: boolean
 }
 
 interface IState {
@@ -222,105 +225,113 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 
 		return (
 			<div className='enhanced-table'>
-				<Paper>
-					<EnhancedTableToolbar
-						title='Staff'
-						searchable={this.props.searchable}
-						tableQuery={this.state.tableQuery}
-						numSelected={selected.length}
-						numShown={data.length}
-						numTotal={this.props.data.length}
-						columns={this.props.columns}
-						actions={this.props.actions}
-						filters={this.state.filters}
-						handleInvertSelection={this.handleInvertSelection}
-						handleFilterOpen={this.handleFilterOpen}
-						handleFilterClose={this.handleFilterClose}
-						handleFilterChange={this.handleFilterChange}
-						handleTableQueryChange={this.handleTableQueryChange}
-						filterOpen={this.state.filterOpen}
-					/>
-					<div>
-						<Table>
-							<EnhancedTableHead
-								numSelected={selected.length}
-								order={order}
-								orderBy={orderBy}
-								onSelectAllClick={this.handleSelectAllClick}
-								onRequestSort={this.handleRequestSort}
-								rowCount={data.length}
-								columns={this.props.columns}
-							/>
-							<TableBody>
-								{stableSort(data, getSorting(order, orderBy))
-									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-									.map(n => {
-										const isSelected = this.isSelected(n.id)
-										const columns = this.props.columns.filter((column: ITableHeaderColumn) => {
-											return column.visible
-										})
-										return (
-											<TableRow
-												hover
-												onClick={(event: any) => this.handleClick(event, n.id)}
-												role='checkbox'
-												aria-checked={isSelected}
-												tabIndex={-1}
-												key={n.id}
-												selected={isSelected}
-											>
-												<TableCell padding='checkbox'>
-													<Checkbox checked={isSelected} />
-												</TableCell>
-												{columns.map((column: ITableHeaderColumn) => {
-													if (column.link) {
-														return (
-															<TableCell padding='checkbox'>
-																<Tooltip title={column.label} placement='left'>
-																	<Link to={`${column.link}/${n[column.id]}`}>
-																		<Icon>launch</Icon>
-																	</Link>
-																</Tooltip>
-															</TableCell>
-														)
-													} else if (column.th) {
-														return (
-															<TableCell component='th' scope='row' padding='none'>
-																{n[column.id]}
-															</TableCell>
-														)
-													} else {
-														return <TableCell align='right'>{n[column.id]}</TableCell>
-													}
-												})}
-											</TableRow>
-										)
-									})
-								}
-								{emptyRows > 0 && (
-									<TableRow style={{ height: 49 * emptyRows }}>
-										<TableCell colSpan={4} />
-									</TableRow>
-								)}
-							</TableBody>
-						</Table>
+				{this.props.data.length == 0 && this.props.showEmptyTable !== false ? (
+					<div className='empty-state'>
+						<EmptyStateIcon variant='file'>
+							<h3>{`${this.props.title} table is empty.`}</h3>
+						</EmptyStateIcon>
 					</div>
-					<TablePagination
-						rowsPerPageOptions={[5, 10, 25]}
-						component='div'
-						count={data.length}
-						rowsPerPage={rowsPerPage}
-						page={page}
-						backIconButtonProps={{
-							'aria-label': 'Previous Page'
-						}}
-						nextIconButtonProps={{
-							'aria-label': 'Next Page'
-						}}
-						onChangePage={this.handleChangePage}
-						onChangeRowsPerPage={this.handleChangeRowsPerPage}
-					/>
-				</Paper>
+				) : (
+					<Paper>
+						<EnhancedTableToolbar
+							title={this.props.title}
+							searchable={this.props.searchable}
+							tableQuery={this.state.tableQuery}
+							numSelected={selected.length}
+							numShown={data.length}
+							numTotal={this.props.data.length}
+							columns={this.props.columns}
+							actions={this.props.actions}
+							filters={this.state.filters}
+							handleInvertSelection={this.handleInvertSelection}
+							handleFilterOpen={this.handleFilterOpen}
+							handleFilterClose={this.handleFilterClose}
+							handleFilterChange={this.handleFilterChange}
+							handleTableQueryChange={this.handleTableQueryChange}
+							filterOpen={this.state.filterOpen}
+						/>
+						<div>
+							<Table>
+								<EnhancedTableHead
+									numSelected={selected.length}
+									order={order}
+									orderBy={orderBy}
+									onSelectAllClick={this.handleSelectAllClick}
+									onRequestSort={this.handleRequestSort}
+									rowCount={data.length}
+									columns={this.props.columns}
+								/>
+								<TableBody>
+									{stableSort(data, getSorting(order, orderBy))
+										.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+										.map(n => {
+											const isSelected = this.isSelected(n.id)
+											const columns = this.props.columns.filter((column: ITableHeaderColumn) => {
+												return column.visible
+											})
+											return (
+												<TableRow
+													hover
+													onClick={(event: any) => this.handleClick(event, n.id)}
+													role='checkbox'
+													aria-checked={isSelected}
+													tabIndex={-1}
+													key={n.id}
+													selected={isSelected}
+												>
+													<TableCell padding='checkbox'>
+														<Checkbox checked={isSelected} />
+													</TableCell>
+													{columns.map((column: ITableHeaderColumn) => {
+														if (column.link) {
+															return (
+																<TableCell padding='checkbox'>
+																	<Tooltip title={column.label} placement='left'>
+																		<Link to={`${column.link}/${n[column.id]}`}>
+																			<Icon>launch</Icon>
+																		</Link>
+																	</Tooltip>
+																</TableCell>
+															)
+														} else if (column.th) {
+															return (
+																<TableCell component='th' scope='row' padding='none'>
+																	{n[column.id]}
+																</TableCell>
+															)
+														} else {
+															return <TableCell align='right'>{n[column.id]}</TableCell>
+														}
+													})}
+												</TableRow>
+											)
+										})
+									}
+									{emptyRows > 0 && (
+										<TableRow style={{ height: 49 * emptyRows }}>
+											<TableCell colSpan={4} />
+										</TableRow>
+									)}
+								</TableBody>
+							</Table>
+						</div>
+						<TablePagination
+							rowsPerPageOptions={[5, 10, 25]}
+							component='div'
+							count={data.length}
+							rowsPerPage={rowsPerPage}
+							page={page}
+							backIconButtonProps={{
+								'aria-label': 'Previous Page'
+							}}
+							nextIconButtonProps={{
+								'aria-label': 'Next Page'
+							}}
+							onChangePage={this.handleChangePage}
+							onChangeRowsPerPage={this.handleChangeRowsPerPage}
+						/>
+					</Paper>
+				)}
 			</div>
 		)
 	}

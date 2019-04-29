@@ -61,7 +61,7 @@ export class Staff extends React.Component {
 					<ul><h3>Staff</h3></ul>
 				</TopNav>
 				<p>Welcome to the staff page!</p>
-				<EnhancedTable columns={columns} data={data} actions={actions} searchable={true}/>
+				<EnhancedTable title='Staff' columns={columns} data={data} actions={actions} searchable={true}/>
 			</>
 		)
 	}

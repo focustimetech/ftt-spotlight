@@ -4,6 +4,12 @@ interface IProps {
 	variant: string
 	children: any
 }
+
+/**
+ * Empty state icon template for widgets and tables.
+ * @param variant The filename of the desired icon.
+ * @param children Text for the EmptyStateIcon.
+ */
 export const EmptyStateIcon = (props: IProps) => {
 	const imageName = `url('src/assets/images/empty-state/${props.variant}.svg')`
 	return (

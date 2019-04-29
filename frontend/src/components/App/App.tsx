@@ -15,6 +15,7 @@ import { ClassSchedule } from '../ClassSchedule'
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
 import { Student } from '../Profile/Student'
+import { Students } from '../Students'
 import { Sidebar } from '../Sidebar/Sidebar'
 import { Staff } from '../Staff'
 
@@ -58,7 +59,7 @@ export default class App extends React.Component<IProps, IState> {
 							<Route path='/staff' component={Staff} />
 							<Switch>
 								<Route path='/students/:studentID' component={Student} />
-								<Route path='/students' component={Staff} />
+								<Route path='/students' component={Students} />
 							</Switch>
 							<Route path='/class-schedule' component={ClassSchedule} />
 						</Content>

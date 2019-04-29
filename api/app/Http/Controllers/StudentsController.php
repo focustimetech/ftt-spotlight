@@ -17,7 +17,7 @@ class StudentsController extends Controller
     public function fetchAll()
     {
         // Get teachers
-        $students = Student::where('disabled', 0);
+        $students = Student::where('disabled', 0)->get();
 
         // return collection of staff as a resource
         return StudentResource::collection($students);
@@ -31,7 +31,7 @@ class StudentsController extends Controller
     public function fetchDisabled()
     {
         // Get teachers
-        $student = Student::where('disabled', 1);
+        $student = Student::where('disabled', 1)->get();
 
         // return collection of staff as a resource
         return StudentResource::collection($student);

@@ -11,7 +11,7 @@ class EnrollmentTableSeeder extends Seeder
      */
     public function run()
     {
-        $student_ids = App\Student::pluck('student_id')->toArray();
+        $student_ids = App\Student::pluck('id')->toArray();
         $block_numbers = App\Block::select('block_number')->groupBy('block_number')
             ->where('flex', 0)->get()->pluck('block_number')->toArray();
 

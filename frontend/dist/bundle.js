@@ -38425,7 +38425,7 @@ module.exports = exports['default'];
 
 exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  margin: 0;\n  padding: 0;\n  font-family: 'Segoe UI', 'Roboto', sans-serif; }\n\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0; }\n\na {\n  text-decoration: none;\n  color: inherit; }\n  a:hover, a:active, a:focus {\n    outline: none; }\n\nh1, h2, h3, h4, h5, h6, p {\n  margin: 0 0 8px 0; }\n\n.site-wrap {\n  display: flex; }\n  .site-wrap.--menu_open .sidebar {\n    width: 320px; }\n\n@media only screen and (min-height: 720px) and (min-width: 1366px) {\n  .login-wrap .login {\n    border-radius: 16px !important; } }\n\n.login-wrap {\n  width: 100vw;\n  height: 100vh;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: #F1F1F1; }\n  .login-wrap .login {\n    width: 100%;\n    height: 100%;\n    max-width: 1366px;\n    max-height: 768px;\n    border-radius: 0px;\n    transition: border-radius 0.5s;\n    overflow: hidden;\n    display: grid;\n    grid-template-columns: 1fr 1fr; }\n    .login-wrap .login__about {\n      background-color: #DDD;\n      background-repeat: no-repeat;\n      background-size: cover;\n      background-position: center;\n      position: relative; }\n      .login-wrap .login__about .logo_container {\n        position: absolute;\n        top: 16px;\n        left: 32px;\n        height: 64px;\n        line-height: 64px; }\n        .login-wrap .login__about .logo_container h1 {\n          font-weight: 400;\n          margin: 0;\n          text-shadow: 0px 4px 3px rgba(0, 0, 0, 0.4), 0px 8px 13px rgba(0, 0, 0, 0.1), 0px 18px 23px rgba(0, 0, 0, 0.1);\n          color: rgba(255, 255, 255, 0.87); }\n    .login-wrap .login__credentials {\n      display: flex;\n      flex-flow: column;\n      align-items: center;\n      background: #6200EA;\n      color: rgba(255, 255, 255, 0.87); }\n      .login-wrap .login__credentials .login_container {\n        margin: 120px 0;\n        max-width: 320px; }\n        .login-wrap .login__credentials .login_container h2 {\n          margin: 0 0 8px 0; }\n        .login-wrap .login__credentials .login_container .subtitle_link {\n          margin: 0 0 16px 0;\n          color: rgba(225, 225, 225, 0.86);\n          font-weight: 700; }\n          .login-wrap .login__credentials .login_container .subtitle_link:hover {\n            text-decoration: underline; }\n        .login-wrap .login__credentials .login_container .login_form {\n          background: #FFF;\n          color: rgba(0, 0, 0, 0.87);\n          padding: 32px;\n          border-radius: 4px;\n          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n          margin: 32px 0; }\n          .login-wrap .login__credentials .login_container .login_form h2 {\n            font-weight: 400;\n            text-align: center; }\n          .login-wrap .login__credentials .login_container .login_form .button_container {\n            width: 100%;\n            display: flex;\n            justify-content: flex-end;\n            margin: 16px 0 0 0; }\n            .login-wrap .login__credentials .login_container .login_form .button_container button {\n              margin-left: 16px; }\n        .login-wrap .login__credentials .login_container .links_list {\n          list-style: none;\n          margin: 0;\n          padding: 0;\n          display: flex;\n          justify-content: flex-end; }\n          .login-wrap .login__credentials .login_container .links_list li {\n            margin: 0 0 0 16px;\n            font-weight: 500; }\n\n.check-in_modal {\n  width: 100%; }\n  .check-in_modal__header {\n    height: 64px;\n    width: 600px;\n    box-sizing: border-box;\n    padding: 16px 32px;\n    line-height: 64px;\n    border-bottom: 1px solid #EEE;\n    display: flex;\n    align-items: center;\n    justify-content: space-between; }\n    .check-in_modal__header .icon-close {\n      margin-left: 8px; }\n    .check-in_modal__header h3 {\n      margin: 0; }\n  .check-in_modal__content {\n    padding: 16px 32px; }\n    .check-in_modal__content .check-in_heading {\n      display: flex;\n      flex-flow: row;\n      align-items: center;\n      margin-bottom: 8px; }\n      .check-in_modal__content .check-in_heading .heading_type {\n        font-weight: 500;\n        text-transform: uppercase;\n        margin: 0 16px 0 8px; }\n      .check-in_modal__content .check-in_heading .heading_status {\n        font-weight: 400;\n        color: rgba(0, 0, 0, 0.54);\n        margin: 0 8px 0 0;\n        transition: color 0.2s; }\n        .check-in_modal__content .check-in_heading .heading_status.--online {\n          color: #6200EA; }\n    .check-in_modal__content .check-in-input,\n    .check-in_modal__content .air-check-ins {\n      margin: 0 16px; }\n\n.content {\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n  position: relative;\n  padding: 0 64px;\n  flex: 1;\n  height: 100vh;\n  overflow: auto; }\n\n.empty-state-icon {\n  width: 100%;\n  margin: 40px 0 0;\n  text-align: center; }\n  .empty-state-icon__image {\n    display: block;\n    background-size: contain;\n    background-repeat: no-repeat;\n    width: 120px;\n    height: 120px;\n    margin: 0 auto 16px; }\n  .empty-state-icon h3 {\n    font-weight: 500; }\n\n.notifications_modal__content .content-inner {\n  margin-left: 32px; }\n\n.profile .profile_title {\n  display: flex;\n  align-items: center; }\n  .profile .profile_title .profile_avatar {\n    margin-right: 12px; }\n  .profile .profile_title .name-widget {\n    padding: 4px 8px;\n    margin: -4px -8px;\n    border-radius: 2px;\n    transition: background 0.2s;\n    cursor: text; }\n    .profile .profile_title .name-widget:hover {\n      background: #EEE; }\n    .profile .profile_title .name-widget h3 {\n      margin: 0; }\n    .profile .profile_title .name-widget__actions {\n      margin-left: 4px; }\n      .profile .profile_title .name-widget__actions li {\n        margin: 0; }\n\n.profile .--starred {\n  color: #ffd600; }\n\n.schedule_container .schedule_header {\n  display: flex;\n  align-items: center; }\n  .schedule_container .schedule_header li {\n    margin-right: 8px; }\n    .schedule_container .schedule_header li .schedule_daterange {\n      display: block;\n      margin-right: 8px;\n      border-radius: 2px;\n      padding: 8px 16px;\n      cursor: pointer;\n      transition: background 0.2s;\n      user-select: none; }\n      .schedule_container .schedule_header li .schedule_daterange:hover {\n        background: #EEE; }\n      .schedule_container .schedule_header li .schedule_daterange h3 {\n        font-weight: 400;\n        margin: 0; }\n\n.schedule_container .schedule {\n  width: 100%;\n  padding: 16px 0 0 0;\n  display: flex;\n  flex-flow: row wrap; }\n  .schedule_container .schedule .schedule_row {\n    width: 100%;\n    display: flex; }\n    .schedule_container .schedule .schedule_row .event,\n    .schedule_container .schedule .schedule_row .block {\n      font-size: 14px;\n      padding: 8px;\n      margin: 0 16px 8px 8px;\n      border-radius: 2px;\n      background: #EEE;\n      color: rgba(0, 0, 0, 0.87);\n      padding-bottom: 8px;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n      transition: box-shadow 0.2s;\n      cursor: pointer; }\n      .schedule_container .schedule .schedule_row .event:hover,\n      .schedule_container .schedule .schedule_row .block:hover {\n        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); }\n    .schedule_container .schedule .schedule_row .label {\n      width: 100%;\n      color: inherit;\n      padding: 8px 16px;\n      text-align: center; }\n      .schedule_container .schedule .schedule_row .label .day {\n        text-transform: uppercase;\n        margin: 0 0 4px 0;\n        font-weight: 500; }\n      .schedule_container .schedule .schedule_row .label .date {\n        display: inline-block;\n        margin: 0;\n        width: 32px;\n        height: 32px;\n        line-height: 32px;\n        padding: 8px;\n        border-radius: 50%;\n        background: none;\n        font-weight: 400;\n        font-weight: 400; }\n      .schedule_container .schedule .schedule_row .label.--today {\n        color: #6200EA; }\n        .schedule_container .schedule .schedule_row .label.--today .date {\n          background: #6200EA;\n          color: rgba(255, 255, 255, 0.87); }\n    .schedule_container .schedule .schedule_row .schedule_events {\n      width: 100%;\n      padding: 8px 0 0 0;\n      border-right: 1px solid #EEE;\n      border-bottom: 1px solid #EEE;\n      display: flex;\n      flex-flow: column-reverse; }\n      .schedule_container .schedule .schedule_row .schedule_events:last-child {\n        border-right: none; }\n    .schedule_container .schedule .schedule_row .schedule_blocks {\n      width: 100%;\n      padding: 8px 0 16px;\n      border-right: 1px solid #EEE; }\n      .schedule_container .schedule .schedule_row .schedule_blocks:last-child {\n        border-right: none; }\n      .schedule_container .schedule .schedule_row .schedule_blocks .block {\n        min-height: 96px; }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--missed {\n          background: #f44336;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--attended {\n          background: #4caf50;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--void {\n          background: #CCC;\n          color: rgba(75, 75, 75, 0.87); }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--appointed {\n          background: #ff9800;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--now {\n          border: 3px solid rgba(98, 0, 234, 0.54);\n          border-radius: 4px; }\n\n.search_modal__content .content-inner {\n  margin-left: 32px; }\n\n.search_modal .search-group_header {\n  font-size: 14px;\n  font-weight: 500;\n  text-transform: uppercase;\n  color: #777; }\n\n.search_modal .search-group_list {\n  margin-bottom: 8px; }\n  .search_modal .search-group_list__item {\n    border-radius: 2px; }\n    .search_modal .search-group_list__item:hover {\n      background: #EEE; }\n\n.sidebar {\n  height: 100vh;\n  width: 80px;\n  position: relative;\n  display: flex;\n  overflow: hidden;\n  flex-shrink: 1;\n  transition: width 0.2s ease-in-out; }\n  .sidebar__nav {\n    width: 64px;\n    height: 100vh;\n    padding: 16px 8px;\n    box-sizing: border-box;\n    background: #6200EA;\n    color: rgba(255, 255, 255, 0.87);\n    position: relative; }\n    .sidebar__nav .nav_account {\n      padding: 8px; }\n    .sidebar__nav .nav_button {\n      color: inherit; }\n      .sidebar__nav .nav_button .nav_avatar {\n        width: 32px;\n        height: 32px;\n        font-size: 14px; }\n    .sidebar__nav .nav_bottom {\n      position: absolute;\n      bottom: 16px; }\n  .sidebar__menu {\n    height: 100vh;\n    min-width: 256px;\n    max-width: 256px;\n    background: #F5F5FF;\n    padding: 0;\n    box-sizing: border-box;\n    display: inline-block;\n    position: relative;\n    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n    overflow-y: auto; }\n    .sidebar__menu .menu_header {\n      height: 80px;\n      line-height: 48px;\n      margin: 0 32px;\n      padding: 16px 0 16px 56px;\n      box-sizing: border-box;\n      border-bottom: 1px solid rgba(0, 0, 0, 0.12);\n      position: relative; }\n      .sidebar__menu .menu_header__logo {\n        position: absolute;\n        top: 16px;\n        left: 0;\n        width: 48px;\n        height: 48px;\n        background: rgba(98, 0, 234, 0.12);\n        background-repeat: no-repeat;\n        background-size: cover;\n        border-radius: 2px;\n        overflow: hidden; }\n      .sidebar__menu .menu_header h4 {\n        margin: 0;\n        font-weight: 500;\n        letter-spacing: normal;\n        text-transform: uppercase;\n        font-size: 14px; }\n    .sidebar__menu .menu_list {\n      padding: 0 16px; }\n      .sidebar__menu .menu_list__link {\n        color: inherit; }\n        .sidebar__menu .menu_list__link .list_item {\n          display: flex;\n          align-items: center;\n          padding: 8px 16px;\n          margin: 4px 0;\n          min-width: 128px;\n          max-width: 224px;\n          height: 32px;\n          line-height: 32px;\n          border-radius: 2px;\n          font-weight: 500;\n          cursor: pointer;\n          user-select: none;\n          transition: color 0.2s; }\n          .sidebar__menu .menu_list__link .list_item:hover {\n            background: rgba(98, 0, 234, 0.12); }\n          .sidebar__menu .menu_list__link .list_item__icon {\n            color: rgba(0, 0, 0, 0.54); }\n        .sidebar__menu .menu_list__link.--selected .list_item {\n          color: #6200EA;\n          background: rgba(98, 0, 234, 0.12); }\n          .sidebar__menu .menu_list__link.--selected .list_item__icon {\n            color: #6200EA; }\n\n.sidebar_modal {\n  width: 500px; }\n  .sidebar_modal__header {\n    display: flex;\n    align-items: center;\n    padding: 16px 32px 8px 8px; }\n    .sidebar_modal__header .button_back {\n      margin-right: 8px; }\n    .sidebar_modal__header h3 {\n      margin: 0; }\n  .sidebar_modal__content {\n    padding: 8px 32px 16px 32px; }\n\n.starred_modal__content .content-inner {\n  margin-left: 32px; }\n\n.enhanced-table.--searchable .enhanced-table__search {\n  margin-bottom: 16px; }\n\n.top-nav {\n  padding: 16px;\n  border-bottom: 1px solid #EEE;\n  margin-bottom: 16px; }\n  .top-nav.--tabs {\n    display: grid;\n    padding: 0; }\n    .top-nav.--tabs .top-nav__inner {\n      padding: 16px 16px 8px 16px; }\n  .top-nav__inner {\n    height: 48px;\n    line-height: 48px;\n    display: flex;\n    align-items: center;\n    justify-content: space-between; }\n    .top-nav__inner ul {\n      display: flex; }\n      .top-nav__inner ul li {\n        margin-left: 16px; }\n        .top-nav__inner ul li:first-child {\n          margin-left: 0; }\n", ""]);
+exports.push([module.i, "/* Main */\nbody {\n  margin: 0;\n  padding: 0;\n  font-family: 'Segoe UI', 'Roboto', sans-serif; }\n\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0; }\n\na {\n  text-decoration: none;\n  color: inherit; }\n  a:hover, a:active, a:focus {\n    outline: none; }\n\nh1, h2, h3, h4, h5, h6, p {\n  margin: 0 0 8px 0; }\n\n/* Layout */\n.site-wrap {\n  display: flex; }\n  .site-wrap.--menu_open .sidebar {\n    width: 320px; }\n\n@media only screen and (min-height: 720px) and (min-width: 1366px) {\n  .login-wrap .login {\n    border-radius: 16px !important; } }\n\n.login-wrap {\n  width: 100vw;\n  height: 100vh;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: #F1F1F1; }\n  .login-wrap .login {\n    width: 100%;\n    height: 100%;\n    max-width: 1366px;\n    max-height: 768px;\n    border-radius: 0px;\n    transition: border-radius 0.5s;\n    overflow: hidden;\n    display: grid;\n    grid-template-columns: 1fr 1fr; }\n    .login-wrap .login__about {\n      background-color: #DDD;\n      background-repeat: no-repeat;\n      background-size: cover;\n      background-position: center;\n      position: relative; }\n      .login-wrap .login__about .logo_container {\n        position: absolute;\n        top: 16px;\n        left: 32px;\n        height: 64px;\n        line-height: 64px; }\n        .login-wrap .login__about .logo_container h1 {\n          font-weight: 400;\n          margin: 0;\n          text-shadow: 0px 4px 3px rgba(0, 0, 0, 0.4), 0px 8px 13px rgba(0, 0, 0, 0.1), 0px 18px 23px rgba(0, 0, 0, 0.1);\n          color: rgba(255, 255, 255, 0.87); }\n    .login-wrap .login__credentials {\n      display: flex;\n      flex-flow: column;\n      align-items: center;\n      background: #6200EA;\n      color: rgba(255, 255, 255, 0.87); }\n      .login-wrap .login__credentials .login_container {\n        margin: 120px 0;\n        max-width: 320px; }\n        .login-wrap .login__credentials .login_container h2 {\n          margin: 0 0 8px 0; }\n        .login-wrap .login__credentials .login_container .subtitle_link {\n          margin: 0 0 16px 0;\n          color: rgba(225, 225, 225, 0.86);\n          font-weight: 700; }\n          .login-wrap .login__credentials .login_container .subtitle_link:hover {\n            text-decoration: underline; }\n        .login-wrap .login__credentials .login_container .login_form {\n          background: #FFF;\n          color: rgba(0, 0, 0, 0.87);\n          padding: 32px;\n          border-radius: 4px;\n          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n          margin: 32px 0; }\n          .login-wrap .login__credentials .login_container .login_form h2 {\n            font-weight: 400;\n            text-align: center; }\n          .login-wrap .login__credentials .login_container .login_form .button_container {\n            width: 100%;\n            display: flex;\n            justify-content: flex-end;\n            margin: 16px 0 0 0; }\n            .login-wrap .login__credentials .login_container .login_form .button_container button {\n              margin-left: 16px; }\n        .login-wrap .login__credentials .login_container .links_list {\n          list-style: none;\n          margin: 0;\n          padding: 0;\n          display: flex;\n          justify-content: flex-end; }\n          .login-wrap .login__credentials .login_container .links_list li {\n            margin: 0 0 0 16px;\n            font-weight: 500; }\n\n/* Components */\n.check-in_modal {\n  width: 100%; }\n  .check-in_modal__header {\n    height: 64px;\n    width: 600px;\n    box-sizing: border-box;\n    padding: 16px 32px;\n    line-height: 64px;\n    border-bottom: 1px solid #EEE;\n    display: flex;\n    align-items: center;\n    justify-content: space-between; }\n    .check-in_modal__header .icon-close {\n      margin-left: 8px; }\n    .check-in_modal__header h3 {\n      margin: 0; }\n  .check-in_modal__content {\n    padding: 16px 32px; }\n    .check-in_modal__content .check-in_heading {\n      display: flex;\n      flex-flow: row;\n      align-items: center;\n      margin-bottom: 8px; }\n      .check-in_modal__content .check-in_heading .heading_type {\n        font-weight: 500;\n        text-transform: uppercase;\n        margin: 0 16px 0 8px; }\n      .check-in_modal__content .check-in_heading .heading_status {\n        font-weight: 400;\n        color: rgba(0, 0, 0, 0.54);\n        margin: 0 8px 0 0;\n        transition: color 0.2s; }\n        .check-in_modal__content .check-in_heading .heading_status.--online {\n          color: #6200EA; }\n    .check-in_modal__content .check-in-input,\n    .check-in_modal__content .air-check-ins {\n      margin: 0 16px; }\n\n.content {\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n  position: relative;\n  padding: 0 64px;\n  flex: 1;\n  height: 100vh;\n  overflow: auto; }\n\n.empty-state-icon {\n  width: 100%;\n  margin: 40px 0 0;\n  text-align: center; }\n  .empty-state-icon__image {\n    display: block;\n    background-size: contain;\n    background-repeat: no-repeat;\n    width: 120px;\n    height: 120px;\n    margin: 0 auto 16px; }\n  .empty-state-icon h3 {\n    font-weight: 500; }\n\n.notifications_modal__content .content-inner {\n  margin-left: 32px; }\n\n.profile .profile_title {\n  display: flex;\n  align-items: center; }\n  .profile .profile_title .profile_avatar {\n    margin-right: 12px; }\n  .profile .profile_title .name-widget {\n    padding: 4px 8px;\n    margin: -4px -8px;\n    border-radius: 2px;\n    transition: background 0.2s;\n    cursor: text; }\n    .profile .profile_title .name-widget:hover {\n      background: #EEE; }\n    .profile .profile_title .name-widget h3 {\n      margin: 0; }\n    .profile .profile_title .name-widget__actions {\n      margin-left: 4px; }\n      .profile .profile_title .name-widget__actions li {\n        margin: 0; }\n\n.profile .--starred {\n  color: #ffd600; }\n\n.schedule_container .schedule_header {\n  display: flex;\n  align-items: center; }\n  .schedule_container .schedule_header li {\n    margin-right: 8px; }\n\n.schedule_container .schedule {\n  width: 100%;\n  padding: 16px 0 0 0;\n  display: flex;\n  flex-flow: row wrap; }\n  .schedule_container .schedule .schedule_row {\n    width: 100%;\n    display: flex; }\n    .schedule_container .schedule .schedule_row .event,\n    .schedule_container .schedule .schedule_row .block {\n      font-size: 14px;\n      padding: 8px;\n      margin: 0 16px 8px 8px;\n      border-radius: 2px;\n      background: #EEE;\n      color: rgba(0, 0, 0, 0.87);\n      padding-bottom: 8px;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n      transition: box-shadow 0.2s;\n      cursor: pointer; }\n      .schedule_container .schedule .schedule_row .event:hover,\n      .schedule_container .schedule .schedule_row .block:hover {\n        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); }\n    .schedule_container .schedule .schedule_row .label {\n      width: 100%;\n      color: inherit;\n      padding: 8px 16px;\n      text-align: center; }\n      .schedule_container .schedule .schedule_row .label .day {\n        text-transform: uppercase;\n        margin: 0 0 4px 0;\n        font-weight: 500; }\n      .schedule_container .schedule .schedule_row .label .date {\n        display: inline-block;\n        margin: 0;\n        width: 32px;\n        height: 32px;\n        line-height: 32px;\n        padding: 8px;\n        border-radius: 50%;\n        background: none;\n        font-weight: 400;\n        font-weight: 400; }\n      .schedule_container .schedule .schedule_row .label.--today {\n        color: #6200EA; }\n        .schedule_container .schedule .schedule_row .label.--today .date {\n          background: #6200EA;\n          color: rgba(255, 255, 255, 0.87); }\n    .schedule_container .schedule .schedule_row .schedule_events {\n      width: 100%;\n      padding: 8px 0 0 0;\n      border-right: 1px solid #EEE;\n      border-bottom: 1px solid #EEE;\n      display: flex;\n      flex-flow: column-reverse; }\n      .schedule_container .schedule .schedule_row .schedule_events:last-child {\n        border-right: none; }\n    .schedule_container .schedule .schedule_row .schedule_blocks {\n      width: 100%;\n      padding: 8px 0 16px;\n      border-right: 1px solid #EEE; }\n      .schedule_container .schedule .schedule_row .schedule_blocks:last-child {\n        border-right: none; }\n      .schedule_container .schedule .schedule_row .schedule_blocks .block {\n        min-height: 96px; }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--missed {\n          background: #f44336;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--attended {\n          background: #4caf50;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--void {\n          background: #CCC;\n          color: rgba(75, 75, 75, 0.87); }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--appointed {\n          background: #ff9800;\n          color: rgba(255, 255, 255, 0.87); }\n        .schedule_container .schedule .schedule_row .schedule_blocks .block.--now {\n          border: 3px solid rgba(98, 0, 234, 0.54);\n          border-radius: 4px; }\n\n.search_modal__content .content-inner {\n  margin-left: 32px; }\n\n.search_modal .search-group_header {\n  font-size: 14px;\n  font-weight: 500;\n  text-transform: uppercase;\n  color: #777; }\n\n.search_modal .search-group_list {\n  margin-bottom: 8px; }\n  .search_modal .search-group_list__item {\n    border-radius: 2px; }\n    .search_modal .search-group_list__item:hover {\n      background: #EEE; }\n\n.sidebar {\n  height: 100vh;\n  width: 80px;\n  position: relative;\n  display: flex;\n  overflow: hidden;\n  flex-shrink: 1;\n  transition: width 0.2s ease-in-out; }\n  .sidebar__nav {\n    width: 64px;\n    height: 100vh;\n    padding: 16px 8px;\n    box-sizing: border-box;\n    background: #6200EA;\n    color: rgba(255, 255, 255, 0.87);\n    position: relative; }\n    .sidebar__nav .nav_account {\n      padding: 8px; }\n    .sidebar__nav .nav_button {\n      color: inherit; }\n      .sidebar__nav .nav_button .nav_avatar {\n        width: 32px;\n        height: 32px;\n        font-size: 14px; }\n    .sidebar__nav .nav_bottom {\n      position: absolute;\n      bottom: 16px; }\n  .sidebar__menu {\n    height: 100vh;\n    min-width: 256px;\n    max-width: 256px;\n    background: #F5F5FF;\n    padding: 0;\n    box-sizing: border-box;\n    display: inline-block;\n    position: relative;\n    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n    overflow-y: auto; }\n    .sidebar__menu .menu_header {\n      height: 80px;\n      line-height: 48px;\n      margin: 0 32px;\n      padding: 16px 0 16px 56px;\n      box-sizing: border-box;\n      border-bottom: 1px solid rgba(0, 0, 0, 0.12);\n      position: relative; }\n      .sidebar__menu .menu_header__logo {\n        position: absolute;\n        top: 16px;\n        left: 0;\n        width: 48px;\n        height: 48px;\n        background: rgba(98, 0, 234, 0.12);\n        background-repeat: no-repeat;\n        background-size: cover;\n        border-radius: 2px;\n        overflow: hidden; }\n      .sidebar__menu .menu_header h4 {\n        margin: 0;\n        font-weight: 500;\n        letter-spacing: normal;\n        text-transform: uppercase;\n        font-size: 14px; }\n    .sidebar__menu .menu_list {\n      padding: 0 16px; }\n      .sidebar__menu .menu_list__link {\n        color: inherit; }\n        .sidebar__menu .menu_list__link .list_item {\n          display: flex;\n          align-items: center;\n          padding: 8px 16px;\n          margin: 4px 0;\n          min-width: 128px;\n          max-width: 224px;\n          height: 32px;\n          line-height: 32px;\n          border-radius: 2px;\n          font-weight: 500;\n          cursor: pointer;\n          user-select: none;\n          transition: color 0.2s; }\n          .sidebar__menu .menu_list__link .list_item:hover {\n            background: rgba(98, 0, 234, 0.12); }\n          .sidebar__menu .menu_list__link .list_item__icon {\n            color: rgba(0, 0, 0, 0.54); }\n        .sidebar__menu .menu_list__link.--selected .list_item {\n          color: #6200EA;\n          background: rgba(98, 0, 234, 0.12); }\n          .sidebar__menu .menu_list__link.--selected .list_item__icon {\n            color: #6200EA; }\n\n.sidebar_modal {\n  width: 500px; }\n  .sidebar_modal__header {\n    display: flex;\n    align-items: center;\n    padding: 16px 32px 8px 8px; }\n    .sidebar_modal__header .button_back {\n      margin-right: 8px; }\n    .sidebar_modal__header h3 {\n      margin: 0; }\n  .sidebar_modal__content {\n    padding: 8px 32px 16px 32px; }\n\n.starred_modal__content .content-inner {\n  margin-left: 32px; }\n\n.enhanced-table .empty-state {\n  padding: 64px;\n  border-radius: 4px;\n  border: 2px dotted #222; }\n\n.enhanced-table__toolbar {\n  width: 100%;\n  display: flex;\n  flex-flow: row;\n  align-items: center;\n  justify-content: space-between; }\n  .enhanced-table__toolbar h3 {\n    margin: 0; }\n    .enhanced-table__toolbar h3.num-selected {\n      font-weight: 400; }\n  .enhanced-table__toolbar .enhanced-table__tools {\n    display: flex;\n    flex-flow: row;\n    align-items: center; }\n\n.enhanced-table .enhanced-table__filters {\n  width: 400px;\n  position: absolute;\n  top: 8px;\n  right: 8px;\n  padding: 16px;\n  background: #FFF;\n  border-radius: 2px;\n  z-index: 100; }\n  .enhanced-table .enhanced-table__filters .placeholder {\n    margin: 16px;\n    text-align: center; }\n  .enhanced-table .enhanced-table__filters .filters-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    box-sizing: border-box; }\n    .enhanced-table .enhanced-table__filters .filters-header h3 {\n      margin: 0; }\n    .enhanced-table .enhanced-table__filters .filters-header .filter-actions {\n      display: flex;\n      flex-flow: row; }\n      .enhanced-table .enhanced-table__filters .filters-header .filter-actions .filter-action {\n        margin-left: 8px; }\n        .enhanced-table .enhanced-table__filters .filters-header .filter-actions .filter-action:last-child {\n          margin-left: 0; }\n  .enhanced-table .enhanced-table__filters .filter-rule {\n    display: flex;\n    align-items: baseline;\n    margin-bottom: 8px; }\n    .enhanced-table .enhanced-table__filters .filter-rule > * {\n      margin-left: 8px; }\n      .enhanced-table .enhanced-table__filters .filter-rule > *:first-child {\n        margin-left: 0; }\n    .enhanced-table .enhanced-table__filters .filter-rule:last-child {\n      margin-bottom: 16px; }\n\n.top-nav {\n  padding: 16px;\n  border-bottom: 1px solid #EEE;\n  margin-bottom: 16px; }\n  .top-nav.--tabs {\n    display: grid;\n    padding: 0; }\n    .top-nav.--tabs .top-nav__inner {\n      padding: 16px 16px 8px 16px; }\n  .top-nav__inner {\n    height: 48px;\n    line-height: 48px;\n    display: flex;\n    align-items: center;\n    justify-content: space-between; }\n    .top-nav__inner ul {\n      display: flex; }\n      .top-nav__inner ul li {\n        margin-left: 16px; }\n        .top-nav__inner ul li:first-child {\n          margin-left: 0; }\n", ""]);
 
 
 
@@ -52915,6 +52915,7 @@ __webpack_require__(/*! ../../assets/styles/main.scss */ "./src/assets/styles/ma
 var React = __webpack_require__(/*! react */ "react");
 var react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 // import { ProtectedRoute as Route} from './AppWithAuth'
+var ClassSchedule_1 = __webpack_require__(/*! ../ClassSchedule */ "./src/components/ClassSchedule.tsx");
 var Content_1 = __webpack_require__(/*! ../Content */ "./src/components/Content.tsx");
 var Dashboard_1 = __webpack_require__(/*! ../Dashboard */ "./src/components/Dashboard.tsx");
 var Student_1 = __webpack_require__(/*! ../Profile/Student */ "./src/components/Profile/Student.tsx");
@@ -52942,7 +52943,10 @@ var App = /** @class */ (function (_super) {
                         React.createElement(react_router_dom_1.Route, { path: '/', exact: true, render: function (props) { return (React.createElement(react_router_dom_1.Redirect, { to: '/dashboard' })); } }),
                         React.createElement(react_router_dom_1.Route, { exact: true, path: '/dashboard', component: Dashboard_1.Dashboard }),
                         React.createElement(react_router_dom_1.Route, { path: '/staff', component: Staff_1.Staff }),
-                        React.createElement(react_router_dom_1.Route, { path: '/students', component: Student_1.Student }))))));
+                        React.createElement(react_router_dom_1.Switch, null,
+                            React.createElement(react_router_dom_1.Route, { path: '/students/:studentID', component: Student_1.Student }),
+                            React.createElement(react_router_dom_1.Route, { path: '/students', component: Staff_1.Staff })),
+                        React.createElement(react_router_dom_1.Route, { path: '/class-schedule', component: ClassSchedule_1.ClassSchedule }))))));
     };
     return App;
 }(React.Component));
@@ -52989,56 +52993,47 @@ var React = __webpack_require__(/*! react */ "react");
 var App_1 = __webpack_require__(/*! ./App */ "./src/components/App/App.tsx");
 var Login_1 = __webpack_require__(/*! ../Login */ "./src/components/Login.tsx");
 var react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-var fakeAuth = {
-    isAuthenticated: false,
-    authenticate: function (cb) {
-        console.log('fakeAuth.authenticate()');
-        this.isAuthenticated = true;
-        setTimeout(cb, 100); // fake async
-    },
-    signout: function (cb) {
-        console.log('fakeAuth.signout()');
-        this.isAuthenticated = false;
-        setTimeout(cb, 100);
-    }
-};
-/*
-export const ProtectedRoute = ({component: Component}: ProtectedRouteProps, {...rest}) => {
-    return (
-        <Route {...rest} render={(props) => (
-            fakeAuth.isAuthenticated ? (
-                <Component {...props} />
-            ) : (
-                <Redirect
-                    to={{
-                        pathname: '/login',
-                        state: { from: props.location }
-                    }}
-                />
-            )
-        )} />
-    )
-}
-*/
 var AppWithAuth = /** @class */ (function (_super) {
     __extends(AppWithAuth, _super);
     function AppWithAuth() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            authState: 'sign-in'
+            authState: 'signed-in'
+        };
+        _this.authentication = {
+            isAuthenticated: true,
+            authenticate: function (cb) {
+                this.isAuthenticated = true;
+                this.call(cb);
+            },
+            signout: function (cb) {
+                this.isAuthenticated = false;
+                this.call(cb);
+            }
         };
         _this.handleSignIn = function (callback) {
-            console.log('handleSignIn()');
+            _this.authentication.authenticate();
             _this.setState({ authState: 'signed-in' }, callback);
         };
         _this.handleSignOut = function (callback) {
+            _this.authentication.signout();
             _this.setState({ authState: 'sign-in' }, callback);
         };
         _this.isAuthenticated = function () {
-            return _this.state.authState === 'signed-in';
+            return _this.authentication.isAuthenticated;
+        };
+        _this.getAuthentication = function () {
+            var accessToken = localStorage.getItem('accessToken');
+            if (accessToken) {
+                return true;
+            }
+            _this.handleSignOut();
+            return false;
         };
         return _this;
     }
+    AppWithAuth.prototype.componentDidMount = function () {
+    };
     AppWithAuth.prototype.render = function () {
         var _this = this;
         return (React.createElement(react_router_dom_1.BrowserRouter, null,
@@ -53054,6 +53049,74 @@ var AppWithAuth = /** @class */ (function (_super) {
     return AppWithAuth;
 }(React.Component));
 exports.default = AppWithAuth;
+
+
+/***/ }),
+
+/***/ "./src/components/ClassSchedule.tsx":
+/*!******************************************!*\
+  !*** ./src/components/ClassSchedule.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "react");
+var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
+//cimport { IStudent } from '../../types/student'
+//cimport { NameWidget } from './NameWidget'
+var TopNav_1 = __webpack_require__(/*! ./TopNav */ "./src/components/TopNav.tsx");
+var ClassSchedule = /** @class */ (function (_super) {
+    __extends(ClassSchedule, _super);
+    function ClassSchedule() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.state = {
+            tab: 'schedule'
+        };
+        _this.handleTabChange = function (event, value) {
+            _this.setState({ tab: value });
+        };
+        return _this;
+    }
+    ClassSchedule.prototype.render = function () {
+        var navTabs = {
+            value: this.state.tab,
+            onChange: this.handleTabChange,
+            tabs: [
+                { value: 'courses', label: 'Courses' },
+                { value: 'schedule', label: 'Class Schedule' },
+            ]
+        };
+        return (React.createElement("div", { className: 'profile' },
+            React.createElement(TopNav_1.TopNav, { className: '--tabs', tabs: navTabs },
+                React.createElement("ul", null,
+                    React.createElement("h3", null, "Class Schedule")),
+                React.createElement("ul", { className: 'right_col' },
+                    React.createElement("li", null,
+                        React.createElement(core_1.IconButton, null,
+                            React.createElement(core_1.Icon, null, "add"))),
+                    React.createElement("li", null,
+                        React.createElement(core_1.IconButton, null,
+                            React.createElement(core_1.Icon, null, "more_vert")))))));
+    };
+    return ClassSchedule;
+}(React.Component));
+exports.ClassSchedule = ClassSchedule;
 
 
 /***/ }),
@@ -53158,6 +53221,11 @@ exports.Dashboard = Dashboard;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
+/**
+ * Empty state icon template for widgets and tables.
+ * @param variant The filename of the desired icon.
+ * @param children Text for the EmptyStateIcon.
+ */
 exports.EmptyStateIcon = function (props) {
     var imageName = "url('src/assets/images/empty-state/" + props.variant + ".svg')";
     return (React.createElement("div", { className: 'empty-state-icon' },
@@ -53249,6 +53317,9 @@ var Login = /** @class */ (function (_super) {
         };
         return _this;
     }
+    Login.prototype.componentDidMount = function () {
+        this.backgroundImage = selectBackground();
+    };
     Login.prototype.render = function () {
         var _this = this;
         var from = (this.props.location.state || { from: { pathname: '/' } }).from;
@@ -53259,7 +53330,7 @@ var Login = /** @class */ (function (_super) {
         }
         return (React.createElement("div", { className: 'login-wrap' },
             React.createElement("div", { className: 'login' },
-                React.createElement("div", { className: 'login__about' /*style={{backgroundImage: selectBackground()}}*/ },
+                React.createElement("div", { className: 'login__about', style: { backgroundImage: this.backgroundImage } },
                     React.createElement("a", { href: 'https://focustime.ca', className: 'logo_container' },
                         React.createElement("h1", null, "Spotlight"))),
                 React.createElement("div", { className: 'login__credentials' },
@@ -53882,6 +53953,18 @@ var Student = /** @class */ (function (_super) {
         };
         return _this;
     }
+    Student.prototype.componentDidMount = function () {
+        var params = this.props.match.params;
+        console.log('url: ', params);
+        /*
+                axios.post('http://localhost:8000/api/login', {
+                    
+                })
+                    .then(res => {
+                        console.log(res)
+                    })
+        */
+    };
     Student.prototype.render = function () {
         var starred = this.state.student.starred;
         var navTabs = {
@@ -53960,7 +54043,7 @@ var Schedule = /** @class */ (function (_super) {
             React.createElement("ul", { className: 'schedule_header' },
                 React.createElement("li", null,
                     React.createElement("a", { className: 'schedule_daterange', onClick: this.handleDateRangeOpen },
-                        React.createElement("h3", null, "Jan 25 \u2014 27, 2019"))),
+                        React.createElement(core_1.Button, null, "Jan 25 \u2014 27, 2019"))),
                 React.createElement("li", null,
                     React.createElement(core_1.Tooltip, { title: 'Back', placement: 'top' },
                         React.createElement(core_1.IconButton, { onClick: this.handlePrevious },
@@ -54202,30 +54285,59 @@ var TopNav_1 = __webpack_require__(/*! ./TopNav */ "./src/components/TopNav.tsx"
 var Staff = /** @class */ (function (_super) {
     __extends(Staff, _super);
     function Staff() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.handleCheckIn = function (ids) {
+            console.log('IDs:', ids);
+        };
+        return _this;
     }
     Staff.prototype.componentDidMount = function () {
         document.title = 'Dashboard - Spotlight';
     };
     Staff.prototype.render = function () {
         var data = [
-            { id: 0, name: 'James', age: 25, color: 'Red' },
-            { id: 1, name: 'Ryan', age: 28, color: 'Yellow' },
-            { id: 2, name: 'Bob', age: 21, color: 'Green' },
-            { id: 3, name: 'Lisa', age: 22, color: 'Blue' },
-            { id: 4, name: 'Saul', age: 30, color: 'Brown' },
+            { id: 0, name: 'James Smith', first_name: 'James', last_name: 'Smith', attendance: '90.0%', profile: 20 },
+            { id: 1, name: 'Ryan James', first_name: 'Ryan', last_name: 'James', attendance: '53.4%', profile: 21 },
+            { id: 2, name: 'Bob Robert', first_name: 'Bob', last_name: 'Robert', attendance: '70.9%', profile: 22 },
+            { id: 3, name: 'Lisa Redd', first_name: 'Lisa', last_name: 'Redd', attendance: '81.2%', profile: 23 },
+            { id: 4, name: 'Saul Goodman', first_name: 'Saul', last_name: 'Goodman', attendance: '91.6%', profile: 24 },
+            { id: 5, name: 'Daniel Keller', first_name: 'Daniel', last_name: 'Keller', attendance: '91.6%', profile: 25 },
+            { id: 6, name: 'Howard Ferguson', first_name: 'Howard', last_name: 'Furguson', attendance: '90.6%', profile: 26 },
+            { id: 7, name: 'Joane May', first_name: 'Joane', last_name: 'May', attendance: '45.6%', profile: 27 },
+            { id: 8, name: 'Kendrick Arlen', first_name: 'Kendrick', last_name: 'Arlen', attendance: '21.2%', profile: 28 },
+            { id: 9, name: 'Doug Judy', first_name: 'Doug', last_name: 'Judy', attendance: '82.0%', profile: 29 },
+            { id: 10, name: 'Jackson Ryan', first_name: 'Jackson', last_name: 'Ryan', attendance: '95.5%', profile: 30 },
+            { id: 11, name: 'Zach Williams', first_name: 'Zach', last_name: 'Williams', attendance: '94.1%', profile: 31 },
+            { id: 12, name: 'Victor Dennison', first_name: 'Victor', last_name: 'Dennison', attendance: '88.8%', profile: 32 },
+            { id: 13, name: 'Michael Adib', first_name: 'Michael', last_name: 'Adib', attendance: '92.0%', profile: 33 },
         ];
-        var rows = [
-            { id: 'name', label: 'Name', isNumeric: false, disablePadding: true },
-            { id: 'age', label: 'Age', isNumeric: true },
-            { id: 'color', label: 'Color', isNumeric: false }
+        var columns = [
+            {
+                id: 'name',
+                label: 'Student',
+                th: true,
+                isNumeric: false,
+                disablePadding: true,
+                searchable: true,
+                filterable: false,
+                visible: true
+            },
+            { id: 'attendance', label: 'Attendance', isNumeric: true, visible: true, filterable: true },
+            { id: 'profile', label: 'Profile', isNumeric: false, link: '/students', visible: true, filterable: false },
+            { id: 'first_name', label: 'First Name', isNumeric: false, filterable: true, visible: false },
+            { id: 'last_name', label: 'Last Name', isNumeric: false, filterable: true, visible: false }
+        ];
+        var actions = [
+            { id: 'check-in', name: 'Check In', action: this.handleCheckIn },
+            { id: 'add-to-cluster', name: 'Add to Cluster', action: this.handleCheckIn },
+            { id: 'delete', name: 'Delete', action: this.handleCheckIn }
         ];
         return (React.createElement(React.Fragment, null,
             React.createElement(TopNav_1.TopNav, null,
                 React.createElement("ul", null,
                     React.createElement("h3", null, "Staff"))),
             React.createElement("p", null, "Welcome to the staff page!"),
-            React.createElement(EnhancedTable_1.EnhancedTable, { rows: rows, data: data, searchable: true })));
+            React.createElement(EnhancedTable_1.EnhancedTable, { title: 'Staff', columns: columns, data: data, actions: actions, searchable: true })));
     };
     return Staff;
 }(React.Component));
@@ -54258,10 +54370,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
-var classNames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+var react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
 var EnhancedTableHead_1 = __webpack_require__(/*! ./EnhancedTableHead */ "./src/components/Table/EnhancedTableHead.tsx");
 var EnhancedTableToolbar_1 = __webpack_require__(/*! ./EnhancedTableToolbar */ "./src/components/Table/EnhancedTableToolbar.tsx");
+var EmptyStateIcon_1 = __webpack_require__(/*! ../EmptyStateIcon */ "./src/components/EmptyStateIcon.tsx");
 var desc = function (a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -54292,14 +54405,61 @@ var EnhancedTable = /** @class */ (function (_super) {
         _this.state = {
             tableQuery: '',
             order: 'asc',
-            orderBy: _this.props.rows[0].id,
+            orderBy: _this.props.columns[0].id,
             selected: [],
             data: _this.props.data,
             page: 0,
-            rowsPerPage: 5
+            rowsPerPage: 5,
+            filters: [],
+            filterOpen: false,
         };
-        _this.filterTableData = function (data) {
-            return data;
+        _this.handleFilterOpen = function () {
+            _this.setState({ filterOpen: true });
+        };
+        _this.handleFilterClose = function () {
+            _this.setState({ filterOpen: false });
+        };
+        _this.handleFilterChange = function (filters) {
+            _this.setState({ filters: filters }, function () {
+                console.log('Filters', _this.state.filters);
+            });
+        };
+        _this.filterTableData = function () {
+            var _a = _this.state, tableQuery = _a.tableQuery, filters = _a.filters;
+            var properties = _this.props.columns.reduce(function (acc, column) {
+                if (column.searchable) {
+                    acc.push(column.id);
+                }
+                return acc;
+            }, []);
+            return _this.state.data.filter(function (row) {
+                var matchSearch = tableQuery.length ? (properties.some(function (property) {
+                    return new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase());
+                })) : true;
+                var matchFilters = filters.length ? (filters.some(function (filter) {
+                    switch (filter.rule) {
+                        case 'contains':
+                            /**
+                             * @TODO This should return something other than false...
+                             */
+                            return false;
+                        case 'ends-with':
+                            return row[filter.id].endsWith(filter.value);
+                        case 'equal-to':
+                            return row[filter.id] == filter.value;
+                        case 'greater-than':
+                            return row[filter.id] > filter.value;
+                        case 'less-than':
+                            return row[filter.id] < filter.value;
+                        case 'not-equal-to':
+                            return row[filter.id] != filter.value;
+                        case 'starts-with':
+                            return row[filter.id].startsWith(filter.value);
+                    }
+                })) : true;
+                console.log('matchSearch: ', matchSearch, 'matchFilters: ', matchFilters);
+                return matchSearch && matchFilters;
+            });
         };
         _this.handleRequestSort = function (property) {
             var order = 'desc';
@@ -54310,10 +54470,21 @@ var EnhancedTable = /** @class */ (function (_super) {
         };
         _this.handleSelectAllClick = function (event) {
             if (event.target.checked) {
-                _this.setState(function (state) { return ({ selected: state.data.map(function (n) { return n.id; }) }); });
+                console.log('event.target.checked == true');
+                _this.setState({
+                    selected: _this.state.filters.length || _this.state.tableQuery.length ? (_this.filterTableData().map(function (n) { return n.id; })) : (_this.state.data.map(function (n) { return n.id; }))
+                }, function () { console.log('selected:', _this.state.selected); });
                 return;
             }
             _this.setState({ selected: [] });
+        };
+        _this.handleInvertSelection = function () {
+            console.log('invertSelection()');
+            _this.setState({
+                selected: _this.state.data.map(function (n) { return n.id; }).filter(function (index) {
+                    return _this.state.selected.indexOf(index) < 0;
+                })
+            });
         };
         _this.handleClick = function (event, id) {
             var selected = _this.state.selected;
@@ -54339,46 +54510,259 @@ var EnhancedTable = /** @class */ (function (_super) {
         _this.isSelected = function (id) {
             return _this.state.selected.indexOf(id) !== -1;
         };
-        _this.handleTableQueryChange = function (event) {
-            _this.setState({ tableQuery: event.target.value });
+        _this.handleTableQueryChange = function (value) {
+            _this.setState({ tableQuery: value });
         };
         return _this;
     }
     EnhancedTable.prototype.render = function () {
         var _this = this;
+        console.log(this.state.selected);
         var _a = this.state, order = _a.order, orderBy = _a.orderBy, selected = _a.selected, rowsPerPage = _a.rowsPerPage, page = _a.page;
-        var data = this.props.searchable && this.state.tableQuery ? this.filterTableData(this.state.data) : this.state.data;
+        var data = (this.props.searchable && this.state.tableQuery.length) || this.state.filters.length ? (this.filterTableData()) : (this.state.data);
         var emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-        return (React.createElement("div", { className: classNames('enhanced-table', { '--searchable': this.props.searchable }) },
-            this.props.searchable && (React.createElement(core_1.TextField, { className: 'enhanced-table__search', fullWidth: true, onChange: this.handleTableQueryChange, placeholder: 'Search Staff', value: this.state.tableQuery, variant: 'standard' })),
-            React.createElement(core_1.Paper, null,
-                React.createElement(EnhancedTableToolbar_1.EnhancedTableToolbar, { title: 'Staff', numSelected: selected.length }),
-                React.createElement("div", null,
-                    React.createElement(core_1.Table, null,
-                        React.createElement(EnhancedTableHead_1.EnhancedTableHead, { numSelected: selected.length, order: order, orderBy: orderBy, onSelectAllClick: this.handleSelectAllClick, onRequestSort: this.handleRequestSort, rowCount: data.length, rows: this.props.rows }),
-                        React.createElement(core_1.TableBody, null,
-                            stableSort(data, getSorting(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map(function (n) {
-                                var isSelected = _this.isSelected(n.id);
-                                return (React.createElement(core_1.TableRow, { hover: true, onClick: function (event) { return _this.handleClick(event, n.id); }, role: 'checkbox', "aria-checked": isSelected, tabIndex: -1, key: n.id, selected: isSelected },
-                                    React.createElement(core_1.TableCell, { padding: 'checkbox' },
-                                        React.createElement(core_1.Checkbox, { checked: isSelected })),
-                                    React.createElement(core_1.TableCell, { component: 'th', scope: 'row', padding: 'none' }, n.name),
-                                    React.createElement(core_1.TableCell, { align: 'right' }, n.age),
-                                    React.createElement(core_1.TableCell, { align: 'right' }, n.color)));
-                            }),
-                            emptyRows > 0 && (React.createElement(core_1.TableRow, { style: { height: 49 * emptyRows } },
-                                React.createElement(core_1.TableCell, { colSpan: 4 })))))),
-                React.createElement(core_1.TablePagination, { rowsPerPageOptions: [5, 10, 15], component: 'div', count: data.length, rowsPerPage: rowsPerPage, page: page, backIconButtonProps: {
-                        'aria-label': 'Previous Page'
-                    }, nextIconButtonProps: {
-                        'aria-label': 'Next Page'
-                    }, onChangePage: this.handleChangePage, onChangeRowsPerPage: this.handleChangeRowsPerPage }))));
+        return (React.createElement("div", { className: 'enhanced-table' }, this.props.data.length == 0 && this.props.showEmptyTable !== false ? (React.createElement("div", { className: 'empty-state' },
+            React.createElement(EmptyStateIcon_1.EmptyStateIcon, { variant: 'file' },
+                React.createElement("h3", null, this.props.title + " table is empty.")))) : (React.createElement(core_1.Paper, null,
+            React.createElement(EnhancedTableToolbar_1.EnhancedTableToolbar, { title: this.props.title, searchable: this.props.searchable, tableQuery: this.state.tableQuery, numSelected: selected.length, numShown: data.length, numTotal: this.props.data.length, columns: this.props.columns, actions: this.props.actions, filters: this.state.filters, handleInvertSelection: this.handleInvertSelection, handleFilterOpen: this.handleFilterOpen, handleFilterClose: this.handleFilterClose, handleFilterChange: this.handleFilterChange, handleTableQueryChange: this.handleTableQueryChange, filterOpen: this.state.filterOpen }),
+            React.createElement("div", null,
+                React.createElement(core_1.Table, null,
+                    React.createElement(EnhancedTableHead_1.EnhancedTableHead, { numSelected: selected.length, order: order, orderBy: orderBy, onSelectAllClick: this.handleSelectAllClick, onRequestSort: this.handleRequestSort, rowCount: data.length, columns: this.props.columns }),
+                    React.createElement(core_1.TableBody, null,
+                        stableSort(data, getSorting(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map(function (n) {
+                            var isSelected = _this.isSelected(n.id);
+                            var columns = _this.props.columns.filter(function (column) {
+                                return column.visible;
+                            });
+                            return (React.createElement(core_1.TableRow, { hover: true, onClick: function (event) { return _this.handleClick(event, n.id); }, role: 'checkbox', "aria-checked": isSelected, tabIndex: -1, key: n.id, selected: isSelected },
+                                React.createElement(core_1.TableCell, { padding: 'checkbox' },
+                                    React.createElement(core_1.Checkbox, { checked: isSelected })),
+                                columns.map(function (column) {
+                                    if (column.link) {
+                                        return (React.createElement(core_1.TableCell, { padding: 'checkbox' },
+                                            React.createElement(core_1.Tooltip, { title: column.label, placement: 'left' },
+                                                React.createElement(react_router_dom_1.Link, { to: column.link + "/" + n[column.id] },
+                                                    React.createElement(core_1.Icon, null, "launch")))));
+                                    }
+                                    else if (column.th) {
+                                        return (React.createElement(core_1.TableCell, { component: 'th', scope: 'row', padding: 'none' }, n[column.id]));
+                                    }
+                                    else {
+                                        return React.createElement(core_1.TableCell, { align: 'right' }, n[column.id]);
+                                    }
+                                })));
+                        }),
+                        emptyRows > 0 && (React.createElement(core_1.TableRow, { style: { height: 49 * emptyRows } },
+                            React.createElement(core_1.TableCell, { colSpan: 4 })))))),
+            React.createElement(core_1.TablePagination, { rowsPerPageOptions: [5, 10, 25], component: 'div', count: data.length, rowsPerPage: rowsPerPage, page: page, backIconButtonProps: {
+                    'aria-label': 'Previous Page'
+                }, nextIconButtonProps: {
+                    'aria-label': 'Next Page'
+                }, onChangePage: this.handleChangePage, onChangeRowsPerPage: this.handleChangeRowsPerPage })))));
     };
     return EnhancedTable;
 }(React.Component));
 exports.EnhancedTable = EnhancedTable;
+
+
+/***/ }),
+
+/***/ "./src/components/Table/EnhancedTableFilter.tsx":
+/*!******************************************************!*\
+  !*** ./src/components/Table/EnhancedTableFilter.tsx ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "react");
+var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
+var stringFilterRules = [
+    { label: 'Equal to', value: 'equal-to' },
+    { label: 'Not equal to', value: 'not-equal-to' },
+    { label: 'Starts with', value: 'starts-with' },
+    { label: 'Ends with', value: 'ends-with' },
+    { label: 'Contains', value: 'contains' }
+];
+var numericFilterRules = [
+    { label: 'Less than', value: 'less-than' },
+    { label: 'Greater than', value: 'greater-than' },
+    { label: 'Equal to', value: 'equal-to' },
+    { label: 'Not equal to', value: 'not-equal-to' }
+];
+/**
+ * @TODO MSeparate the handleFilterChange into 3 methods.
+ */
+var EnhancedTableFilter = /** @class */ (function (_super) {
+    __extends(EnhancedTableFilter, _super);
+    function EnhancedTableFilter() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.state = {
+            filters: _this.props.filters.length ? _this.props.filters : [_this.newFilter()]
+        };
+        _this.onUpdateFilters = function () {
+            _this.props.handleFilterChange(_this.state.filters);
+            _this.handleClose();
+        };
+        _this.onAddFilter = function () {
+            _this.setState(function (state) {
+                return { filters: state.filters.concat(_this.newFilter()) };
+            });
+        };
+        _this.onRemoveFilter = function (index) {
+            _this.setState(function (state) {
+                return {
+                    filters: state.filters.filter(function (filter, idx) {
+                        return index !== idx;
+                    })
+                };
+            });
+        };
+        _this.onRemoveAllFilters = function () {
+            _this.setState({ filters: [] });
+        };
+        _this.handleChangeFilterID = function (value, index) {
+            _this.setState(function (state) {
+                var filters = state.filters.map(function (filter, idx) {
+                    if (idx !== index) {
+                        return filter;
+                    }
+                    else {
+                        var column = _this.props.columns.find(function (column) {
+                            return column.id === value;
+                        });
+                        var hasTypeChanged = filter.type === 'string' ? column.isNumeric : !column.isNumeric;
+                        var newFilter = void 0;
+                        if (hasTypeChanged && column.isNumeric) {
+                            newFilter.type = 'numeric';
+                            newFilter.rule = hasTypeChanged ? numericFilterRules[0].value : filter.rule;
+                        }
+                        else {
+                            newFilter.type = 'string';
+                            newFilter.rule = hasTypeChanged ? stringFilterRules[0].value : filter.rule;
+                        }
+                        return __assign({}, newFilter, { id: value, value: hasTypeChanged ? '' : filter.value });
+                    }
+                });
+                return { filters: filters };
+            });
+        };
+        _this.handleChangeFilterRule = function (value, index) {
+            _this.setState(function (state) {
+                return {
+                    filters: state.filters.map(function (filter, idx) {
+                        return index !== idx ? filter : __assign({}, filter, { rule: value });
+                    })
+                };
+            });
+        };
+        _this.handleChangeFilterValue = function (value, index) {
+            _this.setState(function (state) {
+                return {
+                    filters: state.filters.map(function (filter, idx) {
+                        return index !== idx ? filter : __assign({}, filter, { value: value });
+                    })
+                };
+            });
+        };
+        _this.handleClose = function () {
+            _this.props.handleFilterClose();
+        };
+        return _this;
+    }
+    EnhancedTableFilter.prototype.newFilter = function () {
+        var filter;
+        if (this.props.filters.length) {
+            filter = __assign({}, this.props.filters[this.props.filters.length - 1], { value: '' });
+        }
+        else {
+            if (this.props.columns[0].isNumeric) {
+                filter = {
+                    id: this.props.columns[0].id,
+                    type: 'numeric',
+                    rule: numericFilterRules[0].value,
+                    value: ''
+                };
+            }
+            else {
+                filter = {
+                    id: this.props.columns[0].id,
+                    type: 'string',
+                    rule: stringFilterRules[0].value,
+                    value: ''
+                };
+            }
+        }
+        return filter;
+    };
+    /**
+     * @TODO Add a componnentDidMount and componentDidUnmount and give it
+     * an event listener, so users can close the window. Also allow enter key
+     * to create a new filter, and Ctrl + Enter to apply.
+     */
+    EnhancedTableFilter.prototype.render = function () {
+        var _this = this;
+        return (React.createElement(core_1.Grow, { in: this.props.open },
+            React.createElement(core_1.Paper, { className: 'enhanced-table__filters', elevation: 6 },
+                React.createElement("div", { className: 'filters-header' },
+                    React.createElement("h3", null, "Filters"),
+                    React.createElement("ul", { className: 'filter-actions' },
+                        React.createElement("li", { className: 'filter-action' },
+                            React.createElement(core_1.Tooltip, { placement: 'bottom', title: 'Remove All' },
+                                React.createElement(core_1.IconButton, { onClick: function () { return _this.onRemoveAllFilters(); } },
+                                    React.createElement(core_1.Icon, null, "delete")))),
+                        React.createElement("li", { className: 'filter-action' },
+                            React.createElement(core_1.Tooltip, { placement: 'bottom', title: 'Apply Filters' },
+                                React.createElement(core_1.IconButton, { onClick: function () { return _this.onUpdateFilters(); } },
+                                    React.createElement(core_1.Icon, null, "check")))),
+                        React.createElement("li", { className: 'filter-action' },
+                            React.createElement(core_1.Tooltip, { placement: 'bottom', title: 'Cancel' },
+                                React.createElement(core_1.IconButton, { onClick: function () { return _this.handleClose(); } },
+                                    React.createElement(core_1.Icon, null, "close")))))),
+                this.state.filters.length ? (React.createElement("ul", null, this.state.filters.map(function (filter, idx) {
+                    var filterRules = filter.type === 'string' ? (stringFilterRules) : (numericFilterRules);
+                    return (React.createElement("li", { key: idx, className: 'filter-rule' },
+                        React.createElement(core_1.Select, { name: 'id', margin: 'dense', value: filter.id, onChange: function (event) { _this.handleChangeFilterID(event.target.value, idx); } }, _this.props.columns.map(function (column) {
+                            return (React.createElement(core_1.MenuItem, { value: column.id }, column.label));
+                        })),
+                        React.createElement(core_1.Select, { name: 'rule', margin: 'dense', value: filter.rule, onChange: function (event) { return _this.handleChangeFilterRule(event.target.value, idx); } }, filterRules.map(function (filterRule) { return (React.createElement(core_1.MenuItem, { value: filterRule.value }, filterRule.label)); })),
+                        React.createElement(core_1.TextField, { variant: 'standard', margin: 'dense', onChange: function (event) { return _this.handleChangeFilterValue(event.target.value, idx); }, value: filter.value }),
+                        React.createElement(core_1.IconButton, { onClick: function () { return _this.onRemoveFilter(idx); } },
+                            React.createElement(core_1.Icon, null, "close"))));
+                }))) : (React.createElement("p", { className: 'placeholder' }, "No filters added.")),
+                React.createElement(core_1.Button, { variant: 'contained', color: 'primary', onClick: function () { return _this.onAddFilter(); } }, "Add Filter"))));
+    };
+    return EnhancedTableFilter;
+}(React.Component));
+exports.EnhancedTableFilter = EnhancedTableFilter;
 
 
 /***/ }),
@@ -54396,7 +54780,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
 var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
 exports.EnhancedTableHead = function (props) {
-    var onSelectAllClick = props.onSelectAllClick, order = props.order, orderBy = props.orderBy, numSelected = props.numSelected, rowCount = props.rowCount, rows = props.rows;
+    var onSelectAllClick = props.onSelectAllClick, order = props.order, orderBy = props.orderBy, numSelected = props.numSelected, rowCount = props.rowCount;
+    var columns = props.columns.filter(function (column) {
+        return column.visible;
+    });
     var createSortHandler = function (property) {
         console.log('createSortHandler()');
         props.onRequestSort(property);
@@ -54405,9 +54792,9 @@ exports.EnhancedTableHead = function (props) {
         React.createElement(core_1.TableRow, null,
             React.createElement(core_1.TableCell, { padding: 'checkbox' },
                 React.createElement(core_1.Checkbox, { indeterminate: numSelected > 0 && numSelected < rowCount, checked: numSelected === rowCount, onChange: onSelectAllClick })),
-            rows.map(function (row) { return (React.createElement(core_1.TableCell, { key: row.id, align: row.isNumeric ? 'right' : 'left', padding: row.disablePadding ? 'none' : 'default', sortDirection: orderBy === row.id ? order : false },
-                React.createElement(core_1.Tooltip, { title: 'Sort by ' + row.label, placement: row.isNumeric ? 'bottom-end' : 'bottom-start', enterDelay: 300 },
-                    React.createElement(core_1.TableSortLabel, { active: orderBy === row.id, direction: order, onClick: function () { return createSortHandler(row.id); } }, row.label)))); }))));
+            columns.map(function (column) { return (React.createElement(core_1.TableCell, { key: column.id, align: column.isNumeric ? 'right' : 'left', padding: column.disablePadding ? 'none' : 'default', sortDirection: orderBy === column.id ? order : false },
+                React.createElement(core_1.Tooltip, { title: 'Sort by ' + column.label, placement: column.isNumeric ? 'bottom-end' : 'bottom-start', enterDelay: 300 },
+                    React.createElement(core_1.TableSortLabel, { active: orderBy === column.id, direction: order, onClick: function () { return createSortHandler(column.id); } }, column.label)))); }))));
 };
 
 
@@ -54422,16 +54809,117 @@ exports.EnhancedTableHead = function (props) {
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
+var classnames_1 = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
-exports.EnhancedTableToolbar = function (props) {
-    var numSelected = props.numSelected, title = props.title;
-    return (React.createElement(core_1.Toolbar, null,
-        React.createElement("div", { className: 'enhanced-table__toolbar' }, numSelected > 0 ? (React.createElement("h6", null,
-            numSelected,
-            " selected")) : (React.createElement("h6", null, title)))));
-};
+var EnhancedTableFilter_1 = __webpack_require__(/*! ./EnhancedTableFilter */ "./src/components/Table/EnhancedTableFilter.tsx");
+var EnhancedTableToolbar = /** @class */ (function (_super) {
+    __extends(EnhancedTableToolbar, _super);
+    function EnhancedTableToolbar() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.state = {
+            searchOpen: false,
+            menuRef: null
+        };
+        _this.handeMenuOpen = function (event) {
+            _this.setState({ menuRef: event.currentTarget });
+        };
+        _this.handleMenuClose = function () {
+            _this.setState({ menuRef: null });
+        };
+        _this.handleOpenSearch = function () {
+            _this.setState({ searchOpen: true });
+        };
+        _this.handleCloseSearch = function () {
+            _this.setState({ searchOpen: false }, function () {
+                _this.props.handleTableQueryChange('');
+            });
+        };
+        _this.handleInvertSelection = function () {
+            _this.props.handleInvertSelection();
+            _this.handleMenuClose();
+        };
+        _this.handleMenuSelect = function (action) {
+            // this.props.actions
+            _this.handleMenuClose();
+        };
+        _this.handleTableQueryChange = function (event) {
+            if (event.keyCode === 27) {
+                _this.handleCloseSearch();
+                return;
+            }
+            _this.props.handleTableQueryChange(event.target.value);
+        };
+        return _this;
+    }
+    EnhancedTableToolbar.prototype.render = function () {
+        var _this = this;
+        var _a = this.props, numSelected = _a.numSelected, numShown = _a.numShown, numTotal = _a.numTotal, filterOpen = _a.filterOpen;
+        var menuRef = this.state.menuRef;
+        var menuOpen = Boolean(menuRef);
+        console.log(menuRef);
+        var headerString;
+        if (numSelected > 0 || (numTotal > 0 && numShown < numTotal)) {
+            if (numSelected > 0 && (numTotal > 0 && numShown < numTotal)) {
+                headerString = "Showing " + numShown + " of " + numTotal + ", " + numSelected + " selected";
+            }
+            else if (numSelected > 0) {
+                headerString = numSelected + " selected";
+            }
+            else {
+                headerString = "Showing " + numShown + " of " + numTotal;
+            }
+        }
+        else {
+            headerString = this.props.title;
+        }
+        return (React.createElement(core_1.Toolbar, null,
+            React.createElement("div", { className: 'enhanced-table__toolbar' },
+                React.createElement("h3", { className: classnames_1.default({
+                        'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
+                    }) }, headerString),
+                filterOpen && (React.createElement(EnhancedTableFilter_1.EnhancedTableFilter, { filters: this.props.filters, open: filterOpen, handleFilterChange: this.props.handleFilterChange, columns: this.props.columns.filter(function (column) {
+                        return column.filterable;
+                    }), handleFilterClose: this.props.handleFilterClose })),
+                React.createElement("ul", { className: 'enhanced-table__tools' },
+                    this.props.searchable && (React.createElement(React.Fragment, null,
+                        React.createElement(core_1.Grow, { in: this.state.searchOpen },
+                            React.createElement("li", null,
+                                React.createElement(core_1.TextField, { className: 'enhanced-table__search', onChange: this.handleTableQueryChange, placeholder: "Search " + this.props.title, value: this.props.tableQuery, variant: 'standard', margin: 'none' }))),
+                        React.createElement("li", null, this.state.searchOpen ? (React.createElement(core_1.Tooltip, { title: 'Close Search' },
+                            React.createElement(core_1.IconButton, { onClick: function () { return _this.handleCloseSearch(); } },
+                                React.createElement(core_1.Icon, null, "close")))) : (React.createElement(core_1.Tooltip, { title: 'Search' },
+                            React.createElement(core_1.IconButton, { onClick: function () { return _this.handleOpenSearch(); } },
+                                React.createElement(core_1.Icon, null, "search"))))))),
+                    React.createElement("li", null,
+                        React.createElement(core_1.Tooltip, { title: 'Filter' },
+                            React.createElement(core_1.IconButton, { onClick: this.props.handleFilterOpen },
+                                React.createElement(core_1.Badge, { invisible: this.props.filters.length === 0, color: 'primary', variant: 'dot' },
+                                    React.createElement(core_1.Icon, null, "filter_list"))))),
+                    React.createElement("li", null,
+                        React.createElement(core_1.IconButton, { onClick: this.handeMenuOpen },
+                            React.createElement(core_1.Icon, null, "more_vert")),
+                        React.createElement(core_1.Menu, { open: menuOpen, anchorEl: menuRef, onClose: this.handleMenuClose },
+                            React.createElement(core_1.MenuItem, { onClick: function () { return _this.handleInvertSelection(); } }, "Invert selection"),
+                            this.props.numSelected > 0 && (this.props.actions.map(function (action) { return (React.createElement(core_1.MenuItem, { onClick: function () { return _this.handleMenuSelect(action.id); } }, action.name)); }))))))));
+    };
+    return EnhancedTableToolbar;
+}(React.Component));
+exports.EnhancedTableToolbar = EnhancedTableToolbar;
 
 
 /***/ }),

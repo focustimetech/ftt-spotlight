@@ -122,7 +122,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 				filters.some((filter: ITableFilter) => {
 					switch (filter.rule) {
 						case 'contains':
-							// return row[filter.id].contains(filter.value)
+							/**
+							 * @TODO This should return something other than false...
+							 */
 							return false
 						case 'ends-with':
 							return row[filter.id].endsWith(filter.value)

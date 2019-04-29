@@ -29,7 +29,7 @@ interface IProps {
 	filterOpen: boolean
 	columns: ITableHeaderColumn[]
 	actions: ITableAction[]
-	handleActionCallback: (id: string) => void
+	// handleActionCallback: (id: string) => void
 	handleInvertSelection: () => void
 	handleFilterOpen: () => void
 	handleFilterClose: () => void

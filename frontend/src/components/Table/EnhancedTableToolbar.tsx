@@ -88,7 +88,6 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		const { numSelected, numShown, numTotal, filterOpen } = this.props
 		const { menuRef } = this.state
 		const menuOpen = Boolean(menuRef)
-		console.log(menuRef)
 
 		let headerString: string
 		if (numSelected > 0 || (numTotal > 0 && numShown < numTotal)) {

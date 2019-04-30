@@ -7,7 +7,9 @@ import {
 	Icon,
 	IconButton,
 	Menu,
-	TextField
+	Select,
+	TextField,
+	Tooltip
 } from '@material-ui/core'
 
 import { EnhancedTable } from './Table/EnhancedTable'
@@ -19,9 +21,14 @@ interface NewStudent {
 	first_name?: string,
 	last_name?: string,
 	addToClusters: boolean,
-	clusters?: number[],
+	clusters?: Cluster[],
 	grade?: number,
 	student_number?: number
+}
+
+interface Cluster {
+	name: string,
+	id: number
 }
 
 interface IState {
@@ -29,9 +36,16 @@ interface IState {
 	 * @TODO Create typedef for students
 	 */
 	students: any[]
+	clusters: Cluster[]
 	newStudent: NewStudent
 	addDialogVisible: boolean
 }
+
+const clusters = [
+	{ name: 'Spruce', id: 1 },
+	{ name: 'Arbutus', id: 2 },
+	{ name: 'Fir', id: 3 }
+]
 
 export class Students extends React.Component<{}, IState> {
 	state: IState = {
@@ -39,7 +53,8 @@ export class Students extends React.Component<{}, IState> {
 		addDialogVisible: false,
 		newStudent: {
 			addToClusters: false
-		}
+		},
+		clusters: []
 	}
 
 	componentDidMount() {
@@ -67,6 +82,12 @@ export class Students extends React.Component<{}, IState> {
 			...this.state.newStudent,
 			[event.target.name]: event.target.value
 		}})
+	}
+
+	handleAddStudentSubmit = (e: any) => {
+		e.preventDefault()
+		console.log('submitted form')
+		this.onAddDialogClose()
 	}
 
 	render() {
@@ -110,7 +131,9 @@ export class Students extends React.Component<{}, IState> {
 					</ul>
 					<ul>
 						<li>
-							<IconButton onClick={() => this.onAddDialogOpen()}><Icon>add</Icon></IconButton>
+							<Tooltip title='Add Student'>
+								<IconButton onClick={() => this.onAddDialogOpen()}><Icon>add</Icon></IconButton>
+							</Tooltip>
 						</li>
 					</ul>
 				</TopNav>
@@ -119,7 +142,7 @@ export class Students extends React.Component<{}, IState> {
 					open={this.state.addDialogVisible}
 				>
 					<h3>Add Student</h3>
-					<form onSubmit={this.handleAddStudentSubmit}>
+					<form className='dialog-form' onSubmit={this.handleAddStudentSubmit}>
 						<TextField
 							name='first_name'
 							value={this.state.newStudent.first_name || ''}
@@ -142,8 +165,13 @@ export class Students extends React.Component<{}, IState> {
 							type='number'
 						/>
 						<Select
-						
+							multiple
+							// value=
 						/>
+						<div className='dialog-form__button-group'>
+							<Button variant='text' onClick={this.onAddDialogClose}>Cancel</Button>
+							<Button variant='contained' color='primary' type='submit'>Add Student</Button>
+						</div>
 					</form>
 				</Dialog>
 				<EnhancedTable title='Students' columns={columns} data={students} actions={actions} searchable={true}/>

@@ -1,21 +1,45 @@
 import * as React from 'react'
 import axios from 'axios'
 
+import {
+	Button,
+	Dialog,
+	Icon,
+	IconButton,
+	Menu,
+	TextField
+} from '@material-ui/core'
+
 import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
 
 import { ITableAction, ITableHeaderColumn } from '../types/table'
+
+interface NewStudent {
+	first_name?: string,
+	last_name?: string,
+	addToClusters: boolean,
+	clusters?: number[],
+	grade?: number,
+	student_number?: number
+}
 
 interface IState {
 	/**
 	 * @TODO Create typedef for students
 	 */
 	students: any[]
+	newStudent: NewStudent
+	addDialogVisible: boolean
 }
 
 export class Students extends React.Component<{}, IState> {
 	state: IState = {
-		students: []
+		students: [],
+		addDialogVisible: false,
+		newStudent: {
+			addToClusters: false
+		}
 	}
 
 	componentDidMount() {
@@ -28,6 +52,21 @@ export class Students extends React.Component<{}, IState> {
 
 	handleCheckIn = (ids: number[]) => {
 		// console.log('IDs:', ids)
+	}
+
+	onAddDialogOpen = () => {
+		this.setState({ addDialogVisible: true })
+	}
+
+	onAddDialogClose = () => {
+		this.setState({ addDialogVisible: false })
+	}
+
+	handleNewStudentChange = (event: any) => {
+		this.setState({ newStudent: {
+			...this.state.newStudent,
+			[event.target.name]: event.target.value
+		}})
 	}
 
 	render() {
@@ -66,9 +105,47 @@ export class Students extends React.Component<{}, IState> {
 		return (
 			<>
 				<TopNav>
-					<ul><h3>Students</h3></ul>
+					<ul>
+						<li><h3>Students</h3></li>
+					</ul>
+					<ul>
+						<li>
+							<IconButton onClick={() => this.onAddDialogOpen()}><Icon>add</Icon></IconButton>
+						</li>
+					</ul>
 				</TopNav>
 				<p>Welcome to the Students page!</p>
+				<Dialog
+					open={this.state.addDialogVisible}
+				>
+					<h3>Add Student</h3>
+					<form onSubmit={this.handleAddStudentSubmit}>
+						<TextField
+							name='first_name'
+							value={this.state.newStudent.first_name || ''}
+							onChange={this.handleNewStudentChange}
+							type='text'
+							variant='filled'
+						/>
+						<TextField
+							name='last_name'
+							value={this.state.newStudent.last_name || ''}
+							onChange={this.handleNewStudentChange}
+							type='text'
+							variant='filled'
+						/>
+						<TextField
+							name='student_number'
+							value={this.state.newStudent.student_number || ''}
+							onChange={this.handleNewStudentChange}
+							variant='filled'
+							type='number'
+						/>
+						<Select
+						
+						/>
+					</form>
+				</Dialog>
 				<EnhancedTable title='Students' columns={columns} data={students} actions={actions} searchable={true}/>
 			</>
 		)

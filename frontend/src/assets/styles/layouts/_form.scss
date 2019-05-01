@@ -1,0 +1,34 @@
+.dialog-title {
+	height: 64px;
+	width: 600px;
+	box-sizing: border-box;
+	padding: 16px 32px;
+	line-height: 64px;
+	border-bottom: 1px solid #EEE;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	.icon-close {
+		margin-left: 8px;
+	}
+
+	h3 {
+		margin: 0;
+	}
+}
+
+.dialog-form {
+	&__row {
+		display: flex;
+		margin-bottom: 8px;
+
+		.text-field {
+			margin-right: 8px;
+
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+	}
+}

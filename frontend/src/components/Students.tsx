@@ -4,9 +4,15 @@ import axios from 'axios'
 import {
 	Button,
 	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	FormControl,
 	Icon,
 	IconButton,
+	InputLabel,
 	Menu,
+	MenuItem,
 	Select,
 	TextField,
 	Tooltip
@@ -16,14 +22,14 @@ import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
 
 import { ITableAction, ITableHeaderColumn } from '../types/table'
+import { EnhancedDialogTitle } from './Modals/EnhancedDialogTItle';
 
 interface NewStudent {
-	first_name?: string,
-	last_name?: string,
-	addToClusters: boolean,
-	clusters?: Cluster[],
+	first_name: string,
+	last_name: string,
+	clusters: number[],
 	grade?: number,
-	student_number?: number
+	student_number: string
 }
 
 interface Cluster {
@@ -52,9 +58,11 @@ export class Students extends React.Component<{}, IState> {
 		students: [],
 		addDialogVisible: false,
 		newStudent: {
-			addToClusters: false
-		},
-		clusters: []
+			first_name: '',
+			last_name: '',
+			student_number: '',
+			clusters: []
+		}
 	}
 
 	componentDidMount() {
@@ -123,6 +131,8 @@ export class Students extends React.Component<{}, IState> {
 			{ id: 'delete', name: 'Delete', action: this.handleCheckIn }
 		]
 
+		const grades = [9, 10, 11, 12]
+		console.log('state:', this.state.newStudent)
 		return (
 			<>
 				<TopNav>
@@ -140,39 +150,64 @@ export class Students extends React.Component<{}, IState> {
 				<p>Welcome to the Students page!</p>
 				<Dialog
 					open={this.state.addDialogVisible}
+					scroll='paper'
+					aria-labelledby='new-student-dialog-title'
 				>
-					<h3>Add Student</h3>
-					<form className='dialog-form' onSubmit={this.handleAddStudentSubmit}>
-						<TextField
-							name='first_name'
-							value={this.state.newStudent.first_name || ''}
-							onChange={this.handleNewStudentChange}
-							type='text'
-							variant='filled'
-						/>
-						<TextField
-							name='last_name'
-							value={this.state.newStudent.last_name || ''}
-							onChange={this.handleNewStudentChange}
-							type='text'
-							variant='filled'
-						/>
-						<TextField
-							name='student_number'
-							value={this.state.newStudent.student_number || ''}
-							onChange={this.handleNewStudentChange}
-							variant='filled'
-							type='number'
-						/>
-						<Select
-							multiple
-							// value=
-						/>
-						<div className='dialog-form__button-group'>
-							<Button variant='text' onClick={this.onAddDialogClose}>Cancel</Button>
-							<Button variant='contained' color='primary' type='submit'>Add Student</Button>
-						</div>
-					</form>
+					<EnhancedDialogTitle id='new-student-dialog-title' onClose={this.onAddDialogClose}>Add Student</EnhancedDialogTitle>
+					<DialogContent>
+						<form className='dialog-form' onSubmit={this.handleAddStudentSubmit} autoComplete='off'>
+							<div className='dialog-form__row'>
+								<TextField
+									name='first_name'
+									label='First Name'
+									value={this.state.newStudent.first_name || ''}
+									onChange={this.handleNewStudentChange}
+									required
+									margin='normal'
+									type='text'
+									variant='standard'
+								/>
+								<TextField
+									name='last_name'
+									label='Last Name'
+									value={this.state.newStudent.last_name || ''}
+									onChange={this.handleNewStudentChange}
+									required
+									margin='normal'
+									type='text'
+									variant='standard'
+								/>
+							</div>
+							<TextField
+								name='student_number'
+								label='Student Number'
+								value={this.state.newStudent.student_number || ''}
+								onChange={this.handleNewStudentChange}
+								required
+								margin='normal'
+								type='text'
+								variant='standard'
+							/>
+							<FormControl>
+								<InputLabel shrink htmlFor='grade'>Grade</InputLabel>
+								<Select
+									name='grade'
+									id='grade'
+									onChange={this.handleNewStudentChange}
+									value={this.state.newStudent.grade}
+									required
+								>
+									{grades.map((grade: number) => (
+										<MenuItem value={grade}>{`Grade ${grade}`}</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+							<DialogActions>
+								<Button variant='text' onClick={this.onAddDialogClose}>Cancel</Button>
+								<Button variant='contained' color='primary' type='submit'>Add Student</Button>
+							</DialogActions>
+						</form>
+					</DialogContent>
 				</Dialog>
 				<EnhancedTable title='Students' columns={columns} data={students} actions={actions} searchable={true}/>
 			</>

@@ -28,7 +28,7 @@ interface NewStudent {
 	first_name: string,
 	last_name: string,
 	clusters: number[],
-	grade?: number,
+	grade: number,
 	student_number: string
 }
 
@@ -47,11 +47,13 @@ interface IState {
 	addDialogVisible: boolean
 }
 
-const clusters = [
+const tempClusters = [
 	{ name: 'Spruce', id: 1 },
 	{ name: 'Arbutus', id: 2 },
 	{ name: 'Fir', id: 3 }
 ]
+
+const grades = [9, 10, 11, 12]
 
 export class Students extends React.Component<{}, IState> {
 	state: IState = {
@@ -61,8 +63,10 @@ export class Students extends React.Component<{}, IState> {
 			first_name: '',
 			last_name: '',
 			student_number: '',
-			clusters: []
-		}
+			clusters: [],
+			grade: grades[0]
+		},
+		clusters: []
 	}
 
 	componentDidMount() {
@@ -71,6 +75,7 @@ export class Students extends React.Component<{}, IState> {
 			.then((res: any) => {
 				this.setState({ students: res.data })
 			})
+		this.setState({ clusters: tempClusters })
 	}
 
 	handleCheckIn = (ids: number[]) => {
@@ -131,7 +136,6 @@ export class Students extends React.Component<{}, IState> {
 			{ id: 'delete', name: 'Delete', action: this.handleCheckIn }
 		]
 
-		const grades = [9, 10, 11, 12]
 		console.log('state:', this.state.newStudent)
 		return (
 			<>
@@ -156,37 +160,41 @@ export class Students extends React.Component<{}, IState> {
 					<EnhancedDialogTitle id='new-student-dialog-title' onClose={this.onAddDialogClose}>Add Student</EnhancedDialogTitle>
 					<DialogContent>
 						<form className='dialog-form' onSubmit={this.handleAddStudentSubmit} autoComplete='off'>
-							<div className='dialog-form__row'>
-								<TextField
-									name='first_name'
-									label='First Name'
-									value={this.state.newStudent.first_name || ''}
-									onChange={this.handleNewStudentChange}
-									required
-									margin='normal'
-									type='text'
-									variant='standard'
-								/>
-								<TextField
-									name='last_name'
-									label='Last Name'
-									value={this.state.newStudent.last_name || ''}
-									onChange={this.handleNewStudentChange}
-									required
-									margin='normal'
-									type='text'
-									variant='standard'
-								/>
-							</div>
+							<TextField
+								name='first_name'
+								label='First Name'
+								value={this.state.newStudent.first_name}
+								onChange={this.handleNewStudentChange}
+								className='text-field'
+								required
+								margin='normal'
+								fullWidth
+								type='text'
+								variant='outlined'
+							/>
+							<TextField
+								name='last_name'
+								label='Last Name'
+								value={this.state.newStudent.last_name}
+								onChange={this.handleNewStudentChange}
+								className='text-field'
+								required
+								margin='normal'
+								fullWidth
+								type='text'
+								variant='outlined'
+							/>
 							<TextField
 								name='student_number'
 								label='Student Number'
-								value={this.state.newStudent.student_number || ''}
+								value={this.state.newStudent.student_number}
 								onChange={this.handleNewStudentChange}
+								className='text-field'
 								required
 								margin='normal'
+								fullWidth
 								type='text'
-								variant='standard'
+								variant='outlined'
 							/>
 							<FormControl>
 								<InputLabel shrink htmlFor='grade'>Grade</InputLabel>

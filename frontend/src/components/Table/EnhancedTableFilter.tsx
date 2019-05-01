@@ -120,7 +120,7 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 
 	handleChangeFilterID = (value: any, index: number) => {
 		this.setState((state: IState) => {
-			const filters: ITableFilter[] = state.filters.map((filter: ITableFilter, idx: number) => {
+			const filters: ITableFilter[] = state.filters.map((filter: ITableNumericFilter | ITableStringFilter, idx: number) => {
 					if (idx !== index) {
 						return filter
 					} else {
@@ -128,20 +128,20 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 							return column.id === value
 						})
 						const hasTypeChanged: boolean = filter.type === 'string' ? column.isNumeric : !column.isNumeric
-						let newFilter: ITableNumericFilter | ITableStringFilter
+						let newFilter: ITableStringFilter | ITableNumericFilter
 						newFilter = {
 							id: value,
 							value: hasTypeChanged ? '' : filter.value,
 							type: 'string',
-							rule: hasTypeChanged ? stringFilterRules[0].value : filter.rule
-						}
+							rule: hasTypeChanged ? stringFilterRules[0].value : (filter as ITableStringFilter).rule
+						} as ITableStringFilter
 						if (hasTypeChanged && column.isNumeric) {
 							newFilter =  {
 								id: value,
 								value: hasTypeChanged ? '' : filter.value,
 								type: 'numeric',
-								rule: hasTypeChanged ? numericFilterRules[0].value : filter.rule
-							}
+								rule: hasTypeChanged ? numericFilterRules[0].value : (filter as ITableNumericFilter).rule
+							} as ITableNumericFilter
 						} 
 						return newFilter
 					}

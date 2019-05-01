@@ -23,7 +23,7 @@
 		display: flex;
 		margin-bottom: 8px;
 
-		.text-field {
+		& > * {
 			margin-right: 8px;
 
 			&:last-child {

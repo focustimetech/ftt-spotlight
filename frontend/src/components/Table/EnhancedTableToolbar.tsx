@@ -1,5 +1,7 @@
 import * as React from 'react'
+
 import classNames from 'classnames'
+import ContentLoader from 'react-content-loader'
 
 import {
 	Badge,
@@ -103,6 +105,12 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 			headerString = this.props.title
 		}
 
+		const loadingButton = () => (
+			<ContentLoader>
+				<rect x='0' y='0' rx='48' ry='48' width='48' height='48' />
+			</ContentLoader>
+		)
+
 		return (
 			<Toolbar>
 				<div className='enhanced-table__toolbar'>
@@ -137,18 +145,22 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 									</li>
 								</Grow>
 								<li>
-									{this.state.searchOpen ? (
-										<Tooltip title='Close Search'>
-											<IconButton onClick={() => this.handleCloseSearch()}>
-												<Icon>close</Icon>
-											</IconButton>
-										</Tooltip>
+									{this.props.loading ? (
+										loadingButton()
 									) : (
-										<Tooltip title='Search'>
-											<IconButton onClick={() => this.handleOpenSearch()}>
-												<Icon>search</Icon>
-											</IconButton>
-										</Tooltip>
+										this.state.searchOpen ? (
+											<Tooltip title='Close Search'>
+												<IconButton onClick={() => this.handleCloseSearch()}>
+													<Icon>close</Icon>
+												</IconButton>
+											</Tooltip>
+										) : (
+											<Tooltip title='Search'>
+												<IconButton onClick={() => this.handleOpenSearch()}>
+													<Icon>search</Icon>
+												</IconButton>
+											</Tooltip>
+										)
 									)}
 								</li>
 							</>

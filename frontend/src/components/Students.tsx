@@ -45,6 +45,7 @@ interface IState {
 	clusters: Cluster[]
 	newStudent: NewStudent
 	addDialogVisible: boolean
+	loading: boolean
 }
 
 const tempClusters = [
@@ -66,14 +67,19 @@ export class Students extends React.Component<{}, IState> {
 			clusters: [],
 			grade: grades[0]
 		},
-		clusters: []
+		clusters: [],
+		loading: false
 	}
 
 	componentDidMount() {
 		document.title = 'Students - Spotlight'
+		this.setState({ loading: true })
 		axios.get('http://localhost:8000/api/students')
 			.then((res: any) => {
-				this.setState({ students: res.data })
+				this.setState({
+					students: res.data,
+					loading: false
+				})
 			})
 		this.setState({ clusters: tempClusters })
 	}
@@ -217,7 +223,7 @@ export class Students extends React.Component<{}, IState> {
 						</form>
 					</DialogContent>
 				</Dialog>
-				<EnhancedTable title='Students' columns={columns} data={students} actions={actions} searchable={true}/>
+				<EnhancedTable showEmptyTable={false} title='Students' columns={columns} data={students} actions={actions} searchable={true} loading={this.state.loading} />
 			</>
 		)
 	}

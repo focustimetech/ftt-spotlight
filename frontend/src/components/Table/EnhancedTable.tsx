@@ -57,6 +57,7 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 
 interface IProps {
 	title: string
+	loading: boolean
 	columns: ITableHeaderColumn[]
 	data: any[]
 	actions: ITableAction[]
@@ -65,7 +66,6 @@ interface IProps {
 }
 
 interface IState {
-	loading: boolean
 	tableQuery: string
 	order: 'asc' | 'desc'
 	orderBy: string // e.g 'calories'
@@ -78,7 +78,6 @@ interface IState {
 
 export class EnhancedTable extends React.Component<IProps, IState> {
 	state: IState = {
-		loading: false,
 		tableQuery: '',
 		order: 'asc',
 		orderBy: this.props.columns[0].id,
@@ -258,7 +257,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 							handleFilterChange={this.handleFilterChange}
 							handleTableQueryChange={this.handleTableQueryChange}
 							filterOpen={this.state.filterOpen}
-							loading={this.state.loading}
+							loading={this.props.loading}
 						/>
 						<div>
 							<Table>
@@ -270,10 +269,10 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 									onRequestSort={this.handleRequestSort}
 									rowCount={data.length}
 									columns={this.props.columns}
-									loading={this.state.loading}
+									loading={this.props.loading}
 								/>
 								<TableBody>
-									{this.state.loading ? (
+									{this.props.loading ? (
 										this.skeletonRows()
 									) : (
 										stableSort(data, getSorting(order, orderBy))

@@ -29,6 +29,7 @@ interface IProps {
 	filterOpen: boolean
 	columns: ITableHeaderColumn[]
 	actions: ITableAction[]
+	loading: boolean
 	// handleActionCallback: (id: string) => void
 	handleInvertSelection: () => void
 	handleFilterOpen: () => void
@@ -131,6 +132,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 											value={this.props.tableQuery}
 											variant='standard'
 											margin='none'
+											autoFocus
 										/>
 									</li>
 								</Grow>

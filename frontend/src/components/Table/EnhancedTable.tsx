@@ -65,6 +65,7 @@ interface IProps {
 }
 
 interface IState {
+	loading: boolean
 	tableQuery: string
 	order: 'asc' | 'desc'
 	orderBy: string // e.g 'calories'
@@ -77,6 +78,7 @@ interface IState {
 
 export class EnhancedTable extends React.Component<IProps, IState> {
 	state: IState = {
+		loading: false,
 		tableQuery: '',
 		order: 'asc',
 		orderBy: this.props.columns[0].id,
@@ -208,6 +210,19 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		this.setState({ tableQuery: value })
 	}
 
+	skeletonRows = () => {
+		const rows: any = []
+		for (let i = 0; i < this.state.rowsPerPage; i ++) {
+			rows.push(
+				<TableRow>
+					{this.props.columns.map((column: ITableHeaderColumn) => {
+						return <></>
+					})}
+				</TableRow>
+			)
+		}
+
+	}
 	render() {
 		const { order, orderBy, selected, rowsPerPage, page } = this.state
 		const data = (this.props.searchable && this.state.tableQuery.length) || this.state.filters.length ? (
@@ -243,6 +258,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 							handleFilterChange={this.handleFilterChange}
 							handleTableQueryChange={this.handleTableQueryChange}
 							filterOpen={this.state.filterOpen}
+							loading={this.state.loading}
 						/>
 						<div>
 							<Table>
@@ -254,9 +270,13 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 									onRequestSort={this.handleRequestSort}
 									rowCount={data.length}
 									columns={this.props.columns}
+									loading={this.state.loading}
 								/>
 								<TableBody>
-									{stableSort(data, getSorting(order, orderBy))
+									{this.state.loading ? (
+										this.skeletonRows()
+									) : (
+										stableSort(data, getSorting(order, orderBy))
 										.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 										.map(n => {
 											const isSelected = this.isSelected(n.id)
@@ -300,12 +320,12 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 												</TableRow>
 											)
 										})
-									}
-									{emptyRows > 0 && (
+									)}
+									{/*emptyRows > 0 && (
 										<TableRow style={{ height: 49 * emptyRows }}>
 											<TableCell colSpan={4} />
 										</TableRow>
-									)}
+									)*/}
 								</TableBody>
 							</Table>
 						</div>

@@ -19,6 +19,7 @@ interface IProps {
 	orderBy: string
 	columns: ITableHeaderColumn[]
 	rowCount: number
+	loading: boolean
 }
 
 export const EnhancedTableHead = (props: IProps) => {

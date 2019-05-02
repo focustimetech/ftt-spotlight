@@ -1,13 +1,15 @@
 import * as React from 'react'
 
-import Avatar from '@material-ui/core/Avatar'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
+import {
+    Avatar,
+    Menu,
+    MenuItem
+} from '@material-ui/core'
 
 import { NavItem } from '../Sidebar/NavItem'
 
 interface IState {
-    open: boolean
+    menuRef: any
 }
 
 interface IProps {
@@ -15,31 +17,34 @@ interface IProps {
 }
 
 export class AccountWidget extends React.Component<IProps, IState> {
-    state = {
-        open: false
+    state: IState = {
+        menuRef: null
     }
 
-    handleClickOpen = () => {
-        this.setState({ open: true })
+    handleClickOpen = (event: any) => {
+        this.setState({ menuRef: event.currentTarget })
     }
 
     handleClose = () => {
-        this.setState({ open: false })
+        this.setState({ menuRef: null })
     }
 
     initials = 'CU'
 
     render() {
+        const { menuRef } = this.state
+        const menuOpen = Boolean(menuRef)
         return (
             <>
                 <NavItem className='nav_account' title='Account' onClick={this.handleClickOpen}>
-                    <Avatar onClick={() => this.props.onSignOut()} className='nav_avatar' color='#FF0000'>{this.initials}</Avatar>
+                    <Avatar className='nav_avatar' color='#FF0000'>{this.initials}</Avatar>
                     <Menu
-                        open={this.state.open}
+                        open={menuOpen}
+                        anchorEl={menuRef}
                         onClose={this.handleClose}
                     >
                         <MenuItem>Profile</MenuItem>
-                        <MenuItem>Sign Out</MenuItem>
+                        <MenuItem onClick={() => this.props.onSignOut()}>Sign Out</MenuItem>
                     </Menu>
                 </NavItem>
             </>

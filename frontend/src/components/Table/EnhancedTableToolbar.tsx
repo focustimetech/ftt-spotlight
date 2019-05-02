@@ -48,7 +48,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		menuRef: null
 	}
 
-	handeMenuOpen = (event: any) => {
+	handleMenuOpen = (event: any) => {
 		this.setState({ menuRef: event.currentTarget })
 	}
 
@@ -165,7 +165,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 							</Tooltip>
 						</li>
 						<li>
-						<IconButton onClick={this.handeMenuOpen}>
+						<IconButton onClick={this.handleMenuOpen}>
 							<Icon>more_vert</Icon>
 						</IconButton>
 						<Menu

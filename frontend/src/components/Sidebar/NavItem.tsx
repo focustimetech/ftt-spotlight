@@ -16,7 +16,7 @@ interface IProps {
     className?: string
     icon?: string
     to?: string
-    onClick?: () => void
+    onClick?: (event?: any) => void
 }
 
 export const NavItem = (props: IProps) => {

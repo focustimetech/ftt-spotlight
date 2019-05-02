@@ -106,9 +106,13 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		}
 
 		const loadingButton = () => (
-			<ContentLoader>
-				<rect x='0' y='0' rx='48' ry='48' width='48' height='48' />
-			</ContentLoader>
+			<div style={{ height: 48, width: 160 }}>
+				<ContentLoader width={160} height={48} preserveAspectRatio='none'>
+					<circle cx='24' cy='24' r='24' />
+					<circle cx='80' cy='24' r='24' /> 
+					<circle cx='136' cy='24' r='24' /> 
+				</ContentLoader>
+			</div>
 		)
 
 		return (
@@ -128,27 +132,27 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 							handleFilterClose={this.props.handleFilterClose}
 						/>
 					)}
-					<ul className='enhanced-table__tools'>
-						{this.props.searchable && (
-							<>
-								<Grow in={this.state.searchOpen}>
+					{this.props.loading ? (
+						loadingButton()
+					) : (
+						<ul className='enhanced-table__tools'>
+							{this.props.searchable && (
+								<>
+									<Grow in={this.state.searchOpen}>
+										<li>
+											<TextField
+												className='enhanced-table__search'
+												onChange={this.handleTableQueryChange}
+												placeholder={`Search ${this.props.title}`}
+												value={this.props.tableQuery}
+												variant='standard'
+												margin='none'
+												autoFocus
+											/>
+										</li>
+									</Grow>
 									<li>
-										<TextField
-											className='enhanced-table__search'
-											onChange={this.handleTableQueryChange}
-											placeholder={`Search ${this.props.title}`}
-											value={this.props.tableQuery}
-											variant='standard'
-											margin='none'
-											autoFocus
-										/>
-									</li>
-								</Grow>
-								<li>
-									{this.props.loading ? (
-										loadingButton()
-									) : (
-										this.state.searchOpen ? (
+										{this.state.searchOpen ? (
 											<Tooltip title='Close Search'>
 												<IconButton onClick={() => this.handleCloseSearch()}>
 													<Icon>close</Icon>
@@ -160,42 +164,42 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 													<Icon>search</Icon>
 												</IconButton>
 											</Tooltip>
-										)
-									)}
-								</li>
-							</>
-						)}
-						<li>
-							<Tooltip title='Filter'>
-								<IconButton onClick={this.props.handleFilterOpen}>
-								<Badge
-									invisible={this.props.filters.length === 0}
-									color='primary'
-									variant='dot'
-								>
-									<Icon>filter_list</Icon>
-								</Badge>
-								</IconButton>
-							</Tooltip>
-						</li>
-						<li>
-						<IconButton onClick={this.handleMenuOpen}>
-							<Icon>more_vert</Icon>
-						</IconButton>
-						<Menu
-							open={menuOpen}
-							anchorEl={menuRef}
-							onClose={this.handleMenuClose}
-						>
-							<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
-							{this.props.numSelected > 0 && (
-								this.props.actions.map((action: ITableAction) => (
-									<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
-								))
+										)}
+									</li>
+								</>
 							)}
-						</Menu>
-						</li>
-					</ul>
+							<li>
+								<Tooltip title='Filter'>
+									<IconButton onClick={this.props.handleFilterOpen}>
+									<Badge
+										invisible={this.props.filters.length === 0}
+										color='primary'
+										variant='dot'
+									>
+										<Icon>filter_list</Icon>
+									</Badge>
+									</IconButton>
+								</Tooltip>
+							</li>
+							<li>
+							<IconButton onClick={this.handleMenuOpen}>
+								<Icon>more_vert</Icon>
+							</IconButton>
+							<Menu
+								open={menuOpen}
+								anchorEl={menuRef}
+								onClose={this.handleMenuClose}
+							>
+								<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
+								{this.props.numSelected > 0 && (
+									this.props.actions.map((action: ITableAction) => (
+										<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
+									))
+								)}
+							</Menu>
+							</li>
+						</ul>
+					)}
 				</div>
 			</Toolbar>
 		)

@@ -1,5 +1,7 @@
 import * as React from 'react'
+
 import axios from 'axios'
+import ContentLoader from 'react-content-loader'
 
 import {
 	Button,

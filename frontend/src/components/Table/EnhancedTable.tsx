@@ -1,6 +1,7 @@
 import * as React from 'react'
-import * as classNames from 'classnames'
 
+import ContentLoader from 'react-content-loader'
+import * as classNames from 'classnames'
 import { Link } from 'react-router-dom'
 
 import {
@@ -214,13 +215,48 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		for (let i = 0; i < this.state.rowsPerPage; i ++) {
 			rows.push(
 				<TableRow>
+					<TableCell padding='checkbox'>
+						<div style={{ width: 24, height: 24, padding: 12}}>
+							<ContentLoader width={24} height={24}>
+								<rect x='0' y='0' rx='4' ry='4' height='24' width='24' />
+							</ContentLoader>
+						</div>
+					</TableCell>
 					{this.props.columns.map((column: ITableHeaderColumn) => {
-						return <></>
+						if (column.link) {
+							return (
+								<TableCell padding='checkbox'>
+									<div style={{ width: 24, height: 24, padding: 12}}>
+										<ContentLoader width={24} height={24}>
+											<rect x='0' y='0' rx='4' ry='4' height='24' width='24' />
+										</ContentLoader>
+									</div>
+								</TableCell>
+							)
+						} else if (column.th) {
+							return (
+								<TableCell component='th' scope='row' padding='none'>
+									<div style={{height: 24, width: 75}}>
+										<ContentLoader width={75} height={24}>
+											<rect x='0' y='0' rx='4' ry='4' width='75' height='8' />
+										</ContentLoader>
+									</div>
+								</TableCell>
+							)
+						} else {
+							return <TableCell align='right'>
+								<div style={{height: 24, width: 50, float: 'right'}}>
+										<ContentLoader width={50} height={24}>
+											<rect x='0' y='0' rx='4' ry='4' width='50' height='8' />
+										</ContentLoader>
+									</div>
+							</TableCell>
+						}
 					})}
 				</TableRow>
 			)
 		}
-
+		return rows
 	}
 	render() {
 		const { order, orderBy, selected, rowsPerPage, page } = this.state

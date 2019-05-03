@@ -49118,6 +49118,158 @@ module.exports = ReactPropTypesSecret;
 
 /***/ }),
 
+/***/ "./node_modules/react-content-loader/dist/react-content-loader.es.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/react-content-loader/dist/react-content-loader.es.js ***!
+  \***************************************************************************/
+/*! exports provided: default, Facebook, Instagram, Code, List, BulletList */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Facebook", function() { return FacebookStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Instagram", function() { return InstagramStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Code", function() { return CodeStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "List", function() { return ListStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BulletList", function() { return BulletListStyle; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+}
+
+var uid = (function () {
+    return Math.random()
+        .toString(36)
+        .substring(2);
+});
+
+var Svg = (function (_a) {
+    var rtl = _a.rtl, speed = _a.speed, interval = _a.interval, style = _a.style, width = _a.width, height = _a.height, baseUrl = _a.baseUrl, gradientRatio = _a.gradientRatio, animate = _a.animate, ariaLabel = _a.ariaLabel, children = _a.children, className = _a.className, uniquekey = _a.uniquekey, primaryColor = _a.primaryColor, primaryOpacity = _a.primaryOpacity, secondaryColor = _a.secondaryColor, secondaryOpacity = _a.secondaryOpacity, preserveAspectRatio = _a.preserveAspectRatio, props = __rest(_a, ["rtl", "speed", "interval", "style", "width", "height", "baseUrl", "gradientRatio", "animate", "ariaLabel", "children", "className", "uniquekey", "primaryColor", "primaryOpacity", "secondaryColor", "secondaryOpacity", "preserveAspectRatio"]);
+    var idClip = uniquekey ? uniquekey + "-idClip" : uid();
+    var idGradient = uniquekey ? uniquekey + "-idGradient" : uid();
+    var rtlStyle = rtl ? { transform: 'scaleX(-1)' } : {};
+    var keyTimes = "0; " + interval + "; 1";
+    var dur = speed + "s";
+    return (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("svg", __assign({ role: "img", style: __assign({}, style, rtlStyle), className: className, "aria-labelledby": ariaLabel ? ariaLabel : null, viewBox: "0 0 " + width + " " + height, preserveAspectRatio: preserveAspectRatio }, props),
+        ariaLabel ? Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("title", null, ariaLabel) : null,
+        Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "0", width: width, height: height, clipPath: "url(" + baseUrl + "#" + idClip + ")", style: { fill: "url(" + baseUrl + "#" + idGradient + ")" } }),
+        Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("defs", null,
+            Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("clipPath", { id: idClip }, children),
+            Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("linearGradient", { id: idGradient },
+                Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("stop", { offset: "0%", stopColor: primaryColor, stopOpacity: primaryOpacity }, animate && (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("animate", { attributeName: "offset", values: -gradientRatio + "; " + -gradientRatio + "; 1", keyTimes: keyTimes, dur: dur, repeatCount: "indefinite" }))),
+                Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("stop", { offset: "50%", stopColor: secondaryColor, stopOpacity: secondaryOpacity }, animate && (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("animate", { attributeName: "offset", values: -gradientRatio / 2 + "; " + -gradientRatio / 2 + "; " + (1 +
+                        gradientRatio / 2), keyTimes: keyTimes, dur: dur, repeatCount: "indefinite" }))),
+                Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("stop", { offset: "100%", stopColor: primaryColor, stopOpacity: primaryOpacity }, animate && (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("animate", { attributeName: "offset", values: "0; 0; " + (1 + gradientRatio), keyTimes: keyTimes, dur: dur, repeatCount: "indefinite" })))))));
+});
+
+var defaultProps = {
+    animate: true,
+    ariaLabel: 'Loading interface...',
+    baseUrl: '',
+    gradientRatio: 2,
+    height: 130,
+    interval: 0.25,
+    preserveAspectRatio: 'none',
+    primaryColor: '#f0f0f0',
+    primaryOpacity: 1,
+    rtl: false,
+    secondaryColor: '#e0e0e0',
+    secondaryOpacity: 1,
+    speed: 2,
+    style: {},
+    width: 400,
+};
+var InitialComponent = function (props) { return (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "0", rx: "5", ry: "5", width: props.width, height: props.height })); };
+var ContentLoader = function (props) {
+    var mergedProps = __assign({}, defaultProps, props);
+    var children = props.children ? (props.children) : (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])(InitialComponent, __assign({}, mergedProps)));
+    return Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])(Svg, __assign({}, mergedProps), children);
+};
+
+var FacebookStyle = (function (props) { return (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])(ContentLoader, __assign({}, props),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "70", y: "15", rx: "4", ry: "4", width: "117", height: "6.4" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "70", y: "35", rx: "3", ry: "3", width: "85", height: "6.4" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "80", rx: "3", ry: "3", width: "350", height: "6.4" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "100", rx: "3", ry: "3", width: "380", height: "6.4" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "120", rx: "3", ry: "3", width: "201", height: "6.4" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("circle", { cx: "30", cy: "30", r: "30" }))); });
+
+var InstagramStyle = (function (props) { return (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])(ContentLoader, __assign({}, props, { height: 480 }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("circle", { cx: "30", cy: "30", r: "30" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "75", y: "13", rx: "4", ry: "4", width: "100", height: "13" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "75", y: "37", rx: "4", ry: "4", width: "50", height: "8" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "70", rx: "5", ry: "5", width: "400", height: "400" }))); });
+
+var CodeStyle = (function (props) { return (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])(ContentLoader, __assign({}, props),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "0", rx: "3", ry: "3", width: "70", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "80", y: "0", rx: "3", ry: "3", width: "100", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "190", y: "0", rx: "3", ry: "3", width: "10", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "15", y: "20", rx: "3", ry: "3", width: "130", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "155", y: "20", rx: "3", ry: "3", width: "130", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "15", y: "40", rx: "3", ry: "3", width: "90", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "115", y: "40", rx: "3", ry: "3", width: "60", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "185", y: "40", rx: "3", ry: "3", width: "60", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "60", rx: "3", ry: "3", width: "30", height: "10" }))); });
+
+var ListStyle = (function (props) { return (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])(ContentLoader, __assign({}, props),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "0", rx: "3", ry: "3", width: "250", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "20", y: "20", rx: "3", ry: "3", width: "220", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "20", y: "40", rx: "3", ry: "3", width: "170", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "0", y: "60", rx: "3", ry: "3", width: "250", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "20", y: "80", rx: "3", ry: "3", width: "200", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "20", y: "100", rx: "3", ry: "3", width: "80", height: "10" }))); });
+
+var BulletListStyle = (function (props) { return (Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])(ContentLoader, __assign({}, props),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("circle", { cx: "10", cy: "20", r: "8" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "25", y: "15", rx: "5", ry: "5", width: "220", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("circle", { cx: "10", cy: "50", r: "8" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "25", y: "45", rx: "5", ry: "5", width: "220", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("circle", { cx: "10", cy: "80", r: "8" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "25", y: "75", rx: "5", ry: "5", width: "220", height: "10" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("circle", { cx: "10", cy: "110", r: "8" }),
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["createElement"])("rect", { x: "25", y: "105", rx: "5", ry: "5", width: "220", height: "10" }))); });
+
+/* harmony default export */ __webpack_exports__["default"] = (ContentLoader);
+
+
+
+/***/ }),
+
 /***/ "./node_modules/react-event-listener/dist/react-event-listener.cjs.js":
 /*!****************************************************************************!*\
   !*** ./node_modules/react-event-listener/dist/react-event-listener.cjs.js ***!
@@ -56455,7 +56607,9 @@ var Students = /** @class */ (function (_super) {
                 clusters: [],
                 grade: grades[0]
             },
-            clusters: []
+            clusters: [],
+            loading: false,
+            snackbarOpen: false
         };
         _this.handleCheckIn = function (ids) {
             // console.log('IDs:', ids)
@@ -56472,7 +56626,6 @@ var Students = /** @class */ (function (_super) {
         };
         _this.handleAddStudentSubmit = function (e) {
             e.preventDefault();
-            console.log('submitted form');
             _this.onAddDialogClose();
         };
         return _this;
@@ -56480,9 +56633,13 @@ var Students = /** @class */ (function (_super) {
     Students.prototype.componentDidMount = function () {
         var _this = this;
         document.title = 'Students - Spotlight';
+        this.setState({ loading: true });
         axios_1.default.get('http://localhost:8000/api/students')
             .then(function (res) {
-            _this.setState({ students: res.data });
+            _this.setState({
+                students: res.data,
+                loading: false
+            });
         });
         this.setState({ clusters: tempClusters });
     };
@@ -56542,7 +56699,8 @@ var Students = /** @class */ (function (_super) {
                         React.createElement(core_1.DialogActions, null,
                             React.createElement(core_1.Button, { variant: 'text', onClick: this.onAddDialogClose }, "Cancel"),
                             React.createElement(core_1.Button, { variant: 'contained', color: 'primary', type: 'submit' }, "Add Student"))))),
-            React.createElement(EnhancedTable_1.EnhancedTable, { title: 'Students', columns: columns, data: students, actions: actions, searchable: true })));
+            React.createElement(core_1.Snackbar, { open: false }),
+            React.createElement(EnhancedTable_1.EnhancedTable, { showEmptyTable: false, title: 'Students', columns: columns, data: students, actions: actions, searchable: true, loading: this.state.loading })));
     };
     return Students;
 }(React.Component));
@@ -56575,6 +56733,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
+var react_content_loader_1 = __webpack_require__(/*! react-content-loader */ "./node_modules/react-content-loader/dist/react-content-loader.es.js");
 var react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
 var EnhancedTableHead_1 = __webpack_require__(/*! ./EnhancedTableHead */ "./src/components/Table/EnhancedTableHead.tsx");
@@ -56712,6 +56871,37 @@ var EnhancedTable = /** @class */ (function (_super) {
         _this.handleTableQueryChange = function (value) {
             _this.setState({ tableQuery: value });
         };
+        _this.skeletonRows = function () {
+            var rows = [];
+            for (var i = 0; i < _this.state.rowsPerPage; i++) {
+                rows.push(React.createElement(core_1.TableRow, null,
+                    React.createElement(core_1.TableCell, { padding: 'checkbox' },
+                        React.createElement("div", { style: { width: 24, height: 24, padding: 12 } },
+                            React.createElement(react_content_loader_1.default, { width: 24, height: 24 },
+                                React.createElement("rect", { x: '0', y: '0', rx: '4', ry: '4', height: '24', width: '24' })))),
+                    _this.props.columns.map(function (column) {
+                        if (column.link) {
+                            return (React.createElement(core_1.TableCell, { padding: 'checkbox' },
+                                React.createElement("div", { style: { width: 24, height: 24, padding: 12 } },
+                                    React.createElement(react_content_loader_1.default, { width: 24, height: 24 },
+                                        React.createElement("rect", { x: '0', y: '0', rx: '4', ry: '4', height: '24', width: '24' })))));
+                        }
+                        else if (column.th) {
+                            return (React.createElement(core_1.TableCell, { component: 'th', scope: 'row', padding: 'none' },
+                                React.createElement("div", { style: { height: 24, width: 75 } },
+                                    React.createElement(react_content_loader_1.default, { width: 75, height: 24 },
+                                        React.createElement("rect", { x: '0', y: '0', rx: '4', ry: '4', width: '75', height: '8' })))));
+                        }
+                        else {
+                            return React.createElement(core_1.TableCell, { align: 'right' },
+                                React.createElement("div", { style: { height: 24, width: 50, float: 'right' } },
+                                    React.createElement(react_content_loader_1.default, { width: 50, height: 24 },
+                                        React.createElement("rect", { x: '0', y: '0', rx: '4', ry: '4', width: '50', height: '8' }))));
+                        }
+                    })));
+            }
+            return rows;
+        };
         return _this;
     }
     EnhancedTable.prototype.render = function () {
@@ -56722,38 +56912,35 @@ var EnhancedTable = /** @class */ (function (_super) {
         return (React.createElement("div", { className: 'enhanced-table' }, this.props.data.length == 0 && this.props.showEmptyTable !== false ? (React.createElement("div", { className: 'empty-state' },
             React.createElement(EmptyStateIcon_1.EmptyStateIcon, { variant: 'file' },
                 React.createElement("h3", null, this.props.title + " table is empty.")))) : (React.createElement(core_1.Paper, null,
-            React.createElement(EnhancedTableToolbar_1.EnhancedTableToolbar, { title: this.props.title, searchable: this.props.searchable, tableQuery: this.state.tableQuery, numSelected: selected.length, numShown: data.length, numTotal: this.props.data.length, columns: this.props.columns, actions: this.props.actions, filters: this.state.filters, handleInvertSelection: this.handleInvertSelection, handleFilterOpen: this.handleFilterOpen, handleFilterClose: this.handleFilterClose, handleFilterChange: this.handleFilterChange, handleTableQueryChange: this.handleTableQueryChange, filterOpen: this.state.filterOpen }),
+            React.createElement(EnhancedTableToolbar_1.EnhancedTableToolbar, { title: this.props.title, searchable: this.props.searchable, tableQuery: this.state.tableQuery, numSelected: selected.length, numShown: data.length, numTotal: this.props.data.length, columns: this.props.columns, actions: this.props.actions, filters: this.state.filters, handleInvertSelection: this.handleInvertSelection, handleFilterOpen: this.handleFilterOpen, handleFilterClose: this.handleFilterClose, handleFilterChange: this.handleFilterChange, handleTableQueryChange: this.handleTableQueryChange, filterOpen: this.state.filterOpen, loading: this.props.loading }),
             React.createElement("div", null,
                 React.createElement(core_1.Table, null,
-                    React.createElement(EnhancedTableHead_1.EnhancedTableHead, { numSelected: selected.length, order: order, orderBy: orderBy, onSelectAllClick: this.handleSelectAllClick, onRequestSort: this.handleRequestSort, rowCount: data.length, columns: this.props.columns }),
-                    React.createElement(core_1.TableBody, null,
-                        stableSort(data, getSorting(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map(function (n) {
-                            var isSelected = _this.isSelected(n.id);
-                            var columns = _this.props.columns.filter(function (column) {
-                                return column.visible;
-                            });
-                            return (React.createElement(core_1.TableRow, { hover: true, onClick: function (event) { return _this.handleClick(event, n.id); }, role: 'checkbox', "aria-checked": isSelected, tabIndex: -1, key: n.id, selected: isSelected },
-                                React.createElement(core_1.TableCell, { padding: 'checkbox' },
-                                    React.createElement(core_1.Checkbox, { checked: isSelected })),
-                                columns.map(function (column) {
-                                    if (column.link) {
-                                        return (React.createElement(core_1.TableCell, { padding: 'checkbox' },
-                                            React.createElement(core_1.Tooltip, { title: column.label, placement: 'left' },
-                                                React.createElement(react_router_dom_1.Link, { to: column.link + "/" + n[column.id] },
-                                                    React.createElement(core_1.Icon, null, "launch")))));
-                                    }
-                                    else if (column.th) {
-                                        return (React.createElement(core_1.TableCell, { component: 'th', scope: 'row', padding: 'none' }, n[column.id]));
-                                    }
-                                    else {
-                                        return React.createElement(core_1.TableCell, { align: 'right' }, n[column.id]);
-                                    }
-                                })));
-                        }),
-                        emptyRows > 0 && (React.createElement(core_1.TableRow, { style: { height: 49 * emptyRows } },
-                            React.createElement(core_1.TableCell, { colSpan: 4 })))))),
+                    React.createElement(EnhancedTableHead_1.EnhancedTableHead, { numSelected: selected.length, order: order, orderBy: orderBy, onSelectAllClick: this.handleSelectAllClick, onRequestSort: this.handleRequestSort, rowCount: data.length, columns: this.props.columns, loading: this.props.loading }),
+                    React.createElement(core_1.TableBody, null, this.props.loading ? (this.skeletonRows()) : (stableSort(data, getSorting(order, orderBy))
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map(function (n) {
+                        var isSelected = _this.isSelected(n.id);
+                        var columns = _this.props.columns.filter(function (column) {
+                            return column.visible;
+                        });
+                        return (React.createElement(core_1.TableRow, { hover: true, onClick: function (event) { return _this.handleClick(event, n.id); }, role: 'checkbox', "aria-checked": isSelected, tabIndex: -1, key: n.id, selected: isSelected },
+                            React.createElement(core_1.TableCell, { padding: 'checkbox' },
+                                React.createElement(core_1.Checkbox, { checked: isSelected })),
+                            columns.map(function (column) {
+                                if (column.link) {
+                                    return (React.createElement(core_1.TableCell, { padding: 'checkbox' },
+                                        React.createElement(core_1.Tooltip, { title: column.label, placement: 'left' },
+                                            React.createElement(react_router_dom_1.Link, { to: column.link + "/" + n[column.id] },
+                                                React.createElement(core_1.Icon, null, "launch")))));
+                                }
+                                else if (column.th) {
+                                    return (React.createElement(core_1.TableCell, { component: 'th', scope: 'row', padding: 'none' }, n[column.id]));
+                                }
+                                else {
+                                    return React.createElement(core_1.TableCell, { align: 'right' }, n[column.id]);
+                                }
+                            })));
+                    }))))),
             React.createElement(core_1.TablePagination, { rowsPerPageOptions: [5, 10, 25], component: 'div', count: data.length, rowsPerPage: rowsPerPage, page: page, backIconButtonProps: {
                     'aria-label': 'Previous Page'
                 }, nextIconButtonProps: {
@@ -57029,6 +57216,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "react");
 var classnames_1 = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+var react_content_loader_1 = __webpack_require__(/*! react-content-loader */ "./node_modules/react-content-loader/dist/react-content-loader.es.js");
 var core_1 = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/index.es.js");
 var EnhancedTableFilter_1 = __webpack_require__(/*! ./EnhancedTableFilter */ "./src/components/Table/EnhancedTableFilter.tsx");
 var EnhancedTableToolbar = /** @class */ (function (_super) {
@@ -57090,6 +57278,11 @@ var EnhancedTableToolbar = /** @class */ (function (_super) {
         else {
             headerString = this.props.title;
         }
+        var loadingButton = function () { return (React.createElement("div", { style: { height: 48, width: 160 } },
+            React.createElement(react_content_loader_1.default, { width: 160, height: 48, preserveAspectRatio: 'none' },
+                React.createElement("circle", { cx: '24', cy: '24', r: '24' }),
+                React.createElement("circle", { cx: '80', cy: '24', r: '24' }),
+                React.createElement("circle", { cx: '136', cy: '24', r: '24' })))); };
         return (React.createElement(core_1.Toolbar, null,
             React.createElement("div", { className: 'enhanced-table__toolbar' },
                 React.createElement("h3", { className: classnames_1.default({
@@ -57098,11 +57291,11 @@ var EnhancedTableToolbar = /** @class */ (function (_super) {
                 filterOpen && (React.createElement(EnhancedTableFilter_1.EnhancedTableFilter, { filters: this.props.filters, open: filterOpen, handleFilterChange: this.props.handleFilterChange, columns: this.props.columns.filter(function (column) {
                         return column.filterable;
                     }), handleFilterClose: this.props.handleFilterClose })),
-                React.createElement("ul", { className: 'enhanced-table__tools' },
+                this.props.loading ? (loadingButton()) : (React.createElement("ul", { className: 'enhanced-table__tools' },
                     this.props.searchable && (React.createElement(React.Fragment, null,
                         React.createElement(core_1.Grow, { in: this.state.searchOpen },
                             React.createElement("li", null,
-                                React.createElement(core_1.TextField, { className: 'enhanced-table__search', onChange: this.handleTableQueryChange, placeholder: "Search " + this.props.title, value: this.props.tableQuery, variant: 'standard', margin: 'none' }))),
+                                React.createElement(core_1.TextField, { className: 'enhanced-table__search', onChange: this.handleTableQueryChange, placeholder: "Search " + this.props.title, value: this.props.tableQuery, variant: 'standard', margin: 'none', autoFocus: true }))),
                         React.createElement("li", null, this.state.searchOpen ? (React.createElement(core_1.Tooltip, { title: 'Close Search' },
                             React.createElement(core_1.IconButton, { onClick: function () { return _this.handleCloseSearch(); } },
                                 React.createElement(core_1.Icon, null, "close")))) : (React.createElement(core_1.Tooltip, { title: 'Search' },
@@ -57118,7 +57311,7 @@ var EnhancedTableToolbar = /** @class */ (function (_super) {
                             React.createElement(core_1.Icon, null, "more_vert")),
                         React.createElement(core_1.Menu, { open: menuOpen, anchorEl: menuRef, onClose: this.handleMenuClose },
                             React.createElement(core_1.MenuItem, { onClick: function () { return _this.handleInvertSelection(); } }, "Invert selection"),
-                            this.props.numSelected > 0 && (this.props.actions.map(function (action) { return (React.createElement(core_1.MenuItem, { onClick: function () { return _this.handleMenuSelect(action.id); } }, action.name)); }))))))));
+                            this.props.numSelected > 0 && (this.props.actions.map(function (action) { return (React.createElement(core_1.MenuItem, { onClick: function () { return _this.handleMenuSelect(action.id); } }, action.name)); })))))))));
     };
     return EnhancedTableToolbar;
 }(React.Component));

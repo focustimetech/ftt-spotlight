@@ -16,6 +16,7 @@ import {
 	Menu,
 	MenuItem,
 	Select,
+	Snackbar,
 	TextField,
 	Tooltip
 } from '@material-ui/core'
@@ -48,6 +49,7 @@ interface IState {
 	newStudent: NewStudent
 	addDialogVisible: boolean
 	loading: boolean
+	snackbarOpen: boolean
 }
 
 const tempClusters = [
@@ -70,7 +72,8 @@ export class Students extends React.Component<{}, IState> {
 			grade: grades[0]
 		},
 		clusters: [],
-		loading: false
+		loading: false,
+		snackbarOpen: false
 	}
 
 	componentDidMount() {
@@ -107,7 +110,7 @@ export class Students extends React.Component<{}, IState> {
 
 	handleAddStudentSubmit = (e: any) => {
 		e.preventDefault()
-		console.log('submitted form')
+		
 		this.onAddDialogClose()
 	}
 
@@ -225,6 +228,9 @@ export class Students extends React.Component<{}, IState> {
 						</form>
 					</DialogContent>
 				</Dialog>
+				<Snackbar
+					open={false}
+				/>
 				<EnhancedTable showEmptyTable={false} title='Students' columns={columns} data={students} actions={actions} searchable={true} loading={this.state.loading} />
 			</>
 		)

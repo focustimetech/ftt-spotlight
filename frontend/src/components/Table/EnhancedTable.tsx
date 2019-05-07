@@ -77,6 +77,9 @@ interface IState {
 	filterOpen: boolean
 }
 
+/**
+ * @TODO Allow search of union columns, e.g. First name + last name
+ */
 export class EnhancedTable extends React.Component<IProps, IState> {
 	state: IState = {
 		tableQuery: '',

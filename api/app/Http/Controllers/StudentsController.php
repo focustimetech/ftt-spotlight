@@ -57,15 +57,15 @@ class StudentsController extends Controller
     {
         $student = $request->isMethod('put') ? Student::findOrFail($request->student_id) : new Student;
 
-        $student->id = $request->input('student_id');
         $student->student_number = $request->input('student_number');
         $student->first_name = $request->input('first_name');
         $student->last_name = $request->input('last_name');
         $student->grade = $request->input('grade');
-        $student->homeroom = $request->input('homeroom');
-        $student->team = $request->input('team');
-        $student->first_name = $request->input('initials');
-        $student->first_name = bcrypt($request->input('password'));
+        $student->initials = $request->input('initials');
+
+        if ($student->save()) {
+            return $student;
+        }
     }
 
     /**

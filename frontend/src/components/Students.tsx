@@ -110,7 +110,16 @@ export class Students extends React.Component<{}, IState> {
 
 	handleAddStudentSubmit = (e: any) => {
 		e.preventDefault()
-		
+		axios.post('http://localhost:8000/api/students', {
+			first_name: this.state.newStudent.first_name,
+			last_name: this.state.newStudent.last_name,
+			initials: this.state.newStudent.first_name.slice(0, 1) + this.state.newStudent.last_name.slice(0, 1),
+			student_number: this.state.newStudent.student_number,
+			grade: this.state.newStudent.grade,
+		})
+			.then(res => {
+				console.log(res)
+			})
 		this.onAddDialogClose()
 	}
 

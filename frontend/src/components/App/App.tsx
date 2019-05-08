@@ -15,7 +15,7 @@ import { ClassSchedule } from '../ClassSchedule'
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
 import { Student } from '../Profile/Student'
-import { Students } from '../Students'
+import Students from '../Students'
 import { Sidebar } from '../Sidebar/Sidebar'
 import { Staff } from '../Staff'
 

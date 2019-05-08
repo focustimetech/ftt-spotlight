@@ -1,7 +1,8 @@
 import * as React from 'react'
 
-import axios from 'axios'
 import ContentLoader from 'react-content-loader'
+import { connect } from 'react-redux'
+import { fetchStudents } from '../actions/studentActions'
 
 import {
 	Button,
@@ -60,7 +61,7 @@ const tempClusters = [
 
 const grades = [9, 10, 11, 12]
 
-export class Students extends React.Component<{}, IState> {
+class Students extends React.Component<any, IState> {
 	state: IState = {
 		students: [],
 		addDialogVisible: false,
@@ -79,14 +80,10 @@ export class Students extends React.Component<{}, IState> {
 	componentDidMount() {
 		document.title = 'Students - Spotlight'
 		this.setState({ loading: true })
-		axios.get('http://localhost:8000/api/students')
-			.then((res: any) => {
-				this.setState({
-					students: res.data,
-					loading: false
-				})
-			})
-		this.setState({ clusters: tempClusters })
+		this.props.fetchStudents()
+		this.setState({ loading: false })
+		
+		//this.setState({ clusters: tempClusters })
 	}
 
 	handleCheckIn = (ids: number[]) => {
@@ -110,21 +107,12 @@ export class Students extends React.Component<{}, IState> {
 
 	handleAddStudentSubmit = (e: any) => {
 		e.preventDefault()
-		axios.post('http://localhost:8000/api/students', {
-			first_name: this.state.newStudent.first_name,
-			last_name: this.state.newStudent.last_name,
-			initials: this.state.newStudent.first_name.slice(0, 1) + this.state.newStudent.last_name.slice(0, 1),
-			student_number: this.state.newStudent.student_number,
-			grade: this.state.newStudent.grade,
-		})
-			.then(res => {
-				console.log(res)
-			})
+		return
 		this.onAddDialogClose()
 	}
 
 	render() {
-		const students = this.state.students.map((student: any, index: number) => {
+		const students = this.props.students.map((student: any, index: number) => {
 			return {
 				id: index,
 				last_name: student.last_name,
@@ -156,7 +144,6 @@ export class Students extends React.Component<{}, IState> {
 			{ id: 'delete', name: 'Delete', action: this.handleCheckIn }
 		]
 
-		console.log('state:', this.state.newStudent)
 		return (
 			<>
 				<TopNav>
@@ -245,3 +232,16 @@ export class Students extends React.Component<{}, IState> {
 		)
 	}
 }
+
+/**
+ * @TODO Make an interface for 'students' field, and make IProps
+ * extend it.
+ */
+const mapStateToProps = (state: any) => ({
+	students: state.students.items
+})
+
+/**
+ * @TODO Try to do something about this ...
+ */
+export default connect(mapStateToProps, { fetchStudents })(Students)

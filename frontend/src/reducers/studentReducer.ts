@@ -23,7 +23,10 @@ export const studentReducer = (state = initialState, action: IAction) => {
                 items: action.payload
             }
         case NEW_STUDENT:
-            return state
+            return {
+                ...state,
+                item: action.payload
+            }
         default:
             return state
     }

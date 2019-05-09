@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
-import { fetchStudents } from '../actions/studentActions'
+import { createStudent, fetchStudents } from '../actions/studentActions'
 
 import {
 	Button,
@@ -86,6 +86,11 @@ class Students extends React.Component<any, IState> {
 		//this.setState({ clusters: tempClusters })
 	}
 
+	componentWillReceiveProps(nextProps: any) {
+		if (nextProps.newStudent) {
+			this.props.students.unshift(nextProps.newStudent)
+		}
+	}
 	handleCheckIn = (ids: number[]) => {
 		// console.log('IDs:', ids)
 	}
@@ -107,7 +112,13 @@ class Students extends React.Component<any, IState> {
 
 	handleAddStudentSubmit = (e: any) => {
 		e.preventDefault()
-		return
+		this.props.createStudent({
+			first_name: this.state.newStudent.first_name,
+			last_name: this.state.newStudent.last_name,
+			student_number: this.state.newStudent.student_number,
+			grade: this.state.newStudent.grade,
+			initials: 'CU'
+		})
 		this.onAddDialogClose()
 	}
 
@@ -238,10 +249,16 @@ class Students extends React.Component<any, IState> {
  * extend it.
  */
 const mapStateToProps = (state: any) => ({
-	students: state.students.items
+	students: state.students.items,
+	newStudent: state.students.item
 })
+
+const mapDispatchToProps = {
+	createStudent,
+	fetchStudents
+}
 
 /**
  * @TODO Try to do something about this ...
  */
-export default connect(mapStateToProps, { fetchStudents })(Students)
+export default connect(mapStateToProps, mapDispatchToProps)(Students)

@@ -33,7 +33,7 @@ class StaffController extends Controller
     public function store(Request $request)
     {
         $staff = $request->isMethod('put') ? Staff::findOrFail($request->staff_id) : new Staff;
-        $user = $request->isMethod('put') ? User::where('user_id', $request->staff_id) : new User;
+        $user = $request->isMethod('put') ? $staff->user() : new User;
 
         $staff->staff_type = $request->input('staff_type');
         $staff->administrator = $request->input('administrator');

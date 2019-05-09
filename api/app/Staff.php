@@ -25,7 +25,15 @@ class Staff extends Model
 	}
 
 	public function user() {
-		return $this->has_one('User');
+		return $this->hasOne('App\User', 'user_id')->where('account_type', 'staff')->first();
+	}
+
+	public function starred() {
+		return $this->hasMany('App\Starred');
+	}
+
+	public function scheduleEntries() {
+		return $this->hasMany('App\ScheduleEntry');
 	}
 
 	public function delete() {
@@ -35,12 +43,5 @@ class Staff extends Model
 		ScheduleEntry::where('staff_id', $this->id)->delete();
 
 		return parent::delete();
-	}
-
-	/*
-	function user() {
-		return App\User::where('id', $this->id)->first();
-	}
-	*/
-    
+	}    
 }

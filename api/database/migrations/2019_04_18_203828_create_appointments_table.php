@@ -21,6 +21,9 @@ class CreateAppointmentsTable extends Migration
             $table->date('date');
             $table->string('memo', 150)->default('');
             $table->timestamps();
+            // Foreign keys
+            $table->foreign('staff_id')->references('id')->on('staff');
+            $table->foreign('student_id')->references('id')->on('students');
         });
     }
 

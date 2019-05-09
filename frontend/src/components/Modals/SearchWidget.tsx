@@ -1,12 +1,15 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 
-import Drawer from '@material-ui/core/Drawer'
-import IconButton from '@material-ui/core/IconButton'
-import Icon from '@material-ui/core/Icon'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import TextField from '@material-ui/core/TextField';
+import {
+    Drawer,
+    Icon,
+    IconButton,
+    List,
+    ListItem,
+    TextField
+} from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
@@ -136,11 +139,11 @@ export class SearchWidget extends React.Component<IProps, IState> {
                                                     <>
                                                         <h4 className='search-group_header'>{searchGroup.label}</h4>
                                                         <List className='search-group_list'>{
-                                                            searchGroup.values.map((searchItem) => {
+                                                            searchGroup.values.map((searchItem, index: number) => {
                                                                 return (
-                                                                    <a href={searchItem.url}>
-                                                                        <ListItem className='search-group_list__item'>{searchItem.value}</ListItem>
-                                                                    </a>
+                                                                    <Link to={`/${searchItem.url}`} onClick={this.handleClose}>
+                                                                        <ListItem key={index} className='search-group_list__item'>{searchItem.value}</ListItem>
+                                                                    </Link>
                                                                 )
                                                             })
                                                         }</List>

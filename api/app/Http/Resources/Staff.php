@@ -17,7 +17,7 @@ class Staff extends JsonResource
         // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'account_type' => $this['account_type'],
+            'staff_type' => $this['staff_type'],
             'administrator' => $this['administrator'] ? true : false,
             'name' => $this->getName(),
             'email' => $this['email']

@@ -22,10 +22,16 @@ Route::middleware('auth:api')->group(function() {
     Route::post('logout', 'AuthController@logout');
 });
 
+// COMPLETE
+
 // Staff
 Route::get('staff', 'StaffController@index');
 Route::get('staff/{id}', 'StaffController@show');
 Route::post('staff', 'StaffController@store');
+
+
+// INCOMPLETE
+
 Route::put('staff', 'StaffController@store');
 Route::delete('staff/{id}', 'StaffController@destroy');
 // Students

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Staff;
+use App\User;
 use App\Http\Resources\Staff as StaffResource;
 
 class StaffController extends Controller
@@ -24,16 +25,6 @@ class StaffController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -42,17 +33,26 @@ class StaffController extends Controller
     public function store(Request $request)
     {
         $staff = $request->isMethod('put') ? Staff::findOrFail($request->staff_id) : new Staff;
+        $user = $request->isMethod('put') ? User::where('user_id', $request->staff_id) : new User;
 
-        $staff->id = $request->input('staff_id');
-        $staff->account_type = $request->input('account_type');
+        $staff->staff_type = $request->input('staff_type');
         $staff->administrator = $request->input('administrator');
         $staff->first_name = $request->input('first_name');
         $staff->last_name = $request->input('last_name');
         $staff->email = $request->input('email');
-        $staff->password = bcrypt($request->input('password'));
 
         if ($staff->save()) {
-            return new StaffResource($staff);
+            $user->account_type = 'staff';
+            $user->username = $request->input('email');
+            $user->user_id = $staff->id;
+
+            if ($request->isMethod('post')) {
+                $user->password = bcrypt($request->input('email'));
+            }
+
+            if ($user->save()) {
+                return new StaffResource($staff);
+            }
         }
     }
 
@@ -69,35 +69,6 @@ class StaffController extends Controller
         return new StaffResource($staff);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $staff = Staff::findOrFail($id);

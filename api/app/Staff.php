@@ -24,6 +24,19 @@ class Staff extends Model
 		return $this->first_name && $fullName ? $name. ', '. $this->first_name : $name;
 	}
 
+	public function user() {
+		return $this->has_one('User');
+	}
+
+	public function delete() {
+		User::where('user_id', $this->id)->where('account_type', 'staff')
+			->delete();
+		Starred::where('staff_id', $this->id)->delete();
+		ScheduleEntry::where('staff_id', $this->id)->delete();
+
+		return parent::delete();
+	}
+
 	/*
 	function user() {
 		return App\User::where('id', $this->id)->first();

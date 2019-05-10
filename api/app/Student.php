@@ -15,9 +15,9 @@ class Student extends Model
     /**
      * Retreive all Courses that student is enrolled in.
      */
-    public function getCourses()
+    public function courses()
     {
-        return Course::whereIn('courses.id', $this->getCourseIDs())->get();
+        return $this->hasMany('App\Course')->whereIn('courses.id', $this->getCourseIDs())->get();
     }
 
     /**
@@ -34,28 +34,32 @@ class Student extends Model
     /**
      * Returns all blocks that a student participates in.
      */
-    public function getBlocks($include_flex = false)
+    public function blocks($include_flex = false)
     {
         $block_numbers = ScheduleEntry::whereIn('course_id', $this->getCourseIDs())
             ->get()
             ->pluck('block_number')
             ->toArray();
 
-        return Block::whereRaw('block_number IN ('. implode($block_numbers, ','). ($include_flex == true ? ') OR flex = 1' : ')'))->get();
+        return $this->hasMany('App\Block')->whereRaw('block_number IN ('. implode($block_numbers, ','). ($include_flex == true ? ') OR flex = 1' : ')'))->get();
     }
 
-    public function getAppointments()
+    public function appointments()
     {
-        return Appointment::where('student_id', $this->id)->get();
+        return $this->hasMany('App\Appointment', 'student_id')->get();
     }
 
-    public function getLedgerEntries()
+    public function ledgerEntries()
     {
-        return LedgerEntry::where('student_id', $this->id)->get();
+        return $this->hasMany('App\LedgerEntry', 'student_id')->get();
     }
 
-    public function getPlans()
+    public function plans()
     {
         return [];
     }
+
+    public function user() {
+		return $this->hasOne('App\User', 'user_id')->where('account_type', 'student')->first();
+	}
 }

@@ -5,46 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Student;
+use App\User;
 use App\Http\Resources\Student as StudentResource;
 
 class StudentsController extends Controller
 {
-    /**
-     * Retreives all students that are enabled
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function fetchAll()
-    {
-        // Get teachers
-        $students = Student::where('disabled', 0)->get();
 
-        // return collection of staff as a resource
+    public function index()
+    {
+        // Get all students
+        $students = Student::all();
+
+        // return collection of students as a resource
         return StudentResource::collection($students);
-    }
-
-    /**
-     * Retreives all students that are disabled
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function fetchDisabled()
-    {
-        // Get teachers
-        $student = Student::where('disabled', 1)->get();
-
-        // return collection of staff as a resource
-        return StudentResource::collection($student);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -56,6 +29,7 @@ class StudentsController extends Controller
     public function store(Request $request)
     {
         $student = $request->isMethod('put') ? Student::findOrFail($request->student_id) : new Student;
+        $user = $request->isMethod('put') ? $student->user() : new User;
 
         $student->student_number = $request->input('student_number');
         $student->first_name = $request->input('first_name');
@@ -64,7 +38,17 @@ class StudentsController extends Controller
         $student->initials = $request->input('initials');
 
         if ($student->save()) {
-            return $student;
+            $user->account_type = 'student';
+            $user->username = $request->input('student_number');
+            $user->user_id = $student->id;
+
+            if ($request->isMethod('post')) {
+                $user->password = bcrypt($request->input('student_number'));
+            }
+
+            if ($user->save()) {
+                return new StudentResource($student);
+            }
         }
     }
 

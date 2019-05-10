@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Block extends Model
 {
     // @TODO depricate this POS.
+    /*
     public function getCourseFromStudentID($student_id) {
         // All courses occuring in this block
         $course_ids = ScheduleEntry::where('block_number', $this->block_number)
@@ -17,6 +18,6 @@ class Block extends Model
             ->whereIn('course_id', $course_ids)->get()->pluck('course_id')->first();
 
         return Course::find($course_id);
-        
     }
+    */
 }

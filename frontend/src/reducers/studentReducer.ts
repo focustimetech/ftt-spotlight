@@ -1,4 +1,4 @@
-import { FETCH_STUDENTS, NEW_STUDENT } from '../actions/types'
+import { FETCH_STUDENTS, NEW_STUDENT, DELETE_STUDENT, UPDATE_STUDENT } from '../actions/types'
 
 interface IState {
     items: any[],
@@ -12,7 +12,7 @@ const initialState: IState = {
 
 interface IAction {
     type: string,
-    payload: any[]
+    payload: any
 }
 
 export const studentReducer = (state = initialState, action: IAction) => {
@@ -26,6 +26,19 @@ export const studentReducer = (state = initialState, action: IAction) => {
             return {
                 ...state,
                 item: action.payload
+            }
+        case DELETE_STUDENT:
+            return {
+                ...state,
+                items: state.items.filter((item: any) => item.id !== action.payload)
+            }
+        case UPDATE_STUDENT:
+            return {
+                ...state,
+                items: [
+                    ...state.items.filter((item: any) => item.id !== action.payload.id),
+                    action.payload
+                ]
             }
         default:
             return state

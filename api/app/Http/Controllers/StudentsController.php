@@ -53,57 +53,13 @@ class StudentsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Retreive student by ID (primary key)
      */
-    public function fetchByID($id)
+    public function show($id)
     {
         $student = Student::findOrFail($id);
 
         return new StudentResource($student);
-    }
-
-    /**
-     * Retreive student by Student Number
-     */
-    public function fetchBySN($student_number)
-    {
-        $student = Student::where('student_number', $student_number)
-            ->first();
-        
-        return new StudentResource($student);
-    }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
@@ -116,15 +72,8 @@ class StudentsController extends Controller
     {
         $student = Student::findOrFail($id);
 
-        if ($student->delete()) return new StudentResource($student());
-    }
-
-    public function disable(Request $request)
-    {
-        $student = Student::findOrFail($request->student_id);
-
-        $student->disabled = true;
-        
-        if ($student->save()) return new StudentResource($student);
+        if ($student->delete()) {
+            return new StudentResource($student);
+        }
     }
 }

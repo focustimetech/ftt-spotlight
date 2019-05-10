@@ -31,18 +31,23 @@ Route::post('staff', 'StaffController@store');
 Route::delete('staff/{id}', 'StaffController@destroy');
 Route::put('staff', 'StaffController@store');
 
+// Students
+Route::get('students', 'StudentsController@index');
+Route::get('students/{id}', 'StudentsController@show');
+Route::post('students', 'StudentsController@store');
+Route::put('students', 'StudentsController@store');
+Route::delete('students/{id}', 'StudentsController@destroy');
 
 // INCOMPLETE
 
 // Students
-Route::get('students', 'StudentsController@fetchAll'); //->middleware('cors');
+
 Route::get('students/disabled', 'StudentsController@fetchDisabled');
-Route::get('student/id/{id}', 'StudentsController@fetchByID');
 Route::get('student/sn/{student_number}', 'StudentsController@fetchBySN');
-Route::post('students', 'StudentsController@store');
-Route::put('students', 'StudentsController@store');
+
+
 Route::delete('student/{id}/disable', 'StudentsController@disable');
-Route::delete('student/{id}', 'StudentsController@destroy');
+
 // Blocks
 Route::get('blocks', 'BlockController@index');
     // Route::get('block/{time}', 'BlockController@show');

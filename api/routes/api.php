@@ -43,8 +43,12 @@ Route::get('search', 'SearchController@search');
 
 // INCOMPLETE
 
+// Clusters
 Route::get('clusters', 'ClustersController@index');
 Route::get('clusters/{id}', 'ClustersController@show');
+Route::post('clusters', 'ClustersController@store');
+Route::put('clusters', 'ClustersController@store');
+Route::delete('clusters/{id}', 'ClustersController@delete');
 
 // Blocks
 Route::get('blocks', 'BlockController@index');

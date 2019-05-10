@@ -17,7 +17,10 @@ class CreateClusterLegendTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->boolean('hidden')->default(false);
+            $table->unsignedInteger('owner');
             $table->timestamps();
+            // Foreign keys
+            $table->foreign('owner')->references('id')->on('staff');
         });
     }
 

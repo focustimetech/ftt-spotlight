@@ -43,5 +43,5 @@ class Staff extends Model
 		ScheduleEntry::where('staff_id', $this->id)->delete();
 
 		return parent::delete();
-	}    
+	}
 }

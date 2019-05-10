@@ -28,8 +28,8 @@ Route::middleware('auth:api')->group(function() {
 Route::get('staff', 'StaffController@index');
 Route::get('staff/{id}', 'StaffController@show');
 Route::post('staff', 'StaffController@store');
-Route::delete('staff/{id}', 'StaffController@destroy');
 Route::put('staff', 'StaffController@store');
+Route::delete('staff/{id}', 'StaffController@destroy');
 
 // Students
 Route::get('students', 'StudentsController@index');
@@ -38,15 +38,10 @@ Route::post('students', 'StudentsController@store');
 Route::put('students', 'StudentsController@store');
 Route::delete('students/{id}', 'StudentsController@destroy');
 
+// Search
+Route::get('search', 'SearchController@search');
+
 // INCOMPLETE
-
-// Students
-
-Route::get('students/disabled', 'StudentsController@fetchDisabled');
-Route::get('student/sn/{student_number}', 'StudentsController@fetchBySN');
-
-
-Route::delete('student/{id}/disable', 'StudentsController@disable');
 
 // Blocks
 Route::get('blocks', 'BlockController@index');
@@ -58,8 +53,7 @@ Route::delete('block/{id}', 'BlockController@destroy');
 // Route::get('ledger', 'LedgerController@index');
 Route::post('check-in', 'LedgerController@store');
 
-// Search
-Route::get('search', 'SearchController@search');
+
 
 // Student Schedule
 Route::get('student-schedule', 'StudentScheduleController@index');

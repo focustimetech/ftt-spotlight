@@ -43,6 +43,9 @@ Route::get('search', 'SearchController@search');
 
 // INCOMPLETE
 
+Route::get('clusters', 'ClustersController@index');
+Route::get('clusters/{id}', 'ClustersController@show');
+
 // Blocks
 Route::get('blocks', 'BlockController@index');
     // Route::get('block/{time}', 'BlockController@show');

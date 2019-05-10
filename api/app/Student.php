@@ -49,6 +49,11 @@ class Student extends Model
         return $this->hasMany('App\Appointment', 'student_id')->get();
     }
 
+    public function clusters()
+    {
+        return $this->belongsToMany('App\Cluster');
+    }
+
     public function ledgerEntries()
     {
         return $this->hasMany('App\LedgerEntry', 'student_id')->get();

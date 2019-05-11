@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateClusterLegendTable extends Migration
+class CreateClustersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -31,6 +31,6 @@ class CreateClusterLegendTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cluster_legend');
+        Schema::dropIfExists('clusters');
     }
 }

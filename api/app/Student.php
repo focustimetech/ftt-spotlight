@@ -51,7 +51,7 @@ class Student extends Model
 
     public function clusters()
     {
-        return $this->belongsToMany('App\Cluster');
+        return $this->belongsToMany('App\Cluster', 'student_cluster', 'student_id', 'cluster_id');
     }
 
     public function ledgerEntries()

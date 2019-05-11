@@ -1,6 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
+/*
 
 $factory->define(App\Enrollment::class, function (Faker $faker) {
     return [
@@ -9,3 +10,5 @@ $factory->define(App\Enrollment::class, function (Faker $faker) {
         'dropped_at' => NULL
     ];
 });
+
+*/

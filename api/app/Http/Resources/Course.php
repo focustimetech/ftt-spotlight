@@ -20,7 +20,10 @@ class Course extends JsonResource
             'id' => $this['id'],
             'name' => $this['name'],
             'short_name' => $this['short_name'],
-            'owner' => new StaffResource(Staff::find($this['owner']))
+            'owner' => new StaffResource(Staff::find($this['owner'])),
+            'capacity' => 999,
+            'enrolled' => 1,
+            'remaining' => 998
         ];
     }
 }

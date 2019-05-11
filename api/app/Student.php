@@ -13,14 +13,6 @@ class Student extends Model
     }
 
     /**
-     * Retreive all Courses that student is enrolled in.
-     */
-    public function courses()
-    {
-        return $this->hasMany('App\Course')->whereIn('courses.id', $this->getCourseIDs())->get();
-    }
-
-    /**
      * Retreives the specific course a student has at a given block
      */
     public function getCourseAtBlock($block_number) {
@@ -31,6 +23,12 @@ class Student extends Model
 
         return Course::find($course_id);
     }
+
+    public function appointments()
+    {
+        return $this->hasMany('App\Appointment', 'student_id');
+    }
+
     /**
      * Returns all blocks that a student participates in.
      */
@@ -44,9 +42,12 @@ class Student extends Model
         return $this->hasMany('App\Block')->whereRaw('block_number IN ('. implode($block_numbers, ','). ($include_flex == true ? ') OR flex = 1' : ')'))->get();
     }
 
-    public function appointments()
+    /**
+     * Retreive all Courses that student is enrolled in.
+     */
+    public function courses()
     {
-        return $this->hasMany('App\Appointment', 'student_id')->get();
+        return $this->belongsToMany('App\Course', 'enrollment', 'student_id', 'course_id');
     }
 
     public function clusters()
@@ -56,7 +57,7 @@ class Student extends Model
 
     public function ledgerEntries()
     {
-        return $this->hasMany('App\LedgerEntry', 'student_id')->get();
+        return $this->hasMany('App\LedgerEntry', 'student_id');
     }
 
     public function plans()

@@ -16,6 +16,7 @@ class CreateClustersTable extends Migration
         Schema::create('clusters', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->boolean('public')->default(true);
             $table->boolean('hidden')->default(false);
             $table->unsignedInteger('owner');
             $table->timestamps();

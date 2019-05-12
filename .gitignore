@@ -5,11 +5,8 @@ api/storage/*.key
 api/vendor
 api/.env
 api/.phpunit.result.cache
-api/Homestead.json
-api/Homestead.yaml
 api/npm-debug.log
 api/yarn-error.log
 frontend/node_modules
-package-lock.json
 
 passport.txt

@@ -6,6 +6,9 @@ import { applyMiddleware, createStore } from 'redux'
 
 import { store } from './store'
 import AppWithAuth from './components/App/AppWithAuth';
+import { setAuthorizationToken } from './utils/setAuthorizationToken';
+
+setAuthorizationToken(localStorage.jwtToken)
 
 ReactDOM.render (
 	<Provider store={store}>

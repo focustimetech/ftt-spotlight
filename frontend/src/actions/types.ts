@@ -9,3 +9,6 @@ export const FETCH_CLUSTERS = 'FETCH_CLUSTERS'
 export const NEW_CLUSTER = 'NEW_CLUSTER'
 export const DELETE_CLUSTER = 'DELETE_CLUSTER'
 export const UPDATE_CLUSTER = 'UPDATE_CLUSTER'
+
+// Authorization
+export const LOGIN = 'LOGIN'

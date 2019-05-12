@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Cluster;
+use App\Student;
 use App\Http\Resources\Cluster as ClusterResource;
 
 class ClustersController extends Controller
@@ -63,6 +64,26 @@ class ClustersController extends Controller
 
         if ($cluster->delete()) {
             return new ClusterResource($cluster);
+        }
+    }
+
+    public function attach(Request $request)
+    {
+        $students = Student::findOrFail($request->student_ids);
+        foreach ($students as $student) {
+            $student->clusters()->attach($request->cluster_ids);
+        }
+        
+        return $request;
+    }
+
+    public function detach(Request $request)
+    {
+        return $request;
+
+        $students = Student::findOrFail($request->student_ids);
+        foreach ($students as $student) {
+            $student->clusters()->detach($request->cluster_ids);
         }
     }
 }

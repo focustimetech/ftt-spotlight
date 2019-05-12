@@ -49,6 +49,8 @@ Route::get('clusters/{id}', 'ClustersController@show');
 Route::post('clusters', 'ClustersController@store');
 Route::put('clusters', 'ClustersController@store');
 Route::delete('clusters/{id}', 'ClustersController@delete');
+Route::post('clusters/students', 'ClustersController@attach');
+Route::delete('clusters/students', 'ClustersController@detach');
 
 // Blocks
 Route::get('blocks', 'BlockController@index');

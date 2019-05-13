@@ -24,8 +24,8 @@ Route::middleware('auth:api')->group(function() {
 
     // Starred
     Route::get('starred', 'StarController@index');
-    Route::post('star', 'StarController@star');
-    Route::delete('star', 'StarController@unstar');
+    Route::post('starred', 'StarController@star');
+    Route::delete('starred', 'StarController@unstar');
 });
 
 // COMPLETE

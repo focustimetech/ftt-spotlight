@@ -20,6 +20,12 @@ Route::post('login', 'AuthController@login');
 Route::middleware('auth:api')->group(function() {
     // Auth
     Route::post('logout', 'AuthController@logout');
+    Route::get('user', 'AuthController@user');
+
+    // Starred
+    Route::get('starred', 'StarController@index');
+    Route::post('star', 'StarController@star');
+    Route::delete('star', 'StarController@unstar');
 });
 
 // COMPLETE

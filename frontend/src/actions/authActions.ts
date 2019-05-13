@@ -17,10 +17,15 @@ export const login = (credentials: ICredentials) => {
                 const token = res.data.access_token
                 localStorage.setItem('access_token', token)
                 setAuthorizationToken(token)
-                dispatch({
-                    type: SET_CURRENT_USER,
-                    payload: jwt.decode(token)
-                })
+                console.log(jwt.decode(token))
+                axios.get('http://localhost:8000/api/user')
+                    .then(res => {
+                        const user = res.data
+                        dispatch({
+                            type: SET_CURRENT_USER,
+                            payload: user
+                        })
+                    })
             })
     }
 }

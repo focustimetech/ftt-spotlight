@@ -1,20 +1,16 @@
 import * as React from 'react'
 import axios from 'axios'
-
+import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+import {
+	Button,
+	CircularProgress,
+	DialogActions,
+	TextField,
+} from '@material-ui/core'
 
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-
-interface User {
-	user: string
-	accountType: string
-}
-
-interface LoginCredentials {
-	username: string
-	password: string
-}
+import { ICredentials } from '../types/auth'
+import { login } from '../actions/authActions'
 
 const selectBackground = () => {
 	const imageList: string[] = [
@@ -31,44 +27,26 @@ const selectBackground = () => {
 }
 
 interface IProps extends RouteComponentProps {
-	onSignIn: (callback?: () => void) => void
+	onSignIn: () => void
+	login: (credentials: ICredentials) => any
 }
 
 interface IState {
 	user: string
 	password: string
 	redirectToReferrer: boolean
+	loading: boolean
 }
 
-export class Login extends React.Component<IProps, IState> {
+class Login extends React.Component<IProps, IState> {
 	state: IState = {
 		user: '',
 		password: '',
-		redirectToReferrer: false
+		redirectToReferrer: false,
+		loading: false
 	}
 
 	backgroundImage: string
-
-	login = (credentials: LoginCredentials) => {
-		this.props.onSignIn(() => {
-			this.setState({
-				redirectToReferrer: true
-			})
-		})
-		return
-		console.log('Logging in...')
-		// axios.defaults.headers.post['Content-Type'] ='application/json';
-		// axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-	
-		axios.post('http://localhost:8000/api/login', {
-			username: credentials.username,
-			password: credentials.password
-		})
-			.then(res => {
-				console.log(res)
-			})
-	
-	}
 
 	handleChange = (event: any) => {
 		event.preventDefault()
@@ -76,10 +54,22 @@ export class Login extends React.Component<IProps, IState> {
 	}
 	
 	handleLogin = () => {
-		this.login({
-		'username': this.state.user,
-		'password': this.state.password
-		})
+		this.setState({ loading: true })
+		const credentials: ICredentials = {
+			username: this.state.user,
+			password: this.state.password
+		}
+
+		this.props.login(credentials).then(
+			(res: any) => {
+				this.props.onSignIn()
+				this.setState({
+					redirectToReferrer: true,
+					loading: false
+				})
+			},
+			(err: any) => console.log('Login err:', err)
+		)
 	}
 
 	componentDidMount() {
@@ -90,8 +80,8 @@ export class Login extends React.Component<IProps, IState> {
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
 	
 		if (this.state.redirectToReferrer) {
-			console.log(this.props.location)
-			console.log('login redirecting to: ', from)
+			// console.log(this.props.location)
+			// console.log('login redirecting to: ', from)
 			return <Redirect to={from} />
 		}
 		return (
@@ -129,9 +119,19 @@ export class Login extends React.Component<IProps, IState> {
 									variant='filled'
 									fullWidth={true}
 								/>
-								<div className='button_container'>
-									<Button onClick={() => this.handleLogin()} color='primary' variant='contained'>Sign In</Button>
-								</div>
+								<DialogActions>
+									<div className='button_container'>
+										<Button
+											onClick={() => this.handleLogin()}
+											color='primary'
+											variant='contained'
+											disabled={this.state.loading}
+										>Sign In</Button>
+										{this.state.loading && (
+											<CircularProgress size={24} className='login-progress' />
+										)}
+									</div>
+								</DialogActions>
 							</form>
 							<ul className='links_list'>
 								<a href='https://focustime.ca'><li>Help</li></a>
@@ -143,3 +143,9 @@ export class Login extends React.Component<IProps, IState> {
 		)
 	}
 }
+
+/**
+ * @TODO Make an interface for this stuff...
+ */
+
+export default connect(null, { login })(Login);

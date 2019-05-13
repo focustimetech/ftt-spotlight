@@ -8,7 +8,7 @@ import { store } from './store'
 import AppWithAuth from './components/App/AppWithAuth';
 import { setAuthorizationToken } from './utils/setAuthorizationToken';
 
-setAuthorizationToken(localStorage.jwtToken)
+setAuthorizationToken(localStorage.access_token)
 
 ReactDOM.render (
 	<Provider store={store}>

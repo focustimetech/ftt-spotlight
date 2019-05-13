@@ -1,6 +1,7 @@
 import axios from 'axios'
+import * as jwt from 'jsonwebtoken'
 
-import { LOGIN } from './types'
+import { SET_CURRENT_USER } from './types'
 import { setAuthorizationToken } from '../utils/setAuthorizationToken'
 
 interface ICredentials {
@@ -9,18 +10,15 @@ interface ICredentials {
 }
 
 export const login = (credentials: ICredentials) => (dispatch: any) => {
+    console.log('authActions.login()')
     axios.post('http://localhost:8000/api/login', credentials)
         .then(res => {
-            const token = res.data.token
-            console.log('Token:', token)
-            /**
-             * @TODO Rename this key
-             */
-            localStorage.setItem('jwtToken', token)
+            const token = res.data.access_token
+            localStorage.setItem('access_token', token)
             setAuthorizationToken(token)
             return dispatch({
-                type: LOGIN,
-                payload: token
+                type: SET_CURRENT_USER,
+                payload: jwt.decode(token)
             })
         })
 }

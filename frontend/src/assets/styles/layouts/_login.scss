@@ -87,13 +87,14 @@
 					}
 
 					.button_container {
-						width: 100%;
-						display: flex;
-						justify-content: flex-end;
-						margin: 16px 0 0 0;
+						position: relative;
 
-						button {
-							margin-left: 16px;
+						.login-progress {
+							position: absolute;
+							top: 50%;
+							left: 50%;
+							margin-top: -12px;
+							margin-left: -12px;
 						}
 					}
 				}

@@ -34,6 +34,7 @@ interface IProps extends RouteComponentProps {
 interface IState {
 	user: string
 	password: string
+	errors: any[]
 	redirectToReferrer: boolean
 	loading: boolean
 }
@@ -42,6 +43,7 @@ class Login extends React.Component<IProps, IState> {
 	state: IState = {
 		user: '',
 		password: '',
+		errors: [],
 		redirectToReferrer: false,
 		loading: false
 	}
@@ -59,16 +61,16 @@ class Login extends React.Component<IProps, IState> {
 			username: this.state.user,
 			password: this.state.password
 		}
-
 		this.props.login(credentials).then(
 			(res: any) => {
 				this.props.onSignIn()
-				this.setState({
-					redirectToReferrer: true,
-					loading: false
-				})
+				this.setState({ redirectToReferrer: true })
 			},
-			(err: any) => console.log('Login err:', err)
+			(err: any) => {
+				this.setState({ loading: false, errors: err.response.data.errors }, () => {
+					// console.log(this.state.errors)
+				})
+			}
 		)
 	}
 

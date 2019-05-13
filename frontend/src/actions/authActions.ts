@@ -9,16 +9,18 @@ interface ICredentials {
     password: string
 }
 
-export const login = (credentials: ICredentials) => (dispatch: any) => {
+export const login = (credentials: ICredentials) => {
     console.log('authActions.login()')
-    axios.post('http://localhost:8000/api/login', credentials)
-        .then(res => {
-            const token = res.data.access_token
-            localStorage.setItem('access_token', token)
-            setAuthorizationToken(token)
-            return dispatch({
-                type: SET_CURRENT_USER,
-                payload: jwt.decode(token)
+    return (dispatch: any) => {
+        return axios.post('http://localhost:8000/api/login', credentials)
+            .then(res => {
+                const token = res.data.access_token
+                localStorage.setItem('access_token', token)
+                setAuthorizationToken(token)
+                dispatch({
+                    type: SET_CURRENT_USER,
+                    payload: jwt.decode(token)
+                })
             })
-        })
+    }
 }

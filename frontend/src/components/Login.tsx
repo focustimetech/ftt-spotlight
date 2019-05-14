@@ -23,7 +23,7 @@ const selectBackground = () => {
 		'priscilla-du-preez-293218-unsplash.jpg'
 	]
 	const arrayIndex: number = Math.floor(Math.random() * imageList.length)
-	return `url('src/assets/images/splash/${imageList[arrayIndex]}')`
+	return `url('static/images/splash/${imageList[arrayIndex]}')`
 }
 
 interface IProps extends RouteComponentProps {

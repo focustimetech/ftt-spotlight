@@ -11,7 +11,7 @@ interface IProps {
  * @param children Text for the EmptyStateIcon.
  */
 export const EmptyStateIcon = (props: IProps) => {
-	const imageName = `url('src/assets/images/empty-state/${props.variant}.svg')`
+	const imageName = `url('static/images/empty-state/${props.variant}.svg')`
 	return (
 		<div className='empty-state-icon'>
 			<div className='empty-state-icon__image' style={{backgroundImage: imageName}}></div>

@@ -124,6 +124,7 @@ class Login extends React.Component<IProps, IState> {
 								<DialogActions>
 									<div className='button_container'>
 										<Button
+											type='submit'
 											onClick={() => this.handleLogin()}
 											color='primary'
 											variant='contained'

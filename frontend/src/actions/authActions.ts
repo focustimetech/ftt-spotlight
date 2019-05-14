@@ -10,7 +10,6 @@ interface ICredentials {
 }
 
 export const login = (credentials: ICredentials) => {
-    console.log('authActions.login()')
     return (dispatch: any) => {
         return axios.post('http://localhost:8000/api/login', credentials)
             .then(res => {

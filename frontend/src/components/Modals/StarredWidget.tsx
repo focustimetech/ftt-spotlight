@@ -1,26 +1,38 @@
 import * as React from 'react'
 
-import Drawer from '@material-ui/core/Drawer'
-import IconButton from '@material-ui/core/IconButton'
-import Icon from '@material-ui/core/Icon'
+import { connect } from 'react-redux'
+import { fetchStarred, starItem, unstarItem } from '../../actions/starActions'
+
+import {
+    Drawer,
+    Icon,
+    IconButton,
+} from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 
 interface IState {
     open: boolean
+    loading: boolean
+    starred: any[]
 }
 
-interface IProps {}
+interface IProps {
+    fetchStarred: () => void
+    starred: any[]
+}
 
-export class StarredWidget extends React.Component<IProps, IState> {
+class StarredWidget extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
         this.escFunction = this.escFunction.bind(this)
     }
 
-    state = {
-        open: false
+    state: IState = {
+        open: false,
+        loading: false,
+        starred: []
     }
 
     handleClickOpen = () => {
@@ -39,6 +51,9 @@ export class StarredWidget extends React.Component<IProps, IState> {
 
     componentDidMount() {
         document.addEventListener('keydown', this.escFunction, false)
+        this.setState({ loading: true })
+        this.props.fetchStarred()
+        this.setState({ loading: false })
     }
 
     componentWillUnmount() {
@@ -61,9 +76,25 @@ export class StarredWidget extends React.Component<IProps, IState> {
                                 <h3>Items you add to your Starred list will appear here.</h3>
                             </EmptyStateIcon>
                         </div>
+                        <p>{JSON.stringify(this.props.starred)}</p>
 					</div>
 				</Drawer>
             </>
         )
     }
 }
+
+/**
+ * @TODO IProps for this....
+ */
+const mapStateToProps = (state: any) => ({
+    starred: state.starred.items,
+    newStarredItem: state.starred.item
+})
+
+const mapDispatchToProps = {
+    fetchStarred,
+    starItem,
+    unstarItem
+}
+export default connect(mapStateToProps, mapDispatchToProps)(StarredWidget)

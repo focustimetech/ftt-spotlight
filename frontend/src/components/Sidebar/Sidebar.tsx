@@ -8,7 +8,7 @@ import { NavItem } from './NavItem'
 import { NotificationsWidget } from '../Modals/NotificationsWidget'
 import { CheckInWidget } from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
-import { StarredWidget } from '../Modals/StarredWidget'
+import StarredWidget from '../Modals/StarredWidget'
 
 interface IProps {
 	onSignOut: () => void

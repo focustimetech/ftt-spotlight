@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Starred;
+use App\Student;
+use App\Cluster;
 use App\Http\Resources\Starred as StarredResource;
 
 class StarController extends Controller
@@ -16,7 +18,14 @@ class StarController extends Controller
     public function index()
     {
         // $starred = Starred::select('item_id', 'item_type')->where('staff_id', auth()->user()->id)->groupBy('item_type');
-        $starred = auth()->user()->staff()->starred()->get()->groupBy('item_type')->select('item_id');
+        $starred = auth()->user()->staff()->starred()->get()->mapToGroups(function($starred) {
+			switch($starred['item_type']) {
+                case 'student':
+                    return ['students' => Student::findOrFail($starred['item_id'])];
+                case 'cluster':
+                    return ['clusters' => Cluster::findOrFail($starred['item_id'])];
+            }
+		});
 
         return new StarredResource($starred);
     }

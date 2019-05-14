@@ -1,39 +1,39 @@
 import * as React from 'react'
+import ContentLoader from 'react-content-loader'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
 import {
     Drawer,
+    Fade,
+    Grow,
     Icon,
     IconButton,
     List,
     ListItem,
+    Slide,
     TextField
 } from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 
-
-
-type QueryState = 'searching' | 'idle'
-
-interface SearchItem {
+interface ModalItem {
     value: string
     type: string
     url: string
 }
 
-interface SearchGroup {
+interface ModalItemGroup {
     label: string
-    values: SearchItem[]
+    values: ModalItem[]
 }
 
 interface IState {
     open: boolean
-    queryState: QueryState
+    loading: boolean
     searchQuery: string
-    searchResults: SearchGroup[] | null
+    searchResults: ModalItemGroup[]
 }
 
 interface IProps {}
@@ -46,9 +46,9 @@ export class SearchWidget extends React.Component<IProps, IState> {
 
     state: IState = {
         open: false,
-        queryState: 'idle',
+        loading: false,
         searchQuery: '',
-        searchResults: null
+        searchResults: []
     }
 
     handleClickOpen = () => {
@@ -67,15 +67,15 @@ export class SearchWidget extends React.Component<IProps, IState> {
 
     search = (query: string) => {
         if (query.length > 0) {
-            this.setState({ queryState: 'searching' }, () => {
+            this.setState({ loading: true }, () => {
                 axios.get(`http://localhost:8000/api/search?query=${query}`)
                 .then(res => {
                     // Wait to show results until the query matches what was typed in.
                     if (res.data.query === this.state.searchQuery) {
-                        const results: SearchGroup[] = res.data.results
+                        const results: ModalItemGroup[] = res.data.results
                         this.setState({
                             searchResults: results,
-                            queryState: 'idle'
+                            loading: false
                         })
                     }
                 })
@@ -83,7 +83,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
         } else {
             this.setState({
                 searchResults: [],
-                queryState: 'idle'
+                loading: false
             })
         }
     }
@@ -104,16 +104,20 @@ export class SearchWidget extends React.Component<IProps, IState> {
 
     render () {
         const resultCount: number = this.state.searchResults ? (
-            this.state.searchResults.reduce((count: number, searchGroup: SearchGroup) => {
-                return count + searchGroup.values.length
+            this.state.searchResults.reduce((count: number, itemGroup: ModalItemGroup) => {
+                return count + itemGroup.values.length
             }, 0)
         ) : 0
+
+        console.log('searchQuery:', this.state.searchQuery)
+        console.log('loading', this.state.loading)
+        console.log('resultCount:', resultCount)
 
         return (
             <>
                 <NavItem title='Search' icon='search' onClick={this.handleClickOpen} />
                 <Drawer open={this.state.open}>
-					<div className='sidebar_modal search_modal'>
+					<div className='sidebar_modal search_modal items_modal'>
                         <div className='sidebar_modal__header'>
                             <IconButton className='button_back' onClick={this.handleClose}><Icon>arrow_back</Icon></IconButton>
                             <TextField
@@ -125,39 +129,52 @@ export class SearchWidget extends React.Component<IProps, IState> {
 								margin='normal'
 								variant='standard'
 								autoFocus={true}
-								fullWidth={true}
+                                fullWidth={true}
+                                autoComplete='off'
                             />
-                            {this.state.queryState === 'searching' && <p>Loading...</p>}
                         </div>
-                        <div className='sidebar_modal__content search_modal__content'>
-                            {this.state.searchResults !== null && this.state.searchQuery.length > 0 && (
-                                resultCount > 0 ? (
-                                    <div className='content-inner'>{
-                                        this.state.searchResults.map((searchGroup: SearchGroup) => {
-                                            return (
-                                                searchGroup.values.length > 0 && (
-                                                    <>
-                                                        <h4 className='search-group_header'>{searchGroup.label}</h4>
-                                                        <List className='search-group_list'>{
-                                                            searchGroup.values.map((searchItem, index: number) => {
-                                                                return (
-                                                                    <Link to={`/${searchItem.url}`} onClick={this.handleClose}>
-                                                                        <ListItem key={index} className='search-group_list__item'>{searchItem.value}</ListItem>
-                                                                    </Link>
-                                                                )
-                                                            })
-                                                        }</List>
-                                                    </>
-                                                )
-                                            )
-                                        })
-                                    }</div>
-                                ) : (
-                                    <EmptyStateIcon variant='search'>
-                                        <h2>No search results found</h2>
-                                        <h3>Try again searching something else.</h3>
-                                    </EmptyStateIcon>
-                                )
+                        <div className='sidebar_modal__content items_modal__content'>
+                            <Grow in={!this.state.loading && resultCount > 0} timeout={{enter: 200, exit: 0}}>
+                                <div className='content-inner'>
+                                    {this.state.searchResults.map((itemGroup: ModalItemGroup) => (
+                                        itemGroup.values.length > 0 && (
+                                            <>
+                                                <h4 className='items-group_header'>{itemGroup.label}</h4>
+                                                <List className='items-group_list'>{
+                                                    itemGroup.values.map((modalItem, index: number) => {
+                                                        return (
+                                                            <Link to={`/${modalItem.url}`} onClick={this.handleClose}>
+                                                                <ListItem key={index} className='items-group_list__item'>{modalItem.value}</ListItem>
+                                                            </Link>
+                                                        )
+                                                    })
+                                                }</List>
+                                            </>
+                                        )
+                                    ))}
+                                </div>
+                            </Grow>
+                            <Fade in={this.state.loading} timeout={{enter: 200, exit: 0}}>
+                                <div className='items_modal__content-loader'>
+                                    <ContentLoader width={500} height={436}>
+                                        <rect x='64' y='0' rx='4' ry='4' height='24' width='96' />
+                                        <rect x='64' y='40' rx='4' ry='4' height='36' width='400' />
+                                        <rect x='64' y='84' rx='4' ry='4' height='36' width='400' />
+                                        <rect x='64' y='128' rx='4' ry='4' height='36' width='400' />
+                                        <rect x='64' y='180' rx='4' ry='4' height='24' width='160' />
+                                        <rect x='64' y='220' rx='4' ry='4' height='36' width='400' />
+                                        <rect x='64' y='264' rx='4' ry='4' height='36' width='400' />
+                                        <rect x='64' y='308' rx='4' ry='4' height='36' width='400' />
+                                        <rect x='64' y='360' rx='4' ry='4' height='24' width='80' />
+                                        <rect x='64' y='400' rx='4' ry='4' height='36' width='400' />
+                                    </ContentLoader>
+                                </div>
+                            </Fade>
+                            {!this.state.loading && resultCount === 0 && this.state.searchQuery.length > 0 && (
+                                <EmptyStateIcon variant='search'>
+                                    <h2>No search results found</h2>
+                                    <h3>Try again searching something else.</h3>
+                                </EmptyStateIcon>
                             )}
                         </div>
 					</div>

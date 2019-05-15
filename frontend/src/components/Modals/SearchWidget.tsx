@@ -18,25 +18,40 @@ import {
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 
-interface ModalItem {
+interface ISearchGroup {
     value: string
-    type: string
-    url: string
+    label: string
 }
 
-interface ModalItemGroup {
-    label: string
-    values: ModalItem[]
+interface ISearchResults {
+    students: any[],
+    staff: any[],
+    courses: any[],
+    clusters: any[]
 }
 
 interface IState {
     open: boolean
     loading: boolean
     searchQuery: string
-    searchResults: ModalItemGroup[]
+    searchResults: ISearchResults
 }
 
 interface IProps {}
+
+const searchGroups: ISearchGroup[] = [
+    { value: 'students', label: 'Students' },
+    { value: 'staff', label: 'Staff' },
+    { value: 'courses', label: 'Courses' },
+    { value: 'clusters', label: 'Clusters' },
+]
+
+const emptySearchResults: ISearchResults = {
+    students: [],
+    staff: [],
+    courses: [],
+    clusters: []
+}
 
 export class SearchWidget extends React.Component<IProps, IState> {
     constructor(props: IProps) {
@@ -48,7 +63,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
         open: false,
         loading: false,
         searchQuery: '',
-        searchResults: []
+        searchResults: emptySearchResults
     }
 
     handleClickOpen = () => {
@@ -72,7 +87,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
                 .then(res => {
                     // Wait to show results until the query matches what was typed in.
                     if (res.data.query === this.state.searchQuery) {
-                        const results: ModalItemGroup[] = res.data.results
+                        const results: ISearchResults = res.data.results
                         this.setState({
                             searchResults: results,
                             loading: false
@@ -82,7 +97,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
             })
         } else {
             this.setState({
-                searchResults: [],
+                searchResults: emptySearchResults,
                 loading: false
             })
         }
@@ -103,15 +118,14 @@ export class SearchWidget extends React.Component<IProps, IState> {
     }
 
     render () {
+        /*
         const resultCount: number = this.state.searchResults ? (
             this.state.searchResults.reduce((count: number, itemGroup: ModalItemGroup) => {
                 return count + itemGroup.values.length
             }, 0)
         ) : 0
-
-        console.log('searchQuery:', this.state.searchQuery)
-        console.log('loading', this.state.loading)
-        console.log('resultCount:', resultCount)
+        */
+       const resultCount = 1
 
         return (
             <>
@@ -136,12 +150,49 @@ export class SearchWidget extends React.Component<IProps, IState> {
                         <div className='sidebar_modal__content items_modal__content'>
                             <Grow in={!this.state.loading && resultCount > 0} timeout={{enter: 200, exit: 0}}>
                                 <div className='content-inner'>
-                                    {this.state.searchResults.map((itemGroup: ModalItemGroup) => (
+                                    {searchGroups.filter((searchGroup: ISearchGroup) => this.state.searchResults[searchGroup.value].length > 0)
+                                        .map((searchGroup: ISearchGroup) => (
+                                            <>
+                                                <h4 className='items-group_header'>{searchGroup.label}</h4>
+                                                <List className='items-group_list'>{
+                                                    this.state.searchResults[searchGroup.value].map((item: any, index: number) => {
+                                                        let url: string
+                                                        let value: string
+                                                        switch (searchGroup.value) {
+                                                            case 'students':
+                                                                value = `${item.first_name} ${item.last_name}`
+                                                                url = `/students/${item.id}`
+                                                                break
+                                                            case 'staff':
+                                                                value = `${item.title} ${item.last_name}, ${item.first_name}`
+                                                                url = `/staff/${item.id}`
+                                                                break
+                                                            case 'courses':
+                                                                value = item.name
+                                                                url = `/courses/${item.short_name}`
+                                                                break
+                                                            case 'clusters':
+                                                                value = item.name
+                                                                url = `/clusters/${item.id}`
+                                                                break
+                                                        }
+                                                        return (
+                                                            <Link key={index} to={url} onClick={this.handleClose}>
+                                                                <ListItem className='items-group_list__item'>{value}</ListItem>
+                                                            </Link>
+                                                        )
+                                                    })}
+                                                </List>
+                                            </>
+                                        ))
+                                    
+                                    }
+                                    {/*this.state.searchResults.map((itemGroup: ModalItemGroup) => (
                                         itemGroup.values.length > 0 && (
                                             <>
                                                 <h4 className='items-group_header'>{itemGroup.label}</h4>
                                                 <List className='items-group_list'>{
-                                                    itemGroup.values.map((modalItem, index: number) => {
+                                                    itemGroup.values.map((modalItem: ModalItem, index: number) => {
                                                         return (
                                                             <Link to={`/${modalItem.url}`} onClick={this.handleClose}>
                                                                 <ListItem key={index} className='items-group_list__item'>{modalItem.value}</ListItem>
@@ -150,8 +201,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
                                                     })
                                                 }</List>
                                             </>
-                                        )
-                                    ))}
+                                        )))*/}
                                 </div>
                             </Grow>
                             <Fade in={this.state.loading} timeout={{enter: 200, exit: 0}}>

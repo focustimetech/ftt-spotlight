@@ -12,7 +12,7 @@ export interface StudentRequest {
 }
 
 export const fetchStudents = () => (dispatch: any) => {
-    axios.get('http://localhost:8000/api/students')
+    return axios.get('http://localhost:8000/api/students')
         .then((res: any) => dispatch({
             type: FETCH_STUDENTS,
             payload: res.data
@@ -20,7 +20,7 @@ export const fetchStudents = () => (dispatch: any) => {
 }
 
 export const createStudent = (studentData: StudentRequest) => (dispatch: any) => {
-    axios.post('http://localhost:8000/api/students', studentData)
+    return axios.post('http://localhost:8000/api/students', studentData)
         .then((res: any) => dispatch({
             type: NEW_STUDENT,
             payload: res.data
@@ -28,7 +28,7 @@ export const createStudent = (studentData: StudentRequest) => (dispatch: any) =>
 }
 
 export const deleteStudent = (studentID: number) => (dispatch: any) => {
-    axios.delete(`http://localhost:8000/api/students${studentID}`)
+    return axios.delete(`http://localhost:8000/api/students${studentID}`)
         .then((res: any) => dispatch({
             type: DELETE_STUDENT,
             payload: res.data
@@ -36,7 +36,7 @@ export const deleteStudent = (studentID: number) => (dispatch: any) => {
 }
 
 export const updateStudent = (studentData: StudentRequest) => (dispatch: any) => {
-    axios.put('http://localhost:8000/api/students', studentData)
+    return axios.put('http://localhost:8000/api/students', studentData)
         .then((res: any) => dispatch({
             type: UPDATE_STUDENT,
             payload: res.data

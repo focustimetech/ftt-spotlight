@@ -52,6 +52,14 @@ interface IState {
 	snackbarOpen: boolean
 }
 
+interface ReduxProps {
+	students: any[]
+	createStudent: (student: any) => any
+	fetchStudents: () => any
+}
+
+interface IProps extends ReduxProps {}
+
 const tempClusters = [
 	{ name: 'Spruce', id: 1 },
 	{ name: 'Arbutus', id: 2 },
@@ -60,7 +68,7 @@ const tempClusters = [
 
 const grades = [9, 10, 11, 12]
 
-class Students extends React.Component<any, IState> {
+class Students extends React.Component<IProps, IState> {
 	state: IState = {
 		students: [],
 		addDialogVisible: false,
@@ -79,10 +87,11 @@ class Students extends React.Component<any, IState> {
 	componentDidMount() {
 		document.title = 'Students - Spotlight'
 		this.setState({ loading: true })
-		this.props.fetchStudents()
-		this.setState({ loading: false })
-		
-		//this.setState({ clusters: tempClusters })
+		this.props.fetchStudents().then(
+			(res: any) => {
+				this.setState({ loading: false })
+			}
+		)
 	}
 
 	componentWillReceiveProps(nextProps: any) {
@@ -243,10 +252,6 @@ class Students extends React.Component<any, IState> {
 	}
 }
 
-/**
- * @TODO Make an interface for 'students' field, and make IProps
- * extend it.
- */
 const mapStateToProps = (state: any) => ({
 	students: state.students.items,
 	newStudent: state.students.item
@@ -257,7 +262,4 @@ const mapDispatchToProps = {
 	fetchStudents
 }
 
-/**
- * @TODO Try to do something about this ...
- */
 export default connect(mapStateToProps, mapDispatchToProps)(Students)

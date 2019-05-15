@@ -6,12 +6,16 @@ import {
 	Tabs
 } from '@material-ui/core'
 
-import { ITab, ITabs } from '../types/app'
+export interface Tabs {
+	value: number
+	onChange: (event: any, value: any) => void,
+	tabs: string[]
+}
 
 interface IProps {
 	children?: any
 	className?: string
-	tabs?: ITabs
+	tabs?: Tabs
 }
 
 /**
@@ -30,8 +34,8 @@ export const TopNav = (props: IProps) => {
 						onChange={props.tabs.onChange}
 						variant='fullWidth'
 						indicatorColor='primary'
-					>{props.tabs.tabs.map((tab: ITab) => {
-						return <Tab value={tab.value} label={tab.label} />
+					>{props.tabs.tabs.map((label: string) => {
+						return <Tab label={label} />
 					})}</Tabs>
 				)}
 			</div>

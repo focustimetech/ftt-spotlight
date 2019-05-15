@@ -12,18 +12,15 @@ import {
 
 //cimport { IStudent } from '../../types/student'
 //cimport { NameWidget } from './NameWidget'
-import { TopNav } from './TopNav'
-import { ITabs } from '../types/app';
+import { Tabs, TopNav } from './TopNav'
 
 interface IState {
-	tab: NavTab
+	tab: number
 }
-
-type NavTab = 'courses' | 'schedule'
 
 export class ClassSchedule extends React.Component<{}, IState> {
 	state: IState = {
-		tab: 'schedule'
+		tab: 0
 	}
 
 	handleTabChange = (event: any, value: any) => {
@@ -31,13 +28,10 @@ export class ClassSchedule extends React.Component<{}, IState> {
 	}
 
 	render () {
-		const navTabs: ITabs = {
+		const navTabs: Tabs = {
 			value: this.state.tab,
 			onChange: this.handleTabChange,
-			tabs: [
-				{ value: 'courses', label: 'Courses' },
-				{ value: 'schedule', label: 'Class Schedule' },
-			]
+			tabs: ['Courses', 'Class Schedule']
 		}
 		return (
 			<div className='profile'>

@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import ContentLoader from 'react-content-loader'
+import SwipeableViews from 'react-swipeable-views'
 import * as classNames from 'classnames'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -13,9 +14,10 @@ import {
 
 import { fetchStudentProfile } from '../actions/studentProfileActions'
 
-import { TopNav } from './TopNav'
-import { ITabs } from '../types/app';
+import { Tabs, TopNav } from './TopNav'
 import { Schedule } from './Schedule'
+import { Attendance } from './Attendance'
+import { Appointments } from './Appointments'
 
 interface IReduxProps {
 	student: any
@@ -25,15 +27,13 @@ interface IReduxProps {
 interface IProps extends RouteComponentProps, IReduxProps {}
 
 interface IState {
-	tab: NavTab
+	tab: number
 	loading: boolean
 }
 
-type NavTab = 'attendance' | 'schedule' | 'appointments'
-
 class StudentProfile extends React.Component<IProps, IState> {
 	state: IState = {
-		tab: 'schedule',
+		tab: 1,
 		loading: false
 	}
 
@@ -53,14 +53,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 
 	render () {
 		const starred: boolean = false
-		const navTabs: ITabs = {
+		const navTabs: Tabs = {
 			value: this.state.tab,
 			onChange: this.handleTabChange,
-			tabs: [
-				{ value: 'attendance', label: 'Attendance' },
-				{ value: 'schedule', label: 'Schedule' },
-				{ value: 'appointments', label: 'Appointments' }
-			]
+			tabs: ['Attendance', 'Schedule', 'Appointments']
 		}
 		return (
 			<div className='profile'>
@@ -95,7 +91,11 @@ class StudentProfile extends React.Component<IProps, IState> {
 						</li>
 					</ul>
 				</TopNav>
-				<Schedule />
+				<SwipeableViews index={this.state.tab}>
+					<Attendance />
+					<Schedule />
+					<Appointments />
+				</SwipeableViews>
 			</div>
 		)
 	}

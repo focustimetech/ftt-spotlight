@@ -47,7 +47,7 @@ class StarredWidget extends React.Component<IProps, IState> {
     }
 
     state: IState = {
-        open: true,
+        open: false,
         loading: false
     }
 

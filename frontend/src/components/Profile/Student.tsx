@@ -8,13 +8,10 @@ import {
 	Avatar,
 	Button,
 	Icon,
-	IconButton,
-	Menu,
-	MenuItem,
+	IconButton
 } from '@material-ui/core'
 
 import { IStudent } from '../../types/student'
-import { NameWidget } from './NameWidget'
 import { TopNav } from '../TopNav'
 import { ITabs } from '../../types/app';
 import { Schedule } from '../Schedule'
@@ -41,34 +38,12 @@ export class Student extends React.Component<IProps, IState> {
 		tab: 'schedule'
 	}
 
-	handleStarredToggle = () => {
-		this.setState((state) => {
-			return {
-				student: {
-					...state.student,
-					starred: state.student.starred === false
-				}
-			}
-		}, () => {
-			console.log(this.state.student)
-		})
-	}
-
 	handleTabChange = (event: any, value: any) => {
 		this.setState({ tab: value })
 	}
 
 	componentDidMount() {
 		const params: any = this.props.match.params
-		console.log('url: ', params)
-/*
-		axios.post('http://localhost:8000/api/login', {
-			
-		})
-			.then(res => {
-				console.log(res)
-			})
-*/
 	}
 
 	render () {
@@ -88,12 +63,12 @@ export class Student extends React.Component<IProps, IState> {
 					<ul>
 						<li className='profile_title'>
 							<Avatar className='profile_avatar'>CU</Avatar>
-							<NameWidget value='Curtis Upshall' />
+							<h3>Curtis Upshall</h3>
 						</li>
 					</ul>
 					<ul className='right_col'>
 						<li>
-							<IconButton onClick={this.handleStarredToggle}>
+							<IconButton>
 								<Icon className={classNames({'--starred': starred})}>{starred ? 'star' : 'star_border'}</Icon>
 							</IconButton>
 						</li>

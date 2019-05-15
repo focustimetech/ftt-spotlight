@@ -1,28 +1,21 @@
 import '../../assets/styles/main.scss'
 
 import * as React from 'react'
+import * as classNames from 'classnames'
 import {
 	BrowserRouter as Router, 
 	Redirect,
 	Route,
 	Switch
-	// withRouter
 } from 'react-router-dom'
-
-// import { ProtectedRoute as Route} from './AppWithAuth'
 
 import { ClassSchedule } from '../ClassSchedule'
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
-import { Student } from '../Profile/Student'
+import Student from '../Profile/Student'
 import Students from '../Students'
 import { Sidebar } from '../Sidebar/Sidebar'
 import { Staff } from '../Staff'
-
-import * as classNames from 'classnames'
-
-// FIXME Remove login import
-import { Schedule } from '../Schedule'
 
 interface IState {
 	menuOpen: boolean
@@ -32,9 +25,11 @@ interface IProps {
 	onSignOut: () => void
 }
 
+/*
 interface ProtectedRouteProps {
 	component: React.Component
 }
+*/
 
 export default class App extends React.Component<IProps, IState> {
 	state: IState = {

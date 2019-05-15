@@ -18,8 +18,8 @@ interface IState {
 
 export default class AppWithAuth extends React.Component<{}, IState> {
 	state: IState = {
-		authState: 'sign-in'
-		// authState: 'signed-in'
+		// authState: 'sign-in'
+		authState: 'signed-in'
 	}
 
 	isAuthenticated = () => {

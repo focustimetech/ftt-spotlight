@@ -1,8 +1,6 @@
 import * as React from 'react'
 
-import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
-import { createStudent, fetchStudents } from '../actions/studentActions'
 
 import {
 	Button,
@@ -22,6 +20,7 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
+import { createStudent, fetchStudents } from '../actions/studentActions'
 import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
 

@@ -1,41 +1,40 @@
 import * as React from 'react'
 
-import axios from 'axios'
+import ContentLoader from 'react-content-loader'
 import * as classNames from 'classnames'
 import { RouteComponentProps } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import {
 	Avatar,
-	Button,
 	Icon,
 	IconButton
 } from '@material-ui/core'
 
-import { IStudent } from '../../types/student'
+import { fetchStudentProfile } from '../../actions/studentProfileActions'
+
 import { TopNav } from '../TopNav'
 import { ITabs } from '../../types/app';
 import { Schedule } from '../Schedule'
 
-interface IProps extends RouteComponentProps{
-	student?: IStudent
+interface IReduxProps {
+	student: any
+	fetchStudentProfile: (studentID: number) => any
 }
 
+interface IProps extends RouteComponentProps, IReduxProps {}
+
 interface IState {
-	student: IStudent
 	tab: NavTab
+	loading: boolean
 }
 
 type NavTab = 'attendance' | 'schedule' | 'appointments'
 
-export class Student extends React.Component<IProps, IState> {
+class Student extends React.Component<IProps, IState> {
 	state: IState = {
-		student: this.props.student || {
-			id: 1,
-			name: 'Curtis Upshall',
-			clusters: [],
-			starred: false
-		},
-		tab: 'schedule'
+		tab: 'schedule',
+		loading: false
 	}
 
 	handleTabChange = (event: any, value: any) => {
@@ -44,10 +43,16 @@ export class Student extends React.Component<IProps, IState> {
 
 	componentDidMount() {
 		const params: any = this.props.match.params
+		this.setState({ loading: true })
+		this.props.fetchStudentProfile(params.studentID).then(
+			(res: any) => {
+				this.setState({ loading: false })
+			}
+		)
 	}
 
 	render () {
-		const starred: boolean = this.state.student.starred
+		const starred: boolean = false
 		const navTabs: ITabs = {
 			value: this.state.tab,
 			onChange: this.handleTabChange,
@@ -62,8 +67,19 @@ export class Student extends React.Component<IProps, IState> {
 				<TopNav className='--tabs' tabs={navTabs}>
 					<ul>
 						<li className='profile_title'>
-							<Avatar className='profile_avatar'>CU</Avatar>
-							<h3>Curtis Upshall</h3>
+							{this.state.loading ? (
+								<div style={{height: 64, width: 250}}>
+									<ContentLoader height={64} width={250}>
+										<rect x={0} y={8} rx={24} ry={24} height={48} width={48}/>
+										<rect x={64} y={16} rx={4} ry={4} height={32} width={164}/>
+									</ContentLoader>
+								</div>
+							) : (
+								<>
+									<Avatar className='profile_avatar'>{this.props.student.initials}</Avatar>
+									<h3>{`${this.props.student.first_name} ${this.props.student.last_name}`}</h3>
+								</>
+							)}	
 						</li>
 					</ul>
 					<ul className='right_col'>
@@ -84,3 +100,9 @@ export class Student extends React.Component<IProps, IState> {
 		)
 	}
 }
+
+const mapStateToProps = (state: any) => ({
+	student: state.studentProfile.student
+})
+
+export default connect(mapStateToProps, { fetchStudentProfile })(Student)

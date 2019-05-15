@@ -27,7 +27,8 @@ interface ISearchResults {
     students: any[],
     staff: any[],
     courses: any[],
-    clusters: any[]
+    clusters: any[],
+    [key: string]: any
 }
 
 interface IState {
@@ -118,14 +119,11 @@ export class SearchWidget extends React.Component<IProps, IState> {
     }
 
     render () {
-        /*
         const resultCount: number = this.state.searchResults ? (
-            this.state.searchResults.reduce((count: number, itemGroup: ModalItemGroup) => {
-                return count + itemGroup.values.length
+            searchGroups.reduce((count: number, itemGroup: ISearchGroup) => {
+                return count + this.state.searchResults[itemGroup.value].length
             }, 0)
         ) : 0
-        */
-       const resultCount = 1
 
         return (
             <>
@@ -185,23 +183,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
                                                 </List>
                                             </>
                                         ))
-                                    
                                     }
-                                    {/*this.state.searchResults.map((itemGroup: ModalItemGroup) => (
-                                        itemGroup.values.length > 0 && (
-                                            <>
-                                                <h4 className='items-group_header'>{itemGroup.label}</h4>
-                                                <List className='items-group_list'>{
-                                                    itemGroup.values.map((modalItem: ModalItem, index: number) => {
-                                                        return (
-                                                            <Link to={`/${modalItem.url}`} onClick={this.handleClose}>
-                                                                <ListItem key={index} className='items-group_list__item'>{modalItem.value}</ListItem>
-                                                            </Link>
-                                                        )
-                                                    })
-                                                }</List>
-                                            </>
-                                        )))*/}
                                 </div>
                             </Grow>
                             <Fade in={this.state.loading} timeout={{enter: 200, exit: 0}}>

@@ -1,12 +1,27 @@
 import { FETCH_STARRED, STAR_ITEM, UNSTAR_ITEM } from '../actions/types'
 
+export interface IStarredList {
+    students: any[],
+    staff: any[],
+    courses: any[],
+    clusters: any[],
+    [key: string]: any
+}
+
+const emptyStarred: IStarredList = {
+    students: [],
+    staff: [],
+    courses: [],
+    clusters: [],
+}
+
 interface IState {
-    items: any[],
+    items: IStarredList,
     item: any
 }
 
 const initialState: IState = {
-    items: [],
+    items: emptyStarred,
     item: {}
 }
 

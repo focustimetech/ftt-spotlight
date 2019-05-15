@@ -2,7 +2,6 @@ import axios from 'axios'
 import { FETCH_STARRED, STAR_ITEM, UNSTAR_ITEM } from './types';
 
 export const fetchStarred = () => {
-    console.log('starActions.fetchStarred()')
     return (dispatch: any) => {
         return axios.get('http://localhost:8000/api/starred')
             .then(res => {

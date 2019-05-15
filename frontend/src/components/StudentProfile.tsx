@@ -11,11 +11,11 @@ import {
 	IconButton
 } from '@material-ui/core'
 
-import { fetchStudentProfile } from '../../actions/studentProfileActions'
+import { fetchStudentProfile } from '../actions/studentProfileActions'
 
-import { TopNav } from '../TopNav'
-import { ITabs } from '../../types/app';
-import { Schedule } from '../Schedule'
+import { TopNav } from './TopNav'
+import { ITabs } from '../types/app';
+import { Schedule } from './Schedule'
 
 interface IReduxProps {
 	student: any
@@ -31,7 +31,7 @@ interface IState {
 
 type NavTab = 'attendance' | 'schedule' | 'appointments'
 
-class Student extends React.Component<IProps, IState> {
+class StudentProfile extends React.Component<IProps, IState> {
 	state: IState = {
 		tab: 'schedule',
 		loading: false
@@ -105,4 +105,4 @@ const mapStateToProps = (state: any) => ({
 	student: state.studentProfile.student
 })
 
-export default connect(mapStateToProps, { fetchStudentProfile })(Student)
+export default connect(mapStateToProps, { fetchStudentProfile })(StudentProfile)

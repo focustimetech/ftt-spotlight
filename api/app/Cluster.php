@@ -11,6 +11,6 @@ class Cluster extends Model
     }
     
     public function students() {
-        return $this->belongsToMany('App\Student', 'student_cluster', 'student_id', 'cluster_id');
+        return $this->belongsToMany('App\Student', 'student_cluster', 'cluster_id', 'student_id');
     }
 }

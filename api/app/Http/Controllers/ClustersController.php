@@ -22,6 +22,26 @@ class ClustersController extends Controller
     }
 
     /**
+     * List all Students in each cluster
+     */
+    public function listAll()
+    {
+        $students = Cluster::all()->map(function($cluster) {
+            return [
+                'cluster' => $cluster,
+                'students' => $cluster->students()->get()->map(function($student) {
+                    return [
+                        'name' => $student->name(),
+                        'id' => $student->id
+                    ];
+                })
+            ];
+        });
+
+        return $students;
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -33,13 +53,8 @@ class ClustersController extends Controller
 
         $cluster->name = $request->input('name');
         $cluster->owner = $request->input('owner');
-        if ($request->input('hidden')) {
-            $cluster->hidden = $request->input('hidden');
-        }
-        if ($request->input('public')) {
-            $cluster->public = $request->input('public');
-        }
-
+        $cluster->hidden = $request->input('hidden');
+        $cluster->public = $request->input('public');
 
         if ($cluster->save()) {
             return new ClusterResource($cluster);

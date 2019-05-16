@@ -9,7 +9,8 @@ import {
     Icon,
     IconButton,
     List,
-    ListItem
+    ListItem,
+    ListItemSecondaryAction
 } from '@material-ui/core'
 
 import { TopNav } from './TopNav'
@@ -19,11 +20,125 @@ interface IProps extends ReduxProps {}
 
 interface IState {
     loading: boolean
+    expanded: number
 }
+
+const data = [
+    {
+      "cluster": {
+        "id": 1,
+        "name": "East Harold",
+        "public": 1,
+        "hidden": 0,
+        "owner": 5,
+        "created_at": "2019-05-13 00:31:24",
+        "updated_at": "2019-05-13 00:31:24"
+      },
+      "students": []
+    },
+    {
+      "cluster": {
+        "id": 2,
+        "name": "East Meghan",
+        "public": 1,
+        "hidden": 0,
+        "owner": 12,
+        "created_at": "2019-05-13 00:31:24",
+        "updated_at": "2019-05-13 00:31:24"
+      },
+      "students": [
+        {
+          "name": "Joesph Jenkins",
+          "id": 4
+        },
+        {
+          "name": "Kian Kling",
+          "id": 8
+        },
+        {
+          "name": "Anabelle West",
+          "id": 16
+        }
+      ]
+    },
+    {
+      "cluster": {
+        "id": 3,
+        "name": "New Fletaton",
+        "public": 1,
+        "hidden": 0,
+        "owner": 15,
+        "created_at": "2019-05-13 00:31:24",
+        "updated_at": "2019-05-13 00:31:24"
+      },
+      "students": []
+    },
+    {
+      "cluster": {
+        "id": 4,
+        "name": "Andersonstad",
+        "public": 1,
+        "hidden": 0,
+        "owner": 10,
+        "created_at": "2019-05-13 00:31:24",
+        "updated_at": "2019-05-13 00:31:24"
+      },
+      "students": [
+        {
+          "name": "Joesph Jenkins",
+          "id": 4
+        },
+        {
+          "name": "Kian Kling",
+          "id": 8
+        },
+        {
+          "name": "Anabelle West",
+          "id": 16
+        }
+      ]
+    },
+    {
+      "cluster": {
+        "id": 5,
+        "name": "Port Clementineton",
+        "public": 1,
+        "hidden": 0,
+        "owner": 2,
+        "created_at": "2019-05-13 00:31:24",
+        "updated_at": "2019-05-13 00:31:24"
+      },
+      "students": []
+    },
+    {
+      "cluster": {
+        "id": 6,
+        "name": "Oak",
+        "public": 0,
+        "hidden": 0,
+        "owner": 7,
+        "created_at": "2019-05-16 05:22:59",
+        "updated_at": "2019-05-16 06:17:36"
+      },
+      "students": []
+    }
+  ]
 
 export class Clusters extends React.Component<IProps, IState> {
     state = {
-        loading: false
+        loading: false,
+        expanded: 1
+    }
+
+    /**
+     * @TODO Get URL params. If at clusters/2 for instance, the cluster having id of 2 should be expanded
+     */
+    componentDidMount() {
+
+    }
+
+    onExpandedChange = (panel: number) => {
+        this.setState((state: IState) => ({ expanded: state.expanded === panel ? -1 : panel }))
     }
 
     render() {
@@ -39,9 +154,39 @@ export class Clusters extends React.Component<IProps, IState> {
 						</li>
 					</ul>
 				</TopNav>
-                <List>
-                    <ListItem>Cedar</ListItem>
-                </List>
+                <div className='expansion-panel'>
+                    {data.map((listing: any) => {
+                        const cluster = listing.cluster
+                        const students = listing.students
+                        return (
+                            <ExpansionPanel key={cluster.id} expanded={this.state.expanded === cluster.id} onChange={() => this.onExpandedChange(cluster.id)}>
+                                <ExpansionPanelSummary>
+                                    <p className='expansion-panel__heading'>{cluster.name}</p>
+                                    <p className='expansion-panel__subheading'>{`${students.length} Students`}</p>
+                                </ExpansionPanelSummary>
+                                <ExpansionPanelDetails>
+                                    {students.length > 0 ? (
+                                        <List>
+                                            {students.map((student: any) => (
+                                                <ListItem key={student.id}>
+                                                    {student.name}
+                                                    <ListItemSecondaryAction>
+                                                        <IconButton onClick={() => console.log('clicked') /*this.onRemoveFromCluster(cluster.id, student.id)*/}>
+                                                            <Icon>close</Icon>
+                                                        </IconButton>
+                                                    </ListItemSecondaryAction>
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    ) : (
+                                        <p>No students in this cluster.</p>
+                                    )}
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                        )
+                    })}
+                </div>
+                
             </>
         )
     }

@@ -60,6 +60,11 @@ class Student extends Model
         return $this->hasMany('App\LedgerEntry', 'student_id');
     }
 
+    public function name()
+    {
+        return $this->first_name. ' '. $this->last_name;
+    }
+
     public function plans()
     {
         return [];

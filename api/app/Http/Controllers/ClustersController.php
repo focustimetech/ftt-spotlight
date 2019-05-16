@@ -32,7 +32,14 @@ class ClustersController extends Controller
         $cluster = $request->isMethod('put') ? Cluster::findOrFail($request->cluster_id) : new Cluster;
 
         $cluster->name = $request->input('name');
-        $cluster->hidden = $request->input('hidden');
+        $cluster->owner = $request->input('owner');
+        if ($request->input('hidden')) {
+            $cluster->hidden = $request->input('hidden');
+        }
+        if ($request->input('public')) {
+            $cluster->public = $request->input('public');
+        }
+
 
         if ($cluster->save()) {
             return new ClusterResource($cluster);

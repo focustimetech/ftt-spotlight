@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom'
 
 import { ClassSchedule } from '../ClassSchedule'
+import { Clusters } from '../Clusters'
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
 import StudentProfile from '../StudentProfile'
@@ -47,6 +48,7 @@ export default class App extends React.Component<IProps, IState> {
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
 						<Sidebar onSignOut={this.props.onSignOut} />
 						<Content>
+							<Route path='/clusters' component={Clusters} />
 							<Route path='/' exact render={(props) => (
 								<Redirect to='/dashboard' />
 							)} />

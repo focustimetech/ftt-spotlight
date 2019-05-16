@@ -6,10 +6,25 @@ use Illuminate\Http\Request;
 use App\Starred;
 use App\Student;
 use App\Cluster;
+use App\Course;
+use App\Staff;
 use App\Http\Resources\Starred as StarredResource;
 
 class StarController extends Controller
 {
+    private function findFromType($item_type, $id) {
+        switch($item_type) {
+            case 'student':
+                return Student::findOrFail($id);
+            case 'cluster':
+                return Cluster::findOrFail($id);
+            case 'course':
+                return Course::findOrFail($id);
+            case 'staff':
+                return Staff::findOrFail($id);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,36 +34,35 @@ class StarController extends Controller
     {
         // $starred = Starred::select('item_id', 'item_type')->where('staff_id', auth()->user()->id)->groupBy('item_type');
         $starred = auth()->user()->staff()->starred()->get()->mapToGroups(function($starred) {
-			switch($starred['item_type']) {
-                case 'student':
-                    return ['students' => Student::findOrFail($starred['item_id'])];
-                case 'cluster':
-                    return ['clusters' => Cluster::findOrFail($starred['item_id'])];
-            }
-		});
+			return [$starred['item_type'] => $this->findFromType($starred['item_type'], $starred['item_id'])];
+        });
 
         return new StarredResource($starred);
     }
 
     public function star(Request $request)
     {
+        $item_type = $request->input('item_type');
+        $item_id = $request->input('item_id');
         $starred = new Starred;
 
-        $starred->item_type = $request->input('item_type');
-        $starred->item_id = $request->input('item_id');
+        $starred->item_type = $item_type;
+        $starred->item_id = $item_id;
         $starred->staff_id = auth()->user()->staff()->id;
 
         if ($starred->save()) {
-            return new StarredResource($starred);
+            return $this->findFromType($item_type, $item_id);
         }
     }
 
     public function unstar(Request $request)
     {
-        $starred = auth()->user()->staff()->starred()->where('item_type', $request->item_type)->where('item_id', $request->item_id);
+        $item_type = $request->input('item_type');
+        $item_id = $request->input('item_id');
+        $starred = auth()->user()->staff()->starred()->where('item_type', $item_type)->where('item_id', $item_id);
 
         if ($starred->delete()) {
-            return new StarredResource($starred);
+            return $this->findFromType($item_type, $item_id);
         }
     }
 

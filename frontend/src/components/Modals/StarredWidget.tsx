@@ -2,7 +2,8 @@ import * as React from 'react'
 import ContentLoader from 'react-content-loader'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { fetchStarred, starItem, unstarItem } from '../../actions/starActions'
+import * as classNames from 'classnames'
+import { fetchStarred, starItem, StarRequest, unstarItem } from '../../actions/starActions'
 
 import {
     Drawer,
@@ -11,34 +12,28 @@ import {
     Icon,
     IconButton,
     List,
-    ListItem
+    ListItem,
+    ListItemSecondaryAction
 } from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
-import { IStarredList } from '../../reducers/starReducer'
-
-interface IStarredGroup {
-    value: string
-    label: string
-}
+import { StarredList, StarredGroup, starredGroups } from '../../reducers/starReducer'
 
 interface IState {
     open: boolean
     loading: boolean
 }
 
-interface IProps {
+interface ReduxProps {
     fetchStarred: () => any
-    starred: IStarredList
+    starItem: (starredItem: any) => any
+    unstarItem: (starredItem: any) => any
+    starred: StarredList
+    newStarred: any
 }
 
-const starredGroups: IStarredGroup[] = [
-    { value: 'students', label: 'Students' },
-    { value: 'staff', label: 'Staff' },
-    { value: 'courses', label: 'Courses' },
-    { value: 'clusters', label: 'Clusters' },
-]
+interface IProps extends ReduxProps {}
 
 class StarredWidget extends React.Component<IProps, IState> {
     constructor(props: IProps) {
@@ -59,6 +54,20 @@ class StarredWidget extends React.Component<IProps, IState> {
         this.setState({ open: false })
     }
 
+    toggleStarred = (event: any, itemGroup: string, item: any) => {
+        event.preventDefault()
+        event.stopPropagation()
+
+        const isStarred: boolean = item.starred !== false
+        
+        const starredItem = { item_type: itemGroup, item, willUpdate: false }
+        if (isStarred) {
+            this.props.unstarItem(starredItem)
+        } else {
+            this.props.starItem(starredItem)
+        }
+    }
+
     escFunction = (event: any) => {
         if (event.keyCode === 27) {
             this.setState({ open: false })
@@ -73,13 +82,22 @@ class StarredWidget extends React.Component<IProps, IState> {
         )
     }
 
+    componentWillReceiveProps(nextProps: IProps) {
+        if (nextProps.newStarred) {
+            if (nextProps.newStarred.starred) {
+                // Append newly starred item,
+            }
+        }
+    }
+
     componentWillUnmount() {
         document.removeEventListener('keydown', this.escFunction, false)
     }
 
     render () {
+        console.log(this.props.starred)
         const starredCount: number = this.props.starred ? (
-            starredGroups.reduce((count: number, itemGroup: IStarredGroup) => {
+            starredGroups.reduce((count: number, itemGroup: StarredGroup) => {
                 return count + this.props.starred[itemGroup.value] ? this.props.starred[itemGroup.value].length : 0
             }, 0)
         ) : 0
@@ -96,16 +114,17 @@ class StarredWidget extends React.Component<IProps, IState> {
                         <div className='sidebar_modal__content starred_modal__content items_modal__content'>
                             <Grow in={!this.state.loading && starredCount > 0} timeout={{enter: 200, exit: 0}}>
                                 <div className='content-inner'>
-                                    {starredGroups.filter((starredGroup: IStarredGroup) => this.props.starred[starredGroup.value])
-                                        .map((starredGroup: IStarredGroup, index: number) => (
+                                    {starredGroups.filter((starredGroup: StarredGroup) => this.props.starred[starredGroup.value])
+                                        .map((starredGroup: StarredGroup, index: number) => (
                                             <>
                                                 <h4 className='items-group_header'>{starredGroup.label}</h4>
                                                 <List className='items-group_list'>
                                                     {this.props.starred[starredGroup.value].map((item: any, index: number) => {
                                                         let url: string
                                                         let value: string
+                                                        // const item = starred.item
                                                         switch (starredGroup.value) {
-                                                            case 'students':
+                                                            case 'student':
                                                                 value = `${item.first_name} ${item.last_name}`
                                                                 url = `/students/${item.id}`
                                                                 break
@@ -113,18 +132,25 @@ class StarredWidget extends React.Component<IProps, IState> {
                                                                 value = `${item.title} ${item.last_name}, ${item.first_name}`
                                                                 url = `/staff/${item.id}`
                                                                 break
-                                                            case 'courses':
+                                                            case 'course':
                                                                 value = item.name
                                                                 url = `/courses/${item.short_name}`
                                                                 break
-                                                            case 'clusters':
+                                                            case 'cluster':
                                                                 value = item.name
                                                                 url = `/clusters/${item.id}`
                                                                 break
                                                         }
                                                         return (
                                                             <Link key={index} to={url} onClick={this.handleClose}>
-                                                                <ListItem key={index} className='items-group_list__item'>{value}</ListItem>
+                                                                <ListItem key={index} className='items-group_list__item'>
+                                                                    {value}
+                                                                    <ListItemSecondaryAction>
+                                                                        <IconButton onClick={(event: any) => this.toggleStarred(event, starredGroup.value, item.id)}>
+                                                                            <Icon className={classNames({'--starred': true})}>{'star'}</Icon>
+                                                                        </IconButton>
+                                                                    </ListItemSecondaryAction>
+                                                                </ListItem>
                                                             </Link>
                                                         )
                                                     })}
@@ -169,12 +195,12 @@ class StarredWidget extends React.Component<IProps, IState> {
  */
 const mapStateToProps = (state: any) => ({
     starred: state.starred.items,
-    newStarredItem: state.starred.item
+    newStarred: state.starred.item
 })
 
 const mapDispatchToProps = {
     fetchStarred,
-    // starItem,
-    // unstarItem
+    starItem,
+    unstarItem
 }
 export default connect(mapStateToProps, mapDispatchToProps)(StarredWidget)

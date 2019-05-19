@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import { RouteComponentProps } from 'react-router-dom'
+
 import {
     Button,
     ExpansionPanel,
@@ -14,9 +16,11 @@ import {
 } from '@material-ui/core'
 
 import { TopNav } from './TopNav'
+import { EmptyStateIcon } from './EmptyStateIcon'
+
 interface ReduxProps {}
 
-interface IProps extends ReduxProps {}
+interface IProps extends RouteComponentProps, ReduxProps {}
 
 interface IState {
     loading: boolean
@@ -127,14 +131,18 @@ const data = [
 export class Clusters extends React.Component<IProps, IState> {
     state = {
         loading: false,
-        expanded: 1
+        expanded: -1
     }
 
     /**
      * @TODO Get URL params. If at clusters/2 for instance, the cluster having id of 2 should be expanded
      */
     componentDidMount() {
-
+        const params: any = this.props.match.params
+        this.setState({
+            loading: true,
+            expanded: params.clusterID ? parseInt(params.clusterID) : -1
+        })
     }
 
     onExpandedChange = (panel: number) => {
@@ -150,41 +158,49 @@ export class Clusters extends React.Component<IProps, IState> {
 					</ul>
 					<ul>
 						<li>
-							<Button variant='contained' color='primary'>Add Cluster</Button>
+							<Button variant='text'>Add Cluster</Button>
 						</li>
 					</ul>
 				</TopNav>
                 <div className='expansion-panel'>
-                    {data.map((listing: any) => {
-                        const cluster = listing.cluster
-                        const students = listing.students
-                        return (
-                            <ExpansionPanel key={cluster.id} expanded={this.state.expanded === cluster.id} onChange={() => this.onExpandedChange(cluster.id)}>
-                                <ExpansionPanelSummary>
-                                    <p className='expansion-panel__heading'>{cluster.name}</p>
-                                    <p className='expansion-panel__subheading'>{`${students.length} Students`}</p>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    {students.length > 0 ? (
-                                        <List>
-                                            {students.map((student: any) => (
-                                                <ListItem key={student.id}>
-                                                    {student.name}
-                                                    <ListItemSecondaryAction>
-                                                        <IconButton onClick={() => console.log('clicked') /*this.onRemoveFromCluster(cluster.id, student.id)*/}>
-                                                            <Icon>close</Icon>
-                                                        </IconButton>
-                                                    </ListItemSecondaryAction>
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                    ) : (
-                                        <p>No students in this cluster.</p>
-                                    )}
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>
-                        )
-                    })}
+                    {data && data.length ? (
+                        data.map((listing: any) => {
+                            const cluster = listing.cluster
+                            const students = listing.students
+                            return (
+                                <ExpansionPanel key={cluster.id} expanded={this.state.expanded === cluster.id} onChange={() => this.onExpandedChange(cluster.id)}>
+                                    <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}>
+                                        <p className='expansion-panel__heading'>{cluster.name}</p>
+                                        <p className='expansion-panel__subheading'>{`${students.length} Students`}</p>
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails className='expansion-panel__details'>
+                                        {students.length > 0 ? (
+                                            <List>
+                                                {students.map((student: any) => (
+                                                    <ListItem key={student.id}>
+                                                        {student.name}
+                                                        <ListItemSecondaryAction>
+                                                            <IconButton onClick={() => console.log('clicked') /*this.onRemoveFromCluster(cluster.id, student.id)*/}>
+                                                                <Icon>close</Icon>
+                                                            </IconButton>
+                                                        </ListItemSecondaryAction>
+                                                    </ListItem>
+                                                ))}
+                                            </List>
+                                        ) : (
+                                            <p>No students in this cluster.</p>
+                                        )}
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>
+                            )
+                        })
+                    ) : (
+                        <EmptyStateIcon variant='clusters'>
+                            <h2>No Clusters were found</h2>
+                            <h3>Student Clusters that have been created will appear here.</h3>
+                            <Button variant='contained' color='primary'>Add Cluster</Button>
+                        </EmptyStateIcon>
+                    )}
                 </div>
                 
             </>

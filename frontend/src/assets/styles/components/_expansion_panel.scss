@@ -6,4 +6,10 @@
     &__subheading {
         color: #777;
     }
+
+    &__details {
+        display: block !important; // Override material `display: flex`
+        max-height: 250px;
+        overflow: auto;
+    }
 }

@@ -12,7 +12,7 @@ class StudentsTableSeeder extends Seeder
     public function run()
     {
 
-        factory(App\Student::class, 30)->create()->each(function ($student) {
+        factory(App\Student::class, 1000)->create()->each(function ($student) {
             factory(App\User::class)->create([
                 'user_id' => $student->id,
                 'username' => $student->student_number,

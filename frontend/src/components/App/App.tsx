@@ -48,7 +48,7 @@ export default class App extends React.Component<IProps, IState> {
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
 						<Sidebar onSignOut={this.props.onSignOut} />
 						<Content>
-							<Route path='/clusters' component={Clusters} />
+							<Route path='/clusters/:clusterID?' component={Clusters} />
 							<Route path='/' exact render={(props) => (
 								<Redirect to='/dashboard' />
 							)} />

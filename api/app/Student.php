@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
+    /*
     private function getCourseIDs() {
         return Enrollment::where('student_id', $this->id)
             ->pluck('course_id')
             ->toArray();
     }
+    */
 
     /**
      * Retreives the specific course a student has at a given block
@@ -34,7 +36,7 @@ class Student extends Model
      */
     public function blocks($include_flex = false)
     {
-        $block_numbers = ScheduleEntry::whereIn('course_id', $this->getCourseIDs())
+        $block_numbers = ScheduleEntry::whereIn('course_id', $this->courses()->pluck('id'))
             ->get()
             ->pluck('block_number')
             ->toArray();

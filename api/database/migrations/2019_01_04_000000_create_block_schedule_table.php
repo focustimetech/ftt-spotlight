@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBlocksTable extends Migration
+class CreateBlockScheduleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateBlocksTable extends Migration
      */
     public function up()
     {
-        Schema::create('blocks', function (Blueprint $table) {
+        Schema::create('block_schedule', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('block_number');
-            $table->boolean('flex') // Block is either flex or assigned
-                ->default(false);
-            $table->string('label'); // e.g. Block A
+            $table->unsignedInteger('block_id');
             $table->integer('day_of_week');
             $table->time('start'); // Start of block
             $table->time('end'); // End of block
-            $table->integer('week');
-            $table->timestamps();
+            // Foreign
+            $table->foreign('block_id')->references('id')->on('blocks');
         });
     }
 
@@ -34,6 +31,6 @@ class CreateBlocksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('blocks');
+        Schema::dropIfExists('block_schedule');
     }
 }

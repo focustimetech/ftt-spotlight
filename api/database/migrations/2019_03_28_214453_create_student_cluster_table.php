@@ -15,8 +15,8 @@ class CreateStudentClusterTable extends Migration
     {
         Schema::create('student_cluster', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('cluster_id');
             $table->unsignedInteger('student_id');
+            $table->unsignedInteger('cluster_id');
             $table->timestamps();
             // Foreign keys
             $table->foreign('cluster_id')->references('id')->on('clusters');

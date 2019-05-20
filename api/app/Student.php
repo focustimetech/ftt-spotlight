@@ -24,7 +24,8 @@ class Student extends Model
      */
     public function courses()
     {
-        return $this->belongsToMany('App\Course', 'enrollment', 'student_id', 'course_id');
+        return $this->belongsToMany('App\Course', 'enrollment', 'student_id', 'course_id')
+            ->withPivot('enrolled_by');
     }
 
     public function clusters()

@@ -34,12 +34,13 @@ class Student extends Model
 
     public function dropCourses($courses)
     {
-        return $this->courses()->detach($courses);
+        return $this->courses()->detach($courses->pluck('id')->toArray());
     }
 
-    public function enrollCourses($courses)
+    public function enrollCourses($courses, $staff_id)
     {
-        return $this->courses()->attach($courses);
+        $pivot = ['enrolled_by' => $staff_id];
+        return $this->courses()->attach($courses->pluck('id')->toArray(), $pivot);
     }
 
     public function ledgerEntries()

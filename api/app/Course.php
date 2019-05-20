@@ -18,13 +18,14 @@ class Course extends Model
             // ->withTimestamps();
     }
 
-    public function enrollStudents($students)
+    public function enrollStudents($students, $staff_id)
     {
-        return $this->students()->attach($students);
+        $pivot = ['enrolled_by' => $staff_id];
+        return $this->students()->attach($students->pluck('id')->toArray(), $pivot);
     }
 
     public function dropStudents($students)
     {
-        return $this->students()->detach($students);
+        return $this->students()->detach($students->pluck('id')->toArray());
     }
 }

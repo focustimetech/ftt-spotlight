@@ -11,7 +11,7 @@ class BlocksTableSeeder extends Seeder
      */
     public function run()
     {
-        for ($x = 1; $x <= 9; $x ++) {
+        for ($x = 1; $x <= 8; $x ++) {
             factory(App\Block::class)->create([
                 'flex' => false,
                 'label' => "Block $x"

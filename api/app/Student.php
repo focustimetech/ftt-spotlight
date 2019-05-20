@@ -16,7 +16,9 @@ class Student extends Model
      */
     public function blocks()
     {
-        return $this->hasManyThrough('App\Block', 'App\Course');    
+        return $this->courses()->get()->flatMap(function($course) {
+            return $course->blocks()->get();
+        });
     }
 
     /**

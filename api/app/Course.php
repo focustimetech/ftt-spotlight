@@ -14,7 +14,7 @@ class Course extends Model
     public function blocks()
     {
         return $this->belongsToMany('App\Block', 'block_course', 'course_id', 'block_id')
-            ->withPivot('staff_id')->as('owner');
+            ->withPivot('staff_id');
             // ->withTimestamps();
     }
 

@@ -6,13 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
-    public function getBlockNumber() {
-        return App\ScheduleEntry::where('course_id', $this->id)
-            ->get()->pluck('block_number')->first();
-    }
-
     public function students()
     {
-        $this->belongsToMany('App\Student', 'enrollment', 'course_id', 'student_id');
+        return $this->belongsToMany('App\Student', 'enrollment', 'course_id', 'student_id');
+    }
+
+    public function blocks()
+    {
+        return $this->belongsToMany('App\Block', 'block_course', 'course_id', 'block_id')
+            ->withPivot('staff_id')->as('owner');
+            // ->withTimestamps();
+    }
+
+    public function enrollStudents($students, $staff_id)
+    {
+        $pivot = ['enrolled_by' => $staff_id];
+        return $this->students()->attach($students->pluck('id')->toArray(), $pivot);
+    }
+
+    public function dropStudents($students)
+    {
+        return $this->students()->detach($students->pluck('id')->toArray());
     }
 }

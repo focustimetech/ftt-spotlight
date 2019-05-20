@@ -8,12 +8,12 @@ class Course extends Model
 {
     public function students()
     {
-        $this->belongsToMany('App\Student', 'enrollment', 'course_id', 'student_id');
+        return $this->belongsToMany('App\Student', 'enrollment', 'course_id', 'student_id');
     }
 
     public function blocks()
     {
-        $this->belongsToMany('App\Block', 'block_course', 'course_id', 'block_id')
+        return $this->belongsToMany('App\Block', 'block_course', 'course_id', 'block_id')
             ->withPivot('staff_id')
             ->withTimestamps();
     }

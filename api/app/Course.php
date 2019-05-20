@@ -18,6 +18,11 @@ class Course extends Model
             // ->withTimestamps();
     }
 
+    public function staff()
+    {
+        return $this->belongsToMany('App\Staff', 'block_course', 'course_id', 'staff_id')->get()->first();
+    }
+
     public function enrollStudents($students, $staff_id)
     {
         $pivot = ['enrolled_by' => $staff_id];

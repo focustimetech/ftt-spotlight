@@ -164,13 +164,15 @@ class BlockScheduleSeeder extends Seeder
             ],
         ];
 
-        foreach($blocks as $day => $block) {
-            factory(App\BlockSchedule::class)->create([
-                'block_id' => $block['id'],
-                'start' => $block['start'],
-                'end' => $block['end'],
-                'day_of_week', $day
-            ]);
+        foreach($blocks as $day => $day_blocks) {
+            foreach ($day_blocks as $block) {
+                factory(App\BlockSchedule::class)->create([
+                    'block_id' => $block['id'],
+                    'start' => $block['start'],
+                    'end' => $block['end'],
+                    'day_of_week' => $day
+                ]);
+            }
         }
     }
 }

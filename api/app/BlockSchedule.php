@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class BlockSchedule extends Model
 {
-    public function blocks()
+    protected $table = 'block_schedule';
+    public $timestamps = false;
+
+    public function block()
     {
-        return $this->hasMany('App\Block');
+        return $this->hasOne('App\Block');
     }
 }

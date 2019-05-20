@@ -16,7 +16,7 @@ class CreateBlockScheduleTable extends Migration
         Schema::create('block_schedule', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('block_id');
-            $table->integer('day_of_week');
+            $table->unsignedInteger('day_of_week');
             $table->time('start'); // Start of block
             $table->time('end'); // End of block
             // Foreign

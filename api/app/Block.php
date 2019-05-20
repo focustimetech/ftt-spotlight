@@ -10,6 +10,10 @@ class Block extends Model
     {
         return $this->belongsToMany('App\Course', 'block_course', 'block_id', 'course_id')
             ->withPivot('staff_id');
-            // ->withTimestamps();
+    }
+
+    public function flexBlocks()
+    {
+        return $this->where('flex', 1)->get();
     }
 }

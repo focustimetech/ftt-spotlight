@@ -38,14 +38,24 @@ class CoursesTableSeeder extends Seeder
             ]
         ];
 
-        foreach($courses as $course) {
+        $block_ids = App\Block::pluck('id')->toArray();
+        $index = 0;
+
+        foreach ($courses as $course) {
             for ($level = 9; $level <= 12; $level ++) {
-                // echo $block_number_pool[1];
                 factory(App\Course::class)->create([
                     'name' => $course['name']. " $level",
                     'short_name' => $course['short_name']. $level
                 ]);
             }
         }
+
+        /*
+        $courses = App\Course::all();
+        $courses->each(function($course) {
+            global $index, $block_ids;
+            $course->blocks()->attach($block_ids[$index ++ % count($block_ids)]);
+        });
+        */
     }
 }

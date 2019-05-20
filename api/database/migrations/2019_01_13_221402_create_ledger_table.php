@@ -19,11 +19,11 @@ class CreateLedgerTable extends Migration
         Schema::create('ledger', function (Blueprint $table) {
             $table->date('date'); // Date checked in
             $table->time('time'); // Time checked in
-            $table->unsignedInteger('block_number'); // Block checked into
+            $table->unsignedInteger('block_id'); // Block checked into
             $table->unsignedInteger('staff_id'); // Who checked the student in
             $table->unsignedInteger('student_id'); // Student checked in
             // Foreign keys
-            // $table->foreign('block_number')->references('block_number')->on('blocks');
+            $table->foreign('block_id')->references('id')->on('blocks');
             $table->foreign('staff_id')->references('id')->on('staff');
             $table->foreign('student_id')->references('id')->on('students');
         });

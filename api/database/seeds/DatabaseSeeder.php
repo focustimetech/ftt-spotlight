@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StudentsTableSeeder::class);
         $this->call(LedgerTableSeeder::class);
         // $this->call(AppointmentsTableSeeder::class);
-        // broken $this->call(SchedulePlansTableSeeder::class);
+        $this->call(SchedulePlansTableSeeder::class);
 
 
         //$this->call(CalendarTableSeeder::class);

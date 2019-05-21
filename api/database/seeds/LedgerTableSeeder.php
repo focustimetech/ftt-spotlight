@@ -13,9 +13,8 @@ class LedgerTableSeeder extends Seeder
     {
         $students = App\Student::all();
 
-        $students->each(function($student) {
+        $students->each(function($student, $index) {
             $time = time() === strtotime('sunday') ? strtotime('sunday -14 days') : strtotime('previous sunday -14 days');
-            // $course_ids = $student->courses()->pluck('id')->get();
             $block_time = $time;
             do {
                 $day_number = date('w', $time) + 1; // Sun = 1, Sat = 7
@@ -28,14 +27,16 @@ class LedgerTableSeeder extends Seeder
                     }
                     $schedule_blocks = $block->schedule()->where('day_of_week', $day_number)->get();
                     $schedule_blocks->each(function($schedule_block) use ($block, &$block_time, $staff_id, $student, $time) {
-                        $block_time = $schedule_block->start;
-                        factory(App\LedgerEntry::class)->create([
-                            'date' => date('Y-m-d', $time),
-                            'time' => $block_time,
-                            'block_id' => $block->id,
-                            'staff_id' => $staff_id,
-                            'student_id' => $student->id
-                        ]);
+                        if (rand(1, 14) !== 1) { // 1 in 14 chance of missing the block
+                            $block_time = $schedule_block->start;
+                            factory(App\LedgerEntry::class)->create([
+                                'date' => date('Y-m-d', $time),
+                                'time' => $block_time,
+                                'block_id' => $block->id,
+                                'staff_id' => $staff_id,
+                                'student_id' => $student->id
+                            ]);
+                        }
                     });
                 });
                 $time = strtotime('+1 day', $time); // next day

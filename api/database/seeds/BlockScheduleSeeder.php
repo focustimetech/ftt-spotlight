@@ -139,11 +139,6 @@ class BlockScheduleSeeder extends Seeder
                 [
                     'id' => 9,
                     'start' => '09:26:00',
-                    'end' => '10:06:00',
-                ],
-                [
-                    'id' => 9,
-                    'start' => '09:26:00',
                     'end' => '10:22:00',
                 ],
                 [

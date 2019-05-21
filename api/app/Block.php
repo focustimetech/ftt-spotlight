@@ -17,8 +17,8 @@ class Block extends Model
         return $this->hasMany('App\BlockSchedule', 'block_id', 'id');
     }
 
-    public function flexBlocks()
+    public static function flexBlocks()
     {
-        return $this->where('flex', 1)->get();
+        return Block::where('flex', 1)->get();
     }
 }

@@ -12,6 +12,11 @@ class Block extends Model
             ->withPivot('staff_id');
     }
 
+    public function blockSchedule()
+    {
+        return $this->hasMany('App\BlockSchedule', 'block_id', 'id');
+    }
+
     public function flexBlocks()
     {
         return $this->where('flex', 1)->get();

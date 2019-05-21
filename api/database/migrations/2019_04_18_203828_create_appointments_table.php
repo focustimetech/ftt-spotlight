@@ -17,13 +17,14 @@ class CreateAppointmentsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('student_id');
             $table->unsignedInteger('staff_id');
-            $table->unsignedInteger('block_number');
+            $table->unsignedInteger('block_id');
             $table->date('date');
             $table->string('memo', 150)->default('');
             $table->timestamps();
             // Foreign keys
             $table->foreign('staff_id')->references('id')->on('staff');
             $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('block_id')->references('id')->on('blocks');
         });
     }
 

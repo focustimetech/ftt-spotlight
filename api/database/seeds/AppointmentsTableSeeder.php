@@ -11,25 +11,29 @@ class AppointmentsTableSeeder extends Seeder
      */
     public function run()
     {
-        $student_ids = App\Student::pluck('id')->toArray();
-
-        foreach ($student_ids as $student_id) {
-            $ledger_entries = App\LedgerEntry::where('student_id', $student_id)->get();
-            $indexes = [];
-            for ($x = rand(0, 5); $x > 0; $x --) {
-                $index = rand(0, count($ledger_entries));
-                if (!in_array($index, $indexes)) {
-                    array_push($indexes, $index);
-                }
-            }
-            foreach($indexes as $index) {
+        $students = App\Student::all();
+        $students->each(function($student) {
+            // Create appointments on ledger entries
+            $ledger_entries = $student->ledgerEntries()->get()->random(rand(0, 5));
+            $ledger_entries->each(function($ledger_entry) use ($student) {
                 factory(App\Appointment::class)->create([
-                    'student_id' => $student_id,
-                    'staff_id' => $ledger_entries[$index]->staff_id,
-                    'block_number' => $ledger_entries[$index]->block_number,
-                    'date' => $ledger_entries[$index]->date
+                    'student_id' => $student->id,
+                    'staff_id' => $ledger_entry->staff_id,
+                    'block_id' => $ledger_entry->block_id,
+                    'date' => $ledger_entry->date
                 ]);
-            }
-        }
+            });
+
+            // Create future appointments
+            $plans = $student->plans()->get()->random(rand(0, 3));
+            $plans->each(function($plan) use ($student) {
+                factory(App\Appointment::class)->create([
+                    'student_id' => $student->id,
+                    'staff_id' => $plan->staff_id,
+                    'block_id' => $plan->block_id,
+                    'date' => $plan->date
+                ]);
+            });
+        });
     }
 }

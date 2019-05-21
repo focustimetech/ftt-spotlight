@@ -12,7 +12,7 @@ class Block extends Model
             ->withPivot('staff_id');
     }
 
-    public function blockSchedule()
+    public function schedule()
     {
         return $this->hasMany('App\BlockSchedule', 'block_id', 'id');
     }

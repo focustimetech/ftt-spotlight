@@ -23,14 +23,14 @@ class Course extends Model
         return $this->belongsToMany('App\Staff', 'block_course', 'course_id', 'staff_id')->get()->first();
     }
 
-    public function enrollStudents($students, $staff_id)
+    public function enrollStudents($student_ids, $staff_id)
     {
         $pivot = ['enrolled_by' => $staff_id];
-        return $this->students()->attach($students->pluck('id')->toArray(), $pivot);
+        return $this->students()->attach($student_ids, $pivot);
     }
 
-    public function dropStudents($students)
+    public function dropStudents($students_ids)
     {
-        return $this->students()->detach($students->pluck('id')->toArray());
+        return $this->students()->detach($student_ids);
     }
 }

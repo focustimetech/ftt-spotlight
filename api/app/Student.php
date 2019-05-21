@@ -35,15 +35,15 @@ class Student extends Model
         return $this->belongsToMany('App\Cluster', 'student_cluster', 'student_id', 'cluster_id');
     }
 
-    public function dropCourses($courses)
+    public function dropCourses($course_ids)
     {
-        return $this->courses()->detach($courses->pluck('id')->toArray());
+        return $this->courses()->detach($course_ids);
     }
 
-    public function enrollCourses($courses, $staff_id)
+    public function enrollCourses($course_ids, $staff_id)
     {
         $pivot = ['enrolled_by' => $staff_id];
-        return $this->courses()->attach($courses->pluck('id')->toArray(), $pivot);
+        return $this->courses()->attach($course_ids, $pivot);
     }
 
     public function ledgerEntries()
@@ -58,7 +58,7 @@ class Student extends Model
 
     public function plans()
     {
-        return [];
+        return $this->hasMany('App\SchedulePlan');
     }
 
     public function user() {

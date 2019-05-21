@@ -19,6 +19,9 @@ class User extends Authenticatable
 
     public function staff()
     {
+        /**
+         * @TODO Need to check if $this->accoutn_type === 'staff', else throw 403
+         */
         return Staff::findOrFail($this->id);
     }
 

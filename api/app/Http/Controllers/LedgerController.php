@@ -10,6 +10,8 @@ use App\Student;
 use App\Staff;
 use DB;
 use App\Http\Resources\Ledger as LedgerResource;
+use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\Student as StudentResource;
 
 class LedgerController extends Controller
 {
@@ -33,62 +35,44 @@ class LedgerController extends Controller
      */
     public function store(Request $request)
     {
-        //$student_numbers = ;
-
-        //$now = strtotime('2019-02-11 08:45:00'); // time();
         $now = time();
 
-        $staff_id = $request->input('staff_id');
+        $staff_id = $request->input('staff_id') || auth()->user()->staff()->id;
         $time = date("H:i:s", $now);
         $week_day = date('w', $now) + 1;
-        $block = DB::table('blocks')
-            ->select('block_number')
-            ->whereRaw('? BETWEEN start AND end AND day_of_week = ?', [$time, $week_day])
-            ->first();
-        $block_number = $block->block_number ?? 0;
+        $block = App\Block::atTime($now);
 
-        $sn_ids = Student::whereIn('student_number', $request->input('student_numbers'))
-            ->pluck('student_id')
-            ->toArray();
-        $student_ids = array_merge($sn_ids, $request->input('student_ids'));
+        $student_numbers = $request->input('student_numbers');
+        $student_ids = $request->input('student_ids');
 
-        foreach ($student_ids as $id) {
+        $error = [];
+        foreach ($student_numbers as $student_number) {
+            $student = App\Student::findBySN($student_number);
+            if ($student) {
+                array_push($student_ids, $student->id);
+            } else {
+                array_push($error, $student_number);
+            }
+        }
+
+        foreach ($student_ids as $student_id) {
             $entry = new LedgerEntry;
 
             $entry->date = date("Y-m-d", $now);
             $entry->time = $time;
-            $entry->block_number = $block_number;
-            $entry->staff_id = $request->input('staff_id');
-            $entry->student_id = $id;
+            $entry->block_id = $block->id;
+            $entry->staff_id = $staff_id;
+            $entry->student_id = $student_id;
 
             if ($entry->save()) continue;
             else throw new Exception("Students could not be checked in.");
         }
 
         return new LedgerResource([
-            'block_number' => $block_number,
-            'staff' => Staff::where('id', $request->input('staff_id'))
-                ->select('title', 'first_name', 'last_name', 'id')
-                ->get()
-                ->transform(function($item, $key) {
-                    if ($item->title) {
-                        $name = $item->title. ' '.
-                        substr($item->first_name, 0, 1). ' '.
-                        $item->last_name;
-                    }
-                    else $name = $item->first_name. ' '. $item->last_name;
-
-                    return [
-                        'name' => $name,
-                        'id' => $item->id
-                    ];
-                })
-                ->toArray(),
-            'students' => Student::whereIn('student_id', $student_ids)
-                ->select(DB::raw("student_id AS id, CONCAT(first_name, ' ', last_name) AS name"))  
-                ->get()              
-                ->toArray(),
-            'time' => date('H:ia', $now),
+            'block' => $block,
+            'staff' => new StaffResource(App\Staff::find($staff_id)),
+            'students' => StudentResource::collection(App\Student::find($student_ids)),
+            'time' => date('H:ia', $now)
         ]);
     }
 

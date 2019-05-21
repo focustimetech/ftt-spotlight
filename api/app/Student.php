@@ -46,6 +46,15 @@ class Student extends Model
         return $this->courses()->attach($course_ids, $pivot);
     }
 
+    public static function findBySN($student_numbers)
+    {
+        if (is_array($student_numbers)) {
+            return Student::whereIn('student_number', $student_numbers)->get();
+        } else {
+            return Student::where('student_number', $student_numbers)->get()->first();
+        }
+    }
+
     public function ledgerEntries()
     {
         return $this->hasMany('App\LedgerEntry', 'student_id');

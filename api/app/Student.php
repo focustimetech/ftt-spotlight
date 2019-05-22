@@ -18,7 +18,16 @@ class Student extends Model
     {
         return $this->courses()->get()->flatMap(function($course) {
             return $course->blocks()->get();
-        });
+        })->merge(Block::flexBlocks());
+    }
+
+    /**
+     * Return all scheduled blocks in which the student is enrolled in.
+     */
+    public function blockSchedule()
+    {
+        return BlockSchedule::whereIn('block_id', $this->blocks()->pluck('id')->toArray())
+            ->orderBy('day_of_week')->orderBy('start')->get();
     }
 
     /**

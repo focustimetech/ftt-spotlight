@@ -9,7 +9,7 @@ use App\Block;
 use App\Student;
 use App\Staff;
 use DB;
-use App\Http\Resources\Ledger as LedgerResource;
+use App\Http\Resources\LedgerEntry as LedgerResource;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Student as StudentResource;
 
@@ -35,19 +35,19 @@ class LedgerController extends Controller
      */
     public function store(Request $request)
     {
-        $now = time();
+        $now = $request->input('time') ?? time();
 
-        $staff_id = $request->input('staff_id') || auth()->user()->staff()->id;
+        $staff_id = $request->input('staff_id') ?? auth()->user()->staff()->id;
         $time = date("H:i:s", $now);
         $week_day = date('w', $now) + 1;
-        $block = App\Block::atTime($now);
+        $block = Block::atTime($now);
 
         $student_numbers = $request->input('student_numbers');
         $student_ids = $request->input('student_ids');
 
         $error = [];
         foreach ($student_numbers as $student_number) {
-            $student = App\Student::findBySN($student_number);
+            $student = Student::findBySN($student_number);
             if ($student) {
                 array_push($student_ids, $student->id);
             } else {
@@ -70,9 +70,12 @@ class LedgerController extends Controller
 
         return new LedgerResource([
             'block' => $block,
-            'staff' => new StaffResource(App\Staff::find($staff_id)),
-            'students' => StudentResource::collection(App\Student::find($student_ids)),
-            'time' => date('H:ia', $now)
+            'staff' => new StaffResource(Staff::find($staff_id)),
+            'students' => StudentResource::collection(Student::find($student_ids)),
+            'date' => date('D, M d', $now),
+            'time' => date('g:ia', $now),
+            'unixTime' => $now,
+            'errors' => $error
         ]);
     }
 

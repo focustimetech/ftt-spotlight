@@ -16,12 +16,6 @@ class LedgerEntry extends JsonResource
      */
     public function toArray($request)
     {
-        $staff_id = $this->staff_id;
-        // var_dump($this);
-        return [
-            'staff' => new StaffResource(Staff::findOrFail($staff_id)),
-            'time' => date('g:i A', strtotime($this->time))
-        ];
-        
+        return parent::toArray($request);
     }
 }

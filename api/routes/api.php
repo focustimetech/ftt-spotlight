@@ -65,8 +65,8 @@ Route::get('blocks', 'BlockController@index');
 Route::post('blocks', 'BlockController@store');
 Route::put('blocks', 'BlockController@store');
 Route::delete('block/{id}', 'BlockController@destroy');
+
 // Ledger
-// Route::get('ledger', 'LedgerController@index');
 Route::post('check-in', 'LedgerController@store');
 
 

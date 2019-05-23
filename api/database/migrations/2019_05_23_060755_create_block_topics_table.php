@@ -20,7 +20,7 @@ class CreateBlockTopicsTable extends Migration
             $table->unsignedInteger('block_schedule_id');
             $table->timestamps();
             // Foreign keys
-            $table->foreign('topic_id')->references('id')->on('topic');
+            $table->foreign('topic_id')->references('id')->on('topics');
             $table->foreign('block_schedule_id')->references('id')->on('block_schedule');
         });
     }

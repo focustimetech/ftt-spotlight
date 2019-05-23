@@ -16,26 +16,6 @@ class Staff extends Model
 		'password', 'remember_token'
 	];
 
-	/**
-	 * Return the staff member's name, correctly formatted.
-	 */
-	public function getName($fullName = true) {
-		$name = $this->title. ' '. $this->last_name;
-		return $this->first_name && $fullName ? $name. ', '. $this->first_name : $name;
-	}
-
-	public function user() {
-		return $this->hasOne('App\User', 'user_id')->where('account_type', 'staff')->first();
-	}
-
-	public function starred() {
-		return $this->hasMany('App\Starred');
-	}
-
-	public function scheduleEntries() {
-		return $this->hasMany('App\ScheduleEntry');
-	}
-
 	public function delete() {
 		User::where('user_id', $this->id)->where('account_type', 'staff')
 			->delete();
@@ -43,5 +23,34 @@ class Staff extends Model
 		ScheduleEntry::where('staff_id', $this->id)->delete();
 
 		return parent::delete();
+	}
+
+	/**
+	 * Return the staff member's name, correctly formatted.
+	 */
+	public function getName($fullName = true)
+	{
+		$name = $this->title. ' '. $this->last_name;
+		return $this->first_name && $fullName ? $name. ', '. $this->first_name : $name;
+	}
+
+	public function scheduleEntries()
+	{
+		return $this->hasMany('App\ScheduleEntry');
+	}
+
+	public function starred()
+	{
+		return $this->hasMany('App\Starred');
+	}
+
+	public function topics()
+	{
+		return $this->hasMany('App\Topic');
+	}
+
+	public function user()
+	{
+		return $this->hasOne('App\User', 'user_id')->where('account_type', 'staff')->first();
 	}
 }

@@ -13,4 +13,11 @@ class BlockSchedule extends Model
     {
         return $this->hasOne('App\Block', 'id', 'block_id')->first();
     }
+
+    public function topic()
+    {
+        if ($this->block()->flex) {
+            return $this->hasMany('App\Topic');
+        }
+    }
 }

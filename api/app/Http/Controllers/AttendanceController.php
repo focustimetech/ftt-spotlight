@@ -20,13 +20,30 @@ class AttendanceController extends Controller
         $now = time();
 
         $courses->each(function($course) {
-            $start_time = $course->enrolled_at;
-            $end_time = $course->dropped_at ?? $now;
-            $block_schedule = $student->blockSchedule();
-            $schedule_index = 0;
+            $enrolled_at = $course->enrolled_at;
+            $stop_at = $course->dropped_at ?? $now;
+            $block_schedule = $student->blockSchedule()->groupBy('day_of_week');
+            $schedule_length = count($block_schedule);
+            $i = 0;
 
             // First, get the very first block in which attendance is recorded
-            while (date('w', $start_time))
+            $start_time = date('H:i:s', $enrolled_at);
+            $start_day = date('w', $enrolled_at);
+            while ($start_day !== $block_schedule[$i]->day_of_week && $start_time >= $block_schedule[$i]->end) {
+                $i ++;
+                if ($i === $schedule_length) {
+                    break;
+                }
+            }
+
+            // Iterate over each block;
+            $date = date('Y-m-d', $enrolled_at);
+            $time = $start_time;
+            for ($time = strtotime("$date $time"); $time <= $stop_at; $i ++) {
+                $block = $block_schedule[$i % $schedule_length];
+                
+                $time = strtotime("$date $time");
+            }
         });
     }
 }

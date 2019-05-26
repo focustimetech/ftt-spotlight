@@ -1,7 +1,7 @@
 {
-    "name": "spotlight",
+    "name": "focustime/spotlight",
     "type": "project",
-    "description": "Attendance.",
+    "description": "Smart attendance.",
     "keywords": [
         "framework",
         "laravel"

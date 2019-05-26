@@ -69,6 +69,9 @@ Route::delete('block/{id}', 'BlockController@destroy');
 // Ledger
 Route::post('check-in', 'LedgerController@store');
 
+// Attendance
+Route::get('attendance/{id}', 'AttendanceController@attendance');
+
 
 
 // Student Schedule

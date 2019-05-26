@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Student;
 
 class AttendanceController extends Controller
 {
@@ -14,61 +15,62 @@ class AttendanceController extends Controller
      */
     public function attendance($student_id)
     {
-        $student = App\Student::findOrFail($student_id);
+        $student = Student::findOrFail($student_id);
         $courses = $student->courses()->get();
+        $block_schedule = $student->blockSchedule()->groupBy('day_of_week')->values()->toArray();
+        // return $block_schedule;
         $attendance = [];
-        $now = time();
 
-        $courses->each(function($course) {
-            $enrolled_at = $course->enrolled_at;
-            $stop_at = $course->dropped_at ?? $now;
-            $block_schedule = $student->blockSchedule()->groupBy('day_of_week');
+        $courses->each(function($course) use (&$attendance, $student, $block_schedule) {
+            $enrolled_at = strtotime($course->enrollment->enrolled_at);
+            $stop_at = $course->enrollment->dropped_at ? strtotime($course->enrollment->dropped_at) : time();
+            // echo "stop_ad: $stop_at";
 
             // First, get the very first block in which attendance is recorded
             $start_time = date('H:i:s', $enrolled_at);
-            $start_day = date('w', $enrolled_at);
-            $i = 0;
-            $k = 0;
-            while ($start_day !== $block_schedule[$i]->day_of_week) {
-                $i ++;
-                if ($i === count($block_schedule)) {
-                    break;
-                }
-            }
-            while ($start_time >= $block_schedule[$i][$k]->end) {
-                $k ++;
-                if ($k === count($block_schedule[$i])) {
-                    break;
-                }
-            }
+            $start_day = date('w', $enrolled_at) + 1;
+            for ($i = 0; $i < count($block_schedule) - 1 && $start_day !== $block_schedule[$i][0]['day_of_week']; $i ++);
+            for ($k = 0; $k < count($block_schedule[$i]) - 1 && $start_time < $block_schedule[$i][$k]['end']; $k ++);
 
             // Iterate over each block;
-            $week = start_of_week($enrolled_at);
+            $day_diff = date('w', $enrolled_at);
+            $week = strtotime("-$day_diff days", strtotime(date('Y-m-d', $enrolled_at)));
             for (;;) {
                 for (; $i < count($block_schedule); $i ++) {
-                    $date = $week + $block_schedule[$i][0]->day_of_week;
-                    $attendance[$date] = ['attended' => 0, 'missed' => 0];
+                    $day_diff = $block_schedule[$i][0]['day_of_week'] - 1;
+                    $timestmp = strtotime("+$day_diff days", $week);
+                    $date = date('Y-m-d', $timestmp);
+                    // echo "Date: $date;";
+                    //return;
+                    $attendance["$date"] = ['attended' => 0, 'missed' => 0];
+                    // echo var_dump($attendance);
+                    // return;
                     for (; $k < count($block_schedule[$i]); $k ++) {
                         $block = $block_schedule[$i][$k];
-                        $block_id = $block->id;
-                        $time = $block->start;
+                        $block_id = $block['block_id'];
+                        $time = $block['start'];
+                        //echo "Date: $date, \$block_id: $block_id; ";
 
-                        if (date($date + $time) > $stop_at) {
-                            return $attendance;
+                        if (strtotime("$date $time") > $stop_at) {
+                            // echo "strtotime('$date $time') > $stop_at";
+                            return;
                         } else {
-                            $ledger_entry = null; // = App\LedgerEntry::find(...);
+                            $ledger_entry = $student->ledgerEntries()->where('date', $date)->where('block_id', $block_id)->first();
                             if ($ledger_entry == null) {
-                                $attendance[$date]['missed'] ++;
+                                $attendance["$date"]['missed'] ++;
+                                // echo "Missed on $date;";
                             } else {
-                                $attendance[$date]['attended'] ++;
+                                $attendance["$date"]['attended'] ++;
+                                // echo "Attended on $date;";
                             }
                         }
                     }
                     $k = 0;
                 }
                 $i = 0;
-                $week ++;
+                $week = strtotime('+1 week', $week);
             }
         });
+        return $attendance;
     }
 }

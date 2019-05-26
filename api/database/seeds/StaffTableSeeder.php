@@ -11,13 +11,6 @@ class StaffTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Staff::class, 20)->create()->each(function ($teacher) {
-            factory(App\User::class)->create([
-                'user_id' => $teacher->id,
-                'username' => $teacher->email,
-                'account_type' => 'staff',
-                'password' => bcrypt($teacher->email)
-            ]);
-        });
+        factory(App\Staff::class, 20)->create();
     }
 }

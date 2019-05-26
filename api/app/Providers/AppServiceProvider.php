@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema; // strlen patch
 use Illuminate\Http\Resources\Json\Resource;
 
+use App\Staff;
+use App\Observers\StaffObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -17,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Resource::withoutWrapping();
+
+        Staff::observe(StaffObserver::class);
     }
 
     /**

@@ -33,26 +33,24 @@ class StaffController extends Controller
     public function store(Request $request)
     {
         $staff = $request->isMethod('put') ? Staff::findOrFail($request->staff_id) : new Staff;
-        $user = $request->isMethod('put') ? $staff->user() : new User;
 
+        $staff_params = [
+            'staff_type' => $request->input('staff_type'),
+            'administrator' => $request->input('administrator'),
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email')
+        ];
+        
         $staff->staff_type = $request->input('staff_type');
         $staff->administrator = $request->input('administrator');
         $staff->first_name = $request->input('first_name');
         $staff->last_name = $request->input('last_name');
         $staff->email = $request->input('email');
 
+        //if ($staff->create($staff_params)) {
         if ($staff->save()) {
-            $user->account_type = 'staff';
-            $user->username = $request->input('email');
-            $user->user_id = $staff->id;
-
-            if ($request->isMethod('post')) {
-                $user->password = bcrypt($request->input('email'));
-            }
-
-            if ($user->save()) {
-                return new StaffResource($staff);
-            }
+            return new StaffResource($staff);
         }
     }
 

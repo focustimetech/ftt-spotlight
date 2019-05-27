@@ -20,8 +20,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Resource::withoutWrapping();
-
-        Staff::observe(StaffObserver::class);
     }
 
     /**

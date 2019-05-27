@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use App\Staff;
-use App\Oberservers\StaffObserver;
+use App\Observers\StaffObserver;
 
 class EloquentEventServiceProvider extends ServiceProvider
 {
@@ -26,6 +26,6 @@ class EloquentEventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Staff::observe(StaffObserver::class);
+        Staff::observe(StaffObserver::class);
     }
 }

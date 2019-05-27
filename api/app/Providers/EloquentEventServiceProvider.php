@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 
 use App\Staff;
 use App\Observers\StaffObserver;
+use App\Student;
+use App\Observers\StudentsObserver;
 
 class EloquentEventServiceProvider extends ServiceProvider
 {
@@ -27,5 +29,6 @@ class EloquentEventServiceProvider extends ServiceProvider
     public function boot()
     {
         Staff::observe(StaffObserver::class);
+        Student::observe(StudentsObserver::class);
     }
 }

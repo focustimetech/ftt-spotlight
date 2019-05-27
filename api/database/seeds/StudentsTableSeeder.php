@@ -16,13 +16,6 @@ class StudentsTableSeeder extends Seeder
         // $faker =  Faker\Factory::create();
 
         factory(App\Student::class, 5)->create()->each(function ($student) use ($blocks, $staff_ids) {
-            factory(App\User::class)->create([
-                'user_id' => $student->id,
-                'username' => $student->student_number,
-                'account_type' => 'student',
-                'password' => bcrypt($student->student_number)
-            ]);
-            
             $blocks->each(function($block) use ($student, $staff_ids) {
                 $course = $block->courses()->get()->random(1)->first();
                 $staff_id = $staff_ids->random(1)->first();

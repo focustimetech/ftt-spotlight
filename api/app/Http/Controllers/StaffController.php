@@ -41,16 +41,11 @@ class StaffController extends Controller
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email')
         ];
-        
-        $staff->staff_type = $request->input('staff_type');
-        $staff->administrator = $request->input('administrator');
-        $staff->first_name = $request->input('first_name');
-        $staff->last_name = $request->input('last_name');
-        $staff->email = $request->input('email');
 
-        //if ($staff->create($staff_params)) {
-        if ($staff->save()) {
-            return new StaffResource($staff);
+        $result = $request->isMethod('put') ? $staff->update($staff_params) : $staff->create($staff_params);
+
+        if ($result) {
+            return new StaffResource($result);
         }
     }
 

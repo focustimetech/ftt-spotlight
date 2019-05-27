@@ -18,7 +18,7 @@ class LedgerTableSeeder extends Seeder
             $block_time = $time;
             do {
                 $day_number = date('w', $time) + 1; // Sun = 1, Sat = 7
-                $blocks = $student->blocks();
+                $blocks = $student->getBlocks();
                 $blocks->each(function($block) use (&$block_time, $day_number, $student, $time) {
                     if ($block->flex == false) {
                         $staff_id = App\Course::find($block->pivot->course_id)->staff()->id;

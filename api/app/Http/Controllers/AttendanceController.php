@@ -17,7 +17,7 @@ class AttendanceController extends Controller
     {
         $student = Student::findOrFail($student_id);
         $courses = $student->courses()->get();
-        $block_schedule = $student->blockSchedule()->groupBy('day_of_week')->values()->toArray();
+        $block_schedule = $student->getBlockSchedule()->groupBy('day_of_week')->values()->toArray();
         // return $block_schedule;
         $attendance = [];
 

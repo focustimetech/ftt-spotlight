@@ -6,12 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
 {
-    public function courses()
-    {
-        return $this->belongsToMany('App\Course', 'block_course', 'block_id', 'course_id')
-            ->withPivot('staff_id');
-    }
-
     public static function atTime($time) {
         $time_of_day = date("H:i:s", $time);
         $day_of_week = date('w', $time) + 1;
@@ -42,13 +36,21 @@ class Block extends Model
         }
     }
 
+    public static function flexBlocks()
+    {
+        return Block::where('flex', 1)->get();
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany('App\Course', 'block_course', 'block_id', 'course_id')
+            ->withPivot('staff_id');
+    }
+
     public function schedule()
     {
         return $this->hasMany('App\BlockSchedule', 'block_id', 'id');
     }
 
-    public static function flexBlocks()
-    {
-        return Block::where('flex', 1)->get();
-    }
+    
 }

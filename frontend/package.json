@@ -24,6 +24,7 @@
     "@types/react-swipeable-views": "^0.13.0",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
+    "d3": "^5.9.2",
     "jsonwebtoken": "^8.5.1",
     "material-ui-pickers": "^2.2.4",
     "react": "^16.8.4",

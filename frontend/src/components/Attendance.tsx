@@ -1,12 +1,29 @@
 import * as React from 'react'
 
-interface IProps {}
+import {
+    Button,
+    ExpansionPanel,
+    ExpansionPanelActions,
+    ExpansionPanelDetails,
+    ExpansionPanelSummary,
+    Icon,
+    IconButton
+} from '@material-ui/core'
 
-/**
- * Later this state-less component will be made into a class to use with Redux.
- */
-export const Attendance = (props: IProps) => {
-    return (
-        <div>Attendance</div>
-    )
+export class Attendance extends React.Component {
+
+    componentDidMount() {
+        
+    }
+    
+    render() {
+        return (
+            <>
+                <div>Attendance</div>
+                <div className='expansion-panel'>
+
+                </div>
+            </>
+        )
+    }
 }

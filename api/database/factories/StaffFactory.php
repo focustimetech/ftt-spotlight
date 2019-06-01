@@ -10,6 +10,7 @@ $factory->define(App\Staff::class, function (Faker $faker) {
         'title' => $faker->title($gender),
         'first_name' => $faker->firstName($gender),
         'last_name' => $faker->lastName($gender),
-        'email' => $faker->email()
+        'email' => $faker->email(),
+        'color' => Utils::userColor()
     ];
 });

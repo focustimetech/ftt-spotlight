@@ -1,7 +1,7 @@
 <?php
 
 const USER_COLORS = [
-    'f44336',
+    'F44336',
     'E91E63',
     '9C27B0',
     '673AB7',

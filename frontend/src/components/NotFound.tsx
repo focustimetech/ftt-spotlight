@@ -1,0 +1,20 @@
+import * as React from 'react'
+import { Link, RouteComponentProps } from 'react-router-dom'
+
+import { Button } from '@material-ui/core'
+
+import { EmptyStateIcon } from './EmptyStateIcon'
+
+interface IProps extends RouteComponentProps {}
+
+export const NotFound = (props: IProps) => {
+    return (
+        <div className='not-found'>
+            <EmptyStateIcon variant='notifications'>
+                <h2>No match for <code>{props.location.pathname}</code></h2>
+                <h3>The item you're looking for may have been moved, renamed or deleted.</h3>
+                <Link to='/'><Button variant='contained' color='primary'>Back to Dashboard</Button></Link>
+            </EmptyStateIcon>
+        </div>
+    )
+}

@@ -15,6 +15,16 @@ interface IProps {
     count?: number
 }
 
+const data = [
+    {
+        date: 'date',
+        time: 'time',
+        sender: 'sender',
+        icon: 'icon',
+        message: 'message'
+    }
+]
+
 export class NotificationsWidget extends React.Component<IProps> {
     constructor(props: IProps) {
         super(props)

@@ -104,6 +104,10 @@ export class NotificationsWidget extends React.Component<IProps> {
                             <h3>Notifications</h3>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
+                            <div className='notifications_modal__actions'>
+                                <Button>Mark all read</Button>
+                                <Button>Delete all</Button>
+                            </div>
                             {data.length > 0 ? (
                                 <div className='content-inner'>
                                     {data.map((notification: any) => (
@@ -122,8 +126,8 @@ export class NotificationsWidget extends React.Component<IProps> {
                                             </ExpansionPanelSummary>
                                             <ExpansionPanelDetails><p>{notification.message}</p></ExpansionPanelDetails>
                                             <ExpansionPanelActions>
-                                                <Button>Delete</Button>
                                                 <Button>Mark Unread</Button>
+                                                <Button>Delete</Button>
                                             </ExpansionPanelActions>
                                         </ExpansionPanel>
                                     ))}

@@ -179,7 +179,7 @@ class Students extends React.Component<IProps, IState> {
 					</ul>
 				</TopNav>
 				<p>Welcome to the Students page!</p>
-				<ClustersDialog open={true} onClose={console.log}/>
+				<ClustersDialog open={false} onClose={console.log}/>
 				<Dialog
 					open={this.state.addDialogVisible}
 					scroll='paper'

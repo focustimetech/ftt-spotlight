@@ -72,7 +72,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 								</div>
 							) : (
 								<>
-									<Avatar className='profile_avatar'>{this.props.student.initials}</Avatar>
+									<Avatar style={{background: this.props.student.color}} className='profile_avatar'>{this.props.student.initials}</Avatar>
 									<h3>{`${this.props.student.first_name} ${this.props.student.last_name}`}</h3>
 								</>
 							)}	

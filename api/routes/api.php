@@ -40,6 +40,7 @@ Route::delete('staff/{id}', 'StaffController@destroy');
 // Students
 Route::get('students', 'StudentsController@index');
 Route::get('students/{id}', 'StudentsController@show');
+Route::get('students/profile/{id}', 'StudentsController@profile');
 Route::post('students', 'StudentsController@store');
 Route::put('students', 'StudentsController@store');
 Route::delete('students/{id}', 'StudentsController@destroy');

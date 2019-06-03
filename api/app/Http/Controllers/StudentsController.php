@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Student;
 use App\User;
 use App\Http\Resources\Student as StudentResource;
+use App\Http\Resources\StudentProfile as StudentProfileResource;
 
 class StudentsController extends Controller
 {
@@ -75,5 +76,15 @@ class StudentsController extends Controller
         if ($student->delete()) {
             return new StudentResource($student);
         }
+    }
+
+    /**
+     * Retreive a collection of data about the student
+     */
+    public function profile($id)
+    {
+        $student = Student::findOrFail($id);
+
+        return new StudentProfileResource($student);
     }
 }

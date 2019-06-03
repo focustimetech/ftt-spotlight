@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core'
 
 import { fetchStudentProfile } from '../actions/studentProfileActions'
+import { listToTruncatedString } from '../utils/utils'
 
 import { Tabs, TopNav } from './TopNav'
 import { Schedule } from './Schedule'
@@ -47,6 +48,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 		this.props.fetchStudentProfile(params.studentID).then(
 			(res: any) => {
 				this.setState({ loading: false })
+				console.log(this.props.student)
 			}
 		)
 	}
@@ -58,6 +60,8 @@ class StudentProfile extends React.Component<IProps, IState> {
 			onChange: this.handleTabChange,
 			tabs: ['Attendance', 'Schedule', 'Appointments']
 		}
+		const avatarColor = this.props.student.color || 'red'
+
 		return (
 			<div className='profile'>
 				<TopNav className='--tabs' tabs={navTabs}>
@@ -72,8 +76,18 @@ class StudentProfile extends React.Component<IProps, IState> {
 								</div>
 							) : (
 								<>
-									<Avatar style={{background: this.props.student.color}} className='profile_avatar'>{this.props.student.initials}</Avatar>
-									<h3>{`${this.props.student.first_name} ${this.props.student.last_name}`}</h3>
+									<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.student.initials}</Avatar>
+									<div>
+										<h3 className='name'>
+											{`${this.props.student.first_name} ${this.props.student.last_name}`}
+											<span className='grade'>{`Grade ${this.props.student.grade}`}</span>
+										</h3>
+										<a onClick={() => console.log('clicked cluster')}>
+											<h5 className='cluster-list'>{this.props.student.clusters && (
+												listToTruncatedString(this.props.student.clusters.map((cluster: any) => cluster.name), 'Cluster')
+											)}</h5>
+										</a>
+									</div>
 								</>
 							)}	
 						</li>

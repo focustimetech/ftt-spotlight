@@ -25,7 +25,8 @@ import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
 
 import { ITableAction, ITableHeaderColumn } from '../types/table'
-import { EnhancedDialogTitle } from './Modals/EnhancedDialogTItle';
+import { EnhancedDialogTitle } from './Modals/EnhancedDialogTitle';
+import { ClustersDialog } from './Modals/ClustersDialog';
 
 interface NewStudent {
 	first_name: string,
@@ -178,6 +179,7 @@ class Students extends React.Component<IProps, IState> {
 					</ul>
 				</TopNav>
 				<p>Welcome to the Students page!</p>
+				<ClustersDialog open={true} onClose={console.log}/>
 				<Dialog
 					open={this.state.addDialogVisible}
 					scroll='paper'

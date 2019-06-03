@@ -16,6 +16,10 @@
 	h3 {
 		margin: 0;
 	}
+
+	&.--close-button {
+		padding: 16px 16px 16px 32px;
+	}
 }
 
 .dialog-form {
@@ -30,5 +34,11 @@
 				margin-right: 0;
 			}
 		}
+	}
+}
+
+.clusters-dialog {
+    .dialog-title {
+		width: unset;
 	}
 }

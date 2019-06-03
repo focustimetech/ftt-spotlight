@@ -50,7 +50,6 @@ Route::get('search', 'SearchController@search');
 // INCOMPLETE
 
 // Clusters
-Route::get('clusters/students', 'ClustersController@listAll');
 Route::post('clusters/students', 'ClustersController@attach');
 Route::delete('clusters/students', 'ClustersController@detach');
 Route::get('clusters', 'ClustersController@index');

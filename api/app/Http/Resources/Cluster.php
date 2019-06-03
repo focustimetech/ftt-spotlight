@@ -17,7 +17,14 @@ class Cluster extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'public' => $this->public
+            'public' => $this->public,
+            'hidden' => $this->hidden,
+            'students' => \App\Cluster::find($this->id)->students()->get()->map(function($student) {
+                return [
+                    'id' => $student->id,
+                    'name' => $student->getName()
+                ];
+            })
         ];
     }
 }

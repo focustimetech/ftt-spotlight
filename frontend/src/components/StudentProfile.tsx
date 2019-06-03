@@ -68,10 +68,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 					<ul>
 						<li className='profile_title'>
 							{this.state.loading ? (
-								<div style={{height: 64, width: 250}}>
-									<ContentLoader height={64} width={250}>
-										<rect x={0} y={8} rx={24} ry={24} height={48} width={48}/>
-										<rect x={64} y={16} rx={4} ry={4} height={32} width={164}/>
+								<div style={{height: 56, width: 368}}>
+									<ContentLoader height={56} width={368}>
+										<rect x={0} y={4} rx={24} ry={24} height={48} width={48}/>
+										<rect x={64} y={8} rx={4} ry={4} height={24} width={164}/>
+										<rect x={240} y={8} rx={4} ry={4} height={24} width={128}/>
+										<rect x={64} y={40} rx={4} ry={4} height={12} width={84}/>
 									</ContentLoader>
 								</div>
 							) : (
@@ -92,18 +94,27 @@ class StudentProfile extends React.Component<IProps, IState> {
 							)}	
 						</li>
 					</ul>
-					<ul className='right_col'>
-						<li>
-							<IconButton>
-								<Icon className={classNames({'--starred': starred})}>{starred ? 'star' : 'star_border'}</Icon>
-							</IconButton>
-						</li>
-						<li>
-							<IconButton>
-								<Icon>more_vert</Icon>
-							</IconButton>
-						</li>
-					</ul>
+					{this.state.loading ? (
+						<div style={{height: 56, width: 80}}>
+							<ContentLoader height={56} width={80}>
+								<rect x={0} y={12} rx={24} ry={24} height={36} width={36}/>
+								<rect x={44} y={12} rx={24} ry={24} height={36} width={36}/>
+							</ContentLoader>
+						</div>
+					) : (
+						<ul className='right_col'>
+							<li>
+								<IconButton>
+									<Icon className={classNames({'--starred': starred})}>{starred ? 'star' : 'star_border'}</Icon>
+								</IconButton>
+							</li>
+							<li>
+								<IconButton>
+									<Icon>more_vert</Icon>
+								</IconButton>
+							</li>
+						</ul>
+					)}
 				</TopNav>
 				<SwipeableViews index={this.state.tab}>
 					<Attendance />

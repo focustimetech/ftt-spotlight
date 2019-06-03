@@ -17,6 +17,3 @@ export const SET_CURRENT_USER = 'SET_CURRENT_USER'
 export const FETCH_STARRED = 'FETCH_STARRED'
 export const STAR_ITEM = 'STAR_ITEM'
 export const UNSTAR_ITEM = 'UNSTAR_ITEM'
-
-// Student Profile
-export const FETCH_STUDENT_PROFILE = 'FETCH_STUDENT_PROFILE'

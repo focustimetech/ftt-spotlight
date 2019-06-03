@@ -4,4 +4,38 @@
 			margin-left: 32px;
 		}
 	}
+
+	.notification {
+		&__sender {
+			width: 100%;
+			display: flex;
+			align-items: center;
+
+			.icon {
+				margin-right: 8px;
+			}
+
+			.info {
+				width: 100%;
+				display: grid;
+
+				.sender-info {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+
+					> * {
+						margin: 0;
+					}
+				}
+			}
+
+			.message {
+				margin: 0;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
+	}
 }

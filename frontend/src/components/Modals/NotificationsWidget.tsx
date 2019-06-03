@@ -1,8 +1,16 @@
 import * as React from 'react'
 
-import Drawer from '@material-ui/core/Drawer'
-import IconButton from '@material-ui/core/IconButton'
-import Icon from '@material-ui/core/Icon'
+import {
+    Avatar,
+    Button,
+    Drawer,
+    ExpansionPanel,
+    ExpansionPanelActions,
+    ExpansionPanelDetails,
+    ExpansionPanelSummary,
+    Icon,
+    IconButton
+} from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
@@ -17,11 +25,34 @@ interface IProps {
 
 const data = [
     {
-        date: 'date',
-        time: 'time',
-        sender: 'sender',
-        icon: 'icon',
-        message: 'message'
+        date: 'Mon, Jan 12',
+        time: '7:45 AM',
+        sender: {
+            name: 'Mr. User',
+            type: 'staff',
+            id: 1
+        },
+        avatar: {
+            text: 'CU',
+            background: '#1034CD'
+        },
+        message: 'This is the body of the message. Sometimes, messages are too long to display.',
+        id: 1
+    },
+    {
+        date: 'Tue, Jan 13',
+        time: '2:13 PM',
+        sender: {
+            name: 'Mrs. User',
+            type: 'staff',
+            id: 2
+        },
+        avatar: {
+            text: 'AB',
+            background: '#4024AB'
+        },
+        message: 'Here is another message.',
+        id: 2
     }
 ]
 
@@ -67,16 +98,42 @@ export class NotificationsWidget extends React.Component<IProps> {
                     onClick={this.handleClickOpen}
                 />
                 <Drawer open={this.state.open}>
-					<div className='sidebar_modal notifications_modal'>
+					<div className='sidebar_modal notifications_modal items_modal'>
                         <div className='sidebar_modal__header'>
                             <IconButton className='button_back' onClick={this.handleClose}><Icon>arrow_back</Icon></IconButton>
                             <h3>Notifications</h3>
                         </div>
-                        <div className='sidebar_modal__content'>
-                            <EmptyStateIcon variant='notifications'>
-                                <h2>Your inbox is empty</h2>
-                                <h3>Notifications that you receive from Spotlight will appear here.</h3>
-                            </EmptyStateIcon>
+                        <div className='sidebar_modal__content items_modal__content'>
+                            {data.length > 0 ? (
+                                <div className='content-inner'>
+                                    {data.map((notification: any) => (
+                                        <ExpansionPanel className='notification' key={notification.id}>
+                                            <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}>
+                                                <div className='notification__sender'>
+                                                    <Avatar className='icon'>CU</Avatar>
+                                                    <div className='info'>
+                                                        <div className='sender-info'>
+                                                            <h4>{notification.sender.name}</h4>
+                                                            <h4>{notification.date}</h4>
+                                                        </div>
+                                                        <p className='message'>{notification.message}</p>
+                                                    </div>
+                                                </div>
+                                            </ExpansionPanelSummary>
+                                            <ExpansionPanelDetails><p>{notification.message}</p></ExpansionPanelDetails>
+                                            <ExpansionPanelActions>
+                                                <Button>Delete</Button>
+                                                <Button>Mark Unread</Button>
+                                            </ExpansionPanelActions>
+                                        </ExpansionPanel>
+                                    ))}
+                                </div>
+                            ) : (
+                                <EmptyStateIcon variant='notifications'>
+                                    <h2>Your inbox is empty</h2>
+                                    <h3>Notifications that you receive from Spotlight will appear here.</h3>
+                                </EmptyStateIcon>
+                            )}
                         </div>
 					</div>
 				</Drawer>

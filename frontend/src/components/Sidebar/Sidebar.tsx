@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import ContentLoader from 'react-content-loader'
 import * as classNames from 'classnames'
 
 import { AccountWidget } from '../Modals/AccountWidget'
@@ -12,7 +13,9 @@ import StarredWidget from '../Modals/StarredWidget'
 
 interface IProps {
 	onSignOut: () => void
+	loading?: boolean
 }
+
 /**
  * @TODO Need to handle the case where the screen is very narrow,
  * in which a modal nav manu should be used.
@@ -22,19 +25,41 @@ export class Sidebar extends React.Component<IProps> {
 		return (
 			<div className='sidebar'>
 				<nav className='sidebar__nav'>
-					<div className='nav_top'>
-						<NavItem title='Spotlight' to='/' icon='home' />
-						<SearchWidget />
-						<StarredWidget />
-						<CheckInWidget />
-					</div>
-					<div className='nav_bottom'>
-						<NotificationsWidget />
-						<NavItem title='Help' icon='help' />
-						<AccountWidget onSignOut={this.props.onSignOut} />
-						{/*<NavItem title='Account' icon='perm_identity' />*/}
-						
-					</div>
+					{this.props.loading ? (
+						<>
+							<div style={{height: 200, width: 48}}>
+								<ContentLoader height={196} width={48} primaryColor='#4f00bd' secondaryColor='#4a00b3'>
+									<rect x={0} y={0} rx={24} ry={24} height={48} width={48}/>
+									<rect x={6} y={64} rx={24} ry={24} height={36} width={36}/>
+									<rect x={6} y={112} rx={24} ry={24} height={36} width={36}/>
+									<rect x={6} y={160} rx={24} ry={24} height={36} width={36}/>
+								</ContentLoader>
+							</div>
+							<div style={{height: 148, width: 48}}>
+								<ContentLoader height={148} width={48} primaryColor='#4f00bd' secondaryColor='#4a00b3'>
+									<rect x={6} y={0} rx={24} ry={24} height={36} width={36}/>
+									<rect x={6} y={52} rx={24} ry={24} height={36} width={36}/>
+									<rect x={0} y={100} rx={24} ry={24} height={48} width={48}/>
+								</ContentLoader>
+							</div>
+						</>
+					) : (
+						<>
+							<div className='nav_top'>
+								<NavItem title='Spotlight' to='/' icon='home' />
+								<SearchWidget />
+								<StarredWidget />
+								<CheckInWidget />
+							</div>
+							<div className='nav_bottom'>
+								<NotificationsWidget />
+								<NavItem title='Help' icon='help' />
+								<AccountWidget onSignOut={this.props.onSignOut} />
+								{/*<NavItem title='Account' icon='perm_identity' />*/}
+								
+							</div>
+						</>
+					)}
 				</nav>
 				<div className='sidebar__menu'>
 					<div className='menu_header'>

@@ -62,21 +62,48 @@ export class Sidebar extends React.Component<IProps> {
 					)}
 				</nav>
 				<div className='sidebar__menu'>
-					<div className='menu_header'>
-						<div className='menu_header__logo'></div>
-						<h4>Oak Bay High</h4>
-					</div>
-					<ul className='menu_list'>
-						<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
-						<MenuItem to='/students' icon='face' label='Students' />
-						<MenuItem to='/appointments' icon='access_time' label='Appointments' />
-						<MenuItem to='/clusters' icon='group' label='Cluster' />
-						<MenuItem to='/class-schedule' icon='date_range' label='Class Schedule' />
-						<MenuItem to='/event' icon='event' label='Events' />
-						<MenuItem to='/reporting' icon='assignment' label='Reporting' />
-						<MenuItem to='/settings' icon='settings' label='Settings' />
-						<MenuItem to='/parents' icon='contact_mail' label='Parents' />
-					</ul>
+					{this.props.loading ? (
+						<div style={{height: 600, width:256}}>
+							<ContentLoader height={600} width={256}>
+								<rect x={16} y={16} rx={4} ry={4} height={48} width={48}/>
+								<rect x={72} y={32} rx={4} ry={4} height={16} width={96}/>
+								<rect x={16} y={92} rx={24} ry={24} height={32} width={32}/>
+								<rect x={64} y={100} rx={4} ry={4} height={16} width={64}/>
+								<rect x={16} y={144} rx={24} ry={24} height={32} width={32}/>
+								<rect x={64} y={152} rx={4} ry={4} height={16} width={176}/>
+
+								<rect x={16} y={196} rx={24} ry={24} height={32} width={32}/>
+								<rect x={64} y={204} rx={4} ry={4} height={16} width={96}/>
+
+								<rect x={16} y={248} rx={24} ry={24} height={32} width={32}/>
+								<rect x={64} y={256} rx={4} ry={4} height={16} width={64}/>
+
+								<rect x={16} y={300} rx={24} ry={24} height={32} width={32}/>
+								<rect x={64} y={308} rx={4} ry={4} height={16} width={80}/>
+
+								<rect x={16} y={352} rx={24} ry={24} height={32} width={32}/>
+								<rect x={64} y={360} rx={4} ry={4} height={16} width={136}/>
+							</ContentLoader>
+						</div>
+					) : (
+						<>
+							<div className='menu_header'>
+								<div className='menu_header__logo'></div>
+								<h4>Oak Bay High</h4>
+							</div>
+							<ul className='menu_list'>
+								<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
+								<MenuItem to='/students' icon='face' label='Students' />
+								<MenuItem to='/appointments' icon='access_time' label='Appointments' />
+								<MenuItem to='/clusters' icon='group' label='Cluster' />
+								<MenuItem to='/class-schedule' icon='date_range' label='Class Schedule' />
+								<MenuItem to='/event' icon='event' label='Events' />
+								<MenuItem to='/reporting' icon='assignment' label='Reporting' />
+								<MenuItem to='/settings' icon='settings' label='Settings' />
+								<MenuItem to='/parents' icon='contact_mail' label='Parents' />
+							</ul>
+						</>
+					)}
 				</div>
 			</div>
 		)

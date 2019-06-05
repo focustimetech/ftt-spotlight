@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 
 import {
 	Avatar,
+	Card,
+	CardActionArea,
 	Icon,
 	IconButton
 } from '@material-ui/core'

@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import ContentLoader from 'react-content-loader'
+
 import {
 	Button,
 	Icon,
@@ -29,6 +31,32 @@ export class Schedule extends React.Component {
 					<li><Tooltip title='Back' placement='top'><IconButton onClick={this.handlePrevious}><Icon>chevron_left</Icon></IconButton></Tooltip></li>
 					<li><Tooltip title='Next' placement='top'><IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton></Tooltip></li>
 				</ul>
+				<div style={{width: 216, height: 64}}>
+					<ContentLoader width={216} height={64}>
+						<rect x={0} y={16} rx={4} ry={4} width={120} height={24} />
+						<rect x={136} y={8} rx={36} ry={36} width={36} height={36} />
+						<rect x={180} y={8} rx={36} ry={36} width={36} height={36} />
+					</ContentLoader>
+				</div>
+				<div style={{width: '100%'}}>
+					<ContentLoader width={864} height={304}>
+						<rect x={0} y={0} ry={4} rx={4} width={160} height={96} />
+						<rect x={0} y={104} ry={4} rx={4} width={160} height={96} />
+						<rect x={0} y={208} ry={4} rx={4} width={160} height={96} />
+
+						<rect x={176} y={0} ry={4} rx={4} width={160} height={96} />
+						<rect x={176} y={104} ry={4} rx={4} width={160} height={96} />
+
+						<rect x={352} y={0} ry={4} rx={4} width={160} height={96} />
+						<rect x={352} y={104} ry={4} rx={4} width={160} height={96} />
+						<rect x={352} y={208} ry={4} rx={4} width={160} height={96} />
+
+						<rect x={528} y={0} ry={4} rx={4} width={160} height={96} />
+
+						<rect x={704} y={0} ry={4} rx={4} width={160} height={96} />
+						<rect x={704} y={104} ry={4} rx={4} width={160} height={96} />
+					</ContentLoader>
+				</div>
 				<div className='schedule'>
 					<div className='schedule_row'>
 						<div className='label'>

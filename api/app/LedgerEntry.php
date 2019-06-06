@@ -9,7 +9,26 @@ class LedgerEntry extends Model
     protected $table = "ledger";
     public $timestamps = false;
 
-    public function student() {
-        $this->belongsTo('App\Student');
+    public function block()
+    {
+        return $this->belongsTo('App\Block', 'id', 'block_id');
+    }
+
+    public function getAppointments()
+    {
+        return App\Appointment::where('student_id', $this->student_id)
+            ->where('date', $this->date)
+            ->where('block_id', $this->block_id)
+            ->get();
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo('App\Staff', 'id', 'staff_id');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo('App\Student', 'id', 'student_id');
     }
 }

@@ -15,23 +15,22 @@ class StudentScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id, $timestamp = null)
     {
-        $start_time = strtotime($request->input('start_date')) === strtotime('sunday') ? (
-            strtotime('sunday')
-        ) : (
-            strtotime('previous sunday', strtotime($request->input('start_date')))
-        );
-        $end_time = strtotime('+'. $request->input('num_weeks'). ' weeks', $start_time);
-        $include_days = $request->input('include_days');
-        $student = \App\Student::find($request->input('student_id'));
+        if ($timestamp === null) {
+            $timestamp = time();
+        }
+        $start_time = $timestamp === strtotime('sunday') ? strtotime('sunday') : strtotime('previous sunday', $timestamp);
+        $end_time = strtotime('+1 weeks', $start_time);
+        
+        $student = \App\Student::findOrFail($id);
 
-        $courses = $student->getCourses();
+        $courses = $student->courses()->get();
         $blocks = $student->getBlocks(true);
-        $appointments = $student->getAppointments();
+        $appointments = $student->appointments()->get();
         //var_dump($appointments);
-        $ledger_entries = $student->getLedgerEntries();
-        $plans = $student->getPlans(); //\App\SchedulePlan::select('staff_id, date, block_number')->where('student_id', $student_id)->get();
+        $ledger_entries = $student->ledgerEntries()->get();
+        $plans = $student->plans()->get();
 
         $student_schedule = [];
 
@@ -40,48 +39,46 @@ class StudentScheduleController extends Controller
             $schedule_by_week = []; // Segmented by week
             for ($time = $week_start; $time < $week_end; $time = strtotime('+1 day', $time)) {
                 $day_of_week = date('w', $time) + 1;
-                if (in_array($day_of_week, $include_days)) {
-                    $date = date('Y-m-d', $time);
-                    //echo "$date; ";
-                    $schedule_day = [
-                        'blocks' => [],
-                        'date' => $date,
-                        'events' => []
-                    ];
-                    $blocks_of_day = $blocks->where('day_of_week', $day_of_week)->sortBy('start_time');
-                    foreach ($blocks_of_day as $block) {
-                        $day_block = [];
-                        $day_block['appointments'] = $appointments->where('block_number', $block->block_number)->where('date', $date);
-                        // @TODO getCourseFromStudentID is stupid. Make this a student method ASAP. // Resovled.
-                        //$day_block['course'] = new CourseResource($block->getCourseFromStudentID($student->id));
-                        $day_block['block'] = new BlockResource($block);
-                        if ($day_block['block']['flex'] == false) {
-                            $day_block['course'] = new CourseResource($student->getCourseAtBlock($block->block_number));
-                        }
-                        $day_block['log'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_number', $block->block_number))->first();
-                        if ($block->flex == true) {
-                            $day_block['plans'] = []; //@TODO $plans->where('date', $date)->where('block_number', $block->block_number);
-                        }
-                        if (false) {
-                            // @TODO implement amendments
-                            $day_block['status'] = 'amended';
-                        } else if ($day_block['log']) {
-                            $day_block['memo'] = 'underwater basket weaving'; //TBD
-                            // Check if student skipped out on an appointment
-                            $appointment_staff_ids = $day_block['appointments']->pluck('staff_id')->toArray();
-                            if (!empty($appointment_staff_ids) && !in_array($day_block['log']->staff_id, $appointment_staff_ids)) {
-                                $day_block['status'] = 'wrong-attended';
-                            } else {
-                                $day_block['status'] = 'attended';
-                            }
-                        } else {
-                            $day_block['status'] = 'missed';
-                        }
-
-                        array_push($schedule_day['blocks'], $day_block);
+                $date = date('Y-m-d', $time);
+                //echo "$date; ";
+                $schedule_day = [
+                    'blocks' => [],
+                    'date' => $date,
+                    'events' => []
+                ];
+                $blocks_of_day = $blocks->where('day_of_week', $day_of_week)->sortBy('start_time');
+                foreach ($blocks_of_day as $block) {
+                    $day_block = [];
+                    $day_block['appointments'] = $appointments->where('block_number', $block->block_number)->where('date', $date);
+                    // @TODO getCourseFromStudentID is stupid. Make this a student method ASAP. // Resovled.
+                    //$day_block['course'] = new CourseResource($block->getCourseFromStudentID($student->id));
+                    $day_block['block'] = new BlockResource($block);
+                    if ($day_block['block']['flex'] == false) {
+                        $day_block['course'] = new CourseResource($student->getCourseAtBlock($block->block_number));
                     }
-                    array_push($schedule_by_week, $schedule_day);
-                } // else continue
+                    $day_block['log'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_number', $block->block_number))->first();
+                    if ($block->flex == true) {
+                        $day_block['plans'] = []; //@TODO $plans->where('date', $date)->where('block_number', $block->block_number);
+                    }
+                    if (false) {
+                        // @TODO implement amendments
+                        $day_block['status'] = 'amended';
+                    } else if ($day_block['log']) {
+                        $day_block['memo'] = 'underwater basket weaving'; //TBD
+                        // Check if student skipped out on an appointment
+                        $appointment_staff_ids = $day_block['appointments']->pluck('staff_id')->toArray();
+                        if (!empty($appointment_staff_ids) && !in_array($day_block['log']->staff_id, $appointment_staff_ids)) {
+                            $day_block['status'] = 'wrong-attended';
+                        } else {
+                            $day_block['status'] = 'attended';
+                        }
+                    } else {
+                        $day_block['status'] = 'missed';
+                    }
+                    array_push($schedule_day['blocks'], $day_block);
+                }
+                array_push($schedule_by_week, $schedule_day);
+
             }
             array_push($student_schedule, $schedule_by_week);
         }

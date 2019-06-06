@@ -44,6 +44,10 @@ Route::get('students/profile/{id}', 'StudentsController@profile');
 Route::post('students', 'StudentsController@store');
 Route::put('students', 'StudentsController@store');
 Route::delete('students/{id}', 'StudentsController@destroy');
+// Student Schedule
+Route::get('students/{id}/schedule', 'StudentScheduleController@index');
+Route::get('students/{id}/schedule/{timestamp}', 'StudentScheduleController@index');
+
 
 // Search
 Route::get('search', 'SearchController@search');
@@ -71,8 +75,3 @@ Route::post('check-in', 'LedgerController@store');
 
 // Attendance
 Route::get('attendance/{id}', 'AttendanceController@attendance');
-
-
-
-// Student Schedule
-Route::get('student-schedule', 'StudentScheduleController@index');

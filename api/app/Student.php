@@ -61,7 +61,7 @@ class Student extends Model
      */
     public function getBlockSchedule()
     {
-        return BlockSchedule::whereIn('block_id', $this->blocks()->pluck('id')->toArray())
+        return BlockSchedule::whereIn('block_id', $this->getBlocks()->pluck('id')->toArray())
             ->orderBy('day_of_week')->orderBy('start')->get();
     }
 

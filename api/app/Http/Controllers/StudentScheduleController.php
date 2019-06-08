@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Student;
+use App\Block;
+use App\BlockSchedule;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\Block as BlockResource;
 use App\Http\Resources\Course as CourseResource;
@@ -23,10 +26,10 @@ class StudentScheduleController extends Controller
         $start_time = $timestamp === strtotime('sunday') ? strtotime('sunday') : strtotime('previous sunday', $timestamp);
         $end_time = strtotime('+1 weeks', $start_time);
         
-        $student = \App\Student::findOrFail($id);
+        $student = Student::findOrFail($id);
 
         $courses = $student->courses()->get();
-        $blocks = $student->getBlocks(true);
+        $blocks = $student->getBlocks();
         $appointments = $student->appointments()->get();
         //var_dump($appointments);
         $ledger_entries = $student->ledgerEntries()->get();
@@ -40,21 +43,18 @@ class StudentScheduleController extends Controller
             for ($time = $week_start; $time < $week_end; $time = strtotime('+1 day', $time)) {
                 $day_of_week = date('w', $time) + 1;
                 $date = date('Y-m-d', $time);
-                //echo "$date; ";
+                $blocks_of_day = $student->getBlockSchedule()->where('day_of_week', $day_of_week);
                 $schedule_day = [
                     'blocks' => [],
                     'date' => $date,
-                    'events' => []
+                    'events' => $day_of_week
                 ];
-                $blocks_of_day = $blocks->where('day_of_week', $day_of_week)->sortBy('start_time');
                 foreach ($blocks_of_day as $block) {
                     $day_block = [];
                     $day_block['appointments'] = $appointments->where('block_number', $block->block_number)->where('date', $date);
-                    // @TODO getCourseFromStudentID is stupid. Make this a student method ASAP. // Resovled.
-                    //$day_block['course'] = new CourseResource($block->getCourseFromStudentID($student->id));
                     $day_block['block'] = new BlockResource($block);
                     if ($day_block['block']['flex'] == false) {
-                        $day_block['course'] = new CourseResource($student->getCourseAtBlock($block->block_number));
+                        // $day_block['course'] = new CourseResource($student->getCourseAtBlock($block->block_number));
                     }
                     $day_block['log'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_number', $block->block_number))->first();
                     if ($block->flex == true) {

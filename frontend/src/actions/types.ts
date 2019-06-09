@@ -22,3 +22,6 @@ export const UNSTAR_ITEM = 'UNSTAR_ITEM'
 
 // Student Profile
 export const FETCH_STUDENT_PROFILE = 'FETCH_STUDENT_PROFILE'
+
+// Student Schedule
+export const FETCH_STUDENT_SCHEDULE = 'FETCH_STUDENT_SCHEDULE'

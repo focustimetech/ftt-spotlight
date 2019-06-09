@@ -12,6 +12,17 @@ use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 // use App\Http\Resources\Block as BlockResource;
 use App\Http\Resources\Course as CourseResource;
 
+function formatRangeString($start, $end) {
+    $start_date = date('j', $start);
+    $end_date = date('j', $end);
+    $start_month = date('M', $start);
+    $end_month = date('n', $start) < date('n', $end) ? date('M', $end) : "";
+    $start_year = date('Y', $start) < date('Y', $end) ? date('Y', $start) : "";
+    $end_year = date('Y', $end);
+    // return "$start - $end";
+    return "$start_month $start_date". ($start_year ? ", $start_year" : ""). " - ". ($end_month ? "$end_month " : ""). "$end_date, $end_year";
+}
+
 class StudentScheduleController extends Controller
 {
     /**
@@ -38,7 +49,7 @@ class StudentScheduleController extends Controller
         $ledger_entries = $student->ledgerEntries()->get();
         $plans = $student->plans()->get();
 
-        $student_schedule = [];
+        $student_schedule = ['range' => formatRangeString($start_time, $end_time)];
 
         for ($week_start = $start_time; $week_start < $end_time; $week_start = strtotime('+1 week', $week_start)) {
             $week_end = strtotime('+1 week', $week_start);
@@ -49,7 +60,11 @@ class StudentScheduleController extends Controller
                 $blocks_of_day = $student->getBlockSchedule()->where('day_of_week', $day_of_week);
                 $schedule_day = [
                     'blocks' => [],
-                    'date' => $date,
+                    'date' => [
+                        'full_date' => $date,
+                        'date' => date('y', $time),
+                        'day' => date('D', $time)
+                    ],
                     'events' => []
                 ];
                 foreach ($blocks_of_day as $block) {
@@ -80,7 +95,7 @@ class StudentScheduleController extends Controller
                 array_push($schedule_by_week, $schedule_day);
 
             }
-            array_push($student_schedule, $schedule_by_week);
+            $student_schedule['schedule'] = $schedule_by_week;
         }
         return $student_schedule;
     }

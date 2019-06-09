@@ -45,8 +45,6 @@ class Schedule extends React.Component<IProps, IState> {
 	}
 
 	componentDidMount() {
-		// console.log('studentID: ' + this.props.studentID)
-
 		this.setState({ loading: true })
 		this.props.fetchStudentSchedule(this.props.studentID).then(
 			(res: any) => {
@@ -59,11 +57,6 @@ class Schedule extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<div className='schedule_container'>
-				<ul className='schedule_header'>
-					<li><a className='schedule_daterange' onClick={this.handleDateRangeOpen}><Button>Jan 25 — 27, 2019</Button></a></li>
-					<li><Tooltip title='Back' placement='top'><IconButton onClick={this.handlePrevious}><Icon>chevron_left</Icon></IconButton></Tooltip></li>
-					<li><Tooltip title='Next' placement='top'><IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton></Tooltip></li>
-				</ul>
 				{this.state.loading || !(this.props.schedule) ? (
 					<>
 						<div style={{width: 216, height: 64}}>
@@ -104,36 +97,42 @@ class Schedule extends React.Component<IProps, IState> {
 						</div>
 					</>
 				) : (
-					<div className='schedule'>
-						<div className='schedule_row'>
-							{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
-								<div className='label'>
-									<h5 className='day'>{scheduleDay.date.day}</h5>
-									<h2 className='date'>{scheduleDay.date.date}</h2>
-								</div>
-							))}
+					<>
+						<ul className='schedule_header'>
+							<li><a className='schedule_daterange' onClick={this.handleDateRangeOpen}><Button>{this.props.schedule.range}</Button></a></li>
+							<li><Tooltip title='Back' placement='top'><IconButton onClick={this.handlePrevious}><Icon>chevron_left</Icon></IconButton></Tooltip></li>
+							<li><Tooltip title='Next' placement='top'><IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton></Tooltip></li>
+						</ul>
+						<div className='schedule'>
+							<div className='schedule_row'>
+								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
+									<div className='label'>
+										<h5 className='day'>{scheduleDay.date.day}</h5>
+										<h2 className='date'>{scheduleDay.date.date}</h2>
+									</div>
+								))}
+							</div>
+							<div className='schedule_row'>
+								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
+									<div className='schedule_events'>
+										{scheduleDay.events.map((event: any) => (
+											<div className='event'>{event.name || 'event'}</div>
+										))}
+									</div>
+								))}
+							</div>
+							<div className='schedule_row'>
+								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
+									<div className='schedule_blocks'>
+										{scheduleDay.blocks.map((block: any) => (
+											<div className='block --attended'>{block.block.id}</div>
+										))}
+									</div>
+								))}
+							</div>
 						</div>
-						<div className='schedule_row'>
-							{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
-								<div className='schedule_events'>
-									{scheduleDay.events.map((event: any) => (
-										<div className='event'>{event.name || 'event'}</div>
-									))}
-								</div>
-							))}
-						</div>
-						<div className='schedule_row'>
-							{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
-								<div className='schedule_blocks'>
-									{scheduleDay.blocks.map((block: any) => (
-										<div className='block --attended'>{block.block.id}</div>
-									))}
-								</div>
-							))}
-						</div>
-					</div>
+					</>
 				)}
-				
 			</div>
 		)
 	}

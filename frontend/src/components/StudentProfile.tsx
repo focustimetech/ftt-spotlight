@@ -18,7 +18,7 @@ import { fetchStudentProfile } from '../actions/studentProfileActions'
 import { listToTruncatedString } from '../utils/utils'
 
 import { Tabs, TopNav } from './TopNav'
-import { Schedule } from './Schedule'
+import Schedule from './Schedule'
 import { Attendance } from './Attendance'
 import { Appointments } from './Appointments'
 
@@ -32,25 +32,31 @@ interface IProps extends RouteComponentProps, IReduxProps {}
 interface IState {
 	tab: number
 	loading: boolean
+	studentID: number
 }
 
 class StudentProfile extends React.Component<IProps, IState> {
 	state: IState = {
 		tab: 1,
-		loading: false
+		loading: false,
+		studentID: -1
 	}
 
 	handleTabChange = (event: any, value: any) => {
 		this.setState({ tab: value })
 	}
 
-	componentDidMount() {
+	componentWillMount() {
 		const params: any = this.props.match.params
+		const { studentID } = params
+		this.setState({ studentID })
+	}
+	componentDidMount() {
+		
 		this.setState({ loading: true })
-		this.props.fetchStudentProfile(params.studentID).then(
+		this.props.fetchStudentProfile(this.state.studentID).then(
 			(res: any) => {
 				this.setState({ loading: false })
-				console.log(this.props.student)
 			}
 		)
 	}
@@ -120,7 +126,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 				</TopNav>
 				<SwipeableViews index={this.state.tab}>
 					<Attendance />
-					<Schedule />
+					<Schedule studentID={this.state.studentID} />
 					<Appointments />
 				</SwipeableViews>
 			</div>

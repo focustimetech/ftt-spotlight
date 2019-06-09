@@ -17,6 +17,7 @@ export const studentScheduleReducer = (state: IState = initialState, action: IAc
     switch (action.type) {
         case FETCH_STUDENT_SCHEDULE:
             return {
+                ...state,
                 schedule: action.payload
             }
         default:

@@ -17,6 +17,7 @@ export const studentProfileReducer = (state: IState = initialState, action: IAct
     switch (action.type) {
         case FETCH_STUDENT_PROFILE:
             return {
+                ...state,
                 student: action.payload
             }
         default:

@@ -16,7 +16,7 @@ class Appointment extends Model
 
     public function getLedgerEntry()
     {
-        return App\getLedgerEntry::where('student_id', $this->student_id)
+        return LedgerEntry::where('student_id', $this->student_id)
             ->where('date', $this->date)
             ->where('block_id', $this->block_id)
             ->get();

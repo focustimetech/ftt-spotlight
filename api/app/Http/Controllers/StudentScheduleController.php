@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 use App\Student;
 use App\Block;
 use App\BlockSchedule;
+use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
-use App\Http\Resources\Block as BlockResource;
+// use App\Http\Resources\Block as BlockResource;
 use App\Http\Resources\Course as CourseResource;
 
 class StudentScheduleController extends Controller
@@ -18,10 +19,12 @@ class StudentScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id, $timestamp = null)
+    public function index($id, $datetime = null)
     {
-        if ($timestamp === null) {
+        if ($datetime === null) {
             $timestamp = time();
+        } else {
+            $timestamp = strtotime($datetime);
         }
         $start_time = $timestamp === strtotime('sunday') ? strtotime('sunday') : strtotime('previous sunday', $timestamp);
         $end_time = strtotime('+1 weeks', $start_time);
@@ -47,31 +50,28 @@ class StudentScheduleController extends Controller
                 $schedule_day = [
                     'blocks' => [],
                     'date' => $date,
-                    'events' => $day_of_week
+                    'events' => []
                 ];
                 foreach ($blocks_of_day as $block) {
                     $day_block = [];
-                    $day_block['appointments'] = $appointments->where('block_number', $block->block_number)->where('date', $date);
-                    $day_block['block'] = new BlockResource($block);
-                    if ($day_block['block']['flex'] == false) {
-                        // $day_block['course'] = new CourseResource($student->getCourseAtBlock($block->block_number));
-                    }
-                    $day_block['log'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_number', $block->block_number))->first();
-                    if ($block->flex == true) {
-                        $day_block['plans'] = []; //@TODO $plans->where('date', $date)->where('block_number', $block->block_number);
-                    }
-                    if (false) {
-                        // @TODO implement amendments
-                        $day_block['status'] = 'amended';
-                    } else if ($day_block['log']) {
+                    $day_block['appointments'] = $appointments
+                        ->where('block_number', $block->block_number)
+                        ->where('date', $date)
+                        ->mapToGroups(function($appointment) {
+                            $missed = $appointment->getLedgerEntry() == null;
+                            return [ $missed ? 'missed' : 'attended' => new AppointmentResource($appointment)];
+                        });
+                    $day_block['block'] = $block;
+                    $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_number', $block->block_number));
+                    $day_block['scheduled'] = $block->flex ? (
+                        null// plan
+                    ) : (
+                        null// course at block
+                    );
+
+                    if ($day_block['logs']) {
                         $day_block['memo'] = 'underwater basket weaving'; //TBD
-                        // Check if student skipped out on an appointment
-                        $appointment_staff_ids = $day_block['appointments']->pluck('staff_id')->toArray();
-                        if (!empty($appointment_staff_ids) && !in_array($day_block['log']->staff_id, $appointment_staff_ids)) {
-                            $day_block['status'] = 'wrong-attended';
-                        } else {
-                            $day_block['status'] = 'attended';
-                        }
+                        $day_block['status'] = 'attended';
                     } else {
                         $day_block['status'] = 'missed';
                     }

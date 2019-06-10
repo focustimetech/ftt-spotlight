@@ -62,15 +62,16 @@ class StudentScheduleController extends Controller
                     'blocks' => [],
                     'date' => [
                         'full_date' => $date,
-                        'date' => date('y', $time),
-                        'day' => date('D', $time)
+                        'date' => date('j', $time),
+                        'day' => date('D', $time),
+                        'today' => date('Y-m-d', $time) === date('Y-m-d')
                     ],
                     'events' => []
                 ];
                 foreach ($blocks_of_day as $block) {
                     $day_block = [];
                     $day_block['appointments'] = $appointments
-                        ->where('block_number', $block->block_number)
+                        ->where('block_id', $block->block_id)
                         ->where('date', $date)
                         ->mapToGroups(function($appointment) {
                             $missed = $appointment->getLedgerEntry() == null;

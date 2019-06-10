@@ -4,7 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Staff as StaffResource;
+
 use App\Staff;
+use App\Topic;
 
 class LedgerEntry extends JsonResource
 {

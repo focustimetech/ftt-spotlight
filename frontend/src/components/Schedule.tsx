@@ -10,6 +10,7 @@ import {
 	Icon,
 	IconButton,
 	Dialog,
+	TextField,
 	Tooltip
 } from '@material-ui/core'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
@@ -113,18 +114,19 @@ class Schedule extends React.Component<IProps, IState> {
 					</>
 				) : (
 					<>
-					<MuiPickersUtilsProvider utils={DateFnsUtils}>
-						<DatePicker
-							// variant='dialog'
-							open={this.state.datePickerOpen}
-							onClose={() => this.handleDatePickerClose()}
-							value={this.state.datePickerRange}
-							onChange={this.handleDatePickerSelect}
-						/>
-					</MuiPickersUtilsProvider>
-
 						<ul className='schedule_header'>
-							<li><a className='schedule_daterange' onClick={this.handleDatePickerOpen}><Button>{this.props.schedule.range}</Button></a></li>
+							<li>
+								<MuiPickersUtilsProvider utils={DateFnsUtils}>
+									<DatePicker
+										variant='dialog'
+										open={this.state.datePickerOpen}
+										onClose={() => this.handleDatePickerClose()}
+										value={this.state.datePickerRange}
+										onChange={this.handleDatePickerSelect}
+									/>
+								</MuiPickersUtilsProvider>
+								<Button onClick={this.handleDatePickerOpen}>{this.props.schedule.range}</Button>
+							</li>
 							<li><Tooltip title='Back' placement='top'><IconButton onClick={this.handlePrevious}><Icon>chevron_left</Icon></IconButton></Tooltip></li>
 							<li><Tooltip title='Next' placement='top'><IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton></Tooltip></li>
 						</ul>

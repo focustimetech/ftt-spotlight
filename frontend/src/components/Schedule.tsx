@@ -152,7 +152,7 @@ class Schedule extends React.Component<IProps, IState> {
 								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
 									<div className='schedule_blocks'>
 										{scheduleDay.blocks.map((block: any) => (
-											<div className='block --attended'>{block.block.id}</div>
+											<ScheduleBlock label={block.block.id} />
 										))}
 									</div>
 								))}

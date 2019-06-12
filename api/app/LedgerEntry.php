@@ -31,4 +31,9 @@ class LedgerEntry extends Model
     {
         return $this->belongsTo('App\Student', 'id', 'student_id');
     }
+
+    public function topic()
+    {
+        return $this->hasOne('App\Topic', 'id', 'topic_id');
+    }
 }

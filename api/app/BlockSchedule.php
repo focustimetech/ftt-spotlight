@@ -11,7 +11,7 @@ class BlockSchedule extends Model
 
     public function block()
     {
-        return $this->hasOne('App\Block', 'id', 'block_id')->first();
+        return $this->hasOne('App\Block', 'id', 'block_id');
     }
 
     public function topic()

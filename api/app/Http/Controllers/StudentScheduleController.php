@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Student;
 use App\Block;
 use App\BlockSchedule;
+use App\Course;
 use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 // use App\Http\Resources\Block as BlockResource;
@@ -41,15 +42,15 @@ class StudentScheduleController extends Controller
         $end_time = strtotime('+1 weeks', $start_time);
         
         $student = Student::findOrFail($id);
-
         $courses = $student->courses()->get();
         $blocks = $student->getBlocks();
         $appointments = $student->appointments()->get();
-        //var_dump($appointments);
         $ledger_entries = $student->ledgerEntries()->get();
         $plans = $student->plans()->get();
 
-        $student_schedule = ['range' => formatRangeString($start_time, $end_time)];
+        $student_schedule = [
+            'range' => formatRangeString($start_time, $end_time)
+        ];
 
         for ($week_start = $start_time; $week_start < $end_time; $week_start = strtotime('+1 week', $week_start)) {
             $week_end = strtotime('+1 week', $week_start);
@@ -58,41 +59,37 @@ class StudentScheduleController extends Controller
                 $day_of_week = date('w', $time) + 1;
                 $date = date('Y-m-d', $time);
                 $blocks_of_day = $student->getBlockSchedule()->where('day_of_week', $day_of_week);
+                //dd($blocks_of_day);
                 $schedule_day = [
                     'blocks' => [],
                     'date' => [
                         'full_date' => $date,
                         'date' => date('j', $time),
                         'day' => date('D', $time),
-                        'today' => date('Y-m-d', $time) === date('Y-m-d')
+                        'is_today' => date('Y-m-d', $time) === date('Y-m-d')
                     ],
                     'events' => []
                 ];
-                foreach ($blocks_of_day as $block) {
-                    $day_block = [];
-                    $day_block['appointments'] = $appointments
-                        ->where('block_id', $block->block_id)
-                        ->where('date', $date)
-                        ->mapToGroups(function($appointment) {
-                            $missed = $appointment->getLedgerEntry() == null;
-                            return [ $missed ? 'missed' : 'attended' => new AppointmentResource($appointment)];
-                        });
-                    $day_block['block'] = $block;
-                    $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_number', $block->block_number));
-                    $day_block['scheduled'] = $block->flex ? (
-                        null// plan
+                $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, &$schedule_day) {
+                    $block = $blocks->where('id', $block_schedule->block_id)->first();
+                    $day_block = [
+                        'id' => $block->id,
+                        'flex' => $block->flex,
+                        'label' => $block->label,
+                        'start' => $block_schedule->start,
+                        'end' => $block_schedule->end,
+                        'pending' => strtotime("$date $block->end") > time()
+                    ];
+                    $day_block['appointments'] = AppointmentResource::collection($appointments->where('block_id', $block->id)->where('date', $date));                        
+                    $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_id', $block->id));
+                    $day_block['scheduled'] = $block->flex || !$block->pivot ? (
+                        $plans->where('date', $date)->where('block_id', $block->id)
                     ) : (
-                        null// course at block
+                        Course::find($block->pivot->course_id) ?? null
                     );
-
-                    if ($day_block['logs']) {
-                        $day_block['memo'] = 'underwater basket weaving'; //TBD
-                        $day_block['status'] = 'attended';
-                    } else {
-                        $day_block['status'] = 'missed';
-                    }
+                    $day_block['memo'] = 'underwater basket weaving';
                     array_push($schedule_day['blocks'], $day_block);
-                }
+                });
                 array_push($schedule_by_week, $schedule_day);
 
             }

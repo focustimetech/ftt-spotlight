@@ -18,6 +18,10 @@ class LedgerEntry extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'date' => date('M j, Y', strtotime($this->date)),
+            'time' => date('g:i A', strtotime($this->date. ' '. $this->time)),
+            'staff' => new StaffResource(Staff::find($this->staff_id))
+        ];
     }
 }

@@ -133,7 +133,7 @@ class Schedule extends React.Component<IProps, IState> {
 						<div className='schedule'>
 							<div className='schedule_row'>
 								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
-									<div className={classNames('label', {'--today': scheduleDay.date.today})}>
+									<div className={classNames('label', {'--today': scheduleDay.date.is_today})}>
 										<h5 className='day'>{scheduleDay.date.day}</h5>
 										<h2 className='date'>{scheduleDay.date.date}</h2>
 									</div>
@@ -151,9 +151,28 @@ class Schedule extends React.Component<IProps, IState> {
 							<div className='schedule_row'>
 								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
 									<div className='schedule_blocks'>
-										{scheduleDay.blocks.map((block: any) => (
-											<ScheduleBlock label={block.block.id} />
-										))}
+										{scheduleDay.blocks.map((block: any) => {
+											const title = block.flex ? (
+												block.logs[0] ? (
+													block.logs[0].staff.name 
+												) : (
+													block.scheduled.name || 'Scheduled'
+												)
+											) : (
+												block.scheduled.name
+											)
+											const variant = block.logs[0] ? 'attended' : (
+												block.pending ? 'pending' : 'missed'
+											)
+											return (
+												<ScheduleBlock 
+													title={title}
+													label={block.label}
+													memo={block.memo}
+													variant={variant}
+												/>
+											)
+										})}
 									</div>
 								))}
 							</div>

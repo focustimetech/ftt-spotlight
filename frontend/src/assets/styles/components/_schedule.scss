@@ -20,19 +20,39 @@
 
 			.event,
 			.block {
-				font-size: 14px;
-				padding: 8px;
-				margin: 0 16px 8px 8px;
-				border-radius: 2px;
-				background: #EEE;
-				color: rgba(0,0,0,0.87);
-				padding-bottom: 8px;
-				box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-				transition: box-shadow 0.2s;
-				cursor: pointer;
+				margin: 0 0 16px 8px !important;
+				font-family: unset;
+				
+				&__inner {
+					background: #EEE;
+					color: rgba(0,0,0,0.87);
+					font-family: unset;
+				}
 
-				&:hover {
-					box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+				&__content {
+					font-size: 12px;
+					padding: 16px 12px;
+					min-height: 96px;
+				}
+
+				&__label {
+					font-size: 10px;
+					font-weight: 500;
+					margin-bottom: 4px;
+					text-transform: uppercase;
+					letter-spacing: 0.025rem;
+				}
+
+				&__title {
+					font-weight: 500;
+					line-height: 14px;
+					margin-bottom: 4px;
+				}
+
+				&__memo {
+					line-height: 14px;
+					font-weight: 400;
+					margin: 0;
 				}
 			}
 
@@ -86,16 +106,14 @@
 
 			.schedule_blocks {
 				width: 100%;
-				padding: 8px 0 16px;
+				padding: 8px 16px 16px 0;
 				border-right: 1px solid #EEE;
 
 				&:last-child {
 					border-right: none;
 				}
 
-				.block {
-					min-height: 96px;
-		
+				.block__inner {		
 					&.--missed {
 						background: rgba(244,67,54 ,1);
 						color: rgba(255,255,255,0.87)

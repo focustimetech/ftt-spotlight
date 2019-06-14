@@ -143,3 +143,31 @@
 		}
 	}
 }
+
+.schedule-block-dialog {
+	&__title {
+		height: 86px;
+		width: unset;
+
+		.dialog-title__inner {
+			line-height: 16px;
+
+			.label {
+				text-transform: uppercase;
+				letter-spacing: 0.025px;
+
+				span {
+					text-transform: unset;
+					font-weight: 400;
+					padding-left: 8px;
+					margin-left: 8px;
+					border-left: 2px solid #888;
+				}
+			}
+
+			.date {
+				font-weight: 400;
+			}
+		}
+	}
+}

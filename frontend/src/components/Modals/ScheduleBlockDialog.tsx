@@ -16,15 +16,22 @@ interface IProps {
 }
 
 export const ScheduleBlockDialog = (props: IProps) => {
-    const { label, start, end, date } = props.details
+    const { label, logs, appointments, start, end, date } = props.details
     return (
         <Dialog open={props.open} className='schedule-block-dialog'>
             <EnhancedDialogTitle className='schedule-block-dialog__title' onClose={props.onClose}>
-                <h6>{label || 'Unlaballed Block'}<span>{`${start} - ${end}`}</span></h6>
-                <h3>{date}</h3>
+                <h4 className='label'>{label || 'Unlaballed Block'}<span>{`${start} - ${end}`}</span></h4>
+                <h3 className='date'>{date}</h3>
             </EnhancedDialogTitle>
             <DialogContent>
-                <p>Hello world</p>
+                <h5 className='section-header'>Logs</h5>
+                {logs && logs.length > 0 ? (
+                    logs.map((log: any, index: number) => (
+                        <div>{`Log ${index}`}</div>
+                    ))
+                ) : (
+                    'No logs.'
+                )}
             </DialogContent>
         </Dialog>
     )

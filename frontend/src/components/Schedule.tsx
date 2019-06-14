@@ -207,13 +207,11 @@ class Schedule extends React.Component<IProps, IState> {
 											return (
 												<ScheduleBlock 
 													title={title}
-													// label={block.label}
 													memo={block.memo}
 													variant={variant}
-													// details={}
 													onClick={this.handleBlockClick}
 													details={{
-														date: block.date,
+														date: `${scheduleDay.date.day} ${scheduleDay.date.full_date}`,
 														start: block.start,
 														end: block.end,
 														logs: block.logs,

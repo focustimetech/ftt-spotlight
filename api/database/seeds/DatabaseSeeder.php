@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LedgerTableSeeder::class);
         $this->call(SchedulePlansTableSeeder::class);
         $this->call(AppointmentsTableSeeder::class);
+        $this->call(SettingsTableSeeder::class);
 
         //$this->call(CalendarTableSeeder::class);
         //$this->call(EventsTableSeeder::class);

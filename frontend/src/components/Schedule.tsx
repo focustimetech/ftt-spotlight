@@ -16,8 +16,29 @@ import {
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { ScheduleBlock } from './ScheduleBlock'
+import { ScheduleBlockDialog } from './Modals/ScheduleBlockDialog'
 import { fetchStudentSchedule } from '../actions/studentScheduleActions'
+import { BlockSchedule } from './BlockSchedule';
 
+export interface BlockDetails {
+	date: string,
+	start: string,
+	end: string,
+	scheduled: any,
+	label: string,
+	logs?: any[]
+	appointments?: any[]
+}
+
+const emptyBlockDetails: BlockDetails = {
+	date: '',
+	start: '',
+	end: '',
+	label: '',
+	scheduled: {},
+	logs: [],
+	appointments: []
+}
 interface ReduxProps {
 	schedule: any
 	fetchStudentSchedule: (studentID: number, dateTime?: string) => any
@@ -31,13 +52,17 @@ interface IState {
 	loading: boolean
 	datePickerOpen: boolean
 	datePickerRange: Date
+	dialogOpen: boolean
+	blockDetails: BlockDetails
 }
 
 class Schedule extends React.Component<IProps, IState> {
 	state: IState = {
 		loading: false,
 		datePickerOpen: false,
-		datePickerRange: new Date()
+		datePickerRange: new Date(),
+		dialogOpen: false,
+		blockDetails: emptyBlockDetails
 	}
 
 	handleDatePickerOpen = () => {
@@ -60,6 +85,15 @@ class Schedule extends React.Component<IProps, IState> {
 		console.log('handleNext()')
 	}
 
+	handleBlockClick = (blockDetails: BlockDetails): void => {
+		this.setState({ blockDetails, dialogOpen: true })
+		console.log('handleBlockClick()')
+	}
+
+	handleDialogClose = () => {
+		this.setState({ dialogOpen: false })
+	}
+
 	componentDidMount() {
 		this.setState({ loading: true })
 		this.props.fetchStudentSchedule(this.props.studentID).then(
@@ -68,8 +102,8 @@ class Schedule extends React.Component<IProps, IState> {
 				console.log(this.props.schedule)
 			}
 		)
-
 	}
+
 	render() {
 		return (
 			<div className='schedule_container'>
@@ -114,6 +148,11 @@ class Schedule extends React.Component<IProps, IState> {
 					</>
 				) : (
 					<>
+						<ScheduleBlockDialog
+							details={this.state.blockDetails}
+							open={this.state.dialogOpen}
+							onClose={this.handleDialogClose}
+						/>
 						<ul className='schedule_header'>
 							<li>
 								<MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -123,6 +162,7 @@ class Schedule extends React.Component<IProps, IState> {
 										onClose={() => this.handleDatePickerClose()}
 										value={this.state.datePickerRange}
 										onChange={this.handleDatePickerSelect}
+										TextFieldComponent={() => null}
 									/>
 								</MuiPickersUtilsProvider>
 								<Button onClick={this.handleDatePickerOpen}>{this.props.schedule.range}</Button>
@@ -167,9 +207,20 @@ class Schedule extends React.Component<IProps, IState> {
 											return (
 												<ScheduleBlock 
 													title={title}
-													label={block.label}
+													// label={block.label}
 													memo={block.memo}
 													variant={variant}
+													// details={}
+													onClick={this.handleBlockClick}
+													details={{
+														date: block.date,
+														start: block.start,
+														end: block.end,
+														logs: block.logs,
+														appointments: block.appointments,
+														scheduled: block.scheduled,
+														label: block.label
+													}}
 												/>
 											)
 										})}

@@ -63,7 +63,7 @@ class StudentScheduleController extends Controller
                 $schedule_day = [
                     'blocks' => [],
                     'date' => [
-                        'full_date' => $date,
+                        'full_date' => date('M j, Y', strtotime($date)),
                         'date' => date('j', $time),
                         'day' => date('D', $time),
                         'is_today' => date('Y-m-d', $time) === date('Y-m-d')
@@ -76,9 +76,9 @@ class StudentScheduleController extends Controller
                         'id' => $block->id,
                         'flex' => $block->flex,
                         'label' => $block->label,
-                        'start' => $block_schedule->start,
-                        'end' => $block_schedule->end,
-                        'pending' => strtotime("$date $block->end") > time()
+                        'start' => date('g:i A', strtotime($date. ' '. $block_schedule->start)),
+                        'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
+                        'pending' => strtotime($date. ' '. $block->end) > time()
                     ];
                     $day_block['appointments'] = AppointmentResource::collection($appointments->where('block_id', $block->id)->where('date', $date));                        
                     $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_id', $block->id));

@@ -3,7 +3,8 @@ import * as classNames from 'classnames'
 
 import {
 	Icon,
-	IconButton
+	IconButton,
+	Tooltip
 } from '@material-ui/core'
 
 interface IProps {
@@ -25,16 +26,18 @@ interface IProps {
 export const EnhancedDialogTitle = (props: IProps) => {
 	return (
 		<div className={classNames('dialog-title', {'--close-button': props.onClose}, {[props.className]: new Boolean(props.className)})} id={props.id}>
-			<div>
+			<div className='dialog-title__inner'>
 				{props.title && (
 					<h3>{props.title}</h3>
 				)}
 				{props.children}
 			</div>
 			{props.onClose && (
-				<IconButton className='icon-close' onClick={() => props.onClose()}>
-					<Icon>close</Icon>
-				</IconButton>
+				<Tooltip title='Close'>
+					<IconButton className='icon-close' onClick={() => props.onClose()}>
+						<Icon>close</Icon>
+					</IconButton>
+				</Tooltip>
 			)}
 		</div>
 	)

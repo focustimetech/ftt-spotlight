@@ -13,7 +13,7 @@ import StarredWidget from '../Modals/StarredWidget'
 
 interface IProps {
 	onSignOut: () => void
-	loading?: boolean
+	loading: boolean
 }
 
 /**

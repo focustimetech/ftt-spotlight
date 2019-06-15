@@ -27,7 +27,6 @@ interface ReduxProps {
 }
 
 interface IState {
-	menuOpen: boolean
 	loading: boolean
 }
 
@@ -35,20 +34,9 @@ interface IProps extends ReduxProps {
 	onSignOut: () => void
 }
 
-/*
-interface ProtectedRouteProps {
-	component: React.Component
-}
-*/
-
 class App extends React.Component<IProps, IState> {
 	state: IState = {
-		menuOpen: true,
 		loading: true
-	}
-
-	toggleMenu = (e: any): void => {
-		this.setState({ menuOpen: this.state.menuOpen === false })
 	}
 
 	componentDidMount() {
@@ -63,8 +51,8 @@ class App extends React.Component<IProps, IState> {
 		return ( 
 			<>
 				<Router>
-					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
-						<Sidebar onSignOut={this.props.onSignOut} />
+					<div className={classNames('site-wrap', '--menu_open')}>
+						<Sidebar onSignOut={this.props.onSignOut} loading={this.state.loading} />
 						<Content>
 							<Switch>
 								<Route path='/clusters/:clusterID?' component={Clusters} />

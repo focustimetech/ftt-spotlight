@@ -16,15 +16,21 @@ export const login = (credentials: ICredentials) => {
                 const token = res.data.access_token
                 localStorage.setItem('access_token', token)
                 setAuthorizationToken(token)
-                console.log(jwt.decode(token))
-                axios.get('http://localhost:8000/api/user')
-                    .then(res => {
-                        const user = res.data
-                        dispatch({
-                            type: SET_CURRENT_USER,
-                            payload: user
-                        })
-                    })
+                // console.log(jwt.decode(token))
+                getCurrentUser()
             })
+    }
+}
+
+export const getCurrentUser = () => {
+    return (dispatch: any) => {
+        return axios.get('http://localhost:8000/api/user')
+            .then(res => {
+                const user = res.data
+                dispatch({
+                    type: SET_CURRENT_USER,
+                    payload: user
+                })
+            }) 
     }
 }

@@ -18,12 +18,20 @@ interface IState {
 
 export default class AppWithAuth extends React.Component<{}, IState> {
 	state: IState = {
-		// authState: 'sign-in'
-		authState: 'signed-in'
+		authState: 'sign-in'
+		// authState: 'signed-in'
 	}
 
 	isAuthenticated = () => {
-		return new Boolean(localStorage.access_token)
+		const token = localStorage.access_token
+		if (token) {
+			console.log('Authenticaed: ' + token)
+			return true
+		} else {
+			console.log('Not authenticaed: ' + token)
+			return false
+		}
+		// return new Boolean(localStorage.access_token)
 	}
 
 	handleSignIn = () => {
@@ -35,7 +43,8 @@ export default class AppWithAuth extends React.Component<{}, IState> {
 	}
 
 	componentDidMount() {
-		// this.setState({ authState: this.isAuthenticated ? 'signed-in' : 'sign-in' })
+		// this.setState({ authState: this.isAuthenticated() ? 'signed-in' : 'sign-in' })
+		
 	}
 
 	render() {
@@ -47,7 +56,7 @@ export default class AppWithAuth extends React.Component<{}, IState> {
 						render={ (props) => <Login {...props} onSignIn={this.handleSignIn} /> }
 					/>
 					<Route path='/' render={(props) => {
-						return this.state.authState === 'signed-in' ? (
+						return this.isAuthenticated() ? (
 							<App onSignOut={this.handleSignOut}/>
 						) : (
 							<Redirect

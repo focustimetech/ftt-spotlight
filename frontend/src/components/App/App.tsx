@@ -2,12 +2,15 @@ import '../../assets/styles/main.scss'
 
 import * as React from 'react'
 import * as classNames from 'classnames'
+import { connect } from 'react-redux'
 import {
 	BrowserRouter as Router, 
 	Redirect,
 	Route,
 	Switch
 } from 'react-router-dom'
+
+import { getCurrentUser } from '../../actions/authActions'
 
 import { ClassSchedule } from '../ClassSchedule'
 import { Clusters } from '../Clusters'
@@ -19,11 +22,16 @@ import Students from '../Students'
 import { Sidebar } from '../Sidebar/Sidebar'
 import { Staff } from '../Staff'
 
-interface IState {
-	menuOpen: boolean
+interface ReduxProps {
+	getCurrentUser: () => any
 }
 
-interface IProps {
+interface IState {
+	menuOpen: boolean
+	loading: boolean
+}
+
+interface IProps extends ReduxProps {
 	onSignOut: () => void
 }
 
@@ -33,13 +41,22 @@ interface ProtectedRouteProps {
 }
 */
 
-export default class App extends React.Component<IProps, IState> {
+class App extends React.Component<IProps, IState> {
 	state: IState = {
-		menuOpen: true
+		menuOpen: true,
+		loading: true
 	}
 
 	toggleMenu = (e: any): void => {
 		this.setState({ menuOpen: this.state.menuOpen === false })
+	}
+
+	componentDidMount() {
+		this.props.getCurrentUser().then(
+			(res: any) => {
+				this.setState({ loading: false })
+			}
+		)
 	}
 
 	render() {
@@ -68,3 +85,5 @@ export default class App extends React.Component<IProps, IState> {
 		)
 	}
 }
+
+export default connect(null, {getCurrentUser})(App)

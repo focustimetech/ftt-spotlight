@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Resources\User as UserResource;
+
 class AuthController extends Controller
 {
     public function login(Request $request)
@@ -41,7 +43,7 @@ class AuthController extends Controller
 
     public function user()
     {
-        return auth()->user();
+        return new UserResource(auth()->user());
     }
 
     public function logout() {

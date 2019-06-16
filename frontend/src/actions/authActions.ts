@@ -14,7 +14,6 @@ export const login = (credentials: ICredentials) => {
         return axios.post('http://localhost:8000/api/login', credentials)
             .then(res => {
                 const token = res.data.access_token
-                localStorage.setItem('access_token', token)
                 setAuthorizationToken(token)
                 // console.log(jwt.decode(token))
                 getCurrentUser()

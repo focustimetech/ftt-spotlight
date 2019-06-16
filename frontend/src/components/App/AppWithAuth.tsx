@@ -10,6 +10,8 @@ import {
 	Switch
 } from 'react-router-dom'
 
+import { setAuthorizationToken } from '../../utils/setAuthorizationToken'
+
 type AuthState = 'signed-in' | 'sign-in' | 'sign-out'
 
 interface IState {
@@ -40,11 +42,11 @@ export default class AppWithAuth extends React.Component<{}, IState> {
 
 	handleSignOut = () => {
 		this.setState({ authState: 'sign-in' })
+		setAuthorizationToken(null)
 	}
 
 	componentDidMount() {
 		// this.setState({ authState: this.isAuthenticated() ? 'signed-in' : 'sign-in' })
-		
 	}
 
 	render() {

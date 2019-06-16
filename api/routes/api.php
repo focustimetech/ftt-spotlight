@@ -75,3 +75,7 @@ Route::post('check-in', 'LedgerController@store');
 
 // Attendance
 Route::get('attendance/{id}', 'AttendanceController@attendance');
+
+// Settings
+Route::get('settings', 'SettingsController@index');
+Route::put('settings', 'SettingsController@update');

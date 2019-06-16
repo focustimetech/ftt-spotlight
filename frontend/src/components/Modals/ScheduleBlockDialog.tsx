@@ -25,13 +25,23 @@ export const ScheduleBlockDialog = (props: IProps) => {
             </EnhancedDialogTitle>
             <DialogContent>
                 <h5 className='section-header'>Logs</h5>
-                {logs && logs.length > 0 ? (
-                    logs.map((log: any, index: number) => (
-                        <div>{`Log ${index}`}</div>
-                    ))
-                ) : (
-                    'No logs.'
+                <section className='section'>
+                    {logs && logs.length > 0 ? (
+                        logs.map((log: any, index: number) => (
+                            <div>{`Log ${index}`}</div>
+                        ))
+                    ) : (
+                        'No logs.'
+                    )}
+                </section>
+                <h5 className='section-header'>Scheduled</h5>
+                <section className='section'>
+                    Scheduled
+                </section>
+                {appointments && appointments.length > 0 && (
+                    <div>Appointments</div>
                 )}
+                
             </DialogContent>
         </Dialog>
     )

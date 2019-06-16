@@ -19,7 +19,7 @@ import { Dashboard } from '../Dashboard'
 import { NotFound } from '../NotFound'
 import StudentProfile from '../StudentProfile'
 import Students from '../Students'
-import { Sidebar } from '../Sidebar/Sidebar'
+import Sidebar from '../Sidebar/Sidebar'
 import { Staff } from '../Staff'
 
 interface ReduxProps {

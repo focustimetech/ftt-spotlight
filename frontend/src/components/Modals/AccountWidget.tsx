@@ -14,6 +14,8 @@ interface IState {
 
 interface IProps {
     onSignOut: (callback?: () => void) => void
+    initials: string
+    background: string
 }
 
 export class AccountWidget extends React.Component<IProps, IState> {
@@ -29,15 +31,14 @@ export class AccountWidget extends React.Component<IProps, IState> {
         this.setState({ menuRef: null })
     }
 
-    initials = 'CU'
-
     render() {
         const { menuRef } = this.state
+        const { initials, background } = this.props
         const menuOpen = Boolean(menuRef)
         return (
             <>
                 <NavItem className='nav_account' title='Account' onClick={this.handleClickOpen}>
-                    <Avatar className='nav_avatar' color='#FF0000'>{this.initials}</Avatar>
+                    <Avatar className='nav_avatar' style={{ background }}>{initials}</Avatar>
                     <Menu
                         open={menuOpen}
                         anchorEl={menuRef}

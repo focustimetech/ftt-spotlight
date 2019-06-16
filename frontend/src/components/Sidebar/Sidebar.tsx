@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import ContentLoader from 'react-content-loader'
+import { connect } from 'react-redux'
 import * as classNames from 'classnames'
 
 import { AccountWidget } from '../Modals/AccountWidget'
@@ -11,7 +12,11 @@ import { CheckInWidget } from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
 
-interface IProps {
+interface ReduxProps {
+	currentUser: any
+}
+
+interface IProps extends ReduxProps {
 	onSignOut: () => void
 	loading: boolean
 }
@@ -20,8 +25,10 @@ interface IProps {
  * @TODO Need to handle the case where the screen is very narrow,
  * in which a modal nav manu should be used.
  */
-export class Sidebar extends React.Component<IProps> {
+class Sidebar extends React.Component<IProps> {
 	render() {
+		const details = this.props.currentUser.details
+		const { initials, color } = details || { initials: '', color: '' }
 		return (
 			<div className='sidebar'>
 				<nav className='sidebar__nav'>
@@ -54,9 +61,7 @@ export class Sidebar extends React.Component<IProps> {
 							<div className='nav_bottom'>
 								<NotificationsWidget />
 								<NavItem title='Help' icon='help' />
-								<AccountWidget onSignOut={this.props.onSignOut} />
-								{/*<NavItem title='Account' icon='perm_identity' />*/}
-								
+								<AccountWidget onSignOut={this.props.onSignOut} initials={initials} background={`#${color}`} />								
 							</div>
 						</>
 					)}
@@ -109,3 +114,9 @@ export class Sidebar extends React.Component<IProps> {
 		)
 	}
 }
+
+const mapStateToProps = (state: any) => ({
+	currentUser: state.auth.user
+})
+
+export default connect(mapStateToProps, null)(Sidebar)

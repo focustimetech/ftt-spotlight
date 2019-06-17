@@ -16,7 +16,7 @@ class SchedulePlansTableSeeder extends Seeder
 
         $students->each(function($student) use ($end_time) {
             $time = time() === strtotime('sunday') ? strtotime('sunday -14 days') : strtotime('previous sunday -14 days');
-            $block_time = $time;
+            $block_time = date('H:i:s', $time);
             do {
                 $day_number = date('w', $time) + 1; // Sun = 1, Sat = 7
                 $blocks = App\Block::flexBlocks();

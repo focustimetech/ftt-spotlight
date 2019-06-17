@@ -43,6 +43,9 @@ class App extends React.Component<IProps, IState> {
 		this.props.getCurrentUser().then(
 			(res: any) => {
 				this.setState({ loading: false })
+			},
+			(err: any) => {
+				this.props.onSignOut()
 			}
 		)
 	}

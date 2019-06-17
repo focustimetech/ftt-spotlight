@@ -1,8 +1,5 @@
 import * as React from 'react'
 
-import App from './App'
-import Login from '../Login'
-
 import {
 	BrowserRouter as Router, 
 	Redirect,
@@ -11,19 +8,10 @@ import {
 } from 'react-router-dom'
 
 import { setAuthorizationToken } from '../../utils/setAuthorizationToken'
+import App from './App'
+import Login from '../Login'
 
-type AuthState = 'signed-in' | 'sign-in' | 'sign-out'
-
-interface IState {
-	authState: AuthState
-}
-
-export default class AppWithAuth extends React.Component<{}, IState> {
-	state: IState = {
-		authState: 'sign-in'
-		// authState: 'signed-in'
-	}
-
+export default class AppWithAuth extends React.Component {
 	isAuthenticated = () => {
 		const token = localStorage.access_token
 		if (token) {
@@ -36,17 +24,10 @@ export default class AppWithAuth extends React.Component<{}, IState> {
 		// return new Boolean(localStorage.access_token)
 	}
 
-	handleSignIn = () => {
-		this.setState({ authState: 'signed-in' })
-	}
-
 	handleSignOut = () => {
 		this.setState({ authState: 'sign-in' })
 		setAuthorizationToken(null)
-	}
-
-	componentDidMount() {
-		// this.setState({ authState: this.isAuthenticated() ? 'signed-in' : 'sign-in' })
+		this.forceUpdate()
 	}
 
 	render() {
@@ -55,7 +36,7 @@ export default class AppWithAuth extends React.Component<{}, IState> {
 				<Switch>
 					<Route
 						path='/login'
-						render={ (props) => <Login {...props} onSignIn={this.handleSignIn} /> }
+						render={ (props) => <Login {...props} onSignIn={() => null} /> }
 					/>
 					<Route path='/' render={(props) => {
 						return this.isAuthenticated() ? (

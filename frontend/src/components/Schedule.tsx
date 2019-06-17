@@ -74,15 +74,31 @@ class Schedule extends React.Component<IProps, IState> {
 	}
 
 	handleDatePickerSelect = (datePickerRange: Date) => {
-		this.setState({ datePickerRange })
+		this.setState({ datePickerRange }, () => {
+			this.fetchSchedule(datePickerRange.toLocaleString())
+		})
+	}
+
+	fetchSchedule = (datetime?: string) => {
+		this.setState({ loading: true })
+		this.props.fetchStudentSchedule(this.props.studentID, datetime).then(
+			(res: any) => {
+				this.setState({ loading: false })
+				console.log(this.props.schedule)
+			}
+		)
 	}
 
 	handlePrevious = () => {
-		console.log('handlePrevious()')
+		if (this.props.schedule.previous) {
+			this.fetchSchedule(this.props.schedule.previous)
+		}
 	}
 
 	handleNext = () => {
-		console.log('handleNext()')
+		if (this.props.schedule.next) {
+			this.fetchSchedule(this.props.schedule.next)
+		}
 	}
 
 	handleBlockClick = (blockDetails: BlockDetails): void => {
@@ -95,13 +111,7 @@ class Schedule extends React.Component<IProps, IState> {
 	}
 
 	componentDidMount() {
-		this.setState({ loading: true })
-		this.props.fetchStudentSchedule(this.props.studentID).then(
-			(res: any) => {
-				this.setState({ loading: false })
-				console.log(this.props.schedule)
-			}
-		)
+		this.fetchSchedule()
 	}
 
 	render() {
@@ -167,8 +177,16 @@ class Schedule extends React.Component<IProps, IState> {
 								</MuiPickersUtilsProvider>
 								<Button onClick={this.handleDatePickerOpen}>{this.props.schedule.range}</Button>
 							</li>
-							<li><Tooltip title='Back' placement='top'><IconButton onClick={this.handlePrevious}><Icon>chevron_left</Icon></IconButton></Tooltip></li>
-							<li><Tooltip title='Next' placement='top'><IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton></Tooltip></li>
+							<li>
+								<Tooltip title='Back' placement='top'>
+									<IconButton onClick={this.handlePrevious}><Icon>chevron_left</Icon></IconButton>
+								</Tooltip>
+							</li>
+							<li>
+								<Tooltip title='Next' placement='top'>
+									<IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton>
+								</Tooltip
+							></li>
 						</ul>
 						<div className='schedule'>
 							<div className='schedule_row'>

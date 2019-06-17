@@ -49,7 +49,9 @@ class StudentScheduleController extends Controller
         $plans = $student->plans()->get();
 
         $student_schedule = [
-            'range' => formatRangeString($start_time, $end_time)
+            'range' => formatRangeString($start_time, $end_time),
+            'next' => date('Y-m-d H:i:s', $end_time),
+            'previous' => date('Y-m-d H:i:s', strtotime('previous sunday', $start_time))
         ];
 
         for ($week_start = $start_time; $week_start < $end_time; $week_start = strtotime('+1 week', $week_start)) {

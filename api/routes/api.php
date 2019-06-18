@@ -26,6 +26,12 @@ Route::middleware('auth:api')->group(function() {
     Route::get('starred', 'StarController@index');
     Route::post('star', 'StarController@star');
     Route::post('unstar', 'StarController@unstar');
+
+    // Topics
+    Route::get('topics', 'TopicsController@index');
+    Route::put('topics', 'TopicsController@store');
+    Route::post('topics', 'TopicsController@store');
+    Route::delete('topics/{id}', 'TopicsController@destroy');
 });
 
 // COMPLETE

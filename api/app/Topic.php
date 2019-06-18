@@ -6,9 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Topic extends Model
 {
+    protected $fillable = [
+        'topic', 'staff_id'
+    ];
+
     public function delete()
     {
-        // Handle delete such that old topics are not removed.
+        $this->staff_id = null;
+        return $this;
     }
 
     public function staff()

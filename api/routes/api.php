@@ -29,7 +29,6 @@ Route::middleware('auth:api')->group(function() {
 
     // Topics
     Route::get('topics', 'TopicsController@index');
-    Route::put('topics', 'TopicsController@store');
     Route::post('topics', 'TopicsController@store');
     Route::delete('topics/{id}', 'TopicsController@destroy');
 });

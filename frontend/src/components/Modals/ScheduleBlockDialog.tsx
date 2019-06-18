@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as classNames from 'classnames'
 
 import {
     Button,
@@ -11,7 +12,7 @@ import { BlockDetails } from '../Schedule'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 
 interface ScheduleItemDetails {
-    id: number
+    id?: number
     icon: string
     title: string
     time?: string
@@ -23,7 +24,7 @@ const scheduleItem = (details: ScheduleItemDetails) => {
     return (
         <div className='log' key={id}>
             <div className='log__title'>
-                <div className='log__icon'><Icon>{icon}</Icon></div>
+                <div className={classNames('log__icon', `--${icon}`)}><Icon>{icon}</Icon></div>
                 <h6>
                     {title}
                     {time && <span className='log__time'>{time}</span>}
@@ -41,7 +42,13 @@ interface IProps {
 }
 
 export const ScheduleBlockDialog = (props: IProps) => {
-    const { label, logs, scheduled, appointments, start, end, date } = props.details
+    const { label, logs, flex, scheduled, appointments, start, end, date } = props.details
+    const scheduledStatus = flex === true ? (
+        logs.some(((log: any) => log.staff.id === scheduled.id)) ? 'check' : 'cross'
+    ) : (
+        logs.length > 0 ? 'check' : 'cross'
+    )
+    // console.log('DETAILS', props.details)
 
     return (
         <Dialog open={props.open} className='schedule-block-dialog'>
@@ -67,14 +74,11 @@ export const ScheduleBlockDialog = (props: IProps) => {
                 </section>
                 <h5 className='section-header'>Scheduled</h5>
                 <section className='section'>
-                    {scheduled && scheduled.length > 0 ? (
-                        scheduled.map((scheduledItem: any, index: number) => (
-                            scheduleItem({
-                                id: index,
-                                title: scheduledItem.staff.name,
-                                icon: logs.some(((log: any) => log.staff.id === scheduledItem.staff.id)) ? 'check' : 'cross'
-                            })
-                        ))
+                    {scheduled ? (
+                        scheduleItem({
+                            title: scheduled.name,
+                            icon: scheduledStatus
+                        })
                     ) : (
                         <p>Nothing scheduled</p>
                     )}

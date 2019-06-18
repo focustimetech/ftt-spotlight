@@ -116,7 +116,7 @@ class StarredWidget extends React.Component<IProps, IState> {
                                 <div className='content-inner'>
                                     {starredGroups.filter((starredGroup: StarredGroup) => this.props.starred[starredGroup.value])
                                         .map((starredGroup: StarredGroup, index: number) => (
-                                            <>
+                                            <div key={index}>
                                                 <h4 className='items-group_header'>{starredGroup.label}</h4>
                                                 <List className='items-group_list'>
                                                     {this.props.starred[starredGroup.value].map((item: any, index: number) => {
@@ -155,7 +155,7 @@ class StarredWidget extends React.Component<IProps, IState> {
                                                         )
                                                     })}
                                                 </List>
-                                            </>
+                                            </div>
                                         ))
                                     }
                                 </div>

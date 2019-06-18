@@ -24,6 +24,7 @@ export interface BlockDetails {
 	date: string,
 	start: string,
 	end: string,
+	flex: boolean,
 	scheduled: any,
 	label: string,
 	logs?: any[]
@@ -36,6 +37,7 @@ const emptyBlockDetails: BlockDetails = {
 	end: '',
 	label: '',
 	scheduled: {},
+	flex: false,
 	logs: [],
 	appointments: []
 }
@@ -103,7 +105,7 @@ class Schedule extends React.Component<IProps, IState> {
 
 	handleBlockClick = (blockDetails: BlockDetails): void => {
 		this.setState({ blockDetails, dialogOpen: true })
-		console.log('handleBlockClick()')
+		// console.log('handleBlockClick()')
 	}
 
 	handleDialogClose = () => {
@@ -175,7 +177,7 @@ class Schedule extends React.Component<IProps, IState> {
 										TextFieldComponent={() => null}
 									/>
 								</MuiPickersUtilsProvider>
-								<Button onClick={this.handleDatePickerOpen}>{this.props.schedule.range}</Button>
+								<Button onClick={this.handleDatePickerOpen}>{this.props.schedule.range || 'Select Date'}</Button>
 							</li>
 							<li>
 								<Tooltip title='Back' placement='top'>
@@ -190,8 +192,8 @@ class Schedule extends React.Component<IProps, IState> {
 						</ul>
 						<div className='schedule'>
 							<div className='schedule_row'>
-								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
-									<div className={classNames('label', {'--today': scheduleDay.date.is_today})}>
+								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any, index: number) => (
+									<div className={classNames('label', {'--today': scheduleDay.date.is_today})} key={index}>
 										<h5 className='day'>{scheduleDay.date.day}</h5>
 										<h2 className='date'>{scheduleDay.date.date}</h2>
 									</div>
@@ -200,16 +202,16 @@ class Schedule extends React.Component<IProps, IState> {
 							<div className='schedule_row'>
 								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
 									<div className='schedule_events'>
-										{scheduleDay.events.map((event: any) => (
-											<div className='event'>{event.name || 'event'}</div>
+										{scheduleDay.events.map((event: any, index: number) => (
+											<div className='event' key={index}>{event.name || 'event'}</div>
 										))}
 									</div>
 								))}
 							</div>
 							<div className='schedule_row'>
-								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any) => (
-									<div className='schedule_blocks'>
-										{scheduleDay.blocks.map((block: any) => {
+								{this.props.schedule.schedule && this.props.schedule.schedule.map((scheduleDay: any, index: number) => (
+									<div className='schedule_blocks' key={index}>
+										{scheduleDay.blocks.map((block: any, idx: number) => {
 											const title = block.flex ? (
 												block.logs[0] ? (
 													block.logs[0].staff.name 
@@ -223,7 +225,8 @@ class Schedule extends React.Component<IProps, IState> {
 												block.pending ? 'pending' : 'missed'
 											)
 											return (
-												<ScheduleBlock 
+												<ScheduleBlock
+													id={idx}
 													title={title}
 													memo={block.memo}
 													variant={variant}
@@ -232,6 +235,7 @@ class Schedule extends React.Component<IProps, IState> {
 														date: `${scheduleDay.date.day} ${scheduleDay.date.full_date}`,
 														start: block.start,
 														end: block.end,
+														flex: block.flex,
 														logs: block.logs,
 														appointments: block.appointments,
 														scheduled: block.scheduled,

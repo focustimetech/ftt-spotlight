@@ -22,11 +22,25 @@ const USER_COLORS = [
     '607D8B'
 ];
 
+/**
+ * Class for useful utility functions.
+ */
 class Utils {
+
+    /**
+     * Returns a random User color string, unless an index is given.
+     */
     public static function userColor($index = -1) {
         if ($index && $index > 0 && $index < count(USER_COLORS)) {
             return USER_COLORS[$index];
         }
         return USER_COLORS[array_rand(USER_COLORS)];
+    }
+
+    /**
+     * Returns a random Topic color string, unless an index is given.
+     */
+    public static function topicColor($index = -1) {
+        return $this->userColor($index);
     }
 }

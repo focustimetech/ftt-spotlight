@@ -16,7 +16,10 @@ class CreateTopicsTable extends Migration
         Schema::create('topics', function (Blueprint $table) {
             $table->increments('id');
             $table->string('topic');
-            $table->unsignedInteger('staff_id');
+            $table->string('color')
+                ->default(Utils::topicColor(0));
+            $table->unsignedInteger('staff_id')
+                ->nullable();
             $table->timestamps();
             // Foreign keys
             $table->foreign('staff_id')->references('id')->on('staff');

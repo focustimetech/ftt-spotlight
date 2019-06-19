@@ -11,7 +11,7 @@ class TopicsController extends Controller
 {
     public function index()
     {
-        $topics = auth()->user()->staff()->topics()->get();
+        $topics = auth()->user()->staff()->getTopics();
 
         return $topics;
     }

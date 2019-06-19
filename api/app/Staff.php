@@ -38,6 +38,11 @@ class Staff extends Model
 		return $this->first_name && $fullName ? $name. ', '. $this->first_name : $name;
 	}
 
+	public function getTopics()
+	{
+		return $this->hasMany('App\Topic')->where('deleted', false)->get();
+	}
+
 	public function scheduleEntries()
 	{
 		return $this->hasMany('App\ScheduleEntry');
@@ -46,11 +51,6 @@ class Staff extends Model
 	public function starred()
 	{
 		return $this->hasMany('App\Starred');
-	}
-
-	public function topics()
-	{
-		return $this->hasMany('App\Topic');
 	}
 
 	public function user()

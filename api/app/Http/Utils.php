@@ -41,6 +41,6 @@ class Utils {
      * Returns a random Topic color string, unless an index is given.
      */
     public static function topicColor($index = -1) {
-        return $this->userColor($index);
+        return self::userColor($index);
     }
 }

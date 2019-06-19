@@ -12,7 +12,7 @@ class Topic extends Model
 
     public function delete()
     {
-        $this->staff_id = null;
+        $this->deleted = true;
         return $this;
     }
 

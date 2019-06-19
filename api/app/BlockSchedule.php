@@ -18,6 +18,8 @@ class BlockSchedule extends Model
     {
         if ($this->block()->flex) {
             return $this->hasMany('App\Topic');
+        } else {
+            return null;
         }
     }
 }

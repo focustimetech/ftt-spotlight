@@ -18,6 +18,8 @@ class CreateTopicsTable extends Migration
             $table->string('topic');
             $table->string('color')
                 ->default(Utils::topicColor(0));
+            $table->boolean('deleted')
+                ->default(false);
             $table->unsignedInteger('staff_id')
                 ->nullable();
             $table->timestamps();

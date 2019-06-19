@@ -11,6 +11,31 @@ class TopicsTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $staff_list = App\Staff::all();
+
+        $staff_list->each(function($staff) {
+            factory(App\Topic::class, 2)->create([
+                'staff_id' => $staff->id
+            ]);
+        });
+
+        $time = time() === strtotime('sunday') ? strtotime('sunday -14 days') : strtotime('previous sunday -14 days');
+        $end_time = strtotime('+28 days', $time);
+        do {
+            $day_of_week = date('w', $time) + 1;
+            $blocks = App\BlockSchedule::where('day_of_week', $day_of_week)->get();
+            $staff_list->each(function($staff) use ($blocks, $time) {
+                $blocks->each(function($block) use ($time, $staff) {
+                    $topic = $staff->getTopics()->random();
+                    factory(App\TopicSchedule::class)->create([
+                        'topic_id' => $topic->id,
+                        'date' => date('Y-m-d', $time),
+                        'block_schedule_id' => $block->id
+                    ]);
+                });
+            });
+            
+            $time = strtotime('+1 day', $time);
+        } while ($time <= $end_time);
     }
 }

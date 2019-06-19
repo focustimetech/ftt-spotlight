@@ -22,7 +22,9 @@ class CreateLedgerTable extends Migration
             $table->unsignedInteger('block_id'); // Block checked into
             $table->unsignedInteger('staff_id'); // Who checked the student in
             $table->unsignedInteger('student_id'); // Student checked in
-            $table->unsignedInteger('topic_id')->default(0); // Topic teacher is offering
+            $table->unsignedInteger('topic_id') // Topic teacher is offering
+                ->nullable()
+                ->default(null);
             // Foreign keys
             $table->foreign('block_id')->references('id')->on('blocks');
             $table->foreign('staff_id')->references('id')->on('staff');

@@ -76,7 +76,7 @@ class StudentScheduleController extends Controller
                     $block = $blocks->where('id', $block_schedule->block_id)->first();
                     $day_block = [
                         'id' => $block->id,
-                        'flex' => $block->flex,
+                        'flex' => $block->flex == false ? false : true,
                         'label' => $block->label,
                         'start' => date('g:i A', strtotime($date. ' '. $block_schedule->start)),
                         'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
@@ -89,7 +89,6 @@ class StudentScheduleController extends Controller
                     ) : (
                         Course::find($block->pivot->course_id) ?? null
                     );
-                    $day_block['memo'] = 'underwater basket weaving';
                     array_push($schedule_day['blocks'], $day_block);
                 });
                 array_push($schedule_by_week, $schedule_day);

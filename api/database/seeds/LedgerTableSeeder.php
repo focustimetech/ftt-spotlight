@@ -21,21 +21,30 @@ class LedgerTableSeeder extends Seeder
                 $blocks = $student->getBlocks();
                 $blocks->each(function($block) use (&$block_time, $day_number, $student, $time) {
                     if ($block->flex == false) {
-                        $staff_id = App\Course::find($block->pivot->course_id)->staff()->id;
+                        $staff = App\Course::find($block->pivot->course_id)->staff();
                     } else {
-                        $staff_id = App\Staff::pluck('id')->random(1)->first();
+                        $staff = App\Staff::all()->random();
                     }
                     $schedule_blocks = $block->schedule()->where('day_of_week', $day_number)->get();
-                    $schedule_blocks->each(function($schedule_block) use ($block, &$block_time, $staff_id, $student, $time) {
+                    $schedule_blocks->each(function($schedule_block) use ($block, &$block_time, $staff, $student, $time) {
                         if (rand(1, 14) !== 1) { // 1 in 14 chance of missing the block
                             $block_time = $schedule_block->start;
-                            factory(App\LedgerEntry::class)->create([
-                                'date' => date('Y-m-d', $time),
+                            $date = date('Y-m-d', $time);
+                            $params = [
+                                'date' => $date,
                                 'time' => $block_time,
                                 'block_id' => $block->id,
-                                'staff_id' => $staff_id,
-                                'student_id' => $student->id
-                            ]);
+                                'staff_id' => $staff->id,
+                                'student_id' => $student->id,
+                            ];
+                            if ($block->flex === true) {
+                                $topic_ids = $staff->getTopics()->pluck('id')->toArray();
+                                $topic_schedule = App\TopicSchedule::whereIn('topic_id', $topic_ids)->get()->where('date', $date)->where('schedule_block_id', $schedule_block->id)->first();
+                                $params['topic_id'] = $topic_schedule->id;
+                            }
+                            // dd("\$staff->id: $staff->id \n \$date: $date \n \$topic_ids[0]: $topic_ids[0] \n \$schedule_block->id: $schedule_block->id \n \$topic_schedule: $topic_schedule \n");
+                            // die;
+                            factory(App\LedgerEntry::class)->create($params);
                         }
                     });
                 });

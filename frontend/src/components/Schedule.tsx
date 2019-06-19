@@ -228,7 +228,7 @@ class Schedule extends React.Component<IProps, IState> {
 												<ScheduleBlock
 													id={idx}
 													title={title}
-													memo={block.memo}
+													memo={block.logs[0] && block.flex ? block.logs[0].topic : null}
 													variant={variant}
 													onClick={this.handleBlockClick}
 													details={{

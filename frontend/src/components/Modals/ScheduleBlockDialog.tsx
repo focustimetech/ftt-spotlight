@@ -13,23 +13,20 @@ import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 
 interface ScheduleItemDetails {
     id?: number
-    icon: string
+    variant: string
     title: string
     time?: string
     memo?: string
 }
 
 const scheduleItem = (details: ScheduleItemDetails) => {
-    const { id, icon, time, title, memo } = details
+    const { id, variant, time, title, memo } = details
     return (
-        <div className='log' key={id}>
-            <div className='log__title'>
-                <div className={classNames('log__icon', `--${icon}`)}><Icon>{icon}</Icon></div>
-                <h6>
-                    {title}
-                    {time && <span className='log__time'>{time}</span>}
-                </h6>
-            </div>
+        <div className={classNames('log', `--${variant}`)} key={id}>
+            <h6 className='log__title'>
+                {title}
+                {time && <span className='log__time'>{time}</span>}
+            </h6>
             <p className='log__memo'>{memo || 'Example memo'}</p>
         </div>
     )
@@ -44,9 +41,9 @@ interface IProps {
 export const ScheduleBlockDialog = (props: IProps) => {
     const { label, logs, flex, scheduled, appointments, start, end, date } = props.details
     const scheduledStatus = flex === true ? (
-        logs.some(((log: any) => log.staff.id === scheduled.id)) ? 'check' : 'cross'
+        logs.some(((log: any) => log.staff.id === scheduled.id)) ? 'success' : 'fail'
     ) : (
-        logs.length > 0 ? 'check' : 'cross'
+        logs.length > 0 ? 'success' : 'fail'
     )
     // console.log('DETAILS', props.details)
 
@@ -65,7 +62,7 @@ export const ScheduleBlockDialog = (props: IProps) => {
                                 id: index,
                                 time: log.time,
                                 title: log.staff.name,
-                                icon: 'check'
+                                variant: 'success'
                             })
                         ))
                     ) : (
@@ -77,7 +74,7 @@ export const ScheduleBlockDialog = (props: IProps) => {
                     {scheduled ? (
                         scheduleItem({
                             title: scheduled.name,
-                            icon: scheduledStatus
+                            variant: scheduledStatus
                         })
                     ) : (
                         <p>Nothing scheduled</p>

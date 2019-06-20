@@ -25,6 +25,7 @@ export interface BlockDetails {
 	start: string,
 	end: string,
 	flex: boolean,
+	pending: boolean,
 	scheduled: any,
 	label: string,
 	logs?: any[]
@@ -36,6 +37,7 @@ const emptyBlockDetails: BlockDetails = {
 	start: '',
 	end: '',
 	label: '',
+	pending: true,
 	scheduled: {},
 	flex: false,
 	logs: [],
@@ -216,7 +218,7 @@ class Schedule extends React.Component<IProps, IState> {
 												block.logs[0] ? (
 													block.logs[0].staff.name 
 												) : (
-													block.scheduled.name || 'Scheduled'
+													block.scheduled ? block.scheduled.name : 'No Schedule'
 												)
 											) : (
 												block.scheduled.name
@@ -228,7 +230,7 @@ class Schedule extends React.Component<IProps, IState> {
 												<ScheduleBlock
 													id={idx}
 													title={title}
-													memo={block.logs[0] && block.flex ? block.logs[0].topic : null}
+													memo={block.logs[0] && block.flex ? block.logs[0].topic || null : null}
 													variant={variant}
 													onClick={this.handleBlockClick}
 													details={{
@@ -237,6 +239,7 @@ class Schedule extends React.Component<IProps, IState> {
 														end: block.end,
 														flex: block.flex,
 														logs: block.logs,
+														pending: block.pending,
 														appointments: block.appointments,
 														scheduled: block.scheduled,
 														label: block.label

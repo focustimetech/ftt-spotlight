@@ -27,7 +27,7 @@ const scheduleItem = (details: ScheduleItemDetails) => {
                 {title}
                 {time && <span className='log__time'>{time}</span>}
             </h6>
-            <p className='log__memo'>{memo || 'Example memo'}</p>
+            {memo && <p className='log__memo'>{memo}</p>}
         </div>
     )
 }
@@ -39,14 +39,8 @@ interface IProps {
 }
 
 export const ScheduleBlockDialog = (props: IProps) => {
-    const { label, logs, flex, scheduled, appointments, start, end, date } = props.details
-    const scheduledStatus = flex === true ? (
-        logs.some(((log: any) => log.staff.id === scheduled.id)) ? 'success' : 'fail'
-    ) : (
-        logs.length > 0 ? 'success' : 'fail'
-    )
-    // console.log('DETAILS', props.details)
-
+    const { label, logs, flex, scheduled, appointments, pending, start, end, date } = props.details
+    console.log(props.details)
     return (
         <Dialog open={props.open} className='schedule-block-dialog'>
             <EnhancedDialogTitle className='schedule-block-dialog__title' onClose={props.onClose}>
@@ -62,6 +56,7 @@ export const ScheduleBlockDialog = (props: IProps) => {
                                 id: index,
                                 time: log.time,
                                 title: log.staff.name,
+                                memo: log.topic,
                                 variant: 'success'
                             })
                         ))
@@ -74,7 +69,14 @@ export const ScheduleBlockDialog = (props: IProps) => {
                     {scheduled ? (
                         scheduleItem({
                             title: scheduled.name,
-                            variant: scheduledStatus
+                            variant: pending ? null : (
+                                flex === true ? (
+                                    logs.some(((log: any) => log.staff.id === scheduled.id)) ? 'success' : 'fail'
+                                ) : (
+                                    logs.length > 0 ? 'success' : 'fail'
+                                )
+                            ),
+                            memo: scheduled.topic
                         })
                     ) : (
                         <p>Nothing scheduled</p>

@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Staff;
 use App\Student;
 use App\Block;
 use App\BlockSchedule;
 use App\Course;
+use App\Topic;
+use App\TopicSchedule;
+use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 // use App\Http\Resources\Block as BlockResource;
@@ -44,9 +48,9 @@ class StudentScheduleController extends Controller
         $student = Student::findOrFail($id);
         $courses = $student->courses()->get();
         $blocks = $student->getBlocks();
-        $appointments = $student->appointments()->get();
+        $appointments = $student->appointments();
         $ledger_entries = $student->ledgerEntries()->get();
-        $plans = $student->plans()->get();
+        $plans = $student->plans();
 
         $student_schedule = [
             'range' => formatRangeString($start_time, $end_time),
@@ -82,13 +86,23 @@ class StudentScheduleController extends Controller
                         'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
                         'pending' => strtotime($date. ' '. $block->end) > time()
                     ];
-                    $day_block['appointments'] = AppointmentResource::collection($appointments->where('block_id', $block->id)->where('date', $date));                        
+                    $day_block['appointments'] = AppointmentResource::collection($appointments->where('block_id', $block->id)->where('date', $date)->get());                        
                     $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_id', $block->id));
-                    $day_block['scheduled'] = $block->flex || !$block->pivot ? (
-                        $plans->where('date', $date)->where('block_id', $block->id)
-                    ) : (
-                        Course::find($block->pivot->course_id) ?? null
-                    );
+                    if ($block->flex) {
+                        $plan = $plans->get()->where('date', $date)->where('block_id', $block->id)->flatten()->first();
+                        if ($plan) {
+                            $staff = $plan->staff()->first();
+                            $topic_ids = $staff->getTopics()->pluck('id')->toArray();
+                            $day_block['scheduled'] = new StaffResource($staff);
+                            $topic = TopicSchedule::whereIn('topic_id', $topic_ids)->where('date', $date)->where('block_schedule_id', $block_schedule->id)->first();
+                            if ($topic) {
+                                $day_block['scheduled']['topic'] = $topic->topic;
+                            }
+                        }
+                    }
+                    else {
+                        $day_block['scheduled'] = Course::find($block->pivot->course_id);
+                    }
                     array_push($schedule_day['blocks'], $day_block);
                 });
                 array_push($schedule_by_week, $schedule_day);

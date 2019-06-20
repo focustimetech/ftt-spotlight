@@ -24,7 +24,7 @@ class SchedulePlansTableSeeder extends Seeder
                     $schedule_blocks = $block->schedule()->where('day_of_week', $day_number)->get();
                     $schedule_blocks->each(function($schedule_block) use ($block, &$block_time, $day_number, $student, $time) {
                         $block_time = $schedule_block->start;
-                        $staff_id = App\Staff::all()->random(1)->first()->id;
+                        $staff_id = App\Staff::all()->random()->id;
                         if (rand(1, 2) === 1) { // 50% chance to misalign plan/log
                             $ledger_entry = App\LedgerEntry::whereRaw("DAYOFWEEK(date) = $day_number")
                                 ->where('student_id', $student->id)

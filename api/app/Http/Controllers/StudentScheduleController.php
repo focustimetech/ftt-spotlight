@@ -49,6 +49,7 @@ class StudentScheduleController extends Controller
         $courses = $student->courses()->get();
         $blocks = $student->getBlocks();
         $appointments = $student->appointments();
+        // dd($appointments->get());
         $ledger_entries = $student->ledgerEntries()->get();
         $plans = $student->plans();
 
@@ -86,7 +87,7 @@ class StudentScheduleController extends Controller
                         'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
                         'pending' => strtotime($date. ' '. $block->end) > time()
                     ];
-                    $day_block['appointments'] = AppointmentResource::collection($appointments->where('block_id', $block->id)->where('date', $date)->get());                        
+                    $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
                     $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_id', $block->id));
                     if ($block->flex) {
                         $plan = $plans->get()->where('date', $date)->where('block_id', $block->id)->flatten()->first();

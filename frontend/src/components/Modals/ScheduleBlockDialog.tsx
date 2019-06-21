@@ -83,9 +83,22 @@ export const ScheduleBlockDialog = (props: IProps) => {
                     )}
                 </section>
                 {appointments && appointments.length > 0 && (
-                    <div>Appointments</div>
+                    <>
+                        <h5 className='section-header'>Appointments</h5>
+                        <section className='section'>
+                            {appointments.map((appointment: any, index: number) => (
+                                scheduleItem({
+                                    id: index,
+                                    title: appointment.staff.name,
+                                    memo: appointment.memo,
+                                    variant: pending ? 'pending' : (
+                                        logs.some(((log: any) => log.staff.id === appointment.staff.id)) ? 'success' : 'fail'
+                                    )
+                                })
+                            ))}
+                        </section>
+                    </>
                 )}
-                
             </DialogContent>
         </Dialog>
     )

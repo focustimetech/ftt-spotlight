@@ -229,6 +229,7 @@ class Schedule extends React.Component<IProps, IState> {
 											return (
 												<ScheduleBlock
 													id={idx}
+													badgeCount={block.appointments.length || 0}
 													title={title}
 													memo={block.logs[0] && block.flex ? block.logs[0].topic || null : null}
 													variant={variant}

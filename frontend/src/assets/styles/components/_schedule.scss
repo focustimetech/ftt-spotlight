@@ -22,6 +22,10 @@
 			.block {
 				margin: 0 0 16px 8px !important;
 				font-family: unset;
+
+				&__badge {
+					display: block;
+				}
 				
 				&__inner {
 					background: #EEE;
@@ -182,7 +186,7 @@
 	}
 
 	.log {
-		padding: 8px 8px 8px 16px;
+		padding: 8px 16px;
 		position: relative;
 		box-shadow: $elevation1;
 		margin-bottom: 4px;

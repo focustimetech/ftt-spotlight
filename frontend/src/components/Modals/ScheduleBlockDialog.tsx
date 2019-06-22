@@ -5,7 +5,10 @@ import {
     Button,
     Dialog,
     DialogContent,
-    Icon
+    DialogActions,
+    Icon,
+    IconButton,
+    Tooltip
 } from '@material-ui/core'
 
 import { BlockDetails } from '../Schedule'
@@ -19,15 +22,32 @@ interface ScheduleItemDetails {
     memo?: string
 }
 
-const scheduleItem = (details: ScheduleItemDetails) => {
+interface ScheduleItemAction {
+    icon: string,
+    title: string,
+    callback: (params: any) => any
+}
+
+const scheduleItem = (details: ScheduleItemDetails, isEditing?: boolean, actions?: ScheduleItemAction[]) => {
     const { id, variant, time, title, memo } = details
     return (
         <div className={classNames('log', `--${variant}`)} key={id}>
-            <h6 className='log__title'>
-                {title}
-                {time && <span className='log__time'>{time}</span>}
-            </h6>
-            {memo && <p className='log__memo'>{memo}</p>}
+            <div>
+                <h6 className='log__title'>
+                    {title}
+                    {time && <span className='log__time'>{time}</span>}
+                </h6>
+                {memo && <p className='log__memo'>{memo}</p>}
+            </div>
+            {isEditing === true && (
+                <div>
+                    {actions.map((action: ScheduleItemAction, index: number) => (
+                        <Tooltip title={action.title}>
+                            <IconButton onClick={() => action.callback}><Icon>{action.icon}</Icon></IconButton>
+                        </Tooltip>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
@@ -39,11 +59,22 @@ interface IProps {
 }
 
 export const ScheduleBlockDialog = (props: IProps) => {
+    const [isEditing, setEditing] = React.useState(false)
+
+    const handleEditingToggle = () => {
+        setEditing(isEditing === false)
+    }
+
+    const handleClose = () => {
+        setEditing(false)
+        props.onClose()
+    }
+
     const { label, logs, flex, scheduled, appointments, pending, start, end, date } = props.details
     console.log(props.details)
     return (
         <Dialog open={props.open} className='schedule-block-dialog'>
-            <EnhancedDialogTitle className='schedule-block-dialog__title' onClose={props.onClose}>
+            <EnhancedDialogTitle className='schedule-block-dialog__title' onClose={handleClose}>
                 <h4 className='label'>{label || 'Unlaballed Block'}<span>{`${start} - ${end}`}</span></h4>
                 <h3 className='date'>{date}</h3>
             </EnhancedDialogTitle>
@@ -52,13 +83,17 @@ export const ScheduleBlockDialog = (props: IProps) => {
                 <section className='section'>
                     {logs && logs.length > 0 ? (
                         logs.map((log: any, index: number) => (
-                            scheduleItem({
-                                id: index,
-                                time: log.time,
-                                title: log.staff.name,
-                                memo: log.topic,
-                                variant: 'success'
-                            })
+                            scheduleItem(
+                                {
+                                    id: index,
+                                    time: log.time,
+                                    title: log.staff.name,
+                                    memo: log.topic,
+                                    variant: 'success'
+                                },
+                                isEditing,
+                                [{ icon: 'delete', title: 'Remove', callback: () => null}]
+                            )
                         ))
                     ) : (
                         <p>No attendance recorded</p>
@@ -100,6 +135,10 @@ export const ScheduleBlockDialog = (props: IProps) => {
                     </>
                 )}
             </DialogContent>
+            <DialogActions>
+                <Button onClick={() => handleEditingToggle()} color='primary'>{isEditing ? 'Done' : 'Edit'}</Button>
+                <Button onClick={() => handleClose()}>Close</Button>
+            </DialogActions>
         </Dialog>
     )
 }

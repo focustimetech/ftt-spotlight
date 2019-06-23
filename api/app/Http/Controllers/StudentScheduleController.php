@@ -42,21 +42,20 @@ class StudentScheduleController extends Controller
         } else {
             $timestamp = strtotime($datetime);
         }
-        $start_time = $timestamp === strtotime('sunday') ? strtotime('sunday') : strtotime('previous sunday', $timestamp);
-        $end_time = strtotime('+1 weeks', $start_time);
+        $start_time = $timestamp === strtotime('sunday') ? $timestamp : strtotime('previous sunday', $timestamp);
+        $end_time = strtotime('+1 weeks -1 days', $start_time);
         
         $student = Student::findOrFail($id);
         $courses = $student->courses()->get();
         $blocks = $student->getBlocks();
         $appointments = $student->appointments();
-        // dd($appointments->get());
         $ledger_entries = $student->ledgerEntries()->get();
         $plans = $student->plans();
 
         $student_schedule = [
             'range' => formatRangeString($start_time, $end_time),
-            'next' => date('Y-m-d H:i:s', $end_time),
-            'previous' => date('Y-m-d H:i:s', strtotime('previous sunday', $start_time))
+            'next' => date('Y-m-d\TH:i:s', strtotime('+1 weeks +0 days', $end_time)),
+            'previous' => date('Y-m-d\TH:i:s', strtotime('-1 weeks +1 days', $start_time))
         ];
 
         for ($week_start = $start_time; $week_start < $end_time; $week_start = strtotime('+1 week', $week_start)) {

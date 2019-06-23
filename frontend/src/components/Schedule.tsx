@@ -84,6 +84,7 @@ class Schedule extends React.Component<IProps, IState> {
 	}
 
 	fetchSchedule = (datetime?: string) => {
+		console.log('datetime: ', datetime)
 		this.setState({ loading: true })
 		this.props.fetchStudentSchedule(this.props.studentID, datetime).then(
 			(res: any) => {

@@ -46,8 +46,8 @@ class StudentScheduleController extends Controller
         $end_time = strtotime('+1 weeks -1 days', $start_time);
         
         $student = Student::findOrFail($id);
-        $courses = $student->courses()->get();
-        $blocks = $student->getBlocks();
+        $courses = $student->courses($start_time, $end_time)->get();
+        $blocks = $student->getBlocks($start_time, $end_time);
         $appointments = $student->appointments();
         $ledger_entries = $student->ledgerEntries()->get();
         $plans = $student->plans();

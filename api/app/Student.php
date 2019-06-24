@@ -23,10 +23,16 @@ class Student extends Model
     /**
      * Retreive all Courses that student is enrolled in.
      */
-    public function courses()
+    public function courses($start = null, $end = null)
     {
-        return $this->belongsToMany('App\Course', 'enrollment', 'student_id', 'course_id')
-            ->withPivot('enrolled_by', 'enrolled_at', 'dropped_at')
+        $relation = $this->belongsToMany('App\Course', 'enrollment', 'student_id', 'course_id');
+
+        if ($start && $end) {
+            $relation->whereRaw('enrolled_at < ? AND (dropped_at NOT NULL OR dropped_at > ?)',
+                [date('Y-m-d H:i:s', $start), date('Y-m-d H:i:s', $end)]);
+        }
+
+        return $relation->withPivot('enrolled_by', 'enrolled_at', 'dropped_at')
             ->as('enrollment');
     }
 
@@ -49,9 +55,9 @@ class Student extends Model
     /**
      * Returns all blocks that a student participates in.
      */
-    public function getBlocks()
+    public function getBlocks($start = null, $end = null)
     {
-        return $this->courses()->get()->flatMap(function($course) {
+        return $this->courses($start, $end)->get()->flatMap(function($course) {
             return $course->blocks()->get();
         })->merge(Block::flexBlocks());
     }

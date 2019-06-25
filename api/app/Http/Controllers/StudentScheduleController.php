@@ -63,6 +63,7 @@ class StudentScheduleController extends Controller
             $schedule_by_week = []; // Segmented by week
             for ($time = $week_start; $time < $week_end; $time = strtotime('+1 day', $time)) {
                 $day_of_week = date('w', $time) + 1;
+                if (in_array($day_of_week, [1, 7])) continue;
                 $date = date('Y-m-d', $time);
                 $blocks_of_day = $student->getBlockSchedule()->where('day_of_week', $day_of_week);
                 //dd($blocks_of_day);

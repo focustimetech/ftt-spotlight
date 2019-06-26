@@ -76,6 +76,7 @@ class Login extends React.Component<IProps, IState> {
 
 	componentDidMount() {
 		this.backgroundImage = selectBackground()
+		document.title = 'Spotlight - Login'
 	}
 
 	render() {

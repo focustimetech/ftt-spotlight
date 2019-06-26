@@ -8,6 +8,7 @@ import {
     ExpansionPanelActions,
     ExpansionPanelDetails,
     ExpansionPanelSummary,
+    Fade,
     Icon,
     IconButton
 } from '@material-ui/core'
@@ -17,6 +18,8 @@ import { NavItem } from '../Sidebar/NavItem'
 
 interface IState {
     open: boolean
+    loading: boolean
+    openNotifications: number[]
 }
 
 interface IProps {
@@ -37,7 +40,8 @@ const data = [
             background: '#1034CD'
         },
         message: 'This is the body of the message. Sometimes, messages are too long to display.',
-        id: 1
+        id: 1,
+        read: false
     },
     {
         date: 'Tue, Jan 13',
@@ -52,7 +56,8 @@ const data = [
             background: '#4024AB'
         },
         message: 'Here is another message.',
-        id: 2
+        id: 2,
+        read: false
     }
 ]
 
@@ -62,8 +67,10 @@ export class NotificationsWidget extends React.Component<IProps> {
         this.escFunction = this.escFunction.bind(this)
     }
 
-    state = {
-        open: false
+    state: IState = {
+        open: false,
+        loading: false,
+        openNotifications: []
     }
 
     handleClickOpen = () => {
@@ -80,6 +87,22 @@ export class NotificationsWidget extends React.Component<IProps> {
         }
     }
 
+    handleClick = (id: number) => {
+        this.setState((state: IState) => {
+            const { openNotifications } = state
+            const isOpen = openNotifications.indexOf(id) >= 0
+            console.log(`${id} is open: ${isOpen}`)
+            return {
+                ...state,
+                openNotifications: isOpen ? (
+                    openNotifications.filter((notificationID: number) => notificationID !== id)
+                ) : (
+                    [...openNotifications, id]
+                ) 
+            }
+        })
+    }
+
     componentDidMount() {
         document.addEventListener('keydown', this.escFunction, false)
     }
@@ -88,7 +111,7 @@ export class NotificationsWidget extends React.Component<IProps> {
         document.removeEventListener('keydown', this.escFunction, false)
     }
 
-    render (){
+    render() {
         return (
             <>
                 <NavItem
@@ -104,34 +127,48 @@ export class NotificationsWidget extends React.Component<IProps> {
                             <h3>Notifications</h3>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
-                            <div className='notifications_modal__actions'>
-                                <Button>Mark all read</Button>
-                                <Button>Delete all</Button>
-                            </div>
                             {data.length > 0 ? (
-                                <div className='content-inner'>
-                                    {data.map((notification: any) => (
-                                        <ExpansionPanel className='notification' key={notification.id}>
-                                            <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}>
-                                                <div className='notification__sender'>
-                                                    <Avatar className='icon'>CU</Avatar>
-                                                    <div className='info'>
-                                                        <div className='sender-info'>
-                                                            <h4>{notification.sender.name}</h4>
-                                                            <h4>{notification.date}</h4>
+                                <>
+                                    <div className='notifications_modal__actions'>
+                                        <Button>Mark all read</Button>
+                                        <Button>Delete all</Button>
+                                    </div>
+                                    <div className='content-inner'>
+                                        {data.map((notification: any) => {
+                                            const expanded = this.state.openNotifications.indexOf(notification.id) >= 0
+                                            return (
+                                                <ExpansionPanel
+                                                    className='notification'
+                                                    expanded={expanded}
+                                                    key={notification.id}
+                                                    // onClick={}
+                                                >
+                                                    <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification.id)}>
+                                                        <div className='notification__sender'>
+                                                            <Avatar className='icon'>CU</Avatar>
+                                                            <div className='info'>
+                                                                <div className='sender-info'>
+                                                                    <h4>{notification.sender.name}</h4>
+                                                                    <h4>{notification.date}</h4>
+                                                                </div>
+                                                                {expanded ? (
+                                                                    <p className='time'>{notification.time}</p>
+                                                                ) : (
+                                                                    <p className='message'>{notification.message}</p>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                        <p className='message'>{notification.message}</p>
-                                                    </div>
-                                                </div>
-                                            </ExpansionPanelSummary>
-                                            <ExpansionPanelDetails><p>{notification.message}</p></ExpansionPanelDetails>
-                                            <ExpansionPanelActions>
-                                                <Button>Mark Unread</Button>
-                                                <Button>Delete</Button>
-                                            </ExpansionPanelActions>
-                                        </ExpansionPanel>
-                                    ))}
-                                </div>
+                                                    </ExpansionPanelSummary>
+                                                    <ExpansionPanelDetails><p>{notification.message}</p></ExpansionPanelDetails>
+                                                    <ExpansionPanelActions>
+                                                        <Button>Mark Unread</Button>
+                                                        <Button>Delete</Button>
+                                                    </ExpansionPanelActions>
+                                                </ExpansionPanel>
+                                            )
+                                        })}
+                                    </div>
+                                </>
                             ) : (
                                 <EmptyStateIcon variant='notifications'>
                                     <h2>Your inbox is empty</h2>

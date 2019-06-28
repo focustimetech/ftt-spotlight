@@ -20,6 +20,7 @@ interface ScheduleItemDetails {
     title: string
     time?: string
     memo?: string
+    method?: string
 }
 
 interface ScheduleItemAction {
@@ -29,13 +30,32 @@ interface ScheduleItemAction {
 }
 
 const scheduleItem = (details: ScheduleItemDetails, isEditing?: boolean, actions?: ScheduleItemAction[]) => {
-    const { id, variant, time, title, memo } = details
+    const { id, variant, time, title, memo, method } = details
+    let methodIcon = ''
+    let methodTitle = ''
+    switch (method) {
+        case 'manual':
+            methodIcon = 'keyboard'
+            methodTitle = 'Via manual check-in'
+            break
+        case 'air':
+            methodIcon = 'wifi'
+            methodTitle = 'Via Air Check-in'
+            break
+    }
+    console.log('method: ', method)
+
     return (
         <div className={classNames('log', `--${variant}`)} key={id}>
             <div>
                 <h6 className='log__title'>
                     {title}
-                    {time && <span className='log__time'>{time}</span>}
+                    {time && (
+                        <span className='log__time'>
+                            {time}
+                            <Tooltip className='icon' title={methodTitle}><Icon>{methodIcon}</Icon></Tooltip>
+                        </span>
+                    )}
                 </h6>
                 {memo && <p className='log__memo'>{memo}</p>}
             </div>
@@ -89,7 +109,8 @@ export const ScheduleBlockDialog = (props: IProps) => {
                                     time: log.time,
                                     title: log.staff.name,
                                     memo: log.topic,
-                                    variant: 'success'
+                                    variant: 'success',
+                                    method: log.method
                                 },
                                 isEditing,
                                 [{ icon: 'delete', title: 'Remove', callback: () => null}]

@@ -36,6 +36,7 @@ class LedgerTableSeeder extends Seeder
                                 'block_id' => $block->id,
                                 'staff_id' => $staff->id,
                                 'student_id' => $student->id,
+                                'method' => array_rand(['manual', 'air'])
                             ];
                             if ($block->flex) {
                                 $topic_ids = $staff->getTopics()->pluck('id')->toArray();

@@ -19,10 +19,21 @@ class LedgerEntry extends JsonResource
      */
     public function toArray($request)
     {
+        switch ($this->method) {
+            case 1:
+                $method = 'air';
+                break;
+            case 0:
+            default:
+                $method = 'manual';
+                break;
+        }
+
         $params = [
             'date' => date('M j, Y', strtotime($this->date)),
             'time' => date('g:i A', strtotime($this->date. ' '. $this->time)),
             'staff' => new StaffResource(Staff::find($this->staff_id)),
+            'method' => $method
         ];
 
         if ($this->topic_id) {

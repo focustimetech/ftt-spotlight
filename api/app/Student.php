@@ -26,9 +26,12 @@ class Student extends Model
     public function courses($start = null, $end = null)
     {
         $relation = $this->belongsToMany('App\Course', 'enrollment', 'student_id', 'course_id');
-
-        if ($start && $end) {
-            $relation->whereRaw('enrolled_at < ? AND (dropped_at NOT NULL OR dropped_at > ?)',
+    
+        if ($start !== null) {
+            if ($end === null) {
+                $end = time();
+            }
+            $relation->whereRaw('enrolled_at IS NOT NULL AND enrolled_at < ? AND (dropped_at IS NULL OR dropped_at > ?)',
                 [date('Y-m-d H:i:s', $start), date('Y-m-d H:i:s', $end)]);
         }
 
@@ -65,9 +68,9 @@ class Student extends Model
     /**
      * Return all scheduled blocks in which the student is enrolled in.
      */
-    public function getBlockSchedule()
+    public function getBlockSchedule($start = null, $end = null)
     {
-        return BlockSchedule::whereIn('block_id', $this->getBlocks()->pluck('id')->toArray())
+        return BlockSchedule::whereIn('block_id', $this->getBlocks($start, $end)->pluck('id')->toArray())
             ->orderBy('day_of_week')->orderBy('start')->get();
     }
 

@@ -14,9 +14,13 @@ class CreateSettingsGroupsTable extends Migration
     public function up()
     {
         Schema::create('settings_groups', function (Blueprint $table) {
-            $table->increments('id');
+            $table->unsignedInteger('id');
             $table->string('name');
             $table->string('description');
+        });
+
+        Schema::table('settings_groups', function (Blueprint $table) {
+            $table->primary('id');
         });
     }
 

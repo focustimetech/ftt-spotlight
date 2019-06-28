@@ -20,7 +20,6 @@ import { listToTruncatedString } from '../utils/utils'
 import { Tabs, TopNav } from './TopNav'
 import Schedule from './Schedule'
 import { Attendance } from './Attendance'
-import { Appointments } from './Appointments'
 
 interface IReduxProps {
 	student: any
@@ -66,7 +65,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 		const navTabs: Tabs = {
 			value: this.state.tab,
 			onChange: this.handleTabChange,
-			tabs: ['Attendance', 'Schedule', 'Appointments']
+			tabs: ['Attendance', 'Schedule']
 		}
 		const avatarColor = this.props.student.color || 'red'
 
@@ -127,7 +126,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 				<SwipeableViews index={this.state.tab}>
 					<Attendance />
 					<Schedule studentID={this.state.studentID} />
-					<Appointments />
 				</SwipeableViews>
 			</div>
 		)

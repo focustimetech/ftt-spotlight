@@ -17,11 +17,11 @@ class CreateSettingsTable extends Migration
             $table->increments('id');
             $table->string('key');
             $table->string('description');
+            $table->string('group');
             $table->string('type')->default('string');
             $table->integer('min')->default(0);
             $table->integer('max')->default(255);
             $table->string('value');
-            $table->timestamps();
         });
     }
 

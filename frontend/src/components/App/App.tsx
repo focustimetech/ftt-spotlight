@@ -17,6 +17,7 @@ import { Clusters } from '../Clusters'
 import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
 import { NotFound } from '../NotFound'
+import Settings from '../Settings'
 import StudentProfile from '../StudentProfile'
 import Students from '../Students'
 import Sidebar from '../Sidebar/Sidebar'
@@ -63,6 +64,7 @@ class App extends React.Component<IProps, IState> {
 									<Redirect to='/dashboard' />
 								)} />
 								<Route exact path='/dashboard' component={Dashboard} />
+								<Route path='/settings' component={Settings} />
 								<Route path='/staff' component={Staff} />
 								<Route path='/students/:studentID' component={StudentProfile} />
 								<Route path='/students' component={Students} />

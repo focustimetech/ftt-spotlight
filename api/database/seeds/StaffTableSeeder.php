@@ -12,5 +12,14 @@ class StaffTableSeeder extends Seeder
     public function run()
     {
         factory(App\Staff::class, 20)->create();
+        factory(App\Staff::class)->create([
+            'staff_type' => 'administrator',
+            'administrator' => true,
+            'title' => 'Mr.',
+            'first_name' => 'Curtis',
+            'last_name' => 'Upshall',
+            'initials' => 'CU',
+            'email' => 'curtisupshall@gmail.com'
+        ]);
     }
 }

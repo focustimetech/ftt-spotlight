@@ -67,7 +67,7 @@ class Settings extends React.Component<IProps, IState> {
                                         <p className='expansion-panel__heading'>{settingsGroup.name}</p>
                                         <p className='expansion-panel__subheading'>{settingsGroup.description}</p>
                                     </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
+                                    <ExpansionPanelDetails className='expansion-panel__details'>
                                         {settingsGroup.settings.map((setting: ISetting) => {
                                             let settingInput: any
                                             switch (setting.type) {

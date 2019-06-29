@@ -13,17 +13,77 @@ class SettingsTableSeeder extends Seeder
     {
         $settings = [
             [
-                'key' => 'school_name',
-                'value' => 'My School'
+                'name' => 'General settings',
+                'description' => 'Common settings for Spotlight',
+                'settings' => [
+                    [
+                        'key' => 'school_name',
+                        'value' => 'My School',
+                        'description' => 'School name'
+                    ],
+                    [
+                        'key' => 'start_datetime',
+                        'value' => date('Y-m-d H:i:s'),
+                        'description' => 'Year start'
+                    ],
+                    [
+                        'key' => 'end_datetime',
+                        'value' => date('Y-m-d H:i:s', strtotime('+6 months')),
+                        'description' => 'Year end'
+                    ]
+                ]
             ],
             [
-                'key' => 'include_days',
-                'value' => '2,3,4,5,6'
+                'name' => 'Calendar',
+                'description' => 'Change calendar settings',
+                'settings' => [
+                    [
+                        'key' => 'include_days',
+                        'value' => '2,3,4,5,6',
+                        'description' => 'Days included in schedule'
+                    ]
+                ]
+            ],
+            [
+                'name' => 'Air Check-in',
+                'description' => 'Control how Air Check-in works',
+                'settings' => [
+                    [
+                        'key' => 'air-check-in',
+                        'value' => true,
+                        'description' => 'Enable Air Check-in'
+                    ],
+                ]
+            ],
+            [
+                'name' => 'Privacy',
+                'description' => 'Manage privacy options for Spotlight',
+                'settings' => [
+                    [
+                        'key' => 'show-student-numbers',
+                        'value' => false,
+                        'description' => 'Show Student Numbers'
+                    ]
+                ]
             ]
         ];
 
-        foreach ($settings as $setting) {
-            factory(App\Setting::class)->create($setting);
+        foreach ($settings as $key => $settingsGroup) {
+            $id = $key + 1;
+            factory(App\SettingsGroup::class)->create([
+                'id' => $id,
+                'name' => $settingsGroup['name'],
+                'description' => $settingsGroup['description']
+            ]);
+        
+            foreach ($settingsGroup['settings'] as $setting) {
+                factory(App\Setting::class)->create([
+                    'group_id' => $id,
+                    'key' => $setting['key'],
+                    'value' => $setting['value'],
+                    'description' => $setting['description']
+                ]);
+            }
         }
     }
 }

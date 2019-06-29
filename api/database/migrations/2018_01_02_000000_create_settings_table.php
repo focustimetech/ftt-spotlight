@@ -16,11 +16,14 @@ class CreateSettingsTable extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key');
+            $table->string('description');
             $table->string('type')->default('string');
             $table->integer('min')->default(0);
             $table->integer('max')->default(255);
             $table->string('value');
-            $table->timestamps();
+            $table->unsignedInteger('group_id');
+            // Foreign keys
+            $table->foreign('group_id')->references('id')->on('settings_groups');
         });
     }
 

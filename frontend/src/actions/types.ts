@@ -25,3 +25,6 @@ export const FETCH_STUDENT_PROFILE = 'FETCH_STUDENT_PROFILE'
 
 // Student Schedule
 export const FETCH_STUDENT_SCHEDULE = 'FETCH_STUDENT_SCHEDULE'
+
+// Settings
+export const FETCH_SETTINGS = 'FETCH_SETTINGS'

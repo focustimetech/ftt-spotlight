@@ -4,18 +4,18 @@ import { connect } from 'react-redux'
 
 import {
     Button,
-    Checkbox,
     ExpansionPanel,
     ExpansionPanelActions,
     ExpansionPanelDetails,
     ExpansionPanelSummary,
-    Switch
+    Icon,
+    Switch,
+    TextField
 } from '@material-ui/core';
 
 import { ISettingsGroup, ISetting } from '../types/appSettings'
 import { fetchSettings } from '../actions/settingsActions'
 import { TopNav } from './TopNav'
-
 
 interface ReduxProps {
     settingsGroups: ISettingsGroup[]
@@ -28,8 +28,6 @@ interface IState {
     expanded: number,
     loading: boolean
 }
-
-const data: any[] = []
 
 class Settings extends React.Component<IProps, IState> {
     state: IState = {
@@ -63,13 +61,35 @@ class Settings extends React.Component<IProps, IState> {
                                 <ExpansionPanel
                                     className='expansion-panel'
                                     key={index}
-                                    onClick={() => this.handleClick(index)}
                                     expanded={expanded}
                                 >
-                                    <ExpansionPanelSummary>
+                                    <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}onClick={() => this.handleClick(index)}>
                                         <p className='expansion-panel__heading'>{settingsGroup.name}</p>
-                                        <p className='expansion-panel__subheading'>{'Subheading'}</p>
+                                        <p className='expansion-panel__subheading'>{settingsGroup.description}</p>
                                     </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails>
+                                        {settingsGroup.settings.map((setting: ISetting) => {
+                                            let settingInput: any
+                                            switch (setting.type) {
+                                                case 'boolean':
+                                                    settingInput = <Switch id={setting.key} checked={setting.value} />
+                                                    break
+                                                case 'number':
+                                                    settingInput = <TextField value={setting.value} id={setting.key} type='number' required />
+                                                    break
+                                                case 'string':
+                                                default:
+                                                    settingInput = <TextField value={setting.value} id={setting.key} type='string' required />
+                                                    break
+                                            }
+                                            return (
+                                                <div className='setting'>
+                                                    <p>{setting.description}</p>
+                                                    {settingInput}
+                                                </div>
+                                            )
+                                        })}
+                                    </ExpansionPanelDetails>
                                 </ExpansionPanel>
                             )
                         })}

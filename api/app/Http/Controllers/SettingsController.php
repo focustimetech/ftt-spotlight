@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Setting;
+use App\SettingsGroup;
 
 class SettingsController extends Controller
 {
     public function index()
     {
-        return Setting::all()->groupBy('group')->map(function($item, $key) {
+        return Setting::all()->groupBy('group_id')->map(function($item, $key) {
+            $group = SettingsGroup::findOrFail($key);
             return [
-                'name' => $key,
+                'name' => $group->name,
+                'description' => $group->description,
                 'settings' => $item
             ];
         })->values();

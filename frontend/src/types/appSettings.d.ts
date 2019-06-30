@@ -4,7 +4,12 @@ export interface ISettingsGroup {
     settings: ISetting[]
 }
 
-type ISettingType = 'string' | 'boolean' | 'number'
+type ISettingType = 
+    | 'string'
+    | 'boolean'
+    | 'number'
+    | 'weekdays'
+    | 'datetime'
 
 export interface ISetting {
     id: number,

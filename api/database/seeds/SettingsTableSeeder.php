@@ -24,12 +24,14 @@ class SettingsTableSeeder extends Seeder
                     [
                         'key' => 'start_datetime',
                         'value' => date('Y-m-d H:i:s'),
-                        'description' => 'Year start'
+                        'description' => 'Year start',
+                        'type' => 'datetime'
                     ],
                     [
                         'key' => 'end_datetime',
                         'value' => date('Y-m-d H:i:s', strtotime('+6 months')),
-                        'description' => 'Year end'
+                        'description' => 'Year end',
+                        'type' => 'datetime'
                     ]
                 ]
             ],
@@ -40,7 +42,8 @@ class SettingsTableSeeder extends Seeder
                     [
                         'key' => 'include_days',
                         'value' => '2,3,4,5,6',
-                        'description' => 'Days included in schedule'
+                        'description' => 'Days included in schedule',
+                        'type' => 'weekdays'
                     ]
                 ]
             ],
@@ -51,7 +54,8 @@ class SettingsTableSeeder extends Seeder
                     [
                         'key' => 'air-check-in',
                         'value' => true,
-                        'description' => 'Enable Air Check-in'
+                        'description' => 'Enable Air Check-in',
+                        'type' => 'boolean'
                     ],
                 ]
             ],
@@ -62,7 +66,8 @@ class SettingsTableSeeder extends Seeder
                     [
                         'key' => 'show-student-numbers',
                         'value' => false,
-                        'description' => 'Show Student Numbers'
+                        'description' => 'Show Student Numbers',
+                        'type' => 'boolean'
                     ]
                 ]
             ]
@@ -81,7 +86,8 @@ class SettingsTableSeeder extends Seeder
                     'group_id' => $id,
                     'key' => $setting['key'],
                     'value' => $setting['value'],
-                    'description' => $setting['description']
+                    'description' => $setting['description'],
+                    'type' => $setting['type'] ?? 'string'
                 ]);
             }
         }

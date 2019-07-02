@@ -68,34 +68,48 @@ class Settings extends React.Component<IProps, IState> {
                                         <p className='expansion-panel__subheading'>{settingsGroup.description}</p>
                                     </ExpansionPanelSummary>
                                     <ExpansionPanelDetails className='expansion-panel__details'>
-                                        {settingsGroup.settings.map((setting: ISetting) => {
-                                            let settingInput: any
-                                            switch (setting.type) {
-                                                case 'boolean':
-                                                    settingInput = <Switch id={setting.key} checked={setting.value} />
-                                                    break
-                                                case 'number':
-                                                    settingInput = <TextField value={setting.value} id={setting.key} type='number' required />
-                                                    break
-                                                case 'string':
-                                                default:
-                                                    settingInput = <TextField value={setting.value} id={setting.key} type='string' required />
-                                                    break
-                                            }
-                                            return (
-                                                <div className='setting'>
-                                                    <p>{setting.description}</p>
-                                                    {settingInput}
-                                                </div>
-                                            )
-                                        })}
+                                        {settingsGroup.settings.length && (
+                                            <div>
+                                                {settingsGroup.settings.map((setting: ISetting) => {
+                                                    let control: any
+                                                    switch (setting.type) {
+                                                        case 'boolean':
+                                                            control = (
+                                                                <Switch id={setting.key} checked={setting.value} />
+                                                            )
+                                                            break
+                                                        case 'number':
+                                                            control = (
+                                                                <TextField value={setting.value} id={setting.key} type='number' required />
+                                                            )
+                                                            break
+                                                        case 'datetime':
+                                                            control = (
+                                                                <div />
+                                                            )
+                                                            break
+                                                        case 'string':
+                                                        default:
+                                                            control = (
+                                                                <TextField value={setting.value} id={setting.key} type='string' required />
+                                                            )
+                                                            break
+                                                    }
+                                                    return (
+                                                        <div className='setting'>
+                                                            <p>{setting.description}</p>
+                                                            {settingInput}
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        )}
                                     </ExpansionPanelDetails>
                                 </ExpansionPanel>
                             )
                         })}
                     </div>
                 )}
-                
             </>
         )
     }

@@ -98,7 +98,7 @@ class Settings extends React.Component<IProps, IState> {
                                                     return (
                                                         <div className='setting'>
                                                             <p>{setting.description}</p>
-                                                            {settingInput}
+                                                            {control}
                                                         </div>
                                                     )
                                                 })}

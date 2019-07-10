@@ -15,13 +15,17 @@ class StarController extends Controller
     private function findFromType($item_type, $id) {
         switch($item_type) {
             case 'student':
-                return Student::findOrFail($id);
+                $student = Student::findOrFail($id);
+                return $student->getName();
             case 'cluster':
-                return Cluster::findOrFail($id);
+                $cluster = Cluster::findOrFail($id);
+                return $cluster->name;
             case 'course':
-                return Course::findOrFail($id);
+                $course = Course::findOrFail($id);
+                return $course->name;
             case 'staff':
-                return Staff::findOrFail($id);
+                $staff = Staff::findOrFail($id);
+                return $staff->getName();
         }
     }
 
@@ -33,8 +37,13 @@ class StarController extends Controller
     public function index()
     {
         // $starred = Starred::select('item_id', 'item_type')->where('staff_id', auth()->user()->id)->groupBy('item_type');
-        $starred = auth()->user()->staff()->starred()->get()->mapToGroups(function($starred) {
-			return [$starred['item_type'] => $this->findFromType($starred['item_type'], $starred['item_id'])];
+        $starred = auth()->user()->staff()->starred()->get()->map(function($starred) {
+			return [
+                'id' => $starred['id'],
+                'item_id' => $starred['item_id'],
+                'item_type' => $starred['item_type'],
+                'label' => $this->findFromType($starred['item_type'], $starred['item_id'])
+            ];
         });
 
         return new StarredResource($starred);

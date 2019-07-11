@@ -1,4 +1,5 @@
 import { FETCH_STARRED, STAR_ITEM, UNSTAR_ITEM } from '../actions/types'
+import { StarRequest } from '../actions/starActions'
 
 export interface StarredGroup {
     value: string
@@ -20,26 +21,34 @@ export const starredGroups: StarredGroup[] = [
     { value: 'cluster', label: 'Clusters' },
 ]
 
-const emptyStarred: StarredList = {
-    students: [],
+export const emptyStarred: StarredList = {
+    student: [],
     staff: [],
-    courses: [],
-    clusters: [],
+    course: [],
+    cluster: [],
+}
+
+export interface StarredItem {
+    id: number,
+    item_id: number,
+    item_type: string,
+    label: string
+    isStarred?: boolean
 }
 
 interface IState {
-    items: StarredList,
-    item: any
+    items: StarredItem[],
+    item: StarredItem
 }
 
 const initialState: IState = {
-    items: emptyStarred,
-    item: {}
+    items: [],
+    item: null
 }
 
 interface IAction {
     type: string,
-    payload: any
+    payload: StarRequest
 }
 
 export const starReducer = (state = initialState, action: IAction) => {
@@ -52,6 +61,12 @@ export const starReducer = (state = initialState, action: IAction) => {
         case STAR_ITEM:
             return {
                 ...state,
+                items: state.items.reduce((arr: StarredItem[], item: StarredItem) => {
+                    if (action.payload ) {
+                        arr.push(item)
+                    }
+                    return arr
+                }, state.items),
                 item: action.payload
             }
         case UNSTAR_ITEM:

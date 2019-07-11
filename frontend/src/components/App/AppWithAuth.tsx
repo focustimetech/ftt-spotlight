@@ -15,13 +15,10 @@ export default class AppWithAuth extends React.Component {
 	isAuthenticated = () => {
 		const token = localStorage.access_token
 		if (token) {
-			console.log('Authenticaed: ' + token)
 			return true
 		} else {
-			console.log('Not authenticaed: ' + token)
 			return false
 		}
-		// return new Boolean(localStorage.access_token)
 	}
 
 	handleSignOut = () => {

@@ -21,10 +21,12 @@ export const fetchStarred = () => {
 }
 
 export const starItem = (starred: StarRequest) => {
+    console.log('starItem() called')
     return (dispatch: any) => {
         const uri = 'http://localhost:8000/api/star'
         return axios.post(uri, starred)
             .then(res => {
+                console.log('successfully starred:', res.data)
                 const starred = res.data
                 dispatch({
                     type: STAR_ITEM,
@@ -36,11 +38,9 @@ export const starItem = (starred: StarRequest) => {
 
 export const restarItem = (starred: StarredItem) => {
     console.log(`Restarring ${starred.item_type} having ID ${starred.item_id}`)
-    starItem({
-        item_id: starred.item_id,
-        item_type: starred.item_type
-    })
     return (dispatch: any) => {
+        const uri = 'http://localhost:8000/api/star'
+        axios.post(uri, starred)
         return dispatch({
             type: STAR_ITEM,
             payload: starred

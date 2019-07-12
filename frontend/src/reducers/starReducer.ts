@@ -48,7 +48,7 @@ const initialState: IState = {
 
 interface IAction {
     type: string,
-    payload: StarRequest
+    payload: any
 }
 
 export const starReducer = (state = initialState, action: IAction) => {
@@ -62,16 +62,24 @@ export const starReducer = (state = initialState, action: IAction) => {
             return {
                 ...state,
                 items: state.items.reduce((arr: StarredItem[], item: StarredItem) => {
-                    if (action.payload ) {
-                        arr.push(item)
-                    }
+                    arr.push(item.id === action.payload.id ? {
+                        ...item,
+                        isStarred: true
+                    } : item)
                     return arr
-                }, state.items),
+                }, []),
                 item: action.payload
             }
         case UNSTAR_ITEM:
             return {
                 ...state,
+                items: state.items.reduce((arr: StarredItem[], item: StarredItem) => {
+                    arr.push(item.id === action.payload.id ? {
+                        ...item,
+                        isStarred: false
+                    } : item)
+                    return arr
+                }, []),
                 item: action.payload
             }
         default:

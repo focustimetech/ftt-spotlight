@@ -27,7 +27,8 @@ interface IState {
 
 interface ReduxProps {
     fetchStarred: () => any
-    starItem: (starredItem: any) => any
+    // starItem: (starredItem: any) => any
+    restarItem: (starredItem: any) => any
     unstarItem: (starredItem: any) => any
     starred: StarredItem[]
     newStarred: StarredItem
@@ -87,11 +88,16 @@ class StarredWidget extends React.Component<IProps, IState> {
 
     componentWillReceiveProps(nextProps: IProps) {
         if (nextProps.newStarred) {
+            /*
             const isStarred = nextProps.newStarred.isStarred
             if (isStarred === true || isStarred === false) {
+                console.log('Skipping this.props.starred.unshift()')
                 return
+            } else {
+                console.log('Not skipping this.props.starred.unshift()')
             }
             this.props.starred.unshift(nextProps.newStarred)
+            */
         }
     }
 

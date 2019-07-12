@@ -56,7 +56,6 @@ class StarredWidget extends React.Component<IProps, IState> {
 
     handleClickOpen = () => {
         this.setState({ open: true })
-        this.fetchStarred()
     }
 
     handleClose = () => {
@@ -86,27 +85,11 @@ class StarredWidget extends React.Component<IProps, IState> {
         this.fetchStarred()
     }
 
-    componentWillReceiveProps(nextProps: IProps) {
-        if (nextProps.newStarred) {
-            /*
-            const isStarred = nextProps.newStarred.isStarred
-            if (isStarred === true || isStarred === false) {
-                console.log('Skipping this.props.starred.unshift()')
-                return
-            } else {
-                console.log('Not skipping this.props.starred.unshift()')
-            }
-            this.props.starred.unshift(nextProps.newStarred)
-            */
-        }
-    }
-
     componentWillUnmount() {
         document.removeEventListener('keydown', this.escFunction, false)
     }
 
     render () {
-        console.log('this.props.starred:', this.props.starred)
         const starredCount: number = this.props.starred.length
         let starred: StarredList = {}
         if (this.props.starred) {
@@ -201,9 +184,6 @@ class StarredWidget extends React.Component<IProps, IState> {
     }
 }
 
-/**
- * @TODO IProps for this....
- */
 const mapStateToProps = (state: any) => ({
     starred: state.starred.items,
     newStarred: state.starred.item
@@ -215,4 +195,5 @@ const mapDispatchToProps = {
     restarItem,
     unstarItem
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(StarredWidget)

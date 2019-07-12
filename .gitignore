@@ -8,5 +8,6 @@ api/.phpunit.result.cache
 api/npm-debug.log
 api/yarn-error.log
 frontend/node_modules
+frontend/**/dist
 
 passport.txt

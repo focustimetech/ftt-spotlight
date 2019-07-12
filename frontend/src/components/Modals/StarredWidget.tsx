@@ -139,7 +139,7 @@ class StarredWidget extends React.Component<IProps, IState> {
                                                             <Link key={index} to={url} onClick={this.handleClose}>
                                                                 <ListItem key={index} className='items-group_list__item'>
                                                                     {starredItem.label}
-                                                                    <ListItemSecondaryAction>
+                                                                    <ListItemSecondaryAction className='star'>
                                                                         <IconButton onClick={(event: any) => this.toggleStarred(event, starredItem)}>
                                                                             <Icon className={classNames({'--starred': isStarred})}>{isStarred ? 'star' : 'star_border'}</Icon>
                                                                         </IconButton>

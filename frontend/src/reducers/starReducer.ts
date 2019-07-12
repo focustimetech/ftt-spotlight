@@ -1,4 +1,5 @@
 import { FETCH_STARRED, STAR_ITEM, UNSTAR_ITEM } from '../actions/types'
+import { StarRequest } from '../actions/starActions'
 
 export interface StarredGroup {
     value: string
@@ -20,21 +21,29 @@ export const starredGroups: StarredGroup[] = [
     { value: 'cluster', label: 'Clusters' },
 ]
 
-const emptyStarred: StarredList = {
-    students: [],
+export const emptyStarred: StarredList = {
+    student: [],
     staff: [],
-    courses: [],
-    clusters: [],
+    course: [],
+    cluster: [],
+}
+
+export interface StarredItem {
+    id?: number,
+    item_id: number,
+    item_type: string,
+    label?: string
+    isStarred?: boolean
 }
 
 interface IState {
-    items: StarredList,
-    item: any
+    items: StarredItem[],
+    item: StarredItem
 }
 
 const initialState: IState = {
-    items: emptyStarred,
-    item: {}
+    items: [],
+    item: null
 }
 
 interface IAction {
@@ -52,12 +61,32 @@ export const starReducer = (state = initialState, action: IAction) => {
         case STAR_ITEM:
             return {
                 ...state,
-                item: action.payload
+                items: state.items.reduce((arr: StarredItem[], item: StarredItem) => {
+                    arr.push(item.id === action.payload.id ? {
+                        ...item,
+                        isStarred: true
+                    } : item)
+                    return arr
+                }, []),
+                item: {
+                    ...action.payload,
+                    isStarred: true
+                }
             }
         case UNSTAR_ITEM:
             return {
                 ...state,
-                item: action.payload
+                items: state.items.reduce((arr: StarredItem[], item: StarredItem) => {
+                    arr.push(item.id === action.payload.id ? {
+                        ...item,
+                        isStarred: false
+                    } : item)
+                    return arr
+                }, []),
+                item: {
+                    ...action.payload,
+                    isStarred: false
+                }
             }
         default:
             return state

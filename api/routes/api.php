@@ -31,6 +31,14 @@ Route::middleware('auth:api')->group(function() {
     Route::get('topics', 'TopicsController@index');
     Route::post('topics', 'TopicsController@store');
     Route::delete('topics/{id}', 'TopicsController@destroy');
+
+    // Students
+    Route::get('students', 'StudentsController@index');
+    Route::get('students/{id}', 'StudentsController@show');
+    Route::get('students/profile/{id}', 'StudentsController@profile');
+    Route::post('students', 'StudentsController@store');
+    Route::put('students', 'StudentsController@store');
+    Route::delete('students/{id}', 'StudentsController@destroy');
 });
 
 // COMPLETE
@@ -42,13 +50,6 @@ Route::post('staff', 'StaffController@store');
 Route::put('staff', 'StaffController@store');
 Route::delete('staff/{id}', 'StaffController@destroy');
 
-// Students
-Route::get('students', 'StudentsController@index');
-Route::get('students/{id}', 'StudentsController@show');
-Route::get('students/profile/{id}', 'StudentsController@profile');
-Route::post('students', 'StudentsController@store');
-Route::put('students', 'StudentsController@store');
-Route::delete('students/{id}', 'StudentsController@destroy');
 // Student Schedule
 Route::get('students/{id}/schedule', 'StudentScheduleController@index');
 Route::get('students/{id}/schedule/{timestamp}', 'StudentScheduleController@index');

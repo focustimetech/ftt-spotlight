@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core'
 
 import { StarredItem } from '../reducers/starReducer'
-import { restarItem, unstarItem } from '../actions/starActions'
+import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
 import { listToTruncatedString } from '../utils/utils'
 
@@ -28,7 +28,7 @@ interface IReduxProps {
 	student: any
 	newStarred: StarredItem
 	fetchStudentProfile: (studentID: number) => any
-	restarItem: (item: StarredItem) => any
+	starItem: (item: StarredItem) => any
 	unstarItem: (item: StarredItem) => any
 }
 
@@ -59,7 +59,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 		if (isStarred) {
             this.props.unstarItem(starredItem)
         } else {
-            this.props.restarItem(starredItem)
+            this.props.starItem(starredItem)
         }
 	}
 
@@ -158,7 +158,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = {
 	fetchStudentProfile,
-	restarItem,
+	starItem,
 	unstarItem
 }
 

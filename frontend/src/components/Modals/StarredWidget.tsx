@@ -17,7 +17,7 @@ import {
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
-import { fetchStarred, restarItem, unstarItem } from '../../actions/starActions'
+import { fetchStarred, starItem, unstarItem } from '../../actions/starActions'
 import { StarredList, StarredGroup, StarredItem, starredGroups } from '../../reducers/starReducer'
 
 interface IState {
@@ -27,8 +27,7 @@ interface IState {
 
 interface ReduxProps {
     fetchStarred: () => any
-    // starItem: (starredItem: any) => any
-    restarItem: (starredItem: any) => any
+    starItem: (starredItem: any) => any
     unstarItem: (starredItem: any) => any
     starred: StarredItem[]
     newStarred: StarredItem
@@ -65,12 +64,11 @@ class StarredWidget extends React.Component<IProps, IState> {
     toggleStarred = (event: any, starredItem: StarredItem) => {
         event.preventDefault()
         event.stopPropagation()
-
         const isStarred: boolean = starredItem.isStarred !== false
         if (isStarred) {
             this.props.unstarItem(starredItem)
         } else {
-            this.props.restarItem(starredItem)
+            this.props.starItem(starredItem)
         }
     }
 
@@ -191,8 +189,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = {
     fetchStarred,
-    restarItem,
-    // starItem,
+    starItem,
     unstarItem
 }
 

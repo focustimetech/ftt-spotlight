@@ -68,7 +68,10 @@ export const starReducer = (state = initialState, action: IAction) => {
                     } : item)
                     return arr
                 }, []),
-                item: action.payload
+                item: {
+                    ...action.payload,
+                    isStarred: true
+                }
             }
         case UNSTAR_ITEM:
             return {
@@ -80,7 +83,10 @@ export const starReducer = (state = initialState, action: IAction) => {
                     } : item)
                     return arr
                 }, []),
-                item: action.payload
+                item: {
+                    ...action.payload,
+                    isStarred: false
+                }
             }
         default:
             return state

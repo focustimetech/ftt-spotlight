@@ -17,7 +17,7 @@ import {
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
-import { fetchStarred, starItem, restarItem, unstarItem } from '../../actions/starActions'
+import { fetchStarred, restarItem, unstarItem } from '../../actions/starActions'
 import { StarredList, StarredGroup, StarredItem, starredGroups } from '../../reducers/starReducer'
 
 interface IState {
@@ -191,8 +191,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = {
     fetchStarred,
-    starItem,
     restarItem,
+    // starItem,
     unstarItem
 }
 

@@ -20,11 +20,11 @@
 							visibility: visible;
 					}
 				}
-
-				.--starred {
-					color: $star-color !important;
-				}
 			}
 		}
 	}
+}
+
+.--starred {
+	color: $star-color !important;
 }

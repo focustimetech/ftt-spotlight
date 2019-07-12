@@ -21,7 +21,10 @@ class StudentProfile extends JsonResource
             'grade' => $this->grade,
             'initials' => $this->initials,
             'color' => $this->color,
-            'clusters' => \App\Student::findOrFail($this->id)->clusters()->get()
+            'clusters' => \App\Student::findOrFail($this->id)->clusters()->get(),
+            'starred' => auth()->user()->staff()->starred()->get()->some(function($item) {
+                return $item->item_id === $this->id && $item->item_type === 'student';
+            })
         ];
     }
 }

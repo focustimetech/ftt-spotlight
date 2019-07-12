@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as classNames from 'classNames'
 import { Icon, IconButton } from '@material-ui/core'
 
 interface IProps {
@@ -7,10 +6,10 @@ interface IProps {
     onClick: () => void
 }
 
-export const Star = (props: IProps) => {
+export const StarButton = (props: IProps) => {
     return (
         <IconButton onClick={() => props.onClick()}>
-            <Icon className={classNames({'--starred': props.isStarred})}>
+            <Icon className={props.isStarred ? '--starred': ''}>
                 {props.isStarred ? 'star' : 'star_border'}
             </Icon>
         </IconButton>

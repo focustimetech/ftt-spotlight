@@ -29,10 +29,10 @@ export const emptyStarred: StarredList = {
 }
 
 export interface StarredItem {
-    id: number,
+    id?: number,
     item_id: number,
     item_type: string,
-    label: string
+    label?: string
     isStarred?: boolean
 }
 

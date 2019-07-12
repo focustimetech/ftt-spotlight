@@ -19,9 +19,10 @@ import { restarItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
 import { listToTruncatedString } from '../utils/utils'
 
+import { Attendance } from './Attendance'
 import { Tabs, TopNav } from './TopNav'
 import Schedule from './Schedule'
-import { Attendance } from './Attendance'
+import { StarButton } from './StarButton'
 
 interface IReduxProps {
 	student: any
@@ -50,8 +51,16 @@ class StudentProfile extends React.Component<IProps, IState> {
 		this.setState({ tab: value })
 	}
 
-	toggleStarred = () => {
-
+	toggleStarred = (isStarred: boolean) => {
+		const starredItem: StarredItem = {
+			item_id: this.props.student.id,
+			item_type: 'student'
+		}
+		if (isStarred) {
+            this.props.unstarItem(starredItem)
+        } else {
+            this.props.restarItem(starredItem)
+        }
 	}
 
 	componentWillMount() {
@@ -70,7 +79,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 	}
 
 	render () {
-		const starred: boolean = this.props.student.starred
+		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.student.id && this.props.newStarred.item_type === 'student' ? (
+			this.props.newStarred.isStarred !== false
+		) : this.props.student.starred
+
 		const navTabs: Tabs = {
 			value: this.state.tab,
 			onChange: this.handleTabChange,
@@ -120,9 +132,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					) : (
 						<ul className='right_col'>
 							<li>
-								<IconButton onClick={() => this.toggleStarred()}>
-									<Icon className={classNames({'--starred': starred})}>{starred ? 'star' : 'star_border'}</Icon>
-								</IconButton>
+								<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
 							</li>
 							<li>
 								<IconButton>

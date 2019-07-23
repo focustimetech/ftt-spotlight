@@ -8,23 +8,24 @@ use App\Student;
 class AttendanceController extends Controller
 {
     /**
-     * Get attendance from student
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Get total attendance for a given student
      */
     public function attendance($student_id)
     {
         $student = Student::findOrFail($student_id);
-        $courses = $student->courses()->get();
+        $blocks = $student->courses()->get()->map(function($course) {
+            $block = $course->getBlock();
+            return [
+                'block_id'
+            ];
+        });
+
         $block_schedule = $student->getBlockSchedule()->groupBy('day_of_week')->values()->toArray();
-        // return $block_schedule;
         $attendance = [];
 
         $courses->each(function($course) use (&$attendance, $student, $block_schedule) {
             $enrolled_at = strtotime($course->enrollment->enrolled_at);
             $stop_at = $course->enrollment->dropped_at ? strtotime($course->enrollment->dropped_at) : time();
-            // echo "stop_ad: $stop_at";
 
             // First, get the very first block in which attendance is recorded
             $start_time = date('H:i:s', $enrolled_at);

@@ -30,7 +30,8 @@ class Utils {
     /**
      * Returns a random User color string, unless an index is given.
      */
-    public static function userColor($index = -1) {
+    public static function userColor($index = -1)
+    {
         if ($index && $index > 0 && $index < count(USER_COLORS)) {
             return USER_COLORS[$index];
         }
@@ -40,7 +41,21 @@ class Utils {
     /**
      * Returns a random Topic color string, unless an index is given.
      */
-    public static function topicColor($index = -1) {
+    public static function topicColor($index = -1)
+    {
         return self::userColor($index);
+    }
+
+    /**
+     * Compute the number of weeks that have passed between two times
+     */
+    public static function weekDiff($time1, $time2)
+    {
+        $datetime1 = new DateTime(date('Y-m-d H:i:s', $time1));
+        $datetime2 = new DateTime(date('Y-m-d H:i:s', $time2));
+
+        $day_diff = $datetime1->diff($datetime2)->format('%a');
+        return $day_diff;
+        //$complete_weeks = 
     }
 }

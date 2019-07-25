@@ -34,7 +34,7 @@ class AttendanceController extends Controller
                     'course_id' => $course->id,
                     'enrolled_at' => $course->enrollment->enrolled_at,
                     'dropped_at' => $course->enrollment->dropped_at,
-                    'flex' => $block->flex,
+                    'flex' => $block->flex == true,
                     'total' => 0, // Total number of occurances
                     'attended' => 0 // Total number of ledger entries for the block
                 ];
@@ -58,22 +58,22 @@ class AttendanceController extends Controller
         });
 
         // Calculate missed and attended counts for each block
-        foreach ($student_blocks as $student_block) {
+        foreach ($student_blocks as $block_id => $student_block) {
+            $schedule = $schedule_blocks[$block_id];
             if ($student_block['flex'] === true) {
                 $start = $start_time > $settings_start_time ? $start_time : $settings_start_time;
                 $end = $settings_end_time < time() ? $settings_end_time : time();
             } else {
                 // Regular course block
-                $enrolled_time = strtotime($block->enrolled_at);
+                $enrolled_time = strtotime($student_block['enrolled_at']);
 
                 // Drop timestamp is possible null in the case that student is continuing class
-                $dropped_time = $block->dropped_at ? strtotime($block->dropped_at) : null;
+                $dropped_time = $student_block['dropped_at'] ? strtotime($student_block['dropped_at']) : null;
                 $start = $start_time > $enrolled_time ? $start_time : $enrolled_time > $settings_start_time ? $enrolled_time : $settings_start_time;
-                $end = $dropped_at && $dropped_at < time() ? $dropped_at : time() < $settings_end_time ? time() : $settings_end_time;
+                $end = $dropped_time && $dropped_time < time() ? $dropped_time : time() < $settings_end_time ? time() : $settings_end_time;
             }
         }
 
-        
         return $student_blocks;
     }
 }

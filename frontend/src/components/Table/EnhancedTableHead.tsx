@@ -18,12 +18,13 @@ interface IProps {
 	order: 'asc' |'desc'
 	orderBy: string
 	columns: ITableHeaderColumn[]
-	rowCount: number
 	loading: boolean
+	rowCount: number
+	selectable: boolean	
 }
 
 export const EnhancedTableHead = (props: IProps) => {
-	const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props
+	const { onSelectAllClick, order, orderBy, numSelected, rowCount, selectable } = props
 	const columns = props.columns.filter((column: ITableHeaderColumn) => {
 		return column.visible
 	})
@@ -35,18 +36,20 @@ export const EnhancedTableHead = (props: IProps) => {
 	return (
 		<TableHead>
 			<TableRow>
-				<TableCell padding='checkbox'>
-					<Checkbox
-						indeterminate={numSelected > 0 && numSelected < rowCount}
-						checked={numSelected === rowCount}
-						onChange={onSelectAllClick}
-					/>
-				</TableCell>
-				{columns.map((column: ITableHeaderColumn) => (
+				{selectable && (
+					<TableCell padding='checkbox'>
+						<Checkbox
+							indeterminate={numSelected > 0 && numSelected < rowCount}
+							checked={numSelected === rowCount}
+							onChange={onSelectAllClick}
+						/>
+					</TableCell>
+				)}
+				{columns.map((column: ITableHeaderColumn, index: number) => (
 					<TableCell
 						key={column.id}
 						align={column.isNumeric ? 'right' : 'left'}
-						padding={column.disablePadding ? 'none' : 'default'}
+						padding={column.disablePadding ? (!selectable && index === 0 ? 'default' : 'none') : 'default'}
 						sortDirection={orderBy === column.id ? order : false}
 					>
 						<Tooltip

@@ -187,6 +187,7 @@ class Students extends React.Component<IProps, IState> {
 					data={students}
 					actions={actions}
 					searchable={true}
+					selectable={true}
 					loading={this.state.loading}
 				/>
 			</>

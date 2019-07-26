@@ -26,6 +26,7 @@ interface IProps {
 	numTotal: number
 	title: string
 	searchable: boolean
+	selectable: boolean
 	tableQuery: string
 	filters: ITableFilter[]
 	filterOpen: boolean

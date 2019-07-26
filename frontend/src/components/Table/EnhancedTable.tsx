@@ -63,6 +63,7 @@ interface IProps {
 	data: any[]
 	actions: ITableAction[]
 	searchable?: boolean
+	selectable?: boolean
 	showEmptyTable?: boolean
 }
 
@@ -261,6 +262,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		}
 		return rows
 	}
+
 	render() {
 		const { order, orderBy, selected, rowsPerPage, page } = this.state
 		const data = (this.props.searchable && this.state.tableQuery.length) || this.state.filters.length ? (
@@ -268,7 +270,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		) : (
 			this.props.data
 		)
-		const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
+		const selectable: boolean = this.props.selectable !== false
 
 		return (
 			<div className='enhanced-table'>
@@ -283,6 +285,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						<EnhancedTableToolbar
 							title={this.props.title}
 							searchable={this.props.searchable}
+							selectable={selectable}
 							tableQuery={this.state.tableQuery}
 							numSelected={selected.length}
 							numShown={data.length}
@@ -307,6 +310,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 									onSelectAllClick={this.handleSelectAllClick}
 									onRequestSort={this.handleRequestSort}
 									rowCount={data.length}
+									selectable={selectable}
 									columns={this.props.columns}
 									loading={this.props.loading}
 								/>
@@ -325,16 +329,18 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 												<TableRow
 													hover
 													onClick={(event: any) => this.handleClick(event, n.id)}
-													role='checkbox'
+													role={selectable && 'checkbox'}
 													aria-checked={isSelected}
 													tabIndex={-1}
 													key={n.id}
 													selected={isSelected}
 												>
-													<TableCell padding='checkbox'>
-														<Checkbox checked={isSelected} />
-													</TableCell>
-													{columns.map((column: ITableHeaderColumn) => {
+													{selectable && (
+														<TableCell padding={'checkbox'}>
+															<Checkbox checked={isSelected} />
+														</TableCell>
+													)}
+													{columns.map((column: ITableHeaderColumn, index: number) => {
 														if (column.link) {
 															return (
 																<TableCell padding='checkbox'>
@@ -347,7 +353,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 															)
 														} else if (column.th) {
 															return (
-																<TableCell component='th' scope='row' padding='none'>
+																<TableCell component='th' scope='row' padding={selectable || index !== 0 ? 'none' : 'default'}>
 																	{n[column.id]}
 																</TableCell>
 															)
@@ -359,11 +365,6 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 											)
 										})
 									)}
-									{/*emptyRows > 0 && (
-										<TableRow style={{ height: 49 * emptyRows }}>
-											<TableCell colSpan={4} />
-										</TableRow>
-									)*/}
 								</TableBody>
 							</Table>
 						</div>

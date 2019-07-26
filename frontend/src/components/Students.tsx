@@ -96,10 +96,11 @@ class Students extends React.Component<IProps, IState> {
 	}
 
 	componentWillReceiveProps(nextProps: any) {
-		if (nextProps.newStudent) {
+		if (nextProps.newStudent && Object.entries(nextProps.newStudent).length !== 0) {
 			this.props.students.unshift(nextProps.newStudent)
 		}
 	}
+
 	handleCheckIn = (ids: number[]) => {
 		// console.log('IDs:', ids)
 	}
@@ -142,6 +143,7 @@ class Students extends React.Component<IProps, IState> {
 			}
 		})
 
+		console.log('this.props.students:', this.props.students)
 		const columns: ITableHeaderColumn[] = [
 			{
 				id: 'last_name',

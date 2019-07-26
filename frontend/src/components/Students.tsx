@@ -138,7 +138,7 @@ class Students extends React.Component<IProps, IState> {
 				id: index,
 				last_name: student.last_name,
 				first_name: student.first_name,
-				attendance: 20,
+				attendance: student.id,
 				profile: student.id
 			}
 		})

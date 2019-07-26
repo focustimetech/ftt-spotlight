@@ -199,8 +199,6 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			}
 
 			this.setState({ selected: newSelected })
-		} else if (this.props.link) {
-			this.setState({ redirect: `${this.props.link.path}/${id}`})
 		}
 	}
 
@@ -325,7 +323,6 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 											const columns = this.props.columns.filter((column: ITableHeaderColumn) => {
 												return column.visible
 											})
-											console.log('n:', n)
 											return (
 												<TableRow
 													hover
@@ -342,14 +339,20 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 														</TableCell>
 													)}
 													{columns.map((column: ITableHeaderColumn, index: number) => {
+														const columnData: any = n[column.id]
 														if (column.th) {
 															return (
 																<TableCell component='th' scope='row' padding={selectable || index !== 0 ? 'none' : 'default'}>
-																	{n[column.id]}
+																	{this.props.link && !selectable ? (
+																		<Link className='enhanced-table__link' to={`${this.props.link.path}/${n[this.props.link.key]}`}>
+																			{columnData}
+																		</Link>
+																	) : columnData
+																	}
 																</TableCell>
 															)
 														} else {
-															return <TableCell align='right'>{n[column.id]}</TableCell>
+															return <TableCell align='right'>{columnData}</TableCell>
 														}
 													})}
 													{(this.props.link && selectable)  && (	

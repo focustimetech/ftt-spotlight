@@ -178,12 +178,15 @@ class Students extends React.Component<IProps, IState> {
 						</li>
 					</ul>
 				</TopNav>
-				<p>Welcome to the Students page!</p>
-				<ClustersDialog open={false} onClose={console.log} clusters={[]}/>
-				<Snackbar
-					open={false}
+				<EnhancedTable
+					showEmptyTable={false}
+					title='Students'
+					columns={columns}
+					data={students}
+					actions={actions}
+					searchable={true}
+					loading={this.state.loading}
 				/>
-				<EnhancedTable showEmptyTable={false} title='Students' columns={columns} data={students} actions={actions} searchable={true} loading={this.state.loading} />
 			</>
 		)
 	}

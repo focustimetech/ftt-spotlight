@@ -97,10 +97,11 @@ class Sidebar extends React.Component<IProps> {
 								<h4>Oak Bay High</h4>
 							</div>
 							<ul className='menu_list'>
+								<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
+								<MenuItem to='/students' icon='face' label='Students' />
 								<MenuItem to='/clusters' icon='group' label='Cluster' />
 								<MenuItem to='/class-schedule' icon='date_range' label='Class Schedule' />
 								<MenuItem to='/event' icon='event' label='Events' />
-								<MenuItem to='/add-users' icon='person_add' label='Add User' />
 								<MenuItem to='/reporting' icon='assignment' label='Reporting' />
 								<MenuItem to='/settings' icon='settings' label='Settings' />
 								<MenuItem to='/parents' icon='contact_mail' label='Parents' />

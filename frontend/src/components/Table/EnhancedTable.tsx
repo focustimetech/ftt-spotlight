@@ -1,8 +1,7 @@
 import * as React from 'react'
-
 import ContentLoader from 'react-content-loader'
 import * as classNames from 'classnames'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 import {
 	Checkbox,
@@ -69,10 +68,11 @@ interface IProps {
 
 interface IState {
 	tableQuery: string
-	order: 'asc' | 'desc'
-	orderBy: string // e.g 'calories'
-	selected: number[] // indexes
+	order: 'asc' | 'desc' // sorting order
+	orderBy: string // row id to sort by
+	selected: number[] // indices
 	page: number
+	redirect: string
 	rowsPerPage: number
 	filters: ITableFilter[]
 	filterOpen: boolean
@@ -88,6 +88,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		orderBy: this.props.columns[0].id,
 		selected: [],
 		page: 0,
+		redirect: null,
 		rowsPerPage: 5,
 		filters: [],
 		filterOpen: false,
@@ -264,6 +265,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	render() {
+		if (this.state.redirect) {
+			return <Redirect to={this.state.redirect} />
+		}
 		const { order, orderBy, selected, rowsPerPage, page } = this.state
 		const data = (this.props.searchable && this.state.tableQuery.length) || this.state.filters.length ? (
 			this.filterTableData()

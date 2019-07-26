@@ -23,7 +23,7 @@ import {
 import { EnhancedTableHead } from './EnhancedTableHead'
 import { EnhancedTableToolbar } from './EnhancedTableToolbar'
 import { EmptyStateIcon } from '../EmptyStateIcon'
-import { ITableAction, ITableFilter, ITableHeaderColumn } from '../../types/table';
+import { ITableAction, ITableFilter, ITableHeaderColumn, ITableLink } from '../../types/table';
 
 const desc = (a: any, b: any, orderBy: any) => {
 	if (b[orderBy] < a[orderBy]) {
@@ -56,8 +56,9 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 }
 
 interface IProps {
-	title: string
+	title?: string
 	loading: boolean
+	link?: ITableLink
 	columns: ITableHeaderColumn[]
 	data: any[]
 	actions: ITableAction[]
@@ -181,22 +182,26 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	handleClick = (event: any, id: number) => {
-		const { selected } = this.state
-		const selectedIndex = selected.indexOf(id)
-		let newSelected: any[] = []
+		if (this.props.selectable !== false) {
+			const { selected } = this.state
+			const selectedIndex = selected.indexOf(id)
+			let newSelected: any[] = []
 
-		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selected, id)
-		} else if (selectedIndex === 0) {
-			newSelected = newSelected.concat(selected.slice(1))
-		} else if (selectedIndex > 0) {
-			newSelected = newSelected.concat(
-				selected.slice(0, selectedIndex),
-				selected.slice(selectedIndex + 1),
-			)
+			if (selectedIndex === -1) {
+				newSelected = newSelected.concat(selected, id)
+			} else if (selectedIndex === 0) {
+				newSelected = newSelected.concat(selected.slice(1))
+			} else if (selectedIndex > 0) {
+				newSelected = newSelected.concat(
+					selected.slice(0, selectedIndex),
+					selected.slice(selectedIndex + 1),
+				)
+			}
+
+			this.setState({ selected: newSelected })
+		} else if (this.props.link) {
+			this.setState({ redirect: `${this.props.link.path}/${id}`})
 		}
-
-		this.setState({ selected: newSelected })
 	}
 
 	handleChangePage = (event: any, page: number) => {
@@ -228,17 +233,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						</div>
 					</TableCell>
 					{this.props.columns.map((column: ITableHeaderColumn) => {
-						if (column.link) {
-							return (
-								<TableCell padding='checkbox'>
-									<div style={{ width: 24, height: 24, padding: 12}}>
-										<ContentLoader width={24} height={24}>
-											<rect x='0' y='0' rx='4' ry='4' height='24' width='24' />
-										</ContentLoader>
-									</div>
-								</TableCell>
-							)
-						} else if (column.th) {
+						if (column.th) {
 							return (
 								<TableCell component='th' scope='row' padding='none'>
 									<div style={{height: 24, width: 75}}>
@@ -281,7 +276,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 				{this.props.data.length == 0 && this.props.showEmptyTable !== false ? (
 					<div className='empty-state'>
 						<EmptyStateIcon variant='file'>
-							<h3>{`${this.props.title} table is empty.`}</h3>
+							<h3>{`${this.props.title ? `${this.props.title} table` : 'Table'} is empty.`}</h3>
 						</EmptyStateIcon>
 					</div>
 				) : (
@@ -316,9 +311,10 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 									rowCount={data.length}
 									selectable={selectable}
 									columns={this.props.columns}
+									link={this.props.link}
 									loading={this.props.loading}
 								/>
-								<TableBody>
+								<TableBody className='enhanced-table__table-body'>
 									{this.props.loading ? (
 										this.skeletonRows()
 									) : (
@@ -329,6 +325,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 											const columns = this.props.columns.filter((column: ITableHeaderColumn) => {
 												return column.visible
 											})
+											console.log('n:', n)
 											return (
 												<TableRow
 													hover
@@ -345,17 +342,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 														</TableCell>
 													)}
 													{columns.map((column: ITableHeaderColumn, index: number) => {
-														if (column.link) {
-															return (
-																<TableCell padding='checkbox'>
-																	<Tooltip title={column.label} placement='left'>
-																		<Link to={`${column.link}/${n[column.id]}`}>
-																			<Icon>launch</Icon>
-																		</Link>
-																	</Tooltip>
-																</TableCell>
-															)
-														} else if (column.th) {
+														if (column.th) {
 															return (
 																<TableCell component='th' scope='row' padding={selectable || index !== 0 ? 'none' : 'default'}>
 																	{n[column.id]}
@@ -365,6 +352,15 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 															return <TableCell align='right'>{n[column.id]}</TableCell>
 														}
 													})}
+													{(this.props.link && selectable)  && (	
+														<TableCell padding='checkbox' align='center'>
+															<Tooltip title={this.props.link.label} placement='left'>
+																<Link to={`${this.props.link.path}/${n[this.props.link.key]}`}>
+																	<Icon>launch</Icon>
+																</Link>
+															</Tooltip>
+														</TableCell>
+													)}
 												</TableRow>
 											)
 										})

@@ -24,7 +24,7 @@ interface IProps {
 	numSelected: number
 	numShown: number
 	numTotal: number
-	title: string
+	title?: string
 	searchable: boolean
 	selectable: boolean
 	tableQuery: string
@@ -119,9 +119,11 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		return (
 			<Toolbar>
 				<div className='enhanced-table__toolbar'>
-					<h3 className={classNames({
-						'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
-					})}>{headerString}</h3>
+					{headerString && (
+						<h3 className={classNames({
+							'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
+						})}>{headerString}</h3>
+					)}
 					{filterOpen && (
 						<EnhancedTableFilter
 							filters={this.props.filters}

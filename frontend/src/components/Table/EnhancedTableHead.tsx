@@ -9,7 +9,7 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { ITableHeaderColumn } from '../../types/table'
+import { ITableHeaderColumn, ITableLink } from '../../types/table'
 
 interface IProps {
 	numSelected: number
@@ -19,12 +19,13 @@ interface IProps {
 	orderBy: string
 	columns: ITableHeaderColumn[]
 	loading: boolean
+	link?: ITableLink
 	rowCount: number
 	selectable: boolean	
 }
 
 export const EnhancedTableHead = (props: IProps) => {
-	const { onSelectAllClick, order, orderBy, numSelected, rowCount, selectable } = props
+	const { onSelectAllClick, order, orderBy, numSelected, rowCount, selectable, link } = props
 	const columns = props.columns.filter((column: ITableHeaderColumn) => {
 		return column.visible
 	})
@@ -67,6 +68,9 @@ export const EnhancedTableHead = (props: IProps) => {
 						</Tooltip>
 					</TableCell>
 				))}
+				{(link && selectable) && (
+					<TableCell key={props.link.key} align='left' padding='default'>{link.label}</TableCell>
+				)}
 			</TableRow>
 		</TableHead>
 	)

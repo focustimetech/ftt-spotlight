@@ -24,7 +24,7 @@ import { createStudent, fetchStudents } from '../actions/studentActions'
 import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
 
-import { ITableAction, ITableHeaderColumn } from '../types/table'
+import { ITableAction, ITableHeaderColumn, ITableLink } from '../types/table'
 import { EnhancedDialogTitle } from './Modals/EnhancedDialogTitle';
 import { ClustersDialog } from './Modals/ClustersDialog';
 
@@ -143,7 +143,6 @@ class Students extends React.Component<IProps, IState> {
 			}
 		})
 
-		console.log('this.props.students:', this.props.students)
 		const columns: ITableHeaderColumn[] = [
 			{
 				id: 'last_name',
@@ -156,8 +155,7 @@ class Students extends React.Component<IProps, IState> {
 				visible: true
 			},
 			{ id: 'first_name', label: 'First Name', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
-			{ id: 'attendance', label: 'Attendance', isNumeric: true, visible: true, filterable: true },
-			{ id: 'profile', label: 'Profile', isNumeric: false, link: '/students', visible: true, filterable: false},
+			{ id: 'attendance', label: 'Attendance', isNumeric: true, visible: true, filterable: true }
 		]
 
 		const actions: ITableAction[] = [
@@ -165,6 +163,8 @@ class Students extends React.Component<IProps, IState> {
 			{ id: 'add-to-cluster', name: 'Add to Cluster', action: this.handleCheckIn },
 			{ id: 'delete', name: 'Delete', action: this.handleCheckIn }
 		]
+
+		const tableLink: ITableLink = {label: 'Profile', key: 'profile', path: 'students'}
 
 		return (
 			<>
@@ -187,8 +187,9 @@ class Students extends React.Component<IProps, IState> {
 					data={students}
 					actions={actions}
 					searchable={true}
-					selectable={true}
+					selectable={false}
 					loading={this.state.loading}
+					link={tableLink}
 				/>
 			</>
 		)

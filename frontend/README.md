@@ -1,8 +1,13 @@
 # Frontend
 The front-end for Spotlight, which uses React.
 
-## Installation
+## Installing Dependencies
 ```bash
-npm install && npm install --only=dev
-webpack-dev-server --inline --hot
+cd frontend
+npm install
+```
+
+## Running the Frontend
+```bash
+npm run dev-server
 ```

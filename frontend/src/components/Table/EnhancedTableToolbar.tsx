@@ -25,6 +25,7 @@ interface IProps {
 	numShown: number
 	numTotal: number
 	title?: string
+	children?: any
 	searchable: boolean
 	selectable: boolean
 	tableQuery: string
@@ -184,23 +185,26 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 									</IconButton>
 								</Tooltip>
 							</li>
-							<li>
-							<IconButton onClick={this.handleMenuOpen}>
-								<Icon>more_vert</Icon>
-							</IconButton>
-							<Menu
-								open={menuOpen}
-								anchorEl={menuRef}
-								onClose={this.handleMenuClose}
-							>
-								<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
-								{this.props.numSelected > 0 && (
-									this.props.actions.map((action: ITableAction) => (
-										<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
-									))
-								)}
-							</Menu>
-							</li>
+							{this.props.selectable && (
+								<li>
+									<IconButton onClick={this.handleMenuOpen}>
+										<Icon>more_vert</Icon>
+									</IconButton>
+									<Menu
+										open={menuOpen}
+										anchorEl={menuRef}
+										onClose={this.handleMenuClose}
+									>
+										<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
+										{this.props.numSelected > 0 && (
+											this.props.actions.map((action: ITableAction) => (
+												<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
+											))
+										)}
+									</Menu>
+								</li>
+							)}
+							{this.props.children}
 						</ul>
 					)}
 				</div>

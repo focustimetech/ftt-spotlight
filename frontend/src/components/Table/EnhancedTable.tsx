@@ -59,6 +59,7 @@ interface IProps {
 	title?: string
 	loading: boolean
 	link?: ITableLink
+	children?: any
 	columns: ITableHeaderColumn[]
 	data: any[]
 	actions: ITableAction[]
@@ -297,7 +298,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 							handleTableQueryChange={this.handleTableQueryChange}
 							filterOpen={this.state.filterOpen}
 							loading={this.props.loading}
-						/>
+						>
+							{this.props.children}
+						</EnhancedTableToolbar>
 						<div>
 							<Table>
 								<EnhancedTableHead

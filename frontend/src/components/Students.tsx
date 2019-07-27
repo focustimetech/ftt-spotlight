@@ -61,12 +61,6 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps {}
 
-const tempClusters = [
-	{ name: 'Spruce', id: 1 },
-	{ name: 'Arbutus', id: 2 },
-	{ name: 'Fir', id: 3 }
-]
-
 const grades = [9, 10, 11, 12]
 
 class Students extends React.Component<IProps, IState> {
@@ -167,19 +161,7 @@ class Students extends React.Component<IProps, IState> {
 		const tableLink: ITableLink = {label: 'Profile', key: 'profile', path: 'students'}
 
 		return (
-			<>
-				<TopNav>
-					<ul>
-						<li><h3>Students</h3></li>
-					</ul>
-					<ul>
-						<li>
-							<Tooltip title='Add Student'>
-								<IconButton onClick={() => this.onAddDialogOpen()}><Icon>add</Icon></IconButton>
-							</Tooltip>
-						</li>
-					</ul>
-				</TopNav>
+			<div className='content --content-inner' id='content'>
 				<EnhancedTable
 					showEmptyTable={false}
 					title='Students'
@@ -190,8 +172,15 @@ class Students extends React.Component<IProps, IState> {
 					selectable={false}
 					loading={this.state.loading}
 					link={tableLink}
-				/>
-			</>
+				>
+					<li>
+						<Tooltip title='Add Student'>
+							<IconButton onClick={() => this.onAddDialogOpen()}><Icon>add</Icon></IconButton>
+						</Tooltip>
+					</li>
+				</EnhancedTable>
+
+			</div>
 		)
 	}
 }

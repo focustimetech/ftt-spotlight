@@ -57,21 +57,20 @@ class App extends React.Component<IProps, IState> {
 				<Router>
 					<div className={classNames('site-wrap', '--menu_open')}>
 						<Sidebar onSignOut={this.props.onSignOut} loading={this.state.loading} />
-						<Content>
-							<Switch>
-								<Route path='/clusters/:clusterID?' component={Clusters} />
-								<Route path='/' exact render={(props) => (
-									<Redirect to='/dashboard' />
-								)} />
-								<Route exact path='/dashboard' component={Dashboard} />
-								<Route path='/settings' component={Settings} />
-								<Route path='/staff' component={Staff} />
-								<Route path='/students/:studentID' component={StudentProfile} />
-								<Route path='/students' component={Students} />
-								<Route path='/class-schedule' component={ClassSchedule} />
-								<Route component={NotFound} />
-							</Switch>
-						</Content>
+						<Switch>
+							<Route path='/' exact render={(props) => (
+								<Redirect to='/dashboard' />
+							)} />
+							<Route path='/clusters/:clusterID?' component={Clusters} />
+							
+							<Route exact path='/dashboard' component={Dashboard} />
+							<Route path='/settings' component={Settings} />
+							<Route path='/staff' component={Staff} />
+							<Route path='/students/:studentID' component={StudentProfile} />
+							<Route path='/students' component={Students} />
+							<Route path='/class-schedule' component={ClassSchedule} />
+							<Route component={NotFound} />
+						</Switch>
 					</div>
 				</Router>
 			</>

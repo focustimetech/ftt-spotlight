@@ -34,25 +34,27 @@ export class ClassSchedule extends React.Component<{}, IState> {
 			tabs: ['Courses', 'Class Schedule']
 		}
 		return (
-			<div className='profile'>
-				<TopNav className='--tabs' tabs={navTabs}>
-					<ul>
-						<h3>Class Schedule</h3>
-					</ul>
-					<ul className='right_col'>
-						<li>
-							<IconButton>
-								<Icon>add</Icon>
-							</IconButton>
-						</li>
-						<li>
-							<IconButton>
-								<Icon>more_vert</Icon>
-							</IconButton>
-						</li>
-					</ul>
-				</TopNav>
-				{/*<BlockSchedule />*/}
+			<div className='content' id='content'>
+				<div className='profile'>
+					<TopNav className='--tabs' tabs={navTabs}>
+						<ul>
+							<h3>Class Schedule</h3>
+						</ul>
+						<ul className='right_col'>
+							<li>
+								<IconButton>
+									<Icon>add</Icon>
+								</IconButton>
+							</li>
+							<li>
+								<IconButton>
+									<Icon>more_vert</Icon>
+								</IconButton>
+							</li>
+						</ul>
+					</TopNav>
+					{/*<BlockSchedule />*/}
+				</div>
 			</div>
 		)
 	}

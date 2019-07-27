@@ -91,61 +91,63 @@ class StudentProfile extends React.Component<IProps, IState> {
 		const avatarColor = this.props.student.color || 'red'
 
 		return (
-			<div className='profile'>
-				<TopNav className='--tabs' tabs={navTabs}>
-					<ul>
-						<li className='profile_title'>
-							{this.state.loading ? (
-								<div style={{height: 56, width: 368}}>
-									<ContentLoader height={56} width={368}>
-										<rect x={0} y={4} rx={24} ry={24} height={48} width={48}/>
-										<rect x={64} y={8} rx={4} ry={4} height={24} width={164}/>
-										<rect x={240} y={8} rx={4} ry={4} height={24} width={128}/>
-										<rect x={64} y={40} rx={4} ry={4} height={12} width={84}/>
-									</ContentLoader>
-								</div>
-							) : (
-								<>
-									<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.student.initials}</Avatar>
-									<div>
-										<h3 className='name'>
-											{`${this.props.student.first_name} ${this.props.student.last_name}`}
-											<span className='grade'>{`Grade ${this.props.student.grade}`}</span>
-										</h3>
-										<a onClick={() => console.log('clicked cluster')}>
-											<h5 className='cluster-list'>{this.props.student.clusters && (
-												listToTruncatedString(this.props.student.clusters.map((cluster: any) => cluster.name), 'Cluster')
-											)}</h5>
-										</a>
+			<div className='content' id='content'>
+				<div className='profile'>
+					<TopNav className='--tabs' tabs={navTabs}>
+						<ul>
+							<li className='profile_title'>
+								{this.state.loading ? (
+									<div style={{height: 56, width: 368}}>
+										<ContentLoader height={56} width={368}>
+											<rect x={0} y={4} rx={24} ry={24} height={48} width={48}/>
+											<rect x={64} y={8} rx={4} ry={4} height={24} width={164}/>
+											<rect x={240} y={8} rx={4} ry={4} height={24} width={128}/>
+											<rect x={64} y={40} rx={4} ry={4} height={12} width={84}/>
+										</ContentLoader>
 									</div>
-								</>
-							)}	
-						</li>
-					</ul>
-					{this.state.loading ? (
-						<div style={{height: 56, width: 80}}>
-							<ContentLoader height={56} width={80}>
-								<rect x={0} y={12} rx={24} ry={24} height={36} width={36}/>
-								<rect x={44} y={12} rx={24} ry={24} height={36} width={36}/>
-							</ContentLoader>
-						</div>
-					) : (
-						<ul className='right_col'>
-							<li>
-								<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
-							</li>
-							<li>
-								<IconButton>
-									<Icon>more_vert</Icon>
-								</IconButton>
+								) : (
+									<>
+										<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.student.initials}</Avatar>
+										<div>
+											<h3 className='name'>
+												{`${this.props.student.first_name} ${this.props.student.last_name}`}
+												<span className='grade'>{`Grade ${this.props.student.grade}`}</span>
+											</h3>
+											<a onClick={() => console.log('clicked cluster')}>
+												<h5 className='cluster-list'>{this.props.student.clusters && (
+													listToTruncatedString(this.props.student.clusters.map((cluster: any) => cluster.name), 'Cluster')
+												)}</h5>
+											</a>
+										</div>
+									</>
+								)}	
 							</li>
 						</ul>
-					)}
-				</TopNav>
-				<SwipeableViews index={this.state.tab}>
-					<Attendance />
-					<Schedule studentID={this.state.studentID} />
-				</SwipeableViews>
+						{this.state.loading ? (
+							<div style={{height: 56, width: 80}}>
+								<ContentLoader height={56} width={80}>
+									<rect x={0} y={12} rx={24} ry={24} height={36} width={36}/>
+									<rect x={44} y={12} rx={24} ry={24} height={36} width={36}/>
+								</ContentLoader>
+							</div>
+						) : (
+							<ul className='right_col'>
+								<li>
+									<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
+								</li>
+								<li>
+									<IconButton>
+										<Icon>more_vert</Icon>
+									</IconButton>
+								</li>
+							</ul>
+						)}
+					</TopNav>
+					<SwipeableViews index={this.state.tab}>
+						<Attendance />
+						<Schedule studentID={this.state.studentID} />
+					</SwipeableViews>
+				</div>
 			</div>
 		)
 	}

@@ -13,6 +13,10 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    Step,
+    Stepper,
+    StepContent,
+    StepLabel,
     TextField
 } from '@material-ui/core'
 
@@ -48,6 +52,8 @@ export const StudentInfoDialog = (props: IProps) => {
     const [details, setDetails]: [IStudentDetails, React.Dispatch<React.SetStateAction<IStudentDetails>>]
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
     
+    const [step, setStep]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
+
     const handleInputChange = (event: any) => {
         const { name, value } = event.target
         setDetails({
@@ -138,7 +144,27 @@ export const StudentInfoDialog = (props: IProps) => {
                     </form>
                 </DialogContent>
                 <DialogContent>
-                    <FilePond allowMultiple />
+                    <Stepper activeStep={step} orientation='vertical'>
+                        <Step key={0}>
+                            <StepLabel>Choose Files</StepLabel>
+                            <StepContent>
+                                <FilePond allowMultiple />
+                                <div className='stepper-actions'>
+                                    <Button onClick={() => setStep(1)} variant='contained' color='primary'>Next</Button>
+                                </div>
+                            </StepContent>
+                        </Step>
+                        <Step>
+                            <StepLabel>Field Order</StepLabel>
+                            <StepContent>
+                                <div className='stepper-actions'>
+                                    <Button onClick={() => setStep(0)} variant='text'>Back</Button>
+                                    <Button onClick={() => setStep(2)} variant='contained' color='primary'>Next</Button>
+                                </div>
+                            </StepContent>
+                        </Step>
+                    </Stepper>
+                    
                 </DialogContent>
                 </SwipeableViews>
         </Dialog>

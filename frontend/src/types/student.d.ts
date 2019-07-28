@@ -1,11 +1,7 @@
-export interface IStudent {
+export interface IStudentDetails {
 	id: number
-	name: string
-	clusters: ICluster[]
-	starred: boolean
-}
-
-export interface ICluster {
-	id: number
-	name: string
+	first_name: string
+	last_name: string
+	grade: number
+	student_number: number
 }

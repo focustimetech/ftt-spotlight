@@ -5,11 +5,18 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStudentDetails } from '../../types/student';
+import { isEmpty } from '../../utils/utils'
+
+const GRADES = [9, 10, 11, 12]
 
 interface IProps {
     open: boolean
@@ -19,9 +26,29 @@ interface IProps {
     onSubmit: () => void
 }
 
+const emptyStudentDetails: IStudentDetails = {
+    id: 0,
+    first_name: '',
+    last_name: '',
+    grade: 0,
+    student_number: 0,
+}
+
 export const EditStudentDialog = (props: IProps) => {
-    const edit: boolean = props.edit !== false
-    // Check if props.studentDetails is empty using custom isEmpty function (import this from utils). TBC
+    // Cast undefined props.edit as boolean; Ensure props.studentDetails aren't empty.
+    const edit: boolean = props.edit !== false && !isEmpty(props.studentDetails)
+    
+    const [details, setDetails]: [IStudentDetails, React.Dispatch<React.SetStateAction<IStudentDetails>>]
+        = React.useState(edit ? props.studentDetails : emptyStudentDetails)
+    
+    const handleInputChange = (event: any) => {
+        const { name, value } = event.target
+        setDetails({
+            ...details,
+            [name]: value
+        })
+    }
+
     return (
         <Dialog
             open={props.open}
@@ -34,8 +61,8 @@ export const EditStudentDialog = (props: IProps) => {
                     <TextField
                         name='first_name'
                         label='First Name'
-                        value={this.state.newStudent.first_name}
-                        onChange={this.handleNewStudentChange}
+                        value={details.first_name}
+                        onChange={handleInputChange}
                         className='text-field'
                         required
                         margin='normal'
@@ -46,8 +73,8 @@ export const EditStudentDialog = (props: IProps) => {
                     <TextField
                         name='last_name'
                         label='Last Name'
-                        value={this.state.newStudent.last_name}
-                        onChange={this.handleNewStudentChange}
+                        value={details.last_name}
+                        onChange={handleInputChange}
                         className='text-field'
                         required
                         margin='normal'
@@ -58,8 +85,8 @@ export const EditStudentDialog = (props: IProps) => {
                     <TextField
                         name='student_number'
                         label='Student Number'
-                        value={this.state.newStudent.student_number}
-                        onChange={this.handleNewStudentChange}
+                        value={details.student_number}
+                        onChange={handleInputChange}
                         className='text-field'
                         required
                         margin='normal'
@@ -72,17 +99,17 @@ export const EditStudentDialog = (props: IProps) => {
                         <Select
                             name='grade'
                             id='grade'
-                            onChange={this.handleNewStudentChange}
-                            value={this.state.newStudent.grade}
+                            onChange={handleInputChange}
+                            value={details.grade}
                             required
                         >
-                            {grades.map((grade: number) => (
+                            {GRADES.map((grade: number) => (
                                 <MenuItem value={grade}>{`Grade ${grade}`}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                     <DialogActions>
-                        <Button variant='text' onClick={this.onAddDialogClose}>Cancel</Button>
+                        <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
                         <Button variant='contained' color='primary' type='submit'>Add Student</Button>
                     </DialogActions>
                 </form>

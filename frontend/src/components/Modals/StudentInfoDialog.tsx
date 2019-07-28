@@ -14,6 +14,7 @@ import {
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStudentDetails } from '../../types/student';
+import { Tabs } from '../TopNav'
 import { isEmpty } from '../../utils/utils'
 
 const GRADES = [9, 10, 11, 12]
@@ -38,6 +39,8 @@ export const StudentInfoDialog = (props: IProps) => {
     // Cast undefined props.edit as boolean; Ensure props.studentDetails aren't empty.
     const edit: boolean = props.edit !== false && !isEmpty(props.studentDetails)
     
+	const [tab, setTab]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
+
     const [details, setDetails]: [IStudentDetails, React.Dispatch<React.SetStateAction<IStudentDetails>>]
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
     
@@ -49,13 +52,28 @@ export const StudentInfoDialog = (props: IProps) => {
         })
     }
 
+    const handleTabChange = (event: any, value: number) => {
+        setTab(value)
+    }
+
+    const navTabs: Tabs = {
+        value: tab,
+        onChange: handleTabChange,
+        tabs: ['Single', 'File Upload']
+    }
+
     return (
         <Dialog
             open={props.open}
             scroll='paper'
             aria-labelledby='student-dialog-title'
         >
-            <EnhancedDialogTitle id='student-dialog-title' onClose={props.onClose}>Add Student</EnhancedDialogTitle>
+            <EnhancedDialogTitle
+                id='student-dialog-title'
+                onClose={props.onClose}
+                tabs={navTabs}
+                title={props.edit ? 'Edit Student' : 'Add Student'}
+            />
             <DialogContent>
                 <form className='dialog-form' onSubmit={props.onSubmit} autoComplete='off'>
                     <TextField

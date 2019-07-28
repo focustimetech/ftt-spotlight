@@ -1,13 +1,16 @@
 .dialog-title {
-	height: 64px;
-	width: 600px;
-	box-sizing: border-box;
-	padding: 16px 32px;
-	line-height: 64px;
 	border-bottom: 1px solid #EEE;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+
+	&__content {
+		height: 64px;
+		width: 600px;
+		box-sizing: border-box;
+		padding: 16px 32px;
+		line-height: 64px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
 
 	.icon-close {
 		margin-left: 16px;
@@ -18,7 +21,9 @@
 	}
 
 	&.--close-button {
-		padding: 16px 16px 16px 32px;
+		.dialog-title__content {
+			padding: 16px 16px 16px 32px;
+		}
 	}
 }
 

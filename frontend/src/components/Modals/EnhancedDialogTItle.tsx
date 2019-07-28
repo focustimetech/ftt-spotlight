@@ -4,11 +4,16 @@ import * as classNames from 'classnames'
 import {
 	Icon,
 	IconButton,
+	Tab,
+	Tabs,
 	Tooltip
 } from '@material-ui/core'
 
+import { Tabs as ITabs } from '../TopNav'
+
 interface IProps {
-	children?: any
+	children?: any | any[]
+	tabs?: ITabs
 	className?: string
 	id?: string
 	title?: string
@@ -23,21 +28,36 @@ interface IProps {
  * @param title The title for the form (optional)
  * @param onClose Optional callback, including which renders a close icon button
  */
-export const EnhancedDialogTitle = (props: IProps) => {
+export const EnhancedDialogTitle = (props: IProps) => {	
 	return (
 		<div className={classNames('dialog-title', {'--close-button': props.onClose}, {[props.className]: new Boolean(props.className)})} id={props.id}>
-			<div className='dialog-title__inner'>
-				{props.title && (
-					<h3>{props.title}</h3>
+			<div className='dialog-title__content'>
+				<div className='dialog-title__inner'>
+					{props.title && (
+						<h3>{props.title}</h3>
+					)}
+					{props.children}				
+				</div>
+				{props.onClose && (
+					<Tooltip title='Close'>
+						<IconButton className='icon-close' onClick={() => props.onClose()}>
+							<Icon>close</Icon>
+						</IconButton>
+					</Tooltip>
 				)}
-				{props.children}
 			</div>
-			{props.onClose && (
-				<Tooltip title='Close'>
-					<IconButton className='icon-close' onClick={() => props.onClose()}>
-						<Icon>close</Icon>
-					</IconButton>
-				</Tooltip>
+			{props.tabs && (
+				<Tabs
+					className='top-nav__tabs'
+					value={props.tabs.value}
+					onChange={props.tabs.onChange}
+					variant='fullWidth'
+					indicatorColor='primary'
+				>
+					{props.tabs.tabs.map((label: string, index: number) => (
+						<Tab label={label} key={index}/>
+					))}
+				</Tabs>
 			)}
 		</div>
 	)

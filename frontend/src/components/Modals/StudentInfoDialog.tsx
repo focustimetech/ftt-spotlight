@@ -1,4 +1,5 @@
 import * as React from 'react'
+import SwipeableViews from 'react-swipeable-views'
 
 import {
     Button,
@@ -13,6 +14,7 @@ import {
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
+import { FileInput } from './FileInput'
 import { IStudentDetails } from '../../types/student';
 import { Tabs } from '../TopNav'
 import { isEmpty } from '../../utils/utils'
@@ -74,64 +76,69 @@ export const StudentInfoDialog = (props: IProps) => {
                 tabs={navTabs}
                 title={props.edit ? 'Edit Student' : 'Add Student'}
             />
-            <DialogContent>
-                <form className='dialog-form' onSubmit={props.onSubmit} autoComplete='off'>
-                    <TextField
-                        name='first_name'
-                        label='First Name'
-                        value={details.first_name}
-                        onChange={handleInputChange}
-                        className='text-field'
-                        required
-                        margin='normal'
-                        fullWidth
-                        type='text'
-                        variant='outlined'
-                    />
-                    <TextField
-                        name='last_name'
-                        label='Last Name'
-                        value={details.last_name}
-                        onChange={handleInputChange}
-                        className='text-field'
-                        required
-                        margin='normal'
-                        fullWidth
-                        type='text'
-                        variant='outlined'
-                    />
-                    <TextField
-                        name='student_number'
-                        label='Student Number'
-                        value={details.student_number}
-                        onChange={handleInputChange}
-                        className='text-field'
-                        required
-                        margin='normal'
-                        fullWidth
-                        type='text'
-                        variant='outlined'
-                    />
-                    <FormControl>
-                        <InputLabel shrink htmlFor='grade'>Grade</InputLabel>
-                        <Select
-                            name='grade'
-                            id='grade'
+            <SwipeableViews index={navTabs.value}>
+                <DialogContent>
+                    <form className='dialog-form' onSubmit={props.onSubmit} autoComplete='off'>
+                        <TextField
+                            name='first_name'
+                            label='First Name'
+                            value={details.first_name}
                             onChange={handleInputChange}
-                            value={details.grade}
+                            className='text-field'
                             required
-                        >
-                            {GRADES.map((grade: number) => (
-                                <MenuItem value={grade}>{`Grade ${grade}`}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <DialogActions>
-                        <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
-                        <Button variant='contained' color='primary' type='submit'>Add Student</Button>
-                    </DialogActions>
-                </form>
-            </DialogContent>
+                            margin='normal'
+                            fullWidth
+                            type='text'
+                            variant='outlined'
+                        />
+                        <TextField
+                            name='last_name'
+                            label='Last Name'
+                            value={details.last_name}
+                            onChange={handleInputChange}
+                            className='text-field'
+                            required
+                            margin='normal'
+                            fullWidth
+                            type='text'
+                            variant='outlined'
+                        />
+                        <TextField
+                            name='student_number'
+                            label='Student Number'
+                            value={details.student_number}
+                            onChange={handleInputChange}
+                            className='text-field'
+                            required
+                            margin='normal'
+                            fullWidth
+                            type='text'
+                            variant='outlined'
+                        />
+                        <FormControl>
+                            <InputLabel shrink htmlFor='grade'>Grade</InputLabel>
+                            <Select
+                                name='grade'
+                                id='grade'
+                                onChange={handleInputChange}
+                                value={details.grade}
+                                required
+                            >
+                                {GRADES.map((grade: number) => (
+                                    <MenuItem value={grade}>{`Grade ${grade}`}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <DialogActions>
+                            <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
+                            <Button variant='contained' color='primary' type='submit'>Add Student</Button>
+                        </DialogActions>
+                    </form>
+                </DialogContent>
+                <DialogContent>
+                    <FileInput />
+                </DialogContent>
+                </SwipeableViews>
         </Dialog>
     )
 }

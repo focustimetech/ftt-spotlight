@@ -27,5 +27,8 @@ export const listToTruncatedString = (list: string[], objectName?: string): stri
  * @return `true` if the object is empty, `false` otherwise.
  */
 export const isEmpty = (obj: Object): boolean => {
+    if (!obj) {
+        return true
+    }
     return Object.keys(obj).length === 0 && obj.constructor === Object
 }

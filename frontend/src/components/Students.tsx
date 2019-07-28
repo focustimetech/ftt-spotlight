@@ -23,10 +23,10 @@ import {
 import { createStudent, fetchStudents } from '../actions/studentActions'
 import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
-
 import { ITableAction, ITableHeaderColumn, ITableLink } from '../types/table'
 import { EnhancedDialogTitle } from './Modals/EnhancedDialogTitle';
 import { ClustersDialog } from './Modals/ClustersDialog';
+import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { isEmpty } from '../utils/utils'
 
 interface NewStudent {
@@ -46,10 +46,9 @@ interface IState {
 	/**
 	 * @TODO Create typedef for students
 	 */
+	addDialogOpen: boolean
 	students: any[]
 	clusters: Cluster[]
-	newStudent: NewStudent
-	addDialogVisible: boolean
 	loading: boolean
 	snackbarOpen: boolean
 }
@@ -62,19 +61,10 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps {}
 
-const grades = [9, 10, 11, 12]
-
 class Students extends React.Component<IProps, IState> {
 	state: IState = {
 		students: [],
-		addDialogVisible: false,
-		newStudent: {
-			first_name: '',
-			last_name: '',
-			student_number: '',
-			clusters: [],
-			grade: grades[0]
-		},
+		addDialogOpen: false,
 		clusters: [],
 		loading: false,
 		snackbarOpen: false
@@ -101,22 +91,17 @@ class Students extends React.Component<IProps, IState> {
 	}
 
 	onAddDialogOpen = () => {
-		this.setState({ addDialogVisible: true })
+		this.setState({ addDialogOpen: true })
 	}
 
 	onAddDialogClose = () => {
-		this.setState({ addDialogVisible: false })
+		this.setState({ addDialogOpen: false })
 	}
 
-	handleNewStudentChange = (event: any) => {
-		this.setState({ newStudent: {
-			...this.state.newStudent,
-			[event.target.name]: event.target.value
-		}})
-	}
-
-	handleAddStudentSubmit = (e: any) => {
-		e.preventDefault()
+	// needs (e: any) param
+	handleAddStudentSubmit = () => {
+		// e.preventDefault()
+		/*
 		this.props.createStudent({
 			first_name: this.state.newStudent.first_name,
 			last_name: this.state.newStudent.last_name,
@@ -124,6 +109,7 @@ class Students extends React.Component<IProps, IState> {
 			grade: this.state.newStudent.grade,
 			initials: 'CU'
 		})
+		*/
 		this.onAddDialogClose()
 	}
 
@@ -163,6 +149,7 @@ class Students extends React.Component<IProps, IState> {
 
 		return (
 			<div className='content --content-inner' id='content'>
+				<StudentInfoDialog open={this.state.addDialogOpen} onClose={this.onAddDialogClose} onSubmit={this.handleAddStudentSubmit}/>
 				<EnhancedTable
 					showEmptyTable={false}
 					title='Students'

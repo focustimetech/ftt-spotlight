@@ -19,8 +19,8 @@ import { isEmpty } from '../../utils/utils'
 const GRADES = [9, 10, 11, 12]
 
 interface IProps {
-    open: boolean
     edit?: boolean
+    open: boolean
     studentDetails?: IStudentDetails
     onClose: () => void
     onSubmit: () => void
@@ -34,7 +34,7 @@ const emptyStudentDetails: IStudentDetails = {
     student_number: 0,
 }
 
-export const EditStudentDialog = (props: IProps) => {
+export const StudentInfoDialog = (props: IProps) => {
     // Cast undefined props.edit as boolean; Ensure props.studentDetails aren't empty.
     const edit: boolean = props.edit !== false && !isEmpty(props.studentDetails)
     

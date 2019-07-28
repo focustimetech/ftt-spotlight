@@ -1,6 +1,9 @@
 import * as React from 'react'
 import SwipeableViews from 'react-swipeable-views'
 
+import { FilePond } from 'react-filepond'
+import 'filepond/dist/filepond.min.css'
+
 import {
     Button,
     Dialog,
@@ -14,7 +17,6 @@ import {
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { FileInput } from './FileInput'
 import { IStudentDetails } from '../../types/student';
 import { Tabs } from '../TopNav'
 import { isEmpty } from '../../utils/utils'
@@ -136,7 +138,7 @@ export const StudentInfoDialog = (props: IProps) => {
                     </form>
                 </DialogContent>
                 <DialogContent>
-                    <FileInput />
+                    <FilePond allowMultiple />
                 </DialogContent>
                 </SwipeableViews>
         </Dialog>

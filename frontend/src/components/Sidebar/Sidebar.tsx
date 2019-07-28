@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
-import * as classNames from 'classnames'
 
 import { AccountWidget } from '../Modals/AccountWidget'
 import { MenuItem } from './MenuItem'
@@ -19,6 +18,7 @@ interface ReduxProps {
 interface IProps extends ReduxProps {
 	onSignOut: () => void
 	loading: boolean
+	schoolName?: string
 }
 
 /**
@@ -92,10 +92,12 @@ class Sidebar extends React.Component<IProps> {
 						</div>
 					) : (
 						<>
-							<div className='menu_header'>
-								<div className='menu_header__logo'></div>
-								<h4>Oak Bay High</h4>
-							</div>
+							{(!this.props.loading && this.props.schoolName) && (
+								<div className='menu_header'>
+									<div className='menu_header__logo'></div>
+									<h4>{this.props.schoolName}</h4>
+								</div>
+							)}
 							<ul className='menu_list'>
 								<MenuItem to='/clusters' icon='group' label='Cluster' />
 								<MenuItem to='/class-schedule' icon='date_range' label='Class Schedule' />

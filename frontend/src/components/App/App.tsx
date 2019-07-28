@@ -79,4 +79,10 @@ class App extends React.Component<IProps, IState> {
 	}
 }
 
+/**
+ * @TODO Create app settings redux reducer and actions; Make available through props;
+ * Pass `school_name` to Sidebar as prop upon loading app settings; 
+ */
+const mapDispatchToProps = { getCurrentUser }
+
 export default connect(null, {getCurrentUser})(App)

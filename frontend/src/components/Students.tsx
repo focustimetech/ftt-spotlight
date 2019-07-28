@@ -27,6 +27,7 @@ import { TopNav } from './TopNav'
 import { ITableAction, ITableHeaderColumn, ITableLink } from '../types/table'
 import { EnhancedDialogTitle } from './Modals/EnhancedDialogTitle';
 import { ClustersDialog } from './Modals/ClustersDialog';
+import { isEmpty } from '../utils/utils'
 
 interface NewStudent {
 	first_name: string,
@@ -90,7 +91,7 @@ class Students extends React.Component<IProps, IState> {
 	}
 
 	componentWillReceiveProps(nextProps: any) {
-		if (nextProps.newStudent && Object.entries(nextProps.newStudent).length !== 0) {
+		if (nextProps.newStudent && !isEmpty(nextProps.newStudent)) {
 			this.props.students.unshift(nextProps.newStudent)
 		}
 	}

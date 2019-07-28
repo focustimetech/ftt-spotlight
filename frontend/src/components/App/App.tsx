@@ -14,7 +14,6 @@ import { getCurrentUser } from '../../actions/authActions'
 
 import { ClassSchedule } from '../ClassSchedule'
 import { Clusters } from '../Clusters'
-import { Content } from '../Content'
 import { Dashboard } from '../Dashboard'
 import { NotFound } from '../NotFound'
 import Settings from '../Settings'

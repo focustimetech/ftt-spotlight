@@ -10,8 +10,6 @@ import {
 	MenuItem,
 } from '@material-ui/core'
 
-//cimport { IStudent } from '../../types/student'
-//cimport { NameWidget } from './NameWidget'
 import { Tabs, TopNav } from './TopNav'
 
 interface IState {

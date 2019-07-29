@@ -10,14 +10,19 @@ import {
     DialogActions,
     DialogContent,
     FormControl,
+    Icon,
+    IconButton,
     InputLabel,
+    List,
+    ListItem,
+    ListItemSecondaryAction,
     MenuItem,
     Select,
     Step,
     Stepper,
     StepContent,
     StepLabel,
-    TextField
+    TextField,
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
@@ -26,6 +31,11 @@ import { Tabs } from '../TopNav'
 import { isEmpty } from '../../utils/utils'
 
 const GRADES = [9, 10, 11, 12]
+
+interface IListItem {
+    label: string,
+    value: string
+}
 
 interface IProps {
     edit?: boolean
@@ -70,6 +80,25 @@ export const StudentInfoDialog = (props: IProps) => {
         value: tab,
         onChange: handleTabChange,
         tabs: ['Single', 'File Upload']
+    }
+
+    const listItems: IListItem[] = [
+        { label: 'First Name', value: 'first_name' },
+        { label: 'Last Name', value: 'last_name' },
+        { label: 'Grade', value: 'grade' },
+        { label: 'Student Number', value: 'student_number' },
+    ]
+
+    const reorder = (index: number, direction: 'up' | 'down') => {
+        if (index === 0 && direction === 'up') {
+            return
+        } else if (index === listItems.length - 1 && direction === 'down') {
+            return
+        }
+        const newIndex: number = index + (direction === 'up' ? -1 : 1)
+        const tmp: IListItem = listItems[index]
+        listItems[index] = listItems[newIndex]
+        listItems[newIndex] = tmp
     }
 
     return (
@@ -132,8 +161,8 @@ export const StudentInfoDialog = (props: IProps) => {
                                 value={details.grade}
                                 required
                             >
-                                {GRADES.map((grade: number) => (
-                                    <MenuItem value={grade}>{`Grade ${grade}`}</MenuItem>
+                                {GRADES.map((grade: number, index: number) => (
+                                    <MenuItem value={grade} key={index}>{`Grade ${grade}`}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -157,6 +186,18 @@ export const StudentInfoDialog = (props: IProps) => {
                         <Step>
                             <StepLabel>Field Order</StepLabel>
                             <StepContent>
+                                <List>
+                                    {listItems.map((listItem: IListItem, index: number) => (
+                                        <ListItem key={index}>
+                                            <span style={{color: 'rgba(0,0,0,0.48)', marginRight: 16, fontWeight: 500}}>{index + 1}</span>
+                                            {listItem.label}
+                                            <ListItemSecondaryAction>
+                                                <IconButton><Icon>expand_less</Icon></IconButton>
+                                                <IconButton><Icon>expand_more</Icon></IconButton>
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                    ))}
+                                </List>
                                 <div className='stepper-actions'>
                                     <Button onClick={() => setStep(0)} variant='text'>Back</Button>
                                     <Button onClick={() => setStep(2)} variant='contained' color='primary'>Next</Button>

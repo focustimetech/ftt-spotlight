@@ -51,7 +51,7 @@ const emptyStudentDetails: IStudentDetails = {
     id: 0,
     first_name: '',
     last_name: '',
-    grade: 0,
+    grade: GRADES[0],
     student_number: 0,
 }
 
@@ -68,9 +68,12 @@ export const StudentInfoDialog = (props: IProps) => {
     
 	const [tab, setTab]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
 
+    console.log('props.studentDetails:', props.studentDetails)
     const [details, setDetails]: [IStudentDetails, React.Dispatch<React.SetStateAction<IStudentDetails>>]
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
-    
+
+    console.log('details (edit = ' + edit + '):', details)
+
     const [step, setStep]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
 
     const [files, setFiles]: [FilePondFile['file'][], React.Dispatch<React.SetStateAction<FilePondFile['file'][]>>]
@@ -176,7 +179,7 @@ export const StudentInfoDialog = (props: IProps) => {
                 </FormControl>
                 <DialogActions>
                     <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
-                    <Button variant='contained' color='primary' type='submit'>Add Student</Button>
+                    <Button variant='contained' color='primary' type='submit'>{edit ? 'Update' : 'Add Student'}</Button>
                 </DialogActions>
             </form>
         </DialogContent>

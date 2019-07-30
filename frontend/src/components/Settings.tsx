@@ -49,7 +49,7 @@ class Settings extends React.Component<IProps, IState> {
         const { settingsGroups } = this.props
         console.log(settingsGroups)
         return (
-            <>
+            <div className='content' id='content'>
                 <TopNav>
                     <ul><h3>Settings</h3></ul>
                 </TopNav>
@@ -110,7 +110,7 @@ class Settings extends React.Component<IProps, IState> {
                         })}
                     </div>
                 )}
-            </>
+            </div>
         )
     }
 }

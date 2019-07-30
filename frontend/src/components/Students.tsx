@@ -23,10 +23,11 @@ import {
 import { createStudent, fetchStudents } from '../actions/studentActions'
 import { EnhancedTable } from './Table/EnhancedTable'
 import { TopNav } from './TopNav'
-
-import { ITableAction, ITableHeaderColumn } from '../types/table'
+import { ITableAction, ITableHeaderColumn, ITableLink } from '../types/table'
 import { EnhancedDialogTitle } from './Modals/EnhancedDialogTitle';
 import { ClustersDialog } from './Modals/ClustersDialog';
+import { StudentInfoDialog } from './Modals/StudentInfoDialog'
+import { isEmpty } from '../utils/utils'
 
 interface NewStudent {
 	first_name: string,
@@ -45,10 +46,9 @@ interface IState {
 	/**
 	 * @TODO Create typedef for students
 	 */
+	addDialogOpen: boolean
 	students: any[]
 	clusters: Cluster[]
-	newStudent: NewStudent
-	addDialogVisible: boolean
 	loading: boolean
 	snackbarOpen: boolean
 }
@@ -61,25 +61,10 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps {}
 
-const tempClusters = [
-	{ name: 'Spruce', id: 1 },
-	{ name: 'Arbutus', id: 2 },
-	{ name: 'Fir', id: 3 }
-]
-
-const grades = [9, 10, 11, 12]
-
 class Students extends React.Component<IProps, IState> {
 	state: IState = {
 		students: [],
-		addDialogVisible: false,
-		newStudent: {
-			first_name: '',
-			last_name: '',
-			student_number: '',
-			clusters: [],
-			grade: grades[0]
-		},
+		addDialogOpen: false,
 		clusters: [],
 		loading: false,
 		snackbarOpen: false
@@ -96,31 +81,27 @@ class Students extends React.Component<IProps, IState> {
 	}
 
 	componentWillReceiveProps(nextProps: any) {
-		if (nextProps.newStudent) {
+		if (nextProps.newStudent && !isEmpty(nextProps.newStudent)) {
 			this.props.students.unshift(nextProps.newStudent)
 		}
 	}
+
 	handleCheckIn = (ids: number[]) => {
 		// console.log('IDs:', ids)
 	}
 
 	onAddDialogOpen = () => {
-		this.setState({ addDialogVisible: true })
+		this.setState({ addDialogOpen: true })
 	}
 
 	onAddDialogClose = () => {
-		this.setState({ addDialogVisible: false })
+		this.setState({ addDialogOpen: false })
 	}
 
-	handleNewStudentChange = (event: any) => {
-		this.setState({ newStudent: {
-			...this.state.newStudent,
-			[event.target.name]: event.target.value
-		}})
-	}
-
-	handleAddStudentSubmit = (e: any) => {
-		e.preventDefault()
+	// needs (e: any) param
+	handleAddStudentSubmit = () => {
+		// e.preventDefault()
+		/*
 		this.props.createStudent({
 			first_name: this.state.newStudent.first_name,
 			last_name: this.state.newStudent.last_name,
@@ -128,6 +109,7 @@ class Students extends React.Component<IProps, IState> {
 			grade: this.state.newStudent.grade,
 			initials: 'CU'
 		})
+		*/
 		this.onAddDialogClose()
 	}
 
@@ -137,7 +119,7 @@ class Students extends React.Component<IProps, IState> {
 				id: index,
 				last_name: student.last_name,
 				first_name: student.first_name,
-				attendance: 20,
+				attendance: student.id,
 				profile: student.id
 			}
 		})
@@ -154,8 +136,7 @@ class Students extends React.Component<IProps, IState> {
 				visible: true
 			},
 			{ id: 'first_name', label: 'First Name', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
-			{ id: 'attendance', label: 'Attendance', isNumeric: true, visible: true, filterable: true },
-			{ id: 'profile', label: 'Profile', isNumeric: false, link: '/students', visible: true, filterable: false},
+			{ id: 'attendance', label: 'Attendance', isNumeric: true, visible: true, filterable: true }
 		]
 
 		const actions: ITableAction[] = [
@@ -164,27 +145,30 @@ class Students extends React.Component<IProps, IState> {
 			{ id: 'delete', name: 'Delete', action: this.handleCheckIn }
 		]
 
+		const tableLink: ITableLink = {label: 'Profile', key: 'profile', path: 'students'}
+
 		return (
-			<>
-				<TopNav>
-					<ul>
-						<li><h3>Students</h3></li>
-					</ul>
-					<ul>
-						<li>
-							<Tooltip title='Add Student'>
-								<IconButton onClick={() => this.onAddDialogOpen()}><Icon>add</Icon></IconButton>
-							</Tooltip>
-						</li>
-					</ul>
-				</TopNav>
-				<p>Welcome to the Students page!</p>
-				<ClustersDialog open={false} onClose={console.log} clusters={[]}/>
-				<Snackbar
-					open={false}
-				/>
-				<EnhancedTable showEmptyTable={false} title='Students' columns={columns} data={students} actions={actions} searchable={true} loading={this.state.loading} />
-			</>
+			<div className='content --content-inner' id='content'>
+				<StudentInfoDialog open={this.state.addDialogOpen} onClose={this.onAddDialogClose} onSubmit={this.handleAddStudentSubmit}/>
+				<EnhancedTable
+					showEmptyTable={false}
+					title='Students'
+					columns={columns}
+					data={students}
+					actions={actions}
+					searchable={true}
+					selectable={false}
+					loading={this.state.loading}
+					link={tableLink}
+				>
+					<li>
+						<Tooltip title='Add Student'>
+							<IconButton onClick={() => this.onAddDialogOpen()}><Icon>add</Icon></IconButton>
+						</Tooltip>
+					</li>
+				</EnhancedTable>
+
+			</div>
 		)
 	}
 }

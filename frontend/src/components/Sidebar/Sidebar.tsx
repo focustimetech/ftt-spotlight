@@ -99,6 +99,8 @@ class Sidebar extends React.Component<IProps> {
 								</div>
 							)}
 							<ul className='menu_list'>
+								<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
+								<MenuItem to='/students' icon='face' label='Students' />
 								<MenuItem to='/clusters' icon='group' label='Cluster' />
 								<MenuItem to='/class-schedule' icon='date_range' label='Class Schedule' />
 								<MenuItem to='/event' icon='event' label='Events' />

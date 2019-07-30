@@ -5,7 +5,7 @@
  * Example input: (['Red', 'Green', 'Blue'], 'Group')
  * Example output: 'Red, Green and 1 other Group'
  */
-export const listToTruncatedString = (list: string[], objectName?: string) => {
+export const listToTruncatedString = (list: string[], objectName?: string): string => {
     if (list.length === 0) {
         return objectName ? `No ${objectName}s` : 'None'
     } else {
@@ -19,4 +19,16 @@ export const listToTruncatedString = (list: string[], objectName?: string) => {
             return `${list[0]}, ${list[1]} and ${list.length - 2} other${objectName ? ` ${objectName}s` : 's'}`
         }
     }
+}
+
+/**
+ * Determines whether or not an Object is empty.
+ * @param obj The object.
+ * @return `true` if the object is empty, `false` otherwise.
+ */
+export const isEmpty = (obj: Object): boolean => {
+    if (!obj) {
+        return true
+    }
+    return Object.keys(obj).length === 0 && obj.constructor === Object
 }

@@ -11,10 +11,10 @@ export class Dashboard extends React.Component<IProps> {
 
 	render() {
 		return (
-			<>
+			<div className='content' id='content'>
 				<TopNav><h3>Dashboard</h3></TopNav>
 				<p>Welcome to my Dashboard!</p>
-			</>
+			</div>
 		)
 	}
 }

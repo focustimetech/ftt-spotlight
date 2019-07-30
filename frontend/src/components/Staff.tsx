@@ -9,12 +9,12 @@ export class Staff extends React.Component {
 
 	render() {
 		return (
-			<>
+			<div className='content' id='content'>
 				<TopNav>
 					<ul><h3>Staff</h3></ul>
 				</TopNav>
 				<p>Welcome to the staff page!</p>
-			</>
+			</div>
 		)
 	}
 }

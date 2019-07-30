@@ -25,6 +25,7 @@ import {
     TextField,
     Tooltip
 } from '@material-ui/core'
+import { CSSProperties } from '@material-ui/styles';
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStudentDetails } from '../../types/student';
@@ -89,17 +90,22 @@ export const StudentInfoDialog = (props: IProps) => {
 
     const swapIndices = (previous: number, next: number) => {
         console.log('listItems:', listItems)
-        if (previous === next || previous > listItems.length || next > listItems.length) {
-            console.log('RETURN.')
+        if (previous === next
+            || previous > listItems.length - 1
+            || next > listItems.length - 1
+            || previous < 0
+            || next < 0
+        ) {
             return
         }
-
         const newListItems: IListItem[] = [...listItems]
-        
         newListItems[previous] = listItems[next]
         newListItems[next] = listItems[previous]
         setListItems(newListItems)
-        console.log('setListItems:', newListItems)
+    }
+
+    const handleFileUpload = () => {
+        setStep(3)
     }
 
     const navTabs: Tabs = {
@@ -184,6 +190,7 @@ export const StudentInfoDialog = (props: IProps) => {
                         <Step key={0}>
                             <StepLabel>Choose Files</StepLabel>
                             <StepContent>
+                                <p>Select CSV files to create Student accounts. Ensure that all files have identical column ordering.</p>
                                 <FilePond allowMultiple />
                                 <div className='stepper-actions'>
                                     <Button onClick={() => setStep(1)} variant='contained' color='primary'>Next</Button>
@@ -193,30 +200,65 @@ export const StudentInfoDialog = (props: IProps) => {
                         <Step>
                             <StepLabel>Field Order</StepLabel>
                             <StepContent>
+                                <p>Order the list of fields below as they appear in the CSV file columns.</p>
                                 <List>
-                                    {listItems.map((listItem: IListItem, index: number) => (
-                                        <ListItem key={index}>
-                                            <span style={{color: 'rgba(0,0,0,0.48)', marginRight: 16, fontWeight: 500}}>{index + 1}</span>
-                                            {listItem.label}
-                                            <ListItemSecondaryAction>
-                                                <Tooltip title='Move Up'>
-                                                    <IconButton onClick={() => swapIndices(index, index <= 0 ? 0 : index - 1)}>
-                                                        <Icon>expand_less</Icon>
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title='Move Down'>
-                                                    <IconButton onClick={() => swapIndices(index, index >= listItems.length - 1 ? listItems.length - 1 : index + 1)}>
-                                                        <Icon>expand_more</Icon>
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                    ))}
+                                    {listItems.map((listItem: IListItem, index: number) => {
+                                        const spanStyle: CSSProperties = {
+                                            color: 'rgba(0,0,0,0.48)',
+                                            marginRight: 16,
+                                            fontWeight: 500,
+                                            fontVariantNumeric: 'tabular-nums'
+                                        }
+                                        return (
+                                            <ListItem key={index}>
+                                                <span style={spanStyle}>{index + 1}</span>
+                                                {listItem.label}
+                                                <ListItemSecondaryAction>
+                                                    <Tooltip title='Move Up'>
+                                                        <IconButton
+                                                            onClick={() => swapIndices(index, index - 1)}
+                                                            disabled={index <= 0}
+                                                        >
+                                                            <Icon>expand_less</Icon>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title='Move Down'>
+                                                        <IconButton
+                                                            onClick={() => swapIndices(index, index + 1)}
+                                                            disabled={index >= listItems.length - 1}
+                                                        >
+                                                            <Icon>expand_more</Icon>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ListItemSecondaryAction>
+                                            </ListItem>
+                                        )
+                                    })}
                                 </List>
                                 <div className='stepper-actions'>
                                     <Button onClick={() => setStep(0)} variant='text'>Back</Button>
                                     <Button onClick={() => setStep(2)} variant='contained' color='primary'>Next</Button>
                                 </div>
+                            </StepContent>
+                        </Step>
+                        <Step>
+                            <StepLabel>Submit Files</StepLabel>
+                            <StepContent>
+                                <p>When you're ready, click <span style={{fontWeight: 500}}>Upload</span> to send your CSV files.</p>
+                                <div className='stepper-actions'>
+                                    <Button onClick={() => setStep(1)} variant='text'>Back</Button>
+                                    <Button onClick={() => handleFileUpload()} variant='contained' color='primary'>Upload</Button>
+                                </div>
+                            </StepContent>
+                        </Step>
+                        <Step completed={step >= 3}>
+                            <StepLabel>Done</StepLabel>
+                            <StepContent>
+                                <p>All done! We'll take it from here. You'll receive a notification once all CSVs have been processed.</p>
+                                <DialogActions>
+                                    <Button onClick={() => setStep(0)} variant='contained' color='primary'>Add More</Button>
+                                    <Button onClick={() => props.onClose()} variant='text'>Close</Button>
+                                </DialogActions>
                             </StepContent>
                         </Step>
                     </Stepper>

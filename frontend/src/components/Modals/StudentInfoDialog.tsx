@@ -1,7 +1,7 @@
 import * as React from 'react'
 import SwipeableViews from 'react-swipeable-views'
 
-import { FilePond } from 'react-filepond'
+import { FilePond as IFilePond, File as FilePondFile } from 'react-filepond'
 import 'filepond/dist/filepond.min.css'
 
 import {
@@ -73,6 +73,9 @@ export const StudentInfoDialog = (props: IProps) => {
     
     const [step, setStep]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
 
+    const [files, setFiles]: [FilePondFile['file'][], React.Dispatch<React.SetStateAction<FilePondFile['file'][]>>]
+        = React.useState([])
+
     const [listItems, setListItems]: [IListItem[], React.Dispatch<React.SetStateAction<IListItem[]>>]
         = React.useState(defaultListItems)
 
@@ -89,7 +92,6 @@ export const StudentInfoDialog = (props: IProps) => {
     }
 
     const swapIndices = (previous: number, next: number) => {
-        console.log('listItems:', listItems)
         if (previous === next
             || previous > listItems.length - 1
             || next > listItems.length - 1
@@ -104,6 +106,9 @@ export const StudentInfoDialog = (props: IProps) => {
         setListItems(newListItems)
     }
 
+    const handleFileChange = (fileItems: FilePondFile[]) => {
+        setFiles(fileItems.map((fileItem: FilePondFile) => fileItem.file))
+    }
     const handleFileUpload = () => {
         setStep(3)
     }
@@ -113,6 +118,8 @@ export const StudentInfoDialog = (props: IProps) => {
         onChange: handleTabChange,
         tabs: ['Single', 'File Upload']
     }
+
+    const FilePond: any = IFilePond
 
     return (
         <Dialog
@@ -190,8 +197,13 @@ export const StudentInfoDialog = (props: IProps) => {
                         <Step key={0}>
                             <StepLabel>Choose Files</StepLabel>
                             <StepContent>
-                                <p>Select CSV files to create Student accounts. Ensure that all files have identical column ordering.</p>
-                                <FilePond allowMultiple />
+                                <p>Select up to five CSV files to create Student accounts. Ensure that all files have identical column ordering.</p>
+                                <FilePond
+                                    files={files}
+                                    onupdatefiles={handleFileChange}
+                                    allowMultiple
+                                    maxFiles={5}
+                                />
                                 <div className='stepper-actions'>
                                     <Button onClick={() => setStep(1)} variant='contained' color='primary'>Next</Button>
                                 </div>
@@ -209,27 +221,23 @@ export const StudentInfoDialog = (props: IProps) => {
                                             fontWeight: 500,
                                             fontVariantNumeric: 'tabular-nums'
                                         }
+                                        const buttonUp = (
+                                            <IconButton onClick={() => swapIndices(index, index - 1)} disabled={index <= 0}>
+                                                <Icon>expand_less</Icon>
+                                            </IconButton>
+                                        )
+                                        const buttonDown = (
+                                            <IconButton onClick={() => swapIndices(index, index + 1)} disabled={index >= listItems.length - 1}>
+                                                <Icon>expand_more</Icon>
+                                            </IconButton>
+                                        )
                                         return (
                                             <ListItem key={index}>
                                                 <span style={spanStyle}>{index + 1}</span>
                                                 {listItem.label}
                                                 <ListItemSecondaryAction>
-                                                    <Tooltip title='Move Up'>
-                                                        <IconButton
-                                                            onClick={() => swapIndices(index, index - 1)}
-                                                            disabled={index <= 0}
-                                                        >
-                                                            <Icon>expand_less</Icon>
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    <Tooltip title='Move Down'>
-                                                        <IconButton
-                                                            onClick={() => swapIndices(index, index + 1)}
-                                                            disabled={index >= listItems.length - 1}
-                                                        >
-                                                            <Icon>expand_more</Icon>
-                                                        </IconButton>
-                                                    </Tooltip>
+                                                    {index >= 0 ? buttonUp : <Tooltip title='Move Up'>{buttonUp}</Tooltip>}
+                                                    {index >= listItems.length - 1 ? buttonDown : <Tooltip title='Move Down'>{buttonDown}</Tooltip>}
                                                 </ListItemSecondaryAction>
                                             </ListItem>
                                         )

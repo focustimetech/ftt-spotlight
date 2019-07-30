@@ -23,6 +23,7 @@ import {
     StepContent,
     StepLabel,
     TextField,
+    Tooltip
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
@@ -33,7 +34,7 @@ import { isEmpty } from '../../utils/utils'
 const GRADES = [9, 10, 11, 12]
 
 interface IListItem {
-    label: string,
+    label: string
     value: string
 }
 
@@ -53,6 +54,13 @@ const emptyStudentDetails: IStudentDetails = {
     student_number: 0,
 }
 
+const defaultListItems: IListItem[] = [
+    { label: 'First Name', value: 'first_name' },
+    { label: 'Last Name', value: 'last_name' },
+    { label: 'Grade', value: 'grade' },
+    { label: 'Student Number', value: 'student_number' },
+]
+
 export const StudentInfoDialog = (props: IProps) => {
     // Cast undefined props.edit as boolean; Ensure props.studentDetails aren't empty.
     const edit: boolean = props.edit !== false && !isEmpty(props.studentDetails)
@@ -63,6 +71,9 @@ export const StudentInfoDialog = (props: IProps) => {
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
     
     const [step, setStep]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
+
+    const [listItems, setListItems]: [IListItem[], React.Dispatch<React.SetStateAction<IListItem[]>>]
+        = React.useState(defaultListItems)
 
     const handleInputChange = (event: any) => {
         const { name, value } = event.target
@@ -76,29 +87,25 @@ export const StudentInfoDialog = (props: IProps) => {
         setTab(value)
     }
 
+    const swapIndices = (previous: number, next: number) => {
+        console.log('listItems:', listItems)
+        if (previous === next || previous > listItems.length || next > listItems.length) {
+            console.log('RETURN.')
+            return
+        }
+
+        const newListItems: IListItem[] = [...listItems]
+        
+        newListItems[previous] = listItems[next]
+        newListItems[next] = listItems[previous]
+        setListItems(newListItems)
+        console.log('setListItems:', newListItems)
+    }
+
     const navTabs: Tabs = {
         value: tab,
         onChange: handleTabChange,
         tabs: ['Single', 'File Upload']
-    }
-
-    const listItems: IListItem[] = [
-        { label: 'First Name', value: 'first_name' },
-        { label: 'Last Name', value: 'last_name' },
-        { label: 'Grade', value: 'grade' },
-        { label: 'Student Number', value: 'student_number' },
-    ]
-
-    const reorder = (index: number, direction: 'up' | 'down') => {
-        if (index === 0 && direction === 'up') {
-            return
-        } else if (index === listItems.length - 1 && direction === 'down') {
-            return
-        }
-        const newIndex: number = index + (direction === 'up' ? -1 : 1)
-        const tmp: IListItem = listItems[index]
-        listItems[index] = listItems[newIndex]
-        listItems[newIndex] = tmp
     }
 
     return (
@@ -192,8 +199,16 @@ export const StudentInfoDialog = (props: IProps) => {
                                             <span style={{color: 'rgba(0,0,0,0.48)', marginRight: 16, fontWeight: 500}}>{index + 1}</span>
                                             {listItem.label}
                                             <ListItemSecondaryAction>
-                                                <IconButton><Icon>expand_less</Icon></IconButton>
-                                                <IconButton><Icon>expand_more</Icon></IconButton>
+                                                <Tooltip title='Move Up'>
+                                                    <IconButton onClick={() => swapIndices(index, index <= 0 ? 0 : index - 1)}>
+                                                        <Icon>expand_less</Icon>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title='Move Down'>
+                                                    <IconButton onClick={() => swapIndices(index, index >= listItems.length - 1 ? listItems.length - 1 : index + 1)}>
+                                                        <Icon>expand_more</Icon>
+                                                    </IconButton>
+                                                </Tooltip>
                                             </ListItemSecondaryAction>
                                         </ListItem>
                                     ))}

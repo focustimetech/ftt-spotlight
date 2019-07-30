@@ -2,27 +2,27 @@ import * as React from 'react'
 
 import ContentLoader from 'react-content-loader'
 import SwipeableViews from 'react-swipeable-views'
-import * as classNames from 'classnames'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import {
 	Avatar,
-	Card,
-	CardActionArea,
 	Icon,
-	IconButton
+	IconButton,
+	Menu,
+	MenuItem
 } from '@material-ui/core'
 
 import { StarredItem } from '../reducers/starReducer'
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
 import { listToTruncatedString } from '../utils/utils'
-
+import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { Attendance } from './Attendance'
 import { Tabs, TopNav } from './TopNav'
 import Schedule from './Schedule'
 import { StarButton } from './StarButton'
+import { IStudentDetails } from '../types/student';
 
 interface IReduxProps {
 	student: any
@@ -37,14 +37,18 @@ interface IProps extends RouteComponentProps, IReduxProps {}
 interface IState {
 	tab: number
 	loading: boolean
+	editDialogOpen: boolean
 	studentID: number
+	menuRef: any
 }
 
 class StudentProfile extends React.Component<IProps, IState> {
 	state: IState = {
 		tab: 1,
 		loading: false,
-		studentID: -1
+		editDialogOpen: false,
+		studentID: -1,
+		menuRef: null
 	}
 
 	handleTabChange = (event: any, value: any) => {
@@ -63,13 +67,30 @@ class StudentProfile extends React.Component<IProps, IState> {
         }
 	}
 
+	handleMenuOpen = (event: any) => {
+		this.setState({ menuRef: event.currentTarget })
+	}
+
+	handleMenuClose = () => {
+		this.setState({ menuRef: null })
+	}
+
+	handleOpenEditDialog = () => {
+		this.handleMenuClose()
+		this.setState({ editDialogOpen: true })
+	}
+
+	handleCloseEditDialog = () => {
+		this.setState({ editDialogOpen: false })
+	}
+
 	componentWillMount() {
 		const params: any = this.props.match.params
 		const { studentID } = params
 		this.setState({ studentID })
 	}
+
 	componentDidMount() {
-		
 		this.setState({ loading: true })
 		this.props.fetchStudentProfile(this.state.studentID).then(
 			(res: any) => {
@@ -90,8 +111,25 @@ class StudentProfile extends React.Component<IProps, IState> {
 		}
 		const avatarColor = this.props.student.color || 'red'
 
+		const { menuRef, editDialogOpen } = this.state
+		const menuOpen: boolean = Boolean(this.state.menuRef)
+		const studentDetails: IStudentDetails = {
+			id: this.props.student.id,
+			first_name: this.props.student.first_name,
+			last_name: this.props.student.last_name,
+			grade: this.props.student.grade,
+			student_number: this.props.student.student_number
+		}
+
 		return (
 			<div className='content' id='content'>
+				<StudentInfoDialog
+					open={editDialogOpen}
+					onClose={this.handleCloseEditDialog}
+					onSubmit={() => {}}
+					edit={true}
+					studentDetails={studentDetails}
+				/>
 				<div className='profile'>
 					<TopNav className='--tabs' tabs={navTabs}>
 						<ul>
@@ -136,9 +174,16 @@ class StudentProfile extends React.Component<IProps, IState> {
 									<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
 								</li>
 								<li>
-									<IconButton>
+									<IconButton onClick={this.handleMenuOpen}>
 										<Icon>more_vert</Icon>
 									</IconButton>
+									<Menu
+										open={menuOpen}
+										anchorEl={menuRef}
+										onClose={this.handleMenuClose}
+									>
+										<MenuItem onClick={() => this.handleOpenEditDialog()}>Edit Student</MenuItem>
+									</Menu>
 								</li>
 							</ul>
 						)}

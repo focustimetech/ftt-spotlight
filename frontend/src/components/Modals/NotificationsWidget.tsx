@@ -25,11 +25,21 @@ interface IProps {
     count?: number
 }
 
-const data = [
+interface INotification {
+    id: number,
+    date: string,
+    time: string,
+    approximateTime: string,
+    body: string,
+    read: boolean
+}
+
+const data: INotification[] = [
     {
         id: 1,
         date: 'Monday, Jan 12',
         time: '7:45 AM',
+        approximateTime: '13h ago',
         body: 'This is the body of the message. Sometimes, messages are too long to display.',
         read: false
     },
@@ -37,6 +47,7 @@ const data = [
         id: 2,
         date: 'Tuesday, Jan 13',
         time: '2:13 PM',
+        approximateTime: '2d ago',
         body: 'Here is another message.',
         read: true
     }

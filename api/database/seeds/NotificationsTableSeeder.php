@@ -11,6 +11,10 @@ class NotificationsTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $staff_list = App\Staff::all();
+
+        $staff_list->each(function($staff) {
+            $staff->sendNotification();
+        });
     }
 }

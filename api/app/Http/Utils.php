@@ -4,7 +4,6 @@ namespace App\Http;
 
 use DateTime;
 
-/*
 const USER_COLORS = [
     'F44336',
     'E91E63',
@@ -26,7 +25,6 @@ const USER_COLORS = [
     '9E9E9E',
     '607D8B'
 ];
-*/
 
 /**
  * Class for useful utility functions.

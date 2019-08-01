@@ -53,13 +53,22 @@ class Staff extends Model
 		return $this->hasMany('App\ScheduleEntry');
 	}
 
-	public function sendNotification($body)
+	public function sendNotification($body = null)
 	{
 		$notification = new Notification;
 		$notification->staff_id = $this->id;
-		$notification->body = $body;
-
+		if ($body !== null) {
+			$notification->body = $body;
+		}
 		$notification->save();
+		return $notification;
+	}
+
+	public function markAllNotificationsRead()
+	{
+		$this->notifications()->get()->each(function($notification) {
+			$notification->markRead();
+		});
 	}
 
 	public function starred()

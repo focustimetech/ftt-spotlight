@@ -1,14 +1,13 @@
 import * as React from 'react'
+import classNames from 'classnames'
 
 import {
-    Avatar,
     Button,
     Drawer,
     ExpansionPanel,
     ExpansionPanelActions,
     ExpansionPanelDetails,
     ExpansionPanelSummary,
-    Fade,
     Icon,
     IconButton
 } from '@material-ui/core'
@@ -28,36 +27,18 @@ interface IProps {
 
 const data = [
     {
-        date: 'Mon, Jan 12',
-        time: '7:45 AM',
-        sender: {
-            name: 'Mr. User',
-            type: 'staff',
-            id: 1
-        },
-        avatar: {
-            text: 'CU',
-            background: '#1034CD'
-        },
-        message: 'This is the body of the message. Sometimes, messages are too long to display.',
         id: 1,
+        date: 'Monday, Jan 12',
+        time: '7:45 AM',
+        body: 'This is the body of the message. Sometimes, messages are too long to display.',
         read: false
     },
     {
-        date: 'Tue, Jan 13',
-        time: '2:13 PM',
-        sender: {
-            name: 'Mrs. User',
-            type: 'staff',
-            id: 2
-        },
-        avatar: {
-            text: 'AB',
-            background: '#4024AB'
-        },
-        message: 'Here is another message.',
         id: 2,
-        read: false
+        date: 'Tuesday, Jan 13',
+        time: '2:13 PM',
+        body: 'Here is another message.',
+        read: true
     }
 ]
 
@@ -130,36 +111,42 @@ export class NotificationsWidget extends React.Component<IProps> {
                             {data.length > 0 ? (
                                 <>
                                     <div className='notifications_modal__actions'>
-                                        <Button>Mark all read</Button>
-                                        <Button>Delete all</Button>
+                                        <Button>Mark 2 as read</Button>
+                                        <Button>Archive all</Button>
                                     </div>
                                     <div className='content-inner'>
                                         {data.map((notification: any) => {
+                                            /**
+                                             * @TODO Make an interface `INotification`.
+                                             * 
+                                             */
                                             const expanded = this.state.openNotifications.indexOf(notification.id) >= 0
                                             return (
                                                 <ExpansionPanel
-                                                    className='notification'
+                                                    className={classNames('notification', {['--read']: notification.read})}
                                                     expanded={expanded}
                                                     key={notification.id}
                                                     // onClick={}
                                                 >
                                                     <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification.id)}>
-                                                        <div className='notification__sender'>
-                                                            <Avatar className='icon'>CU</Avatar>
-                                                            <div className='info'>
-                                                                <div className='sender-info'>
-                                                                    <h4>{notification.sender.name}</h4>
-                                                                    <h4>{notification.date}</h4>
-                                                                </div>
-                                                                {expanded ? (
+                                                        <div className='notification__info'>
+                                                            {expanded ? (
+                                                                <>
+                                                                    <p className='header'>{notification.date}</p>
                                                                     <p className='time'>{notification.time}</p>
-                                                                ) : (
-                                                                    <p className='message'>{notification.message}</p>
-                                                                )}
-                                                            </div>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <p className='header'>
+                                                                        {!notification.read && <span className='unread-badge' />}
+                                                                        {notification.body}
+                                                                    </p>
+                                                                    <p className='time'>2 hours ago</p>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </ExpansionPanelSummary>
-                                                    <ExpansionPanelDetails><p>{notification.message}</p></ExpansionPanelDetails>
+                                                    <ExpansionPanelDetails><p>{notification.body}</p></ExpansionPanelDetails>
                                                     <ExpansionPanelActions>
                                                         <Button>Mark Unread</Button>
                                                         <Button>Delete</Button>

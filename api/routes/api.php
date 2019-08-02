@@ -39,6 +39,10 @@ Route::middleware('auth:api')->group(function() {
     Route::post('students', 'StudentsController@store');
     Route::put('students', 'StudentsController@store');
     Route::delete('students/{id}', 'StudentsController@destroy');
+
+    // Notifications
+    Route::get('notifications', 'NotificationsController@index');
+    Route::put('notifications', 'NotificationsController@update');
 });
 
 // COMPLETE

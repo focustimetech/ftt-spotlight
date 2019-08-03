@@ -53,12 +53,11 @@ class Utils {
      * the start time is the current server time, given by `time()`. A string
      * value of the approimate time is returned. e.g. 'in 5 hours'; '3 days ago'.
      */
-    public static function approximateTime($end_time, $start_time = null)
+    public static function approximateTime($start_time, $end_time = null)
     {
-        if ($start_time === null) {
-            $start_time = time();
+        if ($end_time === null) {
+            $end_time = time();
         }
-        $seconds_diff = abs($end_time - $start_time);
         $has_happened = $end_time > $start_time;
         $start_datetime = new DateTime(date('Y-m-d H:i:s', $start_time));
         $end_datetime = new DateTime(date('Y-m-d H:i:s', $end_time));

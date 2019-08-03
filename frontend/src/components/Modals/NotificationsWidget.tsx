@@ -14,6 +14,7 @@ import {
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
+import { INotification } from '../../reducers/types'
 
 interface IState {
     open: boolean
@@ -23,15 +24,6 @@ interface IState {
 
 interface IProps {
     count?: number
-}
-
-interface INotification {
-    id: number,
-    date: string,
-    time: string,
-    approximateTime: string,
-    body: string,
-    read: boolean
 }
 
 const data: INotification[] = [

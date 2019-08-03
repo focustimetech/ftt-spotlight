@@ -8,6 +8,6 @@ class NotificationsController extends Controller
 {
     public function index()
     {
-        return auth()->user()->staff()->notifications();
+        return auth()->user()->staff()->notifications()->get();
     }
 }

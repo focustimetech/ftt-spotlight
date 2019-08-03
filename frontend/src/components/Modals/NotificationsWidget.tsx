@@ -1,5 +1,6 @@
 import * as React from 'react'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
 
 import {
     Button,
@@ -15,6 +16,7 @@ import {
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 import { INotification } from '../../reducers/types'
+import { fetchNotifications } from '../../actions/notificationsActions'
 
 interface IState {
     open: boolean
@@ -22,30 +24,14 @@ interface IState {
     openNotifications: number[]
 }
 
-interface IProps {
-    count?: number
+interface ReduxProps {
+    notifications: INotification[]
+    fetchNotifications: () => any
 }
 
-const data: INotification[] = [
-    {
-        id: 1,
-        date: 'Monday, Jan 12',
-        time: '7:45 AM',
-        approximateTime: '13h ago',
-        body: 'This is the body of the message. Sometimes, messages are too long to display.',
-        read: false
-    },
-    {
-        id: 2,
-        date: 'Tuesday, Jan 13',
-        time: '2:13 PM',
-        approximateTime: '2d ago',
-        body: 'Here is another message.',
-        read: true
-    }
-]
+interface IProps extends ReduxProps {}
 
-export class NotificationsWidget extends React.Component<IProps> {
+class NotificationsWidget extends React.Component<IProps> {
     constructor(props: IProps) {
         super(props)
         this.escFunction = this.escFunction.bind(this)
@@ -89,6 +75,7 @@ export class NotificationsWidget extends React.Component<IProps> {
 
     componentDidMount() {
         document.addEventListener('keydown', this.escFunction, false)
+        this.props.fetchNotifications()
     }
 
     componentWillUnmount() {
@@ -96,12 +83,16 @@ export class NotificationsWidget extends React.Component<IProps> {
     }
 
     render() {
+        const badgeCount: number = this.props.notifications.filter((notification: INotification) => {
+            return notification.read === false
+        }).length
+
         return (
             <>
                 <NavItem
                     title='Notifications'
                     icon='notifications'
-                    badgeCount={5}
+                    badgeCount={badgeCount}
                     onClick={this.handleClickOpen}
                 />
                 <Drawer open={this.state.open}>
@@ -111,25 +102,20 @@ export class NotificationsWidget extends React.Component<IProps> {
                             <h3>Notifications</h3>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
-                            {data.length > 0 ? (
+                            {this.props.notifications && this.props.notifications.length > 0 ? (
                                 <>
                                     <div className='notifications_modal__actions'>
                                         <Button>Mark 2 as read</Button>
                                         <Button>Archive all</Button>
                                     </div>
                                     <div className='content-inner'>
-                                        {data.map((notification: any) => {
-                                            /**
-                                             * @TODO Make an interface `INotification`.
-                                             * 
-                                             */
+                                        {this.props.notifications.map((notification: INotification) => {
                                             const expanded = this.state.openNotifications.indexOf(notification.id) >= 0
                                             return (
                                                 <ExpansionPanel
                                                     className={classNames('notification', {['--read']: notification.read})}
                                                     expanded={expanded}
                                                     key={notification.id}
-                                                    // onClick={}
                                                 >
                                                     <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification.id)}>
                                                         <div className='notification__info'>
@@ -172,3 +158,11 @@ export class NotificationsWidget extends React.Component<IProps> {
         )
     }
 }
+
+const mapStateToProps = (state: any) => ({
+    notifications: state.notifications.items
+})
+
+const mapDispatchToProps = { fetchNotifications }
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotificationsWidget)

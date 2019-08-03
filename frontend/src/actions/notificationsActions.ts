@@ -9,7 +9,7 @@ export const fetchNotifications = () => {
                 const notifications = res.data
                 dispatch({
                     type: FETCH_NOTIFICATIONS,
-                    padyload: notifications
+                    payload: notifications
                 })
             })
     }

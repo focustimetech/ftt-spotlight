@@ -1,6 +1,7 @@
 import * as React from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
+import ContentLoader from 'react-content-loader'
 
 import {
     Button,
@@ -9,6 +10,8 @@ import {
     ExpansionPanelActions,
     ExpansionPanelDetails,
     ExpansionPanelSummary,
+    Fade,
+    Grow,
     Icon,
     IconButton
 } from '@material-ui/core'
@@ -37,6 +40,23 @@ class NotificationsWidget extends React.Component<IProps> {
         this.escFunction = this.escFunction.bind(this)
     }
 
+    contentLoader = (
+        <div className='items_modal__content-loader'>
+            <ContentLoader width={500} height={436}>
+                <rect x='64' y='0' rx='4' ry='4' height='24' width='96' />
+                <rect x='64' y='40' rx='4' ry='4' height='36' width='400' />
+                <rect x='64' y='84' rx='4' ry='4' height='36' width='400' />
+                <rect x='64' y='128' rx='4' ry='4' height='36' width='400' />
+                <rect x='64' y='180' rx='4' ry='4' height='24' width='160' />
+                <rect x='64' y='220' rx='4' ry='4' height='36' width='400' />
+                <rect x='64' y='264' rx='4' ry='4' height='36' width='400' />
+                <rect x='64' y='308' rx='4' ry='4' height='36' width='400' />
+                <rect x='64' y='360' rx='4' ry='4' height='24' width='80' />
+                <rect x='64' y='400' rx='4' ry='4' height='36' width='400' />
+            </ContentLoader>
+        </div>
+    )
+
     state: IState = {
         open: false,
         loading: false,
@@ -61,7 +81,6 @@ class NotificationsWidget extends React.Component<IProps> {
         this.setState((state: IState) => {
             const { openNotifications } = state
             const isOpen = openNotifications.indexOf(id) >= 0
-            console.log(`${id} is open: ${isOpen}`)
             return {
                 ...state,
                 openNotifications: isOpen ? (
@@ -75,7 +94,12 @@ class NotificationsWidget extends React.Component<IProps> {
 
     componentDidMount() {
         document.addEventListener('keydown', this.escFunction, false)
-        this.props.fetchNotifications()
+        this.setState({ loading: true })
+        this.props.fetchNotifications().then(
+            (res: any) => {
+                this.setState({ loading: false })
+            }
+        )
     }
 
     componentWillUnmount() {
@@ -83,16 +107,18 @@ class NotificationsWidget extends React.Component<IProps> {
     }
 
     render() {
-        const badgeCount: number = this.props.notifications.filter((notification: INotification) => {
+        const unreadCount: number = this.props.notifications.filter((notification: INotification) => {
             return notification.read === false
         }).length
+
+        const disableActions: boolean = !(this.props.notifications && this.props.notifications.length > 0)
 
         return (
             <>
                 <NavItem
                     title='Notifications'
                     icon='notifications'
-                    badgeCount={badgeCount}
+                    badgeCount={unreadCount}
                     onClick={this.handleClickOpen}
                 />
                 <Drawer open={this.state.open}>
@@ -102,50 +128,52 @@ class NotificationsWidget extends React.Component<IProps> {
                             <h3>Notifications</h3>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
-                            {this.props.notifications && this.props.notifications.length > 0 ? (
-                                <>
-                                    <div className='notifications_modal__actions'>
-                                        <Button>Mark 2 as read</Button>
-                                        <Button>Archive all</Button>
-                                    </div>
-                                    <div className='content-inner'>
-                                        {this.props.notifications.map((notification: INotification) => {
-                                            const expanded = this.state.openNotifications.indexOf(notification.id) >= 0
-                                            return (
-                                                <ExpansionPanel
-                                                    className={classNames('notification', {['--read']: notification.read})}
-                                                    expanded={expanded}
-                                                    key={notification.id}
-                                                >
-                                                    <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification.id)}>
-                                                        <div className='notification__info'>
-                                                            {expanded ? (
-                                                                <>
-                                                                    <p className='header'>{notification.date}</p>
-                                                                    <p className='time'>{notification.time}</p>
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <p className='header'>
-                                                                        {!notification.read && <span className='unread-badge' />}
-                                                                        {notification.body}
-                                                                    </p>
-                                                                    <p className='time'>2 hours ago</p>
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                    </ExpansionPanelSummary>
-                                                    <ExpansionPanelDetails><p>{notification.body}</p></ExpansionPanelDetails>
-                                                    <ExpansionPanelActions>
-                                                        <Button>Mark Unread</Button>
-                                                        <Button>Delete</Button>
-                                                    </ExpansionPanelActions>
-                                                </ExpansionPanel>
-                                            )
-                                        })}
-                                    </div>
-                                </>
-                            ) : (
+                            <div className='notifications_modal__actions'>
+                                <Button disabled={disableActions}>
+                                    {`Mark ${unreadCount > 0 ? unreadCount : 'all'} as read`}
+                                </Button>
+                                <Button disabled={disableActions}>Archive all</Button>
+                            </div>
+                            <Grow in={this.props.notifications && this.props.notifications.length > 0}>
+                                <div className='content-inner'>
+                                    {this.props.notifications.map((notification: INotification) => {
+                                        const expanded = this.state.openNotifications.indexOf(notification.id) >= 0
+                                        return (
+                                            <ExpansionPanel
+                                                className={classNames('notification', {['--read']: notification.read})}
+                                                expanded={expanded}
+                                                key={notification.id}
+                                            >
+                                                <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification.id)}>
+                                                    <div className='notification__info'>
+                                                        {expanded ? (
+                                                            <>
+                                                                <p className='header'>{notification.date}</p>
+                                                                <p className='time'>{notification.time}</p>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <p className='header'>
+                                                                    {!notification.read && <span className='unread-badge' />}
+                                                                    {notification.body}
+                                                                </p>
+                                                                <p className='time'>2 hours ago</p>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </ExpansionPanelSummary>
+                                                <ExpansionPanelDetails><p>{notification.body}</p></ExpansionPanelDetails>
+                                                <ExpansionPanelActions>
+                                                    <Button>Mark Unread</Button>
+                                                    <Button>Delete</Button>
+                                                </ExpansionPanelActions>
+                                            </ExpansionPanel>
+                                        )
+                                    })}
+                                </div>
+                            </Grow>
+                            <Fade in={this.state.loading}>{this.contentLoader}</Fade>
+                            {(!this.state.loading && this.props.notifications.length === 0) && (
                                 <EmptyStateIcon variant='notifications'>
                                     <h2>Your inbox is empty</h2>
                                     <h3>Notifications that you receive from Spotlight will appear here.</h3>

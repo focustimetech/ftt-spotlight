@@ -13,12 +13,12 @@ import {
     Fade,
     Grow,
     Icon,
-    IconButton,
-    Snackbar
+    IconButton
 } from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
+import { SnackbarProvider, ISnackbar, ISnackbarButton } from '../SnackbarProvider'
 import { INotification } from '../../reducers/types'
 import { fetchNotifications } from '../../actions/notificationsActions'
 
@@ -26,6 +26,7 @@ interface IState {
     open: boolean
     loading: boolean
     openNotifications: number[]
+    snackbars: ISnackbar[]
 }
 
 interface ReduxProps {
@@ -62,7 +63,8 @@ class NotificationsWidget extends React.Component<IProps> {
     state: IState = {
         open: false,
         loading: false,
-        openNotifications: []
+        openNotifications: [],
+        snackbars: []
     }
 
     handleClickOpen = () => {
@@ -97,6 +99,26 @@ class NotificationsWidget extends React.Component<IProps> {
     refreshNotifications() {
         this.props.fetchNotifications()
         console.log('refreshNoticiations()')
+    }
+
+    getNextSnackbar() {
+        this.setState((state: IState) => {
+            state.snackbars.pop()
+            return {
+                ...state,
+                snackbars: state.snackbars
+            }
+        })
+    }
+
+    queueSnackbar(snackbar: ISnackbar) {
+        this.setState((state: IState) => {
+            state.snackbars.unshift(snackbar)
+            return {
+                ...state,
+                snackbars: state.snackbars
+            }
+        })
     }
 
     componentDidMount() {
@@ -140,15 +162,24 @@ class NotificationsWidget extends React.Component<IProps> {
         console.log('NEW NOTIFICATIONS!')
     }
 
+    test() {
+        this.queueSnackbar({ message: 'This is a test' })
+    }
+
     render() {
         const unreadCount: number = this.props.notifications.filter((notification: INotification) => {
             return notification.read === false
         }).length
 
         const disableActions: boolean = !(this.props.notifications && this.props.notifications.length > 0)
-
+        
+        const snackbar = this.state.snackbars.length > 0 ? (
+            this.state.snackbars[this.state.snackbars.length - 1]
+        ) : null
+        const snackbarHasNext: boolean = false
         return (
             <>
+                <SnackbarProvider hasNext={snackbarHasNext} snackbar={snackbar} getNext={this.getNextSnackbar}/>
                 <NavItem
                     title='Notifications'
                     icon='notifications'
@@ -166,7 +197,7 @@ class NotificationsWidget extends React.Component<IProps> {
                                 <Button disabled={disableActions}>
                                     {`Mark ${unreadCount > 0 ? unreadCount : 'all'} as read`}
                                 </Button>
-                                <Button disabled={disableActions}>Archive all</Button>
+                                <Button onClick={() => this.test()} disabled={disableActions}>Archive all</Button>
                             </div>
                             <Grow in={this.props.notifications && this.props.notifications.length > 0}>
                                 <div className='content-inner'>

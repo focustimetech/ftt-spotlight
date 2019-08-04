@@ -13,7 +13,8 @@ import {
     Fade,
     Grow,
     Icon,
-    IconButton
+    IconButton,
+    Snackbar
 } from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
@@ -120,6 +121,23 @@ class NotificationsWidget extends React.Component<IProps> {
         // Clear polling timer
         clearInterval(this.timer)
         this.timer = null
+    }
+
+    componentDidUpdate(previousProps: IProps) {
+        if (this.state.loading || !this.props.notifications || !previousProps.notifications) {
+            return
+        }
+        const currentNotifications: INotification[] = previousProps.notifications
+        const newNotifications: INotification[] = this.props.notifications.filter((notification: INotification) => {
+            // Collect all notifications that aren't in previous props
+            return currentNotifications.every((currentNotification: INotification) => {
+                return currentNotification.id !== notification.id && notification.read === false
+            })
+        })
+        if (newNotifications.length === 0) {
+            return
+        }
+        console.log('NEW NOTIFICATIONS!')
     }
 
     render() {

@@ -40,6 +40,8 @@ class NotificationsWidget extends React.Component<IProps> {
         this.escFunction = this.escFunction.bind(this)
     }
 
+    timer: number // Polling timer
+
     contentLoader = (
         <div className='items_modal__content-loader'>
             <ContentLoader width={500} height={436}>
@@ -91,8 +93,19 @@ class NotificationsWidget extends React.Component<IProps> {
         })
     }
 
+    refreshNotifications() {
+        this.props.fetchNotifications()
+        console.log('refreshNoticiations()')
+    }
+
     componentDidMount() {
+        // Add event listener for escape key press
         document.addEventListener('keydown', this.escFunction, false)
+
+        // Create polling interval (5 seconds)
+        this.timer = window.setInterval(() => this.refreshNotifications(), 3000)
+        
+        // Fetch Notifications
         this.setState({ loading: true })
         this.props.fetchNotifications().then(
             (res: any) => {
@@ -103,6 +116,10 @@ class NotificationsWidget extends React.Component<IProps> {
 
     componentWillUnmount() {
         document.removeEventListener('keydown', this.escFunction, false)
+        
+        // Clear polling timer
+        clearInterval(this.timer)
+        this.timer = null
     }
 
     render() {
@@ -156,7 +173,7 @@ class NotificationsWidget extends React.Component<IProps> {
                                                                     {!notification.read && <span className='unread-badge' />}
                                                                     {notification.body}
                                                                 </p>
-                                                                <p className='time'>2 hours ago</p>
+                                                                <p className='time'>{notification.approximateTime}</p>
                                                             </>
                                                         )}
                                                     </div>

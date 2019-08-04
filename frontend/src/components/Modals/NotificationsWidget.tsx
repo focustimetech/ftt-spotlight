@@ -43,16 +43,15 @@ class NotificationsWidget extends React.Component<IProps> {
     contentLoader = (
         <div className='items_modal__content-loader'>
             <ContentLoader width={500} height={436}>
-                <rect x='64' y='0' rx='4' ry='4' height='24' width='96' />
-                <rect x='64' y='40' rx='4' ry='4' height='36' width='400' />
-                <rect x='64' y='84' rx='4' ry='4' height='36' width='400' />
-                <rect x='64' y='128' rx='4' ry='4' height='36' width='400' />
-                <rect x='64' y='180' rx='4' ry='4' height='24' width='160' />
-                <rect x='64' y='220' rx='4' ry='4' height='36' width='400' />
-                <rect x='64' y='264' rx='4' ry='4' height='36' width='400' />
-                <rect x='64' y='308' rx='4' ry='4' height='36' width='400' />
-                <rect x='64' y='360' rx='4' ry='4' height='24' width='80' />
-                <rect x='64' y='400' rx='4' ry='4' height='36' width='400' />
+                <rect x='44' y='44' rx='4' ry='4' height='18' width='348' />
+                <rect x='420' y='44' rx='48' ry='48' height='48' width='48' />
+                <rect x='44' y='72' rx='4' ry='4' height='18' width='86' />
+                <rect x='44' y='116' rx='4' ry='4' height='18' width='348' />
+                <rect x='420' y='116' rx='48' ry='48' height='48' width='48' />
+                <rect x='44' y='144' rx='4' ry='4' height='18' width='112' />
+                <rect x='44' y='188' rx='4' ry='4' height='18' width='348' />
+                <rect x='420' y='188' rx='48' ry='48' height='48' width='48' />
+                <rect x='44' y='216' rx='4' ry='4' height='18' width='64' />
             </ContentLoader>
         </div>
     )

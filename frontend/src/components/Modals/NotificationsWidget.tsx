@@ -158,21 +158,26 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         if (newNotifications.length === 0) {
             return
         }
-        const snackbarButtons: ISnackbarButton[] = [{
+
+        const showNotificationButton = (id?: number): ISnackbarButton => ({
             text: 'Read More',
             callback: () => {
                 this.handleClickOpen()
-                window.setTimeout(() => {this.handleClickOpen()})
-                this.handleClick
+                if (id) {
+                    window.setTimeout(() => {
+                        this.handleClick(id)
+                    }, 300)
+                }
             },
             closeOnCallback: true
-        }]
+        })
+
         this.queueSnackbar(newNotifications.length === 1 ? ({
             message: newNotifications[0].body,
-            buttons: snackbarButtons
+            buttons: [showNotificationButton(newNotifications[0].id)]
         }) : ({
             message: `You have ${newNotifications.length} new notifications.`,
-            buttons: snackbarButtons
+            buttons: [showNotificationButton()]
         }))
     }
 

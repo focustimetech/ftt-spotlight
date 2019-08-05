@@ -3,11 +3,8 @@ import {
     Button,
     Icon,
     IconButton,
-    Slide,
-    Snackbar,
-    SnackbarContent
+    Snackbar
 } from '@material-ui/core';
-import { TransitionProps } from '@material-ui/core/transitions/transition'
 
 export interface ISnackbarButton {
     text: string,
@@ -27,9 +24,8 @@ interface IProps {
 }
 
 export const SnackbarProvider = (props: IProps) => {
-    if (props.snackbar === null) {
+    if (props.snackbar === null)
         return null
-    }
 
     const [open, setOpen] = React.useState(true)
     const closeButton: boolean = props.closeButton !== false
@@ -47,14 +43,13 @@ export const SnackbarProvider = (props: IProps) => {
     const snackbarContent = (
         <span>
             {snackbar.message}
-            {snackbar.buttons && snackbar.buttons.map((button: ISnackbarButton) => {
+            {snackbar.buttons && snackbar.buttons.map((button: ISnackbarButton, index: number) => {
                 const onClick = () => {
-                    if (button.closeOnCallback) {
+                    if (button.closeOnCallback)
                         handleClose()
-                    }
                     button.callback()
                 }
-                return <Button onClick={onClick}>{button.text}</Button>
+                return <Button key={index} color='primary' onClick={onClick}>{button.text}</Button>
             })}
             {closeButton && (
                 <IconButton onClick={handleClose}><Icon>close</Icon></IconButton>

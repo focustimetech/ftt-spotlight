@@ -36,7 +36,7 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps {}
 
-class NotificationsWidget extends React.Component<IProps> {
+class NotificationsWidget extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
         this.escFunction = this.escFunction.bind(this)
@@ -96,12 +96,11 @@ class NotificationsWidget extends React.Component<IProps> {
         })
     }
 
-    refreshNotifications() {
+    refreshNotifications = () => {
         this.props.fetchNotifications()
-        console.log('refreshNoticiations()')
     }
 
-    getNextSnackbar() {
+    getNextSnackbar = () => {
         this.setState((state: IState) => {
             state.snackbars.pop()
             return {
@@ -111,7 +110,7 @@ class NotificationsWidget extends React.Component<IProps> {
         })
     }
 
-    queueSnackbar(snackbar: ISnackbar) {
+    queueSnackbar = (snackbar: ISnackbar) => {
         this.setState((state: IState) => {
             state.snackbars.unshift(snackbar)
             return {
@@ -159,11 +158,22 @@ class NotificationsWidget extends React.Component<IProps> {
         if (newNotifications.length === 0) {
             return
         }
-        console.log('NEW NOTIFICATIONS!')
-    }
-
-    test() {
-        this.queueSnackbar({ message: 'This is a test' })
+        const snackbarButtons: ISnackbarButton[] = [{
+            text: 'Read More',
+            callback: () => {
+                this.handleClickOpen()
+                window.setTimeout(() => {this.handleClickOpen()})
+                this.handleClick
+            },
+            closeOnCallback: true
+        }]
+        this.queueSnackbar(newNotifications.length === 1 ? ({
+            message: newNotifications[0].body,
+            buttons: snackbarButtons
+        }) : ({
+            message: `You have ${newNotifications.length} new notifications.`,
+            buttons: snackbarButtons
+        }))
     }
 
     render() {
@@ -176,10 +186,9 @@ class NotificationsWidget extends React.Component<IProps> {
         const snackbar = this.state.snackbars.length > 0 ? (
             this.state.snackbars[this.state.snackbars.length - 1]
         ) : null
-        const snackbarHasNext: boolean = false
         return (
             <>
-                <SnackbarProvider hasNext={snackbarHasNext} snackbar={snackbar} getNext={this.getNextSnackbar}/>
+                <SnackbarProvider snackbar={snackbar} getNext={this.getNextSnackbar}/>
                 <NavItem
                     title='Notifications'
                     icon='notifications'
@@ -197,7 +206,7 @@ class NotificationsWidget extends React.Component<IProps> {
                                 <Button disabled={disableActions}>
                                     {`Mark ${unreadCount > 0 ? unreadCount : 'all'} as read`}
                                 </Button>
-                                <Button onClick={() => this.test()} disabled={disableActions}>Archive all</Button>
+                                <Button disabled={disableActions}>Archive all</Button>
                             </div>
                             <Grow in={this.props.notifications && this.props.notifications.length > 0}>
                                 <div className='content-inner'>

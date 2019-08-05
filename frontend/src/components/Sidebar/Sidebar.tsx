@@ -10,6 +10,7 @@ import NotificationsWidget from '../Modals/NotificationsWidget'
 import { CheckInWidget } from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
+import { SnackbarProvider } from '../SnackbarProvider'
 
 interface ReduxProps {
 	currentUser: any
@@ -108,6 +109,8 @@ class Sidebar extends React.Component<IProps> {
 								<MenuItem to='/settings' icon='settings' label='Settings' />
 								<MenuItem to='/parents' icon='contact_mail' label='Parents' />
 							</ul>
+							{//<SnackbarProvider />
+							}
 						</>
 					)}
 				</div>

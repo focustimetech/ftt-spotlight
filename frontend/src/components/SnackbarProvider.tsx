@@ -5,6 +5,7 @@ import {
     IconButton,
     Snackbar
 } from '@material-ui/core';
+import { CSSProperties } from '@material-ui/styles';
 
 export interface ISnackbarButton {
     text: string,
@@ -40,28 +41,35 @@ export const SnackbarProvider = (props: IProps) => {
         setOpen(false)
     }
 
-    const snackbarContent = (
-        <span>
-            {snackbar.message}
-            {snackbar.buttons && snackbar.buttons.map((button: ISnackbarButton, index: number) => {
-                const onClick = () => {
-                    if (button.closeOnCallback)
-                        handleClose()
-                    button.callback()
-                }
-                return <Button key={index} color='primary' onClick={onClick}>{button.text}</Button>
-            })}
-            {closeButton && (
-                <IconButton onClick={handleClose}><Icon>close</Icon></IconButton>
-            )}
-        </span>
-    )
+    const messageStyle: CSSProperties = {
+        maxWidth: 400,
+        overflow: 'hidden',
+        textOverflow: 'ellipses'
+    }
+
     return (
         <Snackbar
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left'
+            }}
             open={open}
             onClose={handleClose}
             onExited={handleExited}
-            message={snackbarContent}
+            message={<span style={messageStyle}>{snackbar.message}</span>}
+            action={[
+                snackbar.buttons && snackbar.buttons.map((button: ISnackbarButton, index: number) => {
+                    const onClick = () => {
+                        if (button.closeOnCallback)
+                            handleClose()
+                        button.callback()
+                    }
+                    return <Button key={index} color='primary' onClick={onClick}>{button.text}</Button>
+                }),
+                closeButton && (
+                    <IconButton onClick={handleClose}><Icon>close</Icon></IconButton>
+                )
+            ]}
         />
     )
 }

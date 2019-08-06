@@ -6,6 +6,7 @@ import { starReducer } from './starReducer'
 import { studentReducer } from './studentReducer'
 import { studentProfileReducer} from './studentProfileReducer'
 import { studentScheduleReducer } from './studentScheduleReducer'
+import { notificationReducer } from './notificationReducer'
 
 export const rootReducer = combineReducers({
     auth: authReducer,
@@ -13,5 +14,6 @@ export const rootReducer = combineReducers({
     starred: starReducer,
     students: studentReducer,
     studentProfile: studentProfileReducer,
-    studentSchedule: studentScheduleReducer
+    studentSchedule: studentScheduleReducer,
+    notifications: notificationReducer
 })

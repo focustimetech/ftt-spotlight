@@ -1,7 +1,9 @@
 import * as React from 'react'
+import classNames from 'classnames'
+import { connect } from 'react-redux'
+import ContentLoader from 'react-content-loader'
 
 import {
-    Avatar,
     Button,
     Drawer,
     ExpansionPanel,
@@ -9,68 +11,60 @@ import {
     ExpansionPanelDetails,
     ExpansionPanelSummary,
     Fade,
+    Grow,
     Icon,
     IconButton
 } from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
+import { SnackbarProvider, ISnackbar, ISnackbarButton } from '../SnackbarProvider'
+import { INotification } from '../../reducers/types'
+import { fetchNotifications } from '../../actions/notificationsActions'
 
 interface IState {
     open: boolean
     loading: boolean
     openNotifications: number[]
+    snackbars: ISnackbar[]
 }
 
-interface IProps {
-    count?: number
+interface ReduxProps {
+    notifications: INotification[]
+    fetchNotifications: () => any
 }
 
-const data = [
-    {
-        date: 'Mon, Jan 12',
-        time: '7:45 AM',
-        sender: {
-            name: 'Mr. User',
-            type: 'staff',
-            id: 1
-        },
-        avatar: {
-            text: 'CU',
-            background: '#1034CD'
-        },
-        message: 'This is the body of the message. Sometimes, messages are too long to display.',
-        id: 1,
-        read: false
-    },
-    {
-        date: 'Tue, Jan 13',
-        time: '2:13 PM',
-        sender: {
-            name: 'Mrs. User',
-            type: 'staff',
-            id: 2
-        },
-        avatar: {
-            text: 'AB',
-            background: '#4024AB'
-        },
-        message: 'Here is another message.',
-        id: 2,
-        read: false
-    }
-]
+interface IProps extends ReduxProps {}
 
-export class NotificationsWidget extends React.Component<IProps> {
+class NotificationsWidget extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
         this.escFunction = this.escFunction.bind(this)
     }
 
+    timer: number // Polling timer
+
+    contentLoader = (
+        <div className='items_modal__content-loader'>
+            <ContentLoader width={500} height={436}>
+                <rect x='44' y='44' rx='4' ry='4' height='18' width='348' />
+                <rect x='420' y='44' rx='48' ry='48' height='48' width='48' />
+                <rect x='44' y='72' rx='4' ry='4' height='18' width='86' />
+                <rect x='44' y='116' rx='4' ry='4' height='18' width='348' />
+                <rect x='420' y='116' rx='48' ry='48' height='48' width='48' />
+                <rect x='44' y='144' rx='4' ry='4' height='18' width='112' />
+                <rect x='44' y='188' rx='4' ry='4' height='18' width='348' />
+                <rect x='420' y='188' rx='48' ry='48' height='48' width='48' />
+                <rect x='44' y='216' rx='4' ry='4' height='18' width='64' />
+            </ContentLoader>
+        </div>
+    )
+
     state: IState = {
         open: false,
         loading: false,
-        openNotifications: []
+        openNotifications: [],
+        snackbars: []
     }
 
     handleClickOpen = () => {
@@ -91,7 +85,6 @@ export class NotificationsWidget extends React.Component<IProps> {
         this.setState((state: IState) => {
             const { openNotifications } = state
             const isOpen = openNotifications.indexOf(id) >= 0
-            console.log(`${id} is open: ${isOpen}`)
             return {
                 ...state,
                 openNotifications: isOpen ? (
@@ -103,21 +96,108 @@ export class NotificationsWidget extends React.Component<IProps> {
         })
     }
 
+    refreshNotifications = () => {
+        this.props.fetchNotifications()
+    }
+
+    getNextSnackbar = () => {
+        this.setState((state: IState) => {
+            state.snackbars.pop()
+            return {
+                ...state,
+                snackbars: state.snackbars
+            }
+        })
+    }
+
+    queueSnackbar = (snackbar: ISnackbar) => {
+        this.setState((state: IState) => {
+            state.snackbars.unshift(snackbar)
+            return {
+                ...state,
+                snackbars: state.snackbars
+            }
+        })
+    }
+
     componentDidMount() {
+        // Add event listener for escape key press
         document.addEventListener('keydown', this.escFunction, false)
+
+        // Create polling interval (5 seconds)
+        this.timer = window.setInterval(() => this.refreshNotifications(), 3000)
+        
+        // Fetch Notifications
+        this.setState({ loading: true })
+        this.props.fetchNotifications().then(
+            (res: any) => {
+                this.setState({ loading: false })
+            }
+        )
     }
 
     componentWillUnmount() {
         document.removeEventListener('keydown', this.escFunction, false)
+        
+        // Clear polling timer
+        clearInterval(this.timer)
+        this.timer = null
+    }
+
+    componentDidUpdate(previousProps: IProps) {
+        if (this.state.loading || !this.props.notifications || !previousProps.notifications) {
+            return
+        }
+        const currentNotifications: INotification[] = previousProps.notifications
+        const newNotifications: INotification[] = this.props.notifications.filter((notification: INotification) => {
+            // Collect all notifications that aren't in previous props
+            return currentNotifications.every((currentNotification: INotification) => {
+                return currentNotification.id !== notification.id && notification.read === false
+            })
+        })
+        if (newNotifications.length === 0) {
+            return
+        }
+
+        const showNotificationButton = (id?: number): ISnackbarButton => ({
+            text: 'Read More',
+            callback: () => {
+                this.handleClickOpen()
+                if (id) {
+                    window.setTimeout(() => {
+                        this.handleClick(id)
+                    }, 300)
+                }
+            },
+            closeOnCallback: true
+        })
+
+        this.queueSnackbar(newNotifications.length === 1 ? ({
+            message: newNotifications[0].body,
+            buttons: [showNotificationButton(newNotifications[0].id)]
+        }) : ({
+            message: `You have ${newNotifications.length} new notifications.`,
+            buttons: [showNotificationButton()]
+        }))
     }
 
     render() {
+        const unreadCount: number = this.props.notifications.filter((notification: INotification) => {
+            return notification.read === false
+        }).length
+
+        const disableActions: boolean = !(this.props.notifications && this.props.notifications.length > 0)
+        
+        const snackbar = this.state.snackbars.length > 0 ? (
+            this.state.snackbars[this.state.snackbars.length - 1]
+        ) : null
         return (
             <>
+                <SnackbarProvider snackbar={snackbar} getNext={this.getNextSnackbar}/>
                 <NavItem
                     title='Notifications'
                     icon='notifications'
-                    badgeCount={5}
+                    badgeCount={unreadCount}
                     onClick={this.handleClickOpen}
                 />
                 <Drawer open={this.state.open}>
@@ -127,49 +207,52 @@ export class NotificationsWidget extends React.Component<IProps> {
                             <h3>Notifications</h3>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
-                            {data.length > 0 ? (
-                                <>
-                                    <div className='notifications_modal__actions'>
-                                        <Button>Mark all read</Button>
-                                        <Button>Delete all</Button>
-                                    </div>
-                                    <div className='content-inner'>
-                                        {data.map((notification: any) => {
-                                            const expanded = this.state.openNotifications.indexOf(notification.id) >= 0
-                                            return (
-                                                <ExpansionPanel
-                                                    className='notification'
-                                                    expanded={expanded}
-                                                    key={notification.id}
-                                                    // onClick={}
-                                                >
-                                                    <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification.id)}>
-                                                        <div className='notification__sender'>
-                                                            <Avatar className='icon'>CU</Avatar>
-                                                            <div className='info'>
-                                                                <div className='sender-info'>
-                                                                    <h4>{notification.sender.name}</h4>
-                                                                    <h4>{notification.date}</h4>
-                                                                </div>
-                                                                {expanded ? (
-                                                                    <p className='time'>{notification.time}</p>
-                                                                ) : (
-                                                                    <p className='message'>{notification.message}</p>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </ExpansionPanelSummary>
-                                                    <ExpansionPanelDetails><p>{notification.message}</p></ExpansionPanelDetails>
-                                                    <ExpansionPanelActions>
-                                                        <Button>Mark Unread</Button>
-                                                        <Button>Delete</Button>
-                                                    </ExpansionPanelActions>
-                                                </ExpansionPanel>
-                                            )
-                                        })}
-                                    </div>
-                                </>
-                            ) : (
+                            <div className='notifications_modal__actions'>
+                                <Button disabled={disableActions}>
+                                    {`Mark ${unreadCount > 0 ? unreadCount : 'all'} as read`}
+                                </Button>
+                                <Button disabled={disableActions}>Archive all</Button>
+                            </div>
+                            <Grow in={this.props.notifications && this.props.notifications.length > 0}>
+                                <div className='content-inner'>
+                                    {this.props.notifications.map((notification: INotification) => {
+                                        const expanded = this.state.openNotifications.indexOf(notification.id) >= 0
+                                        return (
+                                            <ExpansionPanel
+                                                className={classNames('notification', {['--read']: notification.read})}
+                                                expanded={expanded}
+                                                key={notification.id}
+                                            >
+                                                <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification.id)}>
+                                                    <div className='notification__info'>
+                                                        {expanded ? (
+                                                            <>
+                                                                <p className='header'>{notification.date}</p>
+                                                                <p className='time'>{notification.time}</p>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <p className='header'>
+                                                                    {!notification.read && <span className='unread-badge' />}
+                                                                    {notification.body}
+                                                                </p>
+                                                                <p className='time'>{notification.approximateTime}</p>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </ExpansionPanelSummary>
+                                                <ExpansionPanelDetails><p>{notification.body}</p></ExpansionPanelDetails>
+                                                <ExpansionPanelActions>
+                                                    <Button>Mark Unread</Button>
+                                                    <Button>Delete</Button>
+                                                </ExpansionPanelActions>
+                                            </ExpansionPanel>
+                                        )
+                                    })}
+                                </div>
+                            </Grow>
+                            <Fade in={this.state.loading}>{this.contentLoader}</Fade>
+                            {(!this.state.loading && this.props.notifications.length === 0) && (
                                 <EmptyStateIcon variant='notifications'>
                                     <h2>Your inbox is empty</h2>
                                     <h3>Notifications that you receive from Spotlight will appear here.</h3>
@@ -182,3 +265,11 @@ export class NotificationsWidget extends React.Component<IProps> {
         )
     }
 }
+
+const mapStateToProps = (state: any) => ({
+    notifications: state.notifications.items
+})
+
+const mapDispatchToProps = { fetchNotifications }
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotificationsWidget)

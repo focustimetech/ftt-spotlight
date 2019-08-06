@@ -28,3 +28,6 @@ export const FETCH_STUDENT_SCHEDULE = 'FETCH_STUDENT_SCHEDULE'
 
 // Settings
 export const FETCH_SETTINGS = 'FETCH_SETTINGS'
+
+// Notifications
+export const FETCH_NOTIFICATIONS = 'FETCH_NOTIFICATIONS'

@@ -1,22 +1,16 @@
 import * as React from 'react'
 import ContentLoader from 'react-content-loader'
-import * as classNames from 'classnames'
 import { Link, Redirect } from 'react-router-dom'
 
 import {
 	Checkbox,
 	Icon,
-	IconButton,
 	Paper,
 	Table,
 	TableBody,
 	TableCell,
-	TableFooter,
-	TableHead,
 	TablePagination,
 	TableRow,
-	TableSortLabel,
-	TextField,
 	Tooltip
 } from '@material-ui/core'
 
@@ -223,7 +217,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		const rows: any = []
 		for (let i = 0; i < this.state.rowsPerPage; i ++) {
 			rows.push(
-				<TableRow>
+				<TableRow key={i}>
 					<TableCell padding='checkbox'>
 						<div style={{ width: 24, height: 24, padding: 12}}>
 							<ContentLoader width={24} height={24}>
@@ -234,7 +228,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 					{this.props.columns.map((column: ITableHeaderColumn) => {
 						if (column.th) {
 							return (
-								<TableCell component='th' scope='row' padding='none'>
+								<TableCell component='th' scope='row' padding='none' key={column.id}>
 									<div style={{height: 24, width: 75}}>
 										<ContentLoader width={75} height={24}>
 											<rect x='0' y='0' rx='4' ry='4' width='75' height='8' />
@@ -243,7 +237,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 								</TableCell>
 							)
 						} else {
-							return <TableCell align='right'>
+							return <TableCell align='right' key={column.id}>
 								<div style={{height: 24, width: 50, float: 'right'}}>
 										<ContentLoader width={50} height={24}>
 											<rect x='0' y='0' rx='4' ry='4' width='50' height='8' />
@@ -330,7 +324,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 												<TableRow
 													hover
 													onClick={(event: any) => this.handleClick(event, n.id)}
-													role={selectable && 'checkbox'}
+													role={selectable ? 'checkbox' : null}
 													aria-checked={isSelected}
 													tabIndex={-1}
 													key={n.id}
@@ -345,7 +339,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 														const columnData: any = n[column.id]
 														if (column.th) {
 															return (
-																<TableCell component='th' scope='row' padding={selectable || index !== 0 ? 'none' : 'default'}>
+																<TableCell component='th' scope='row' padding={selectable || index !== 0 ? 'none' : 'default'} key={column.id}>
 																	{this.props.link && !selectable ? (
 																		<Link className='enhanced-table__link' to={`${this.props.link.path}/${n[this.props.link.key]}`}>
 																			{columnData}
@@ -355,7 +349,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 																</TableCell>
 															)
 														} else {
-															return <TableCell align='right'>{columnData}</TableCell>
+															return <TableCell align='right' key={column.id}>{columnData}</TableCell>
 														}
 													})}
 													{(this.props.link && selectable)  && (	

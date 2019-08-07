@@ -20,13 +20,11 @@ export const uploadCSV = (
         : 'http://localhost:8000/api/staff/upload'
 
     const file = files.pop()
-    console.log(file)
     const formData = new FormData
     formData.append('file', file)
     formData.append('headers', headers.join(','))
-    const config = { headers: { 'Content-Type': 'multipart/form-data' } }
     return axios.post(url, formData)
-        .then((res: any) => {
+        .then(() => {
             uploadCSV(files, headers, userType)
         })
         .catch((reason: any) => {

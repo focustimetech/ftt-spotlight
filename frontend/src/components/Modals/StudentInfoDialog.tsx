@@ -123,6 +123,7 @@ export const StudentInfoDialog = (props: IProps) => {
             uploadCSV(files.map((file: ActualFileObject) => file as File), headers, 'student')
                 .then(() => {
                     setUploading(false)
+                    setFiles([])
                     setStep(3)
                 })
         } catch (error) {

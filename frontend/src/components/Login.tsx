@@ -122,7 +122,7 @@ class Login extends React.Component<IProps, IState> {
 									fullWidth={true}
 								/>
 								<DialogActions>
-									<div className='button_container'>
+									<div className='button-container'>
 										<Button
 											type='submit'
 											onClick={() => this.handleLogin()}
@@ -131,7 +131,7 @@ class Login extends React.Component<IProps, IState> {
 											disabled={this.state.loading}
 										>Sign In</Button>
 										{this.state.loading && (
-											<CircularProgress size={24} className='login-progress' />
+											<CircularProgress size={24} className='button-progress' />
 										)}
 									</div>
 								</DialogActions>

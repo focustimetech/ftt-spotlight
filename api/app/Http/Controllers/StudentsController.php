@@ -56,7 +56,7 @@ class StudentsController extends Controller
     public function upload(Request $request)
     {
         // return $request;
-        $file_path = $request->file('studentFile')->store('studentFiles');
+        $file_path = $request->file('file')->store('student-uploads');
 
         return $file_path;
     }

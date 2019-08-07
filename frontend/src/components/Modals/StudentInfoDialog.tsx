@@ -6,6 +6,7 @@ import 'filepond/dist/filepond.min.css'
 
 import {
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -120,10 +121,13 @@ export const StudentInfoDialog = (props: IProps) => {
         const headers: string[] = listItems.map((listItem: IListItem) => (listItem.value))
         try {
             uploadCSV(files.map((file: ActualFileObject) => file as File), headers, 'student')
+                .then(() => {
+                    setUploading(false)
+                    setStep(3)
+                })
         } catch (error) {
 
         }
-        setStep(3)
     }
 
     const navTabs: Tabs = {
@@ -211,7 +215,6 @@ export const StudentInfoDialog = (props: IProps) => {
                             allowMultiple
                             maxFiles={5}
                         />
-                        <input type='file' id='file' />
                         <div className='stepper-actions'>
                             <Button disabled={files.length === 0} onClick={() => setStep(1)} variant='contained' color='primary'>Next</Button>
                         </div>
@@ -263,7 +266,17 @@ export const StudentInfoDialog = (props: IProps) => {
                         <p>When you're ready, click <span style={{fontWeight: 500}}>Upload</span> to send your CSV files.</p>
                         <div className='stepper-actions'>
                             <Button onClick={() => setStep(1)} variant='text'>Back</Button>
-                            <Button onClick={() => handleFileUpload()} variant='contained' color='primary'>Upload</Button>
+                            <div className='button-container'>
+                                <Button
+                                    onClick={() => handleFileUpload()}
+                                    variant='contained'
+                                    color='primary'
+                                    disabled={uploading}
+                                >Upload</Button>
+                                {uploading && (
+                                    <CircularProgress size={24} className='button-progress' />
+                                )}
+                            </div>
                         </div>
                     </StepContent>
                 </Step>

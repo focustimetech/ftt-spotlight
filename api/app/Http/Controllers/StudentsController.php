@@ -53,6 +53,14 @@ class StudentsController extends Controller
         }
     }
 
+    public function upload(Request $request)
+    {
+        // return $request;
+        $file_path = $request->file('studentFile')->store('studentFiles');
+
+        return $file_path;
+    }
+
     /**
      * Retreive student by ID (primary key)
      */

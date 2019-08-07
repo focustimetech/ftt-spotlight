@@ -31,6 +31,9 @@ import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStudentDetails } from '../../types/student';
 import { Tabs } from '../TopNav'
 import { isEmpty } from '../../utils/utils'
+import { uploadCSV } from '../../utils/storage'
+
+type ActualFileObject = FilePondFile['file']
 
 const GRADES = [9, 10, 11, 12]
 
@@ -68,19 +71,18 @@ export const StudentInfoDialog = (props: IProps) => {
     
 	const [tab, setTab]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
 
-    console.log('props.studentDetails:', props.studentDetails)
     const [details, setDetails]: [IStudentDetails, React.Dispatch<React.SetStateAction<IStudentDetails>>]
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
 
-    console.log('details (edit = ' + edit + '):', details)
-
     const [step, setStep]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
 
-    const [files, setFiles]: [FilePondFile['file'][], React.Dispatch<React.SetStateAction<FilePondFile['file'][]>>]
+    const [files, setFiles]: [ActualFileObject[], React.Dispatch<React.SetStateAction<ActualFileObject[]>>]
         = React.useState([])
 
     const [listItems, setListItems]: [IListItem[], React.Dispatch<React.SetStateAction<IListItem[]>>]
         = React.useState(defaultListItems)
+    
+    const [uploading, setUploading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState(false)
 
     const handleInputChange = (event: any) => {
         const { name, value } = event.target
@@ -112,7 +114,15 @@ export const StudentInfoDialog = (props: IProps) => {
     const handleFileChange = (fileItems: FilePondFile[]) => {
         setFiles(fileItems.map((fileItem: FilePondFile) => fileItem.file))
     }
+
     const handleFileUpload = () => {
+        setUploading(true)
+        const headers: string[] = listItems.map((listItem: IListItem) => (listItem.value))
+        try {
+            uploadCSV(files.map((file: ActualFileObject) => file as File), headers, 'student')
+        } catch (error) {
+
+        }
         setStep(3)
     }
 
@@ -201,6 +211,7 @@ export const StudentInfoDialog = (props: IProps) => {
                             allowMultiple
                             maxFiles={5}
                         />
+                        <input type='file' id='file' />
                         <div className='stepper-actions'>
                             <Button disabled={files.length === 0} onClick={() => setStep(1)} variant='contained' color='primary'>Next</Button>
                         </div>

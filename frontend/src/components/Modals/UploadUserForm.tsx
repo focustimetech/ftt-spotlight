@@ -4,47 +4,36 @@ import 'filepond/dist/filepond.min.css'
 import {
     Button,
     CircularProgress,
-    Dialog,
     DialogActions,
     DialogContent,
-    FormControl,
     Icon,
     IconButton,
-    InputLabel,
     List,
     ListItem,
     ListItemSecondaryAction,
-    MenuItem,
-    Select,
     Step,
     Stepper,
     StepContent,
     StepLabel,
-    TextField,
     Tooltip
 } from '@material-ui/core'
 import { CSSProperties } from '@material-ui/styles';
 
-import { uploadCSV } from '../../utils/storage'
+import { uploadCSV, UserType } from '../../utils/storage'
 
 type ActualFileObject = FilePondFile['file']
 
-interface IProps {
-    onClose: () => void
-}
 
-
-interface IListItem {
+export interface IListItem {
     label: string
     value: string
 }
 
-const defaultListItems: IListItem[] = [
-    { label: 'First Name', value: 'first_name' },
-    { label: 'Last Name', value: 'last_name' },
-    { label: 'Grade', value: 'grade' },
-    { label: 'Student Number', value: 'student_number' },
-]
+interface IProps {
+    headers: IListItem[]
+    userType: UserType
+    onClose: () => void
+}
 
 export const UploadUserForm = (props: IProps) => {
 
@@ -54,7 +43,7 @@ export const UploadUserForm = (props: IProps) => {
         = React.useState([])
 
     const [listItems, setListItems]: [IListItem[], React.Dispatch<React.SetStateAction<IListItem[]>>]
-        = React.useState(defaultListItems)
+        = React.useState(props.headers)
     
     const [uploading, setUploading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState(false)
 
@@ -83,7 +72,7 @@ export const UploadUserForm = (props: IProps) => {
         setUploading(true)
         const headers: string[] = listItems.map((listItem: IListItem) => (listItem.value))
         try {
-            uploadCSV(files.map((file: ActualFileObject) => file as File), headers, 'student')
+            uploadCSV(files.map((file: ActualFileObject) => file as File), headers, props.userType)
                 .then(() => {
                     setUploading(false)
                     setFiles([])

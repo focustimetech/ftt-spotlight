@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+export type UserType = 'staff' | 'student'
+
 /**
  * Recursively uploads staff or student CSV files to the server.
  * @param files Files to upload.

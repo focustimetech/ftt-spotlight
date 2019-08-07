@@ -3,36 +3,21 @@ import SwipeableViews from 'react-swipeable-views'
 
 import {
     Button,
-    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     FormControl,
-    Icon,
-    IconButton,
     InputLabel,
-    List,
-    ListItem,
-    ListItemSecondaryAction,
     MenuItem,
     Select,
-    Step,
-    Stepper,
-    StepContent,
-    StepLabel,
-    TextField,
-    Tooltip
+    TextField
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStudentDetails } from '../../types/student';
 import { Tabs } from '../TopNav'
-import { UploadUserForm } from './UploadUserForm'
+import { UploadUserForm, IListItem } from './UploadUserForm'
 import { isEmpty } from '../../utils/utils'
-
-
-const GRADES = [9, 10, 11, 12]
-
 
 interface IProps {
     edit?: boolean
@@ -42,6 +27,8 @@ interface IProps {
     onSubmit: () => void
 }
 
+const GRADES: number[] = [9, 10, 11, 12]
+
 const emptyStudentDetails: IStudentDetails = {
     id: 0,
     first_name: '',
@@ -50,7 +37,12 @@ const emptyStudentDetails: IStudentDetails = {
     student_number: 0,
 }
 
-
+const defaultListItems: IListItem[] = [
+    { label: 'First Name', value: 'first_name' },
+    { label: 'Last Name', value: 'last_name' },
+    { label: 'Grade', value: 'grade' },
+    { label: 'Student Number', value: 'student_number' },
+]
 
 export const StudentInfoDialog = (props: IProps) => {
     // Cast undefined props.edit as boolean; Ensure props.studentDetails aren't empty.
@@ -61,7 +53,6 @@ export const StudentInfoDialog = (props: IProps) => {
     const [details, setDetails]: [IStudentDetails, React.Dispatch<React.SetStateAction<IStudentDetails>>]
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
 
-    
     const handleInputChange = (event: any) => {
         const { name, value } = event.target
         setDetails({
@@ -74,16 +65,13 @@ export const StudentInfoDialog = (props: IProps) => {
         setTab(value)
     }
 
-    
-
     const navTabs: Tabs = {
         value: tab,
         onChange: handleTabChange,
         tabs: ['Single', 'File Upload']
     }
 
-
-    const singleForm = (
+    const SingleForm = (
         <DialogContent>
             <form className='dialog-form' onSubmit={props.onSubmit} autoComplete='off'>
                 <TextField
@@ -156,10 +144,14 @@ export const StudentInfoDialog = (props: IProps) => {
                 tabs={!edit && navTabs}
                 title={props.edit ? 'Edit Student' : 'Add Student'}
             />
-            {edit ? singleForm : (
+            {edit ? SingleForm : (
                 <SwipeableViews index={navTabs.value}>
-                    {singleForm}
-                    <UploadUserForm onClose={props.onClose}/>
+                    {SingleForm}
+                    <UploadUserForm
+                        onClose={props.onClose}
+                        headers={defaultListItems}
+                        userType='student'
+                    />
                 </SwipeableViews>
             )}
         </Dialog>

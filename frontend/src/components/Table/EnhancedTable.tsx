@@ -56,7 +56,7 @@ interface IProps {
 	children?: any
 	columns: ITableHeaderColumn[]
 	data: any[]
-	actions: ITableAction[]
+	actions?: ITableAction[]
 	searchable?: boolean
 	selectable?: boolean
 	showEmptyTable?: boolean

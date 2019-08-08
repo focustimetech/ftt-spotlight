@@ -32,7 +32,7 @@ interface IProps {
 	filters: ITableFilter[]
 	filterOpen: boolean
 	columns: ITableHeaderColumn[]
-	actions: ITableAction[]
+	actions?: ITableAction[]
 	loading: boolean
 	// handleActionCallback: (id: string) => void
 	handleInvertSelection: () => void

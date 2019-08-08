@@ -20,7 +20,7 @@ import Settings from '../Settings'
 import StudentProfile from '../StudentProfile'
 import Students from '../Students'
 import Sidebar from '../Sidebar/Sidebar'
-import { Staff } from '../Staff'
+import Staff from '../Staff'
 
 interface ReduxProps {
 	getCurrentUser: () => any

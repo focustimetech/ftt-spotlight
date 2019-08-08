@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core'
 import { CSSProperties } from '@material-ui/styles';
 
+import { LoadingButton } from '../Form/LoadingButton'
 import { uploadCSV, UserType } from '../../utils/storage'
 
 type ActualFileObject = FilePondFile['file']
@@ -79,7 +80,7 @@ export const UploadUserForm = (props: IProps) => {
                     setStep(3)
                 })
         } catch (error) {
-
+            setUploading(false)
         }
     }
 
@@ -147,17 +148,12 @@ export const UploadUserForm = (props: IProps) => {
                         <p>When you're ready, click <span style={{fontWeight: 500}}>Upload</span> to send your CSV files.</p>
                         <div className='stepper-actions'>
                             <Button onClick={() => setStep(1)} variant='text'>Back</Button>
-                            <div className='button-container'>
-                                <Button
-                                    onClick={() => handleFileUpload()}
-                                    variant='contained'
-                                    color='primary'
-                                    disabled={uploading}
-                                >Upload</Button>
-                                {uploading && (
-                                    <CircularProgress size={24} className='button-progress' />
-                                )}
-                            </div>
+                            <LoadingButton
+                                onClick={() => handleFileUpload()}
+                                variant='contained'
+                                color='primary'
+                                loading={uploading}
+                            >Upload</LoadingButton>
                         </div>
                     </StepContent>
                 </Step>

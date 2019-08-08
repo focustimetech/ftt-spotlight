@@ -49,6 +49,9 @@ export const UploadUserForm = (props: IProps) => {
     
     const [uploading, setUploading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState(false)
 
+    const [passwordDialogOpen, setPasswordDialogOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+        = React.useState(false)
+
     const FilePond: any = IFilePond
 
     const swapIndices = (previous: number, next: number) => {
@@ -87,7 +90,7 @@ export const UploadUserForm = (props: IProps) => {
 
     return (
         <>
-            <ConfirmPasswordDialog open={true} onSubmit={() => {} } onClose={() => {} }/>
+            <ConfirmPasswordDialog open={passwordDialogOpen} onSubmit={() => {} } onClose={() => setPasswordDialogOpen(false)}/>
             <DialogContent>
                 <Stepper activeStep={step} orientation='vertical'>
                     <Step key={0}>

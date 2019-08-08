@@ -22,6 +22,7 @@ class AuthController extends Controller
                 'password' => $request->password,
             ]);
 
+            //dd($request->request);
             $tokenRequest = Request::create(
                 config('services.passport.login_endpoint'),
                 'post'
@@ -52,5 +53,23 @@ class AuthController extends Controller
         });
 
         return response()->json('Logged out successfully', 200);
+    }
+
+    public function verify(Request $request)
+    {
+        $username = auth()->user()->username;
+        $password = $request->password;
+
+        $request->replace([
+            'username' => $username,
+            'password' => $password
+        ]);
+
+        $response = $this->login($request);
+        if ($response->status() === 200) {
+            return response()->json('Verified user successfully');
+        } else {
+            return $response;
+        }
     }
 }

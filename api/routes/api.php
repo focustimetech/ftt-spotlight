@@ -21,6 +21,7 @@ Route::middleware('auth:api')->group(function() {
     // Auth
     Route::post('logout', 'AuthController@logout');
     Route::get('user', 'AuthController@user');
+    Route::post('verify-user', 'AuthController@verify');
 
     // Starred
     Route::get('starred', 'StarController@index');

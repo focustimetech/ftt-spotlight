@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 /**
  * 
  * @param list A list of string items to truncate
@@ -31,4 +33,13 @@ export const isEmpty = (obj: Object): boolean => {
         return true
     }
     return Object.keys(obj).length === 0 && obj.constructor === Object
+}
+
+/**
+ * Verify whether a user's password is correct by checking with the server.
+ * @param password The password.
+ * @return `Promise<Void>` resulting from `axios` request.
+ */
+export const verifyPassword = (password: string): Promise<void> => {
+    return axios.post('http://localhost:8000/api/verify-user', { password })
 }

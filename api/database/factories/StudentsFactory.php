@@ -2,6 +2,8 @@
 
 use Faker\Generator as Faker;
 
+use App\Http\Utils;
+
 $factory->define(App\Student::class, function (Faker $faker) {
     $first_name = $faker->firstName();
     $last_name = $faker->lastName();

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Resources\User as UserResource;
 
-class AuthController extends Controller
+trait Authenticate
 {
     public function login(Request $request)
     {
@@ -22,7 +22,6 @@ class AuthController extends Controller
                 'password' => $request->password,
             ]);
 
-            //dd($request->request);
             $tokenRequest = Request::create(
                 config('services.passport.login_endpoint'),
                 'post'
@@ -42,19 +41,6 @@ class AuthController extends Controller
         }
     }
 
-    public function user()
-    {
-        return new UserResource(auth()->user());
-    }
-
-    public function logout() {
-        auth()->user()->tokens->each(function ($token, $key) {
-            $token->delete();
-        });
-
-        return response()->json('Logged out successfully', 200);
-    }
-
     public function verify(Request $request)
     {
         $username = auth()->user()->username;
@@ -71,5 +57,24 @@ class AuthController extends Controller
         } else {
             return $response;
         }
+    }
+}
+
+
+class AuthController extends Controller
+{
+    use Authenticate;
+
+    public function user()
+    {
+        return new UserResource(auth()->user());
+    }
+
+    public function logout() {
+        auth()->user()->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+
+        return response()->json('Logged out successfully', 200);
     }
 }

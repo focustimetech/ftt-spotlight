@@ -73,11 +73,11 @@ export const UploadUserForm = (props: IProps) => {
         setFiles(fileItems.map((fileItem: FilePondFile) => fileItem.file))
     }
 
-    const handleFileUpload = () => {
+    const handleFileUpload = (password: string) => {
         setUploading(true)
         const headers: string[] = listItems.map((listItem: IListItem) => (listItem.value))
         try {
-            uploadCSV(files.map((file: ActualFileObject) => file as File), headers, props.userType)
+            uploadCSV(files.map((file: ActualFileObject) => file as File), headers, props.userType, password)
                 .then(() => {
                     setUploading(false)
                     setFiles([])
@@ -90,7 +90,11 @@ export const UploadUserForm = (props: IProps) => {
 
     return (
         <>
-            <ConfirmPasswordDialog open={passwordDialogOpen} onSubmit={() => {} } onClose={() => setPasswordDialogOpen(false)}/>
+            <ConfirmPasswordDialog
+                open={passwordDialogOpen}
+                onSubmit={(password: string) => handleFileUpload(password)}
+                onClose={() => setPasswordDialogOpen(false)}
+            />
             <DialogContent>
                 <Stepper activeStep={step} orientation='vertical'>
                     <Step key={0}>
@@ -155,7 +159,7 @@ export const UploadUserForm = (props: IProps) => {
                             <div className='stepper-actions'>
                                 <Button onClick={() => setStep(1)} variant='text'>Back</Button>
                                 <LoadingButton
-                                    onClick={() => handleFileUpload()}
+                                    onClick={() => setPasswordDialogOpen(true)}
                                     variant='contained'
                                     color='primary'
                                     loading={uploading}

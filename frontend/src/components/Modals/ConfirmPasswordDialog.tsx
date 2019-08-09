@@ -44,6 +44,11 @@ export const ConfirmPasswordDialog = (props: IProps) => {
         return
     }
 
+    const handleChange = (event: any) => {
+        event.preventDefault()
+        setPassword(event.target.value)
+
+    }
     const onExited = () => {
         setPassword('')
     }
@@ -51,35 +56,37 @@ export const ConfirmPasswordDialog = (props: IProps) => {
     return (
         <Dialog open={props.open} onExited={() => onExited()}>
             <DialogTitle>Confirm Authorization</DialogTitle>
-            <DialogContent>
-                <DialogContentText>This action requires you to confirm your password.</DialogContentText>
-                <TextField
-                    name='password'
-                    value={password}
-                    autoComplete={'off'}
-                    onChange={(event: any) => setPassword(event.target.value)}
-                    disabled={loading}
-                    error={errored}
-                    helperText={errored ? helperText : undefined}
-                    variant='outlined'
-                    type='password'
-                    label="Password"
-                    fullWidth
-                    required
-                    margin='normal'
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
-                <LoadingButton
-                    type='submit'
-                    loading={loading}
-                    variant='text'
-                    color='primary'
-                    disabled={password.length === 0}
-                    onClick={() => handleAuthorization()}
-                >Continue</LoadingButton>
-            </DialogActions>
+            <form autoComplete={'off'}>
+                <DialogContent>
+                    <DialogContentText>This action requires you to confirm your password.</DialogContentText>
+                    <TextField
+                        name='password'
+                        value={password}
+                        onChange={handleChange}
+                        disabled={loading}
+                        error={errored}
+                        helperText={errored ? helperText : undefined}
+                        variant='outlined'
+                        type='password'
+                        label="Password"
+                        fullWidth
+                        required
+                        autoFocus
+                        margin='normal'
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
+                    <LoadingButton
+                        type='submit'
+                        loading={loading}
+                        variant='text'
+                        color='primary'
+                        disabled={password.length === 0}
+                        onClick={() => handleAuthorization()}
+                    >Continue</LoadingButton>
+                </DialogActions>
+            </form>
         </Dialog>
     )
 }

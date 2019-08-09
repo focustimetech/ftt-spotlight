@@ -12,7 +12,8 @@ export type UserType = 'staff' | 'student'
 export const uploadCSV = (
         files: File[],
         headers: string[],
-        userType: 'staff' | 'student'
+        userType: 'staff' | 'student',
+        password: string
     ): Promise<void> => {
     if (files.length === 0)
         return
@@ -25,9 +26,10 @@ export const uploadCSV = (
     const formData = new FormData
     formData.append('file', file)
     formData.append('headers', headers.join(','))
+    formData.append('password', password)
     return axios.post(url, formData)
         .then(() => {
-            uploadCSV(files, headers, userType)
+            uploadCSV(files, headers, userType, password)
         })
         .catch((reason: any) => {
             throw new Error('Unable to upload files. ' + reason)

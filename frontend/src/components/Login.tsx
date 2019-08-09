@@ -2,12 +2,11 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
-	Button,
-	CircularProgress,
 	DialogActions,
 	TextField,
 } from '@material-ui/core'
 
+import { LoadingButton } from './Form/LoadingButton'
 import { ICredentials } from '../types/auth'
 import { login } from '../actions/authActions'
 
@@ -122,18 +121,13 @@ class Login extends React.Component<IProps, IState> {
 									fullWidth={true}
 								/>
 								<DialogActions>
-									<div className='button_container'>
-										<Button
-											type='submit'
-											onClick={() => this.handleLogin()}
-											color='primary'
-											variant='contained'
-											disabled={this.state.loading}
-										>Sign In</Button>
-										{this.state.loading && (
-											<CircularProgress size={24} className='login-progress' />
-										)}
-									</div>
+									<LoadingButton
+										type='submit'
+										onClick={() => this.handleLogin()}
+										color='primary'
+										variant='contained'
+										loading={this.state.loading}
+									>Sign In</LoadingButton>
 								</DialogActions>
 							</form>
 							<ul className='links_list'>

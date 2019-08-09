@@ -5,6 +5,10 @@
         border: 2px dotted #222;
     }
 
+    &__link {
+        cursor: pointer;
+    }
+
     &__toolbar {
         width: 100%;
         display: flex;

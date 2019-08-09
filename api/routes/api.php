@@ -21,6 +21,7 @@ Route::middleware('auth:api')->group(function() {
     // Auth
     Route::post('logout', 'AuthController@logout');
     Route::get('user', 'AuthController@user');
+    Route::post('verify-user', 'AuthController@verify');
 
     // Starred
     Route::get('starred', 'StarController@index');
@@ -37,8 +38,13 @@ Route::middleware('auth:api')->group(function() {
     Route::get('students/{id}', 'StudentsController@show');
     Route::get('students/profile/{id}', 'StudentsController@profile');
     Route::post('students', 'StudentsController@store');
+    Route::post('students/upload', 'StudentsController@upload');
     Route::put('students', 'StudentsController@store');
     Route::delete('students/{id}', 'StudentsController@destroy');
+
+    // Notifications
+    Route::get('notifications', 'NotificationsController@index');
+    Route::put('notifications', 'NotificationsController@update');
 });
 
 // COMPLETE

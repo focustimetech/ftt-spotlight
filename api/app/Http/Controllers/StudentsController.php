@@ -8,9 +8,11 @@ use App\Student;
 use App\User;
 use App\Http\Resources\Student as StudentResource;
 use App\Http\Resources\StudentProfile as StudentProfileResource;
+use App\Http\Traits\Authenticate;
 
 class StudentsController extends Controller
 {
+    use Authenticate;
 
     public function index()
     {
@@ -50,6 +52,18 @@ class StudentsController extends Controller
             if ($user->save()) {
                 return new StudentResource($student);
             }
+        }
+    }
+
+    public function upload(Request $request)
+    {
+        $verification_response = $this->verify($request);
+        if ($verification_response->status() === 200) {
+            $file_path = $request->file('file')->store('student-uploads');
+
+            return $file_path;
+        } else {
+            return $verification_response;
         }
     }
 

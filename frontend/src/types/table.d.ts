@@ -18,7 +18,6 @@ export interface ITableHeaderColumn {
 	isNumeric: boolean
 	label: string
 	sortLabel?: string
-	link?: string // If set, column renders external links
 	th?: boolean // If set, column is table header
 	searchable?: boolean
 	visible: boolean
@@ -59,3 +58,9 @@ export interface ITableAction {
 	name: string
 	action: (ids: number[]) => void
 } 
+
+export interface ITableLink {
+	label: string
+	key: string
+	path: string
+}

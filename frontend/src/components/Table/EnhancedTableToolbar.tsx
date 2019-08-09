@@ -24,13 +24,15 @@ interface IProps {
 	numSelected: number
 	numShown: number
 	numTotal: number
-	title: string
+	title?: string
+	children?: any
 	searchable: boolean
+	selectable: boolean
 	tableQuery: string
 	filters: ITableFilter[]
 	filterOpen: boolean
 	columns: ITableHeaderColumn[]
-	actions: ITableAction[]
+	actions?: ITableAction[]
 	loading: boolean
 	// handleActionCallback: (id: string) => void
 	handleInvertSelection: () => void
@@ -118,9 +120,11 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		return (
 			<Toolbar>
 				<div className='enhanced-table__toolbar'>
-					<h3 className={classNames({
-						'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
-					})}>{headerString}</h3>
+					{headerString && (
+						<h3 className={classNames({
+							'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
+						})}>{headerString}</h3>
+					)}
 					{filterOpen && (
 						<EnhancedTableFilter
 							filters={this.props.filters}
@@ -181,23 +185,26 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 									</IconButton>
 								</Tooltip>
 							</li>
-							<li>
-							<IconButton onClick={this.handleMenuOpen}>
-								<Icon>more_vert</Icon>
-							</IconButton>
-							<Menu
-								open={menuOpen}
-								anchorEl={menuRef}
-								onClose={this.handleMenuClose}
-							>
-								<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
-								{this.props.numSelected > 0 && (
-									this.props.actions.map((action: ITableAction) => (
-										<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
-									))
-								)}
-							</Menu>
-							</li>
+							{this.props.selectable && (
+								<li>
+									<IconButton onClick={this.handleMenuOpen}>
+										<Icon>more_vert</Icon>
+									</IconButton>
+									<Menu
+										open={menuOpen}
+										anchorEl={menuRef}
+										onClose={this.handleMenuClose}
+									>
+										<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
+										{this.props.numSelected > 0 && (
+											this.props.actions.map((action: ITableAction) => (
+												<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
+											))
+										)}
+									</Menu>
+								</li>
+							)}
+							{this.props.children}
 						</ul>
 					)}
 				</div>

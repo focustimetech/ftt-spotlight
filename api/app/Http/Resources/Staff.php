@@ -20,6 +20,9 @@ class Staff extends JsonResource
             'staff_type' => $this['staff_type'],
             'administrator' => $this['administrator'] ? true : false,
             'name' => $this->getName(),
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'title' => $this->title,
             'email' => $this['email']
         ];
     }

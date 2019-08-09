@@ -19,47 +19,39 @@
 	}
 
 	.notification {
-		&__sender {
+		.icon {
+			margin-right: 8px;
+		}
+
+		&__info {
 			width: 100%;
-			display: flex;
-			align-items: center;
+			display: grid;
+			font-weight: 700;
 
-			.icon {
-				margin-right: 8px;
-			}
-
-			.info {
-				width: 100%;
-				display: grid;
-
-				.sender-info {
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-
-					> * {
-						font-weight: 700;
-						margin: 0;
-					}
-				}
-			}
-
-			.message {
+			.header {
 				margin: 0;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				font-weight: 500;
+
+				.unread-badge {
+					background: red;
+					display: inline-block;
+					width: 6px;
+					border-radius: 50%;
+					height: 6px;
+					margin: 2px 8px 2px 0;
+				}
+			}
+
+			.time {
+				font-weight: 400;
 			}
 		}
 
 		&.--read {
-			.info .sender-info * {
+			.notification__info {
 				font-weight: 500;
-			}
-
-			.message {
-				font-weight: 400;
 			}
 		}
 	}

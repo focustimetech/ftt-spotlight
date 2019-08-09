@@ -2,6 +2,8 @@
 
 use Faker\Generator as Faker;
 
+use App\Http\Utils;
+
 $factory->define(App\Staff::class, function (Faker $faker) {
     $gender = $faker->randomElement(array("male", "female"));
     $first_name = $faker->firstName($gender);

@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Http;
+
+use DateTime;
+
 const USER_COLORS = [
     'F44336',
     'E91E63',
@@ -47,15 +51,34 @@ class Utils {
     }
 
     /**
-     * Compute the number of weeks that have passed between two times
+     * Determine the approximate time between a start and end time. By default,
+     * the start time is the current server time, given by `time()`. A string
+     * value of the approimate time is returned. e.g. 'in 5 hours'; '3 days ago'.
      */
-    public static function weekDiff($time1, $time2)
+    public static function approximateTime($start_time, $end_time = null)
     {
-        $datetime1 = new DateTime(date('Y-m-d H:i:s', $time1));
-        $datetime2 = new DateTime(date('Y-m-d H:i:s', $time2));
-
-        $day_diff = $datetime1->diff($datetime2)->format('%a');
-        return $day_diff;
-        //$complete_weeks = 
+        if ($end_time === null) {
+            $end_time = time();
+        }
+        $has_happened = $end_time > $start_time;
+        $start_datetime = new DateTime(date('Y-m-d H:i:s', $start_time));
+        $end_datetime = new DateTime(date('Y-m-d H:i:s', $end_time));
+        $interval = date_diff($start_datetime, $end_datetime);
+        $formats = [
+            ["%y", 'year'],
+            ["%m", 'month'],
+            ["%d", 'day'],
+            ["%h", 'hour'],
+            ['%i', 'minute']
+        ];
+        foreach ($formats as $format) {
+            $result = $interval->format($format[0]);
+            if ($result) {
+                $interval_string = "$result ". $format[1]. ($result > 1 ? 's' : '');
+                $return = $has_happened ? "$interval_string ago" : "In $interval_string";
+                return $return;
+            }
+        }
+        return "Just now";
     }
 }

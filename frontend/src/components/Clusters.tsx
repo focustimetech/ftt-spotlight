@@ -151,7 +151,7 @@ export class Clusters extends React.Component<IProps, IState> {
 
     render() {
         return (
-            <>
+            <div className='content' id='content'>
                 <TopNav>
 					<ul>
 						<li><h3>Clusters</h3></li>
@@ -203,7 +203,7 @@ export class Clusters extends React.Component<IProps, IState> {
                     )}
                 </div>
                 
-            </>
+            </div>
         )
     }
 }

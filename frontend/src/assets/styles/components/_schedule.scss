@@ -150,8 +150,10 @@
 
 .schedule-block-dialog {
 	&__title {
-		height: 86px;
-		width: unset;
+		.dialog-title__content {
+			height: 86px;
+			width: unset;
+		}
 
 		.dialog-title__inner {
 			line-height: 16px;

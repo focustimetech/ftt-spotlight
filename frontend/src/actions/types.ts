@@ -4,6 +4,12 @@ export const NEW_STUDENT = 'NEW_STUDENT'
 export const DELETE_STUDENT = 'DELETE_STUDENT'
 export const UPDATE_STUDENT = 'UPDATE_STUDENT'
 
+// Staff
+export const FETCH_STAFF = 'FETCH_STUDENTS'
+export const NEW_STAFF = 'NEW_STUDENT'
+export const DELETE_STAFF = 'DELETE_STUDENT'
+export const UPDATE_STAFF = 'UPDATE_STUDENT'
+
 // Clusters
 export const FETCH_CLUSTERS = 'FETCH_CLUSTERS'
 export const NEW_CLUSTER = 'NEW_CLUSTER'
@@ -28,3 +34,6 @@ export const FETCH_STUDENT_SCHEDULE = 'FETCH_STUDENT_SCHEDULE'
 
 // Settings
 export const FETCH_SETTINGS = 'FETCH_SETTINGS'
+
+// Notifications
+export const FETCH_NOTIFICATIONS = 'FETCH_NOTIFICATIONS'

@@ -8,7 +8,7 @@ use App\Student;
 use App\User;
 use App\Http\Resources\Student as StudentResource;
 use App\Http\Resources\StudentProfile as StudentProfileResource;
-use App\Http\Controllers\AuthController\Authenticate;
+use App\Http\Traits\Authenticate;
 
 class StudentsController extends Controller
 {

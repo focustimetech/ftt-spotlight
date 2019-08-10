@@ -190,8 +190,8 @@ class Schedule extends React.Component<IProps, IState> {
 							<li>
 								<Tooltip title='Next' placement='top'>
 									<IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton>
-								</Tooltip
-							></li>
+								</Tooltip>
+							</li>
 						</ul>
 						<div className='schedule'>
 							<div className='schedule_row'>

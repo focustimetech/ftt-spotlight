@@ -37,6 +37,7 @@ class StudentScheduleController extends Controller
      */
     public function index($id, $datetime = null)
     {
+        $include_weekends = app('settings')['weekends'] == true;
         if ($datetime === null) {
             $timestamp = time();
         } else {
@@ -63,6 +64,11 @@ class StudentScheduleController extends Controller
             $schedule_by_week = []; // Segmented by week
             for ($time = $week_start; $time < $week_end; $time = strtotime('+1 day', $time)) {
                 $day_of_week = date('w', $time) + 1;
+
+                // Skip weekends according to settings
+                if (!$include_weekends && ($day_of_week == 1 || $day_of_week == 7)) {
+                    continue;
+                }
                 $date = date('Y-m-d', $time);
                 $blocks_of_day = $student->getBlockSchedule($start_time, $end_time)->where('day_of_week', $day_of_week);
                 $schedule_day = [

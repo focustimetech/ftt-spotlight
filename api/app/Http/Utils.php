@@ -34,7 +34,8 @@ class Utils {
     /**
      * Returns a random User color string, unless an index is given.
      */
-    public static function userColor($index = -1) {
+    public static function userColor($index = -1)
+    {
         if ($index && $index > 0 && $index < count(USER_COLORS)) {
             return USER_COLORS[$index];
         }
@@ -44,7 +45,8 @@ class Utils {
     /**
      * Returns a random Topic color string, unless an index is given.
      */
-    public static function topicColor($index = -1) {
+    public static function topicColor($index = -1)
+    {
         return self::userColor($index);
     }
 

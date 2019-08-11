@@ -3,74 +3,128 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Block;
+use App\BlockSchedule;
 use App\Student;
 
 class AttendanceController extends Controller
 {
     /**
-     * Get attendance from student
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Get total attendance for a given student
      */
-    public function attendance($student_id)
+    public function attendance($student_id, $start_datetime = null)
     {
+        $now = time(); // Compute current time;
         $student = Student::findOrFail($student_id);
-        $courses = $student->courses()->get();
-        $block_schedule = $student->getBlockSchedule()->groupBy('day_of_week')->values()->toArray();
-        // return $block_schedule;
-        $attendance = [];
+        $student_blocks = []; // Blocks belonging to student
+        $settings_start_time = strtotime(app('settings')['start_datetime']);
+        $settings_end_time = strtotime(app('settings')['end_datetime']);
 
-        $courses->each(function($course) use (&$attendance, $student, $block_schedule) {
-            $enrolled_at = strtotime($course->enrollment->enrolled_at);
-            $stop_at = $course->enrollment->dropped_at ? strtotime($course->enrollment->dropped_at) : time();
-            // echo "stop_ad: $stop_at";
+        // Calculate start time
+        if ($start_datetime === null) {
+            $start_time = $settings_start_time;
+        } else {
+            $start_time = strtotime($start_datetime);
+        }
 
-            // First, get the very first block in which attendance is recorded
-            $start_time = date('H:i:s', $enrolled_at);
-            $start_day = date('w', $enrolled_at) + 1;
-            for ($i = 0; $i < count($block_schedule) - 1 && $start_day !== $block_schedule[$i][0]['day_of_week']; $i ++);
-            for ($k = 0; $k < count($block_schedule[$i]) - 1 && $start_time < $block_schedule[$i][$k]['end']; $k ++);
-
-            // Iterate over each block;
-            $day_diff = date('w', $enrolled_at);
-            $week = strtotime("-$day_diff days", strtotime(date('Y-m-d', $enrolled_at)));
-            for (;;) {
-                for (; $i < count($block_schedule); $i ++) {
-                    $day_diff = $block_schedule[$i][0]['day_of_week'] - 1;
-                    $timestmp = strtotime("+$day_diff days", $week);
-                    $date = date('Y-m-d', $timestmp);
-                    // echo "Date: $date;";
-                    //return;
-                    $attendance["$date"] = ['attended' => 0, 'missed' => 0];
-                    // echo var_dump($attendance);
-                    // return;
-                    for (; $k < count($block_schedule[$i]); $k ++) {
-                        $block = $block_schedule[$i][$k];
-                        $block_id = $block['block_id'];
-                        $time = $block['start'];
-                        //echo "Date: $date, \$block_id: $block_id; ";
-
-                        if (strtotime("$date $time") > $stop_at) {
-                            // echo "strtotime('$date $time') > $stop_at";
-                            return;
-                        } else {
-                            $ledger_entry = $student->ledgerEntries()->where('date', $date)->where('block_id', $block_id)->first();
-                            if ($ledger_entry == null) {
-                                $attendance["$date"]['missed'] ++;
-                                // echo "Missed on $date;";
-                            } else {
-                                $attendance["$date"]['attended'] ++;
-                                // echo "Attended on $date;";
-                            }
-                        }
-                    }
-                    $k = 0;
-                }
-                $i = 0;
-                $week = strtotime('+1 week', $week);
-            }
+        // First add course blocks
+        $courses = $student->courses()->get(); // Get student's enrollment
+        $courses->each(function($course) use (&$student_blocks) {
+            $blocks = $course->blocks()->get();
+            $blocks->each(function($block) use (&$student_blocks, $course) {
+                $student_blocks[$block->id] = [
+                    'label' => $block->label,
+                    'course_id' => $course->id,
+                    'enrolled_at' => $course->enrollment->enrolled_at,
+                    'dropped_at' => $course->enrollment->dropped_at,
+                    'flex' => $block->flex == true,
+                    'total' => 0, // Total number of occurances
+                    'attended' => 0 // Total number of ledger entries for the block
+                ];
+            });
         });
-        return $attendance;
+
+        // Second, add flex blocks
+        $flex_blocks = Block::flexBlocks();
+        $flex_blocks->each(function($flex_block) use (&$student_blocks) {
+            $student_blocks[$flex_block->id] = [
+                'label' => $flex_block->label,
+                'flex' => true,
+                'total' => 0,
+                'attended' => 0
+            ];
+        });
+
+        // Get Block Schedules by key
+        $schedule_blocks = BlockSchedule::all()->mapToGroups(function($schedule_block) {
+            return [$schedule_block->block_id => $schedule_block];
+        });
+
+        // Calculate missed and attended counts for each block
+        foreach ($student_blocks as $block_id => $student_block) {
+            if ($student_block['flex'] === true) {
+                // Flex block
+                $start = $start_time > $settings_start_time ? $start_time : $settings_start_time;
+                $end = $settings_end_time < $now ? $settings_end_time : $now;
+            } else {
+                // Regular course block
+                $enrolled_time = strtotime($student_block['enrolled_at']);
+
+                // Drop timestamp is possible null in the case that student is continuing class
+                $dropped_time = $student_block['dropped_at'] ? strtotime($student_block['dropped_at']) : null;
+
+                if ($start_time > $enrolled_time) {
+                    $start = $start_time;
+                } else {
+                    $start = $enrolled_time > $settings_start_time ? $enrolled_time : $settings_start_time;
+                }
+                if ($dropped_time && $dropped_time < $now) {
+                    $end = $dropped_time;
+                } else {
+                    $end = $now < $settings_end_time ? $now : $settings_end_time;
+                }
+                // echo "start: $start";
+            }
+
+            // With start and end time, calculate the number of block occurances
+            $schedule = $schedule_blocks[$block_id];
+            $schedule_index = 0; // Index into block schedule
+            $schedule_length = count($schedule);
+            $total = 0; // The total number of occurances
+            // echo "start: $start; end: $end;\n";
+            $TEST_COUNT = 0;
+            $test_string = '';
+
+            // dd("end: ". date("Y-m-d H:i:s", $end). "\r\n");
+            for ($time = $start; $time <= $end; $total ++) {
+                $next_datetime = date('Y-m-d', $time). ' '. $schedule[$schedule_index % $schedule_length]['end'];
+                $time = strtotime($next_datetime);
+                $schedule_index ++;
+                if ($schedule_index % ($schedule_length) === 0) {
+                    $time = strtotime('+1 day', $time);
+                }
+            }
+
+            //dd("block_id: $block_id; total: $total");
+
+            // Update total count, calculate attended count from ledger entries
+            //dd(date('Y-m-d', $start));
+            $attended = $student->ledgerEntries()
+                ->where('date', '>=', date('Y-m-d', $start))
+                ->where('time', '>=', date('H:i:s', $start))
+                
+                ->where('date', '<=', date('Y-m-d', $end))
+                ->where('time', '<=', date('H:i:s', $end))
+                
+                ->count();
+                //dd($attended);
+            
+
+            // echo "total: $total; block_id: $block_id";
+            $student_blocks[$block_id]['total'] = $total;
+            $student_blocks[$block_id]['attended'] = $attended;
+        }
+
+        return $student_blocks;
     }
 }

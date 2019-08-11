@@ -32,6 +32,12 @@ class SettingsTableSeeder extends Seeder
                         'value' => date('Y-m-d H:i:s', strtotime('+6 months')),
                         'description' => 'Year end',
                         'type' => 'datetime'
+                    ],
+                    [
+                        'key' => 'weekends',
+                        'value' => false,
+                        'description' => 'Include weekends',
+                        'type' => 'boolean'
                     ]
                 ]
             ],

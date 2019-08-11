@@ -41,9 +41,42 @@ export class Attendance extends React.Component<{}, IState> {
             
         })
 
+        console.log(tableData)
+
         return (
             <>
-
+                <div className='simple-table attendance-table'>
+                    <div className='simple-table__row simple-table__header'>
+                        {tableHeaders.map((header: string) => (
+                            <div><h3>{header}</h3></div>
+                        ))}
+                    </div>
+                    {tableData.map((tableRow: any[]) => {
+                        return (
+                            <div className='simple-table__row'>
+                                {tableRow.map((tableCell: any, index: number) => {
+                                    switch (index) {
+                                        case 0:
+                                            return (
+                                                <div>
+                                                    <span className='block-label'>{tableCell}</span>
+                                                </div>
+                                            )
+                                        case 1:
+                                            return (
+                                                <div>
+                                                    <h3 className='attendance-score'>{`${tableCell}%`}</h3>
+                                                </div>
+                                            )
+                                        case 2:
+                                        default:
+                                            return <div>{tableCell}</div>
+                                    }
+                                })}
+                            </div>
+                        )})
+                    }
+                </div>
             </>
         )
     }

@@ -11,7 +11,6 @@ import {
 } from 'react-router-dom'
 
 import { getCurrentUser } from '../../actions/authActions'
-
 import { ClassSchedule } from '../ClassSchedule'
 import { Clusters } from '../Clusters'
 import { Dashboard } from '../Dashboard'
@@ -21,6 +20,7 @@ import StudentProfile from '../StudentProfile'
 import Students from '../Students'
 import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Staff'
+import { Splash } from './Splash'
 
 interface ReduxProps {
 	getCurrentUser: () => any
@@ -51,7 +51,10 @@ class App extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		return ( 
+		/** @TODO Create transition from loading */
+		return this.state.loading ? (
+			<Splash />
+		) : (
 			<>
 				<Router>
 					<div className={classNames('site-wrap', '--menu_open')}>

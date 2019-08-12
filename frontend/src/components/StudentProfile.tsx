@@ -32,7 +32,9 @@ interface IReduxProps {
 	unstarItem: (item: StarredItem) => any
 }
 
-interface IProps extends RouteComponentProps, IReduxProps {}
+interface IProps extends RouteComponentProps, IReduxProps {
+	
+}
 
 interface IState {
 	tab: number

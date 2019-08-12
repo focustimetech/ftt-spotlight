@@ -22,8 +22,12 @@ import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Staff'
 import { Splash } from './Splash'
 
+/**
+ * @TODO Create typedefs for currentUser (see authReducer.ts)
+ */
 interface ReduxProps {
 	getCurrentUser: () => any
+	currentUser: any
 }
 
 interface IState {
@@ -41,38 +45,49 @@ class App extends React.Component<IProps, IState> {
 
 	componentDidMount() {
 		this.props.getCurrentUser().then(
-			(res: any) => {
+			() => {
 				this.setState({ loading: false })
 			},
-			(err: any) => {
+			() => {
 				this.props.onSignOut()
 			}
 		)
 	}
 
 	render() {
-		/** @TODO Create transition from loading */
+
+		/**
+		 * @TODO Create transition from loading
+		 */
 		return this.state.loading ? (
 			<Splash />
 		) : (
 			<>
 				<Router>
 					<div className={classNames('site-wrap', '--menu_open')}>
-						<Sidebar onSignOut={this.props.onSignOut} loading={this.state.loading} />
-						<Switch>
-							<Route path='/' exact render={(props) => (
-								<Redirect to='/dashboard' />
-							)} />
-							<Route path='/clusters/:clusterID?' component={Clusters} />
-							
-							<Route exact path='/dashboard' component={Dashboard} />
-							<Route path='/settings' component={Settings} />
-							<Route path='/staff' component={Staff} />
-							<Route path='/students/:studentID' component={StudentProfile} />
-							<Route path='/students' component={Students} />
-							<Route path='/class-schedule' component={ClassSchedule} />
-							<Route component={NotFound} />
-						</Switch>
+						{
+							this.props.currentUser.account_type === 'staff' ? <>
+								<Sidebar onSignOut={this.props.onSignOut} loading={this.state.loading} />
+								<Switch>
+									<Route path='/' exact render={(props) => (
+										<Redirect to='/dashboard' />
+									)} />
+									<Route path='/clusters/:clusterID?' component={Clusters} />
+									<Route exact path='/dashboard' component={Dashboard} />
+									<Route path='/settings' component={Settings} />
+									<Route path='/staff' component={Staff} />
+									<Route path='/students/:studentID' component={StudentProfile} />
+									<Route path='/students' component={Students} />
+									<Route path='/class-schedule' component={ClassSchedule} />
+									<Route component={NotFound} />
+								</Switch>
+							</> : <>
+								<Route path='/' exact render={(props) => (
+									<Redirect to='/profile' />
+								)} />
+								<Route path='/profile' component={StudentProfile} />
+							</>
+						}
 					</div>
 				</Router>
 			</>
@@ -85,5 +100,8 @@ class App extends React.Component<IProps, IState> {
  * Pass `school_name` to Sidebar as prop upon loading app settings; 
  */
 const mapDispatchToProps = { getCurrentUser }
+const mapStateToProps = (state: any) => ({
+	currentUser: state.auth.user
+})
 
-export default connect(null, {getCurrentUser})(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App)

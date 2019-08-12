@@ -2,6 +2,7 @@ import axios from 'axios'
 import * as jwt from 'jsonwebtoken'
 
 import { SET_CURRENT_USER } from './types'
+import { IUser } from '../types/auth'
 import { setAuthorizationToken } from '../utils/setAuthorizationToken'
 
 interface ICredentials {
@@ -15,7 +16,6 @@ export const login = (credentials: ICredentials) => {
             .then(res => {
                 const token = res.data.access_token
                 setAuthorizationToken(token)
-                // console.log(jwt.decode(token))
                 getCurrentUser()
             })
     }
@@ -25,7 +25,7 @@ export const getCurrentUser = () => {
     return (dispatch: any) => {
         return axios.get('http://localhost:8000/api/user')
             .then(res => {
-                const user = res.data
+                const user: IUser = res.data
                 dispatch({
                     type: SET_CURRENT_USER,
                     payload: user

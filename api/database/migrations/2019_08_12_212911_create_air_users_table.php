@@ -15,8 +15,8 @@ class CreateAirUsersTable extends Migration
     {
         Schema::create('air_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
             $table->unsignedInteger('staff_id');
+            $table->timestamps();
             // Foreign keys
             $table->foreign('staff_id')->references('id')->on('staff');
         });

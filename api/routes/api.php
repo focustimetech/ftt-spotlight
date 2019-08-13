@@ -45,6 +45,12 @@ Route::middleware('auth:api')->group(function() {
     // Notifications
     Route::get('notifications', 'NotificationsController@index');
     Route::put('notifications', 'NotificationsController@update');
+
+    // Ledger
+    Route::post('check-in', 'LedgerController@store');
+    Route::get('check-in/status/self', 'LedgerController@status');
+    Route::post('check-in/air/enable', 'LedgerController@enableAir');
+    Route::post('check-in/air/disable', 'LedgerController@disableAir');
 });
 
 // COMPLETE
@@ -81,9 +87,6 @@ Route::get('blocks', 'BlockController@index');
 Route::post('blocks', 'BlockController@store');
 Route::put('blocks', 'BlockController@store');
 Route::delete('block/{id}', 'BlockController@destroy');
-
-// Ledger
-Route::post('check-in', 'LedgerController@store');
 
 // Attendance
 Route::get('attendance/{id}', 'AttendanceController@attendance');

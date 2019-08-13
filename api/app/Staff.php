@@ -46,7 +46,12 @@ class Staff extends Model
 
 	public function enableAirCheckIn()
 	{
-
+		if ($this->airUser()->first())
+			return;
+		$air_user = new AirUser();
+		$air_user->staff_id = $this->id;
+		$air_user->save();	
+		return $air_user;
 	}
 
 	/**

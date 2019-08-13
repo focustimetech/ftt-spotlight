@@ -80,13 +80,17 @@ class LedgerController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Determine the current checkin status of the user
      */
-    public function destroy($id)
+    public function status()
     {
-        //
+        $staff = auth()->user()->staff();
+        
+    }
+
+    public function enableAir()
+    {
+        $staff = auth()->user()->staff();
+        return $staff->enableAirCheckIn();
     }
 }

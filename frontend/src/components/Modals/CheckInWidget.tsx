@@ -48,6 +48,9 @@ export const CheckInWidget = (props: IProps) => {
     }
 
     const handleChange = (event: any) => {
+        if (loadingCheckIn) {
+            return
+        }
         setInputValue(event.target.value)
     }
 

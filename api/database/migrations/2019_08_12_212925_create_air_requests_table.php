@@ -15,11 +15,11 @@ class CreateAirRequestsTable extends Migration
     {
         Schema::create('air_requests', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
             $table->date('date');
             $table->unsignedInteger('staff_id');
             $table->unsignedInteger('student_id');
             $table->unsignedInteger('block_id');
+            $table->timestamps();
             // Foreign keys
             $table->foreign('staff_id')->references('id')->on('staff');
             $table->foreign('student_id')->references('id')->on('students');

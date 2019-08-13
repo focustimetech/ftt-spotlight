@@ -20,6 +20,16 @@ class Staff extends Model
 		'password', 'remember_token'
 	];
 
+	public function airUser()
+	{
+		return $this->hasOne('App\AirUser');
+	}
+
+	public function airRequests()
+	{
+		return $this->hasMany('App\AirRequest');
+	}
+
 	public function delete() {
 		User::where('user_id', $this->id)->where('account_type', 'staff')
 			->delete();
@@ -27,6 +37,16 @@ class Staff extends Model
 		ScheduleEntry::where('staff_id', $this->id)->delete();
 
 		return parent::delete();
+	}
+
+	public function disableAirCheckIn()
+	{
+
+	}
+
+	public function enableAirCheckIn()
+	{
+
 	}
 
 	/**

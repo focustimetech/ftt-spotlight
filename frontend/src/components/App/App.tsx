@@ -25,12 +25,12 @@ import { Splash } from './Splash'
 import { ISettingsGroup } from '../../types/appSettings'
 
 /**
- * @TODO Create typedefs for currentUser (see authReducer.ts)
+ * @TODO Create typedefs for Settings
  */
 interface ReduxProps {
 	getCurrentUser: () => any
 	fetchSettings: () => any
-	settingsGroups: ISettingsGroup[]
+	settings: any
 	currentUser: any
 }
 
@@ -69,7 +69,6 @@ class App extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		console.log(this.props.settingsGroups)
 		/**
 		 * @TODO Create transition from loading
 		 */
@@ -84,7 +83,7 @@ class App extends React.Component<IProps, IState> {
 								<Sidebar
 									onSignOut={this.props.onSignOut}
 									loading={this.state.loadingUser || this.state.loadingSettings}
-									schoolName='Joey'
+									schoolName={this.props.settings.values['school_name'].value || null}
 								/>
 								<Switch>
 									<Route path='/' exact render={(props) => (
@@ -113,10 +112,6 @@ class App extends React.Component<IProps, IState> {
 	}
 }
 
-/**
- * @TODO Create app settings redux reducer and actions; Make available through props;
- * Pass `school_name` to Sidebar as prop upon loading app settings; 
- */
 const mapDispatchToProps = {
 	getCurrentUser,
 	fetchSettings
@@ -124,7 +119,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state: any) => ({
 	currentUser: state.auth.user,
-	settingsGroups: state.settings.items
+	settings: state.settings.items
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

@@ -16,17 +16,7 @@ use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 // use App\Http\Resources\Block as BlockResource;
 use App\Http\Resources\Course as CourseResource;
-
-function formatRangeString($start, $end) {
-    $start_date = date('j', $start);
-    $end_date = date('j', $end);
-    $start_month = date('M', $start);
-    $end_month = date('n', $start) < date('n', $end) ? date('M', $end) : "";
-    $start_year = date('Y', $start) < date('Y', $end) ? date('Y', $start) : "";
-    $end_year = date('Y', $end);
-    // return "$start - $end";
-    return "$start_month $start_date". ($start_year ? ", $start_year" : ""). " - ". ($end_month ? "$end_month " : ""). "$end_date, $end_year";
-}
+use App\Http\Utils;
 
 class StudentScheduleController extends Controller
 {
@@ -38,6 +28,8 @@ class StudentScheduleController extends Controller
     public function index($id, $datetime = null)
     {
         $include_weekends = app('settings')['weekends'] == true;
+        $year_start = strtotime(app('settings')['start_datetime']);
+        $year_end = strtotime(app('settings')['end_datetime']);
         if ($datetime === null) {
             $timestamp = time();
         } else {
@@ -45,6 +37,8 @@ class StudentScheduleController extends Controller
         }
         $start_time = $timestamp === strtotime('sunday') ? $timestamp : strtotime('previous sunday', $timestamp);
         $end_time = strtotime('+1 weeks -1 days', $start_time);
+        $next_time = strtotime('+1 weeks +0 days', $end_time);
+        $previous_time = strtotime('-1 weeks +1 days', $start_time);
         
         $student = Student::findOrFail($id);
         $courses = $student->courses($start_time, $end_time)->get();
@@ -54,9 +48,9 @@ class StudentScheduleController extends Controller
         $plans = $student->plans();
 
         $student_schedule = [
-            'range' => formatRangeString($start_time, $end_time),
-            'next' => date('Y-m-d\TH:i:s', strtotime('+1 weeks +0 days', $end_time)),
-            'previous' => date('Y-m-d\TH:i:s', strtotime('-1 weeks +1 days', $start_time))
+            'range' => Utils::formatRangeString($start_time, $end_time),
+            'next' => $next_time <= $year_end ? date('Y-m-d\TH:i:s', $next_time) : null,
+            'previous' => $previous_time >= $year_start ? date('Y-m-d\TH:i:s', $previous_time) : null
         ];
 
         for ($week_start = $start_time; $week_start < $end_time; $week_start = strtotime('+1 week', $week_start)) {
@@ -81,7 +75,11 @@ class StudentScheduleController extends Controller
                     ],
                     'events' => []
                 ];
-                $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, &$schedule_day) {
+                $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, &$schedule_day, $year_start, $year_end) {
+                    if (strtotime($date. ' '. $block_schedule->end) < $year_start || strtotime($date. ' '. $block_schedule->start) > $year_end) {
+                        // Only include blocks within school year
+                        return;
+                    }
                     $block = $blocks->where('id', $block_schedule->block_id)->first();
                     if ($block) {
                         $day_block = [
@@ -90,7 +88,7 @@ class StudentScheduleController extends Controller
                             'label' => $block->label,
                             'start' => date('g:i A', strtotime($date. ' '. $block_schedule->start)),
                             'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
-                            'pending' => strtotime($date. ' '. $block->end) > time()
+                            'pending' => strtotime($date. ' '. $block_schedule->end) > time()
                         ];
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
                         $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_id', $block->id));

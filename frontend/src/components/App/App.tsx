@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom'
 
 import { getCurrentUser } from '../../actions/authActions'
+import { fetchSettings } from '../../actions/settingsActions'
 import { ClassSchedule } from '../ClassSchedule'
 import { Clusters } from '../Clusters'
 import { Dashboard } from '../Dashboard'
@@ -21,17 +22,21 @@ import Students from '../Students'
 import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Staff'
 import { Splash } from './Splash'
+import { ISettingsGroup } from '../../types/appSettings'
 
 /**
  * @TODO Create typedefs for currentUser (see authReducer.ts)
  */
 interface ReduxProps {
 	getCurrentUser: () => any
+	fetchSettings: () => any
+	settingsGroups: ISettingsGroup[]
 	currentUser: any
 }
 
 interface IState {
-	loading: boolean
+	loadingUser: boolean
+	loadingSettings: boolean
 }
 
 interface IProps extends ReduxProps {
@@ -40,13 +45,22 @@ interface IProps extends ReduxProps {
 
 class App extends React.Component<IProps, IState> {
 	state: IState = {
-		loading: true
+		loadingUser: true,
+		loadingSettings: true
 	}
 
 	componentDidMount() {
 		this.props.getCurrentUser().then(
 			() => {
-				this.setState({ loading: false })
+				this.setState({ loadingUser: false })
+			},
+			() => {
+				this.props.onSignOut()
+			}
+		)
+		this.props.fetchSettings().then(
+			() => {
+				this.setState({ loadingSettings: false })
 			},
 			() => {
 				this.props.onSignOut()
@@ -55,11 +69,11 @@ class App extends React.Component<IProps, IState> {
 	}
 
 	render() {
-
+		console.log(this.props.settingsGroups)
 		/**
 		 * @TODO Create transition from loading
 		 */
-		return this.state.loading ? (
+		return this.state.loadingUser || this.state.loadingSettings ? (
 			<Splash />
 		) : (
 			<>
@@ -67,7 +81,11 @@ class App extends React.Component<IProps, IState> {
 					<div className={classNames('site-wrap', '--menu_open')}>
 						{
 							this.props.currentUser.account_type === 'staff' ? <>
-								<Sidebar onSignOut={this.props.onSignOut} loading={this.state.loading} />
+								<Sidebar
+									onSignOut={this.props.onSignOut}
+									loading={this.state.loadingUser || this.state.loadingSettings}
+									schoolName='Joey'
+								/>
 								<Switch>
 									<Route path='/' exact render={(props) => (
 										<Redirect to='/dashboard' />
@@ -99,9 +117,14 @@ class App extends React.Component<IProps, IState> {
  * @TODO Create app settings redux reducer and actions; Make available through props;
  * Pass `school_name` to Sidebar as prop upon loading app settings; 
  */
-const mapDispatchToProps = { getCurrentUser }
+const mapDispatchToProps = {
+	getCurrentUser,
+	fetchSettings
+}
+
 const mapStateToProps = (state: any) => ({
-	currentUser: state.auth.user
+	currentUser: state.auth.user,
+	settingsGroups: state.settings.items
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

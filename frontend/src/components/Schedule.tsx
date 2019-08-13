@@ -120,6 +120,16 @@ class Schedule extends React.Component<IProps, IState> {
 	}
 
 	render() {
+		const previousButton = (
+			<IconButton disabled={this.props.schedule.previous == null} onClick={this.handlePrevious}>
+				<Icon>chevron_left</Icon>
+			</IconButton>
+		)
+		const nextButton = (
+			<IconButton disabled={this.props.schedule.next == null} onClick={this.handleNext}>
+				<Icon>chevron_right</Icon>
+			</IconButton>
+		)
 		return (
 			<div className='schedule_container'>
 				{this.state.loading || !(this.props.schedule) ? (
@@ -183,14 +193,15 @@ class Schedule extends React.Component<IProps, IState> {
 								<Button onClick={this.handleDatePickerOpen}>{this.props.schedule.range || 'Select Date'}</Button>
 							</li>
 							<li>
-								<Tooltip title='Back' placement='top'>
-									<IconButton onClick={this.handlePrevious}><Icon>chevron_left</Icon></IconButton>
-								</Tooltip>
+								{this.props.schedule.previous == null ? previousButton : (
+									<Tooltip title='Back' placement='top'>{previousButton}</Tooltip>
+								)}
 							</li>
 							<li>
-								<Tooltip title='Next' placement='top'>
-									<IconButton onClick={this.handleNext}><Icon>chevron_right</Icon></IconButton>
-								</Tooltip>
+								{this.props.schedule.next == null ? nextButton : (
+									<Tooltip title='Next' placement='top'>{nextButton}</Tooltip>
+								)}
+								
 							</li>
 						</ul>
 						<div className='schedule'>

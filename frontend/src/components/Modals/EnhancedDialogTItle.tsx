@@ -6,7 +6,8 @@ import {
 	IconButton,
 	Tab,
 	Tabs,
-	Tooltip
+	Tooltip,
+	Typography
 } from '@material-ui/core'
 
 import { Tabs as ITabs } from '../TopNav'
@@ -34,9 +35,9 @@ export const EnhancedDialogTitle = (props: IProps) => {
 			<div className='dialog-title__content'>
 				<div className='dialog-title__inner'>
 					{props.title && (
-						<h3>{props.title}</h3>
+						<Typography variant='h6'>{props.title}</Typography>
 					)}
-					{props.children}				
+					{props.children}
 				</div>
 				{props.onClose && (
 					<Tooltip title='Close'>

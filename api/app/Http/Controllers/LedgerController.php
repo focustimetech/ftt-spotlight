@@ -96,7 +96,7 @@ class LedgerController extends Controller
             'air_enabled' => $staff->airUser() != null,
             'air_requests' => $staff->airRequests()->get(),
             'scheduled' => SchedulePlanResource::collection($schedule_plans),
-            'checked-in' => LedgerResource::collection($ledger_entries)
+            'checked_in' => LedgerResource::collection($ledger_entries)
         ];
     }
 

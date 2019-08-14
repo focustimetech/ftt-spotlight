@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
 {
+    /**
+     * @TODO This is still incorrect.
+     */
     public static function atTime($time, $mode = 0) {
         $time_of_day = date("H:i:s", $time);
         $day_of_week = date('w', $time) + 1;

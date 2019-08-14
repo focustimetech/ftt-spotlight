@@ -85,19 +85,14 @@ class LedgerController extends Controller
     public function status()
     {
         $staff = auth()->user()->staff();
-        $status = [];
-        //$now = time();
-        $now = strtotime('2019-08-14 09:23:00');
+        $now = time();
         $date = date('Y-m-d', $now);
         $time_string = date('M d', $now);
         $block = Block::atTime($now, -1);
         $ledger_entries = LedgerEntry::where('staff_id', $staff->id)->where('date', $date)->where('block_id', $block->id)->get();
         $schedule_plans = SchedulePlan::where('staff_id', $staff->id)->where('date', $date)->where('block_id', 9)->get();
-        //dd($schedule_plans);
-        //$topic = Topic::where('staff_id')
         return [
             'block' => $block,
-            //'topic' => 
             'air_enabled' => $staff->airUser() != null,
             'air_requests' => $staff->airRequests()->get(),
             'scheduled' => SchedulePlanResource::collection($schedule_plans),

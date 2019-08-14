@@ -41,7 +41,7 @@ class Staff extends Model
 
 	public function disableAirCheckIn()
 	{
-
+		$this->airUser()->delete();
 	}
 
 	public function enableAirCheckIn()

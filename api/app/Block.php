@@ -54,6 +54,24 @@ class Block extends Model
             ->withPivot('staff_id');
     }
 
+    /**
+     * Get the Topic for the block from the given staff member's ID and time
+     */
+    public function getTopic($staff_id, $time)
+    {
+        $date = date('Y-m-d', $time);
+        $staff = Staff::findOrFail($staff_id);
+        $topic_ids = $staff->getTopics()->pluck('id')->toArray();
+        $block_topics = TopicSchedule::whereIn('topic_id', $topic_ids)
+            ->get()->where('date', $date);
+
+        $schedule_blocks = $block_topics->map(function ($block_topic) {
+            return ScheduleBlock::find($block_topic->schedule_block_id);
+        });
+
+        return $schedule_blocks->block()->first();
+    }
+
     public function schedule()
     {
         return $this->hasMany('App\BlockSchedule', 'block_id', 'id');

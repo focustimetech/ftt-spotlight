@@ -5,8 +5,10 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\Student as StudentResource;
 use App\Http\Resources\Topic as TopicResource;
 use App\Staff;
+use App\Student;
 use App\Topic;
 
 class LedgerEntry extends JsonResource
@@ -33,6 +35,7 @@ class LedgerEntry extends JsonResource
             'date' => date('M j, Y', strtotime($this->date)),
             'time' => date('g:i A', strtotime($this->date. ' '. $this->time)),
             'staff' => new StaffResource(Staff::find($this->staff_id)),
+            'student' => new StudentResource(Student::find($this->student_id)),
             'method' => $method
         ];
 

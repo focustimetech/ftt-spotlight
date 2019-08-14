@@ -84,60 +84,65 @@ export const CheckInWidget = (props: IProps) => {
                         <Icon>keyboard</Icon>
                         <h4 className='heading_type'>Scan or Enter</h4>
                     </div>
-                    <form className='check-in-input' onSubmit={handleSubmit}>
-                        <TextField
-                            name='check-in'
-                            type='text'
-                            placeholder='Enter Student Numbers'
-                            variant='outlined'
-                            value={inputValue}
-                            onChange={handleChange}
-                            margin='normal'
-                            autoFocus
-                            fullWidth
-                            helperText='Comma separated list or single entry'
-                            InputProps={{
-                                endAdornment: loadingCheckIn ? (
-                                    <div><CircularProgress size={24} /></div>
-                                ) : (
-                                    <InputAdornment position='end'>
-                                        <IconButton disabled={inputValue.length === 0} onClick={handleSubmit}><Icon>keyboard_return</Icon></IconButton>
-                                    </InputAdornment>
-                                )
-                            }}
-                        />
-                    </form>
-                    <div className='check-in_heading'>
-                            <Icon>wifi</Icon>
-                            <h4 className='heading_type'>Air Check-in</h4>
-                            <h3 className={classNames('heading_status', {'--online': airCheckInEnabled})}>
-                                {airCheckInEnabled ? 'Online' : 'Offline'}
-                            </h3>
-                            <Switch 
-                                checked={airCheckInEnabled}
-                                onChange={() => toggleAirCheckIn()}
-                                color='primary'
+                    <div className='check-in_data'>
+                        <p>Checking in as Mr. Upshall, Curtis for Block 2 on August 8</p>
+                        <form className='check-in-input' onSubmit={handleSubmit}>
+                            <TextField
+                                name='check-in'
+                                type='text'
+                                placeholder='Enter Student Numbers'
+                                variant='outlined'
+                                value={inputValue}
+                                onChange={handleChange}
+                                margin='normal'
+                                autoFocus
+                                fullWidth
+                                helperText='Comma separated list or single entry'
+                                InputProps={{
+                                    endAdornment: loadingCheckIn ? (
+                                        <div><CircularProgress size={24} /></div>
+                                    ) : (
+                                        <InputAdornment position='end'>
+                                            <IconButton disabled={inputValue.length === 0} onClick={handleSubmit}><Icon>keyboard_return</Icon></IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
                             />
-                            <Grow in={loadingAirStatus}>
-                                <CircularProgress color='primary' disableShrink/>
-                            </Grow>
-                        </div>
-                    <List dense className='air-check-ins'>
-                        <ListItem button>
-                            <ListItemAvatar><Avatar>CU</Avatar></ListItemAvatar>
-                            <span>Curtis Upshall</span>
-                            <ListItemSecondaryAction>
-                                <Checkbox color='primary' />
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemAvatar><Avatar>VL</Avatar></ListItemAvatar>
-                            <span>Vlad Lyesin</span>
-                            <ListItemSecondaryAction>
-                                <Checkbox color='primary' />
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    </List>
+                        </form>
+                    </div>
+                    <div className='check-in_heading'>
+                        <Icon>wifi</Icon>
+                        <h4 className='heading_type'>Air Check-in</h4>
+                        <h3 className={classNames('heading_status', {'--online': airCheckInEnabled})}>
+                            {airCheckInEnabled ? 'Online' : 'Offline'}
+                        </h3>
+                        <Switch 
+                            checked={airCheckInEnabled}
+                            onChange={() => toggleAirCheckIn()}
+                            color='primary'
+                        />
+                        <Grow in={loadingAirStatus}>
+                            <CircularProgress color='primary' size={24}/>
+                        </Grow>
+                    </div>
+                    <div className='check-in_data'>
+                        <List dense>
+                            <ListItem button>
+                                <ListItemAvatar><Avatar>CU</Avatar></ListItemAvatar>
+                                <span>Curtis Upshall</span>
+                                <ListItemSecondaryAction>
+                                    <Checkbox color='primary' />
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemAvatar><Avatar>VL</Avatar></ListItemAvatar>
+                                <span>Vlad Lyesin</span>
+                                <ListItemSecondaryAction>
+                                    <Checkbox color='primary' />
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        </List>
+                    </div>
                 </div>
             </Dialog>
         </>

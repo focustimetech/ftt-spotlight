@@ -23,8 +23,13 @@ import {
 
 import { NavItem } from '../Sidebar/NavItem'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
+import { fetchCheckInStatus } from '../../actions/checkinActions'
+import { ICheckInStatus } from '../../types/checkin'
 
-interface ReduxProps {}
+interface ReduxProps {
+    checkInStatus: ICheckInStatus
+    fetchCheckInStatus: () => any
+}
 
 interface IProps extends ReduxProps {}
 
@@ -70,7 +75,12 @@ class CheckInWidget extends React.Component<IProps, IState> {
         
     }
 
+    componentDidMount() {
+        this.props.fetchCheckInStatus()
+    }
+
     render() {
+        console.log(this.props.checkInStatus)
         return (
             <>
                 <NavItem
@@ -159,4 +169,12 @@ class CheckInWidget extends React.Component<IProps, IState> {
     }
 }
 
-export default CheckInWidget
+const mapStateToProps = (state: any) => ({
+    checkInStatus: state.checkin.status
+})
+
+const mapDispatchToProps = {
+    fetchCheckInStatus
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CheckInWidget)

@@ -10,7 +10,7 @@ import NotificationsWidget from '../Modals/NotificationsWidget'
 import { CheckInWidget } from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
-import { SnackbarProvider } from '../SnackbarProvider'
+import { HelpWidget } from './HelpWidget'
 
 interface ReduxProps {
 	currentUser: any
@@ -61,7 +61,7 @@ class Sidebar extends React.Component<IProps> {
 							</div>
 							<div className='nav_bottom'>
 								<NotificationsWidget />
-								<NavItem title='Help' icon='help' />
+								<HelpWidget />
 								<AccountWidget onSignOut={this.props.onSignOut} initials={initials} background={`#${color}`} />								
 							</div>
 						</>

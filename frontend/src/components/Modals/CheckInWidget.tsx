@@ -23,12 +23,15 @@ import {
 
 import { NavItem } from '../Sidebar/NavItem'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { fetchCheckInStatus } from '../../actions/checkinActions'
+import { fetchCheckInStatus, enableAir, disableAir, checkIn } from '../../actions/checkinActions'
 import { ICheckInStatus } from '../../types/checkin'
 
 interface ReduxProps {
     checkInStatus: ICheckInStatus
     fetchCheckInStatus: () => any
+    enableAir: () => any
+    disableAir: () => any
+    checkIn: (input: string) => any
 }
 
 interface IProps extends ReduxProps {}
@@ -174,7 +177,10 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = {
-    fetchCheckInStatus
+    fetchCheckInStatus,
+    enableAir,
+    disableAir,
+    checkIn
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckInWidget)

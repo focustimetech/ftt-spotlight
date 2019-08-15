@@ -43,6 +43,7 @@ export const EnhancedTableHead = (props: IProps) => {
 							indeterminate={numSelected > 0 && numSelected < rowCount}
 							checked={numSelected === rowCount}
 							onChange={onSelectAllClick}
+							color='primary'
 						/>
 					</TableCell>
 				)}

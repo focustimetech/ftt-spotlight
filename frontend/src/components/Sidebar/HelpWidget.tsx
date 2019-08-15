@@ -80,6 +80,7 @@ export const HelpWidget = () => {
                             <Checkbox
                                 checked={true}
                                 onChange={() => {}}
+                                color='primary'
                             />
                         }
                         label='I may be contacted in response to my feedback'

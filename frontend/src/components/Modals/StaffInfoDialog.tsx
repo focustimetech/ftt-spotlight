@@ -135,7 +135,9 @@ export const StaffInfoDialog = (props: IProps) => {
                             value={details.administrator}
                             name='administrator'
                             checked={details.administrator}
-                            onChange={() => handleInputChange('administrator', !details.administrator)} />
+                            onChange={() => handleInputChange('administrator', !details.administrator)}
+                            color='primary'
+                        />
                     }
                     label='Administrator'
                 />

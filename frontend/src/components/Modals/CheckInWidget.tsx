@@ -69,7 +69,15 @@ class CheckInWidget extends React.Component<IProps, IState> {
     }
 
     toggleAirCheckIn = () => {
-        this.setState({ airCheckInEnabled: !this.state.airCheckInEnabled })
+        this.setState((state: IState) => {
+            if (state.airCheckInEnabled) {
+                this.props.disableAir()
+                return { airCheckInEnabled: false }
+            } else {
+                this.props.enableAir()
+                return { airCheckInEnabled: true }
+            }
+        })
     }
 
     handleSubmit = (event: any) => {
@@ -143,7 +151,7 @@ class CheckInWidget extends React.Component<IProps, IState> {
                                 onChange={() => this.toggleAirCheckIn()}
                                 color='primary'
                             />
-                            <Grow in={this.state.loadingAirStatus}>
+                            <Grow in={this.state.airCheckInEnabled !== this.props.checkInStatus.air_enabled}>
                                 <CircularProgress color='primary' size={24}/>
                             </Grow>
                         </div>

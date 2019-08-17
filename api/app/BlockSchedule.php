@@ -22,4 +22,25 @@ class BlockSchedule extends Model
             return null;
         }
     }
+
+    /**
+     * Returns the current BlockSchedule happening. If no BlockSchedule is
+     * happening at the given time, the next one is given.
+     */
+    public static function atTime($time) {
+        $time_of_day = date("H:i:s", $time);
+        $day_of_week = date('w', $time) + 1;
+
+        $schedule_blocks = BlockSchedule::orderBy('day_of_week')->orderBy('start');
+        $first = $schedule_blocks->first();
+        $schedule_block = $schedule_blocks
+            ->where('day_of_week', '<=', $day_of_week)
+            ->where('end', '>=', $time_of_day)
+            ->get()
+            ->first();
+        if ($schedule_block)
+            return $schedule_block;
+        else
+            return $first;
+    }
 }

@@ -1,22 +1,27 @@
 import * as React from 'react'
-
+import classNames from 'classnames'
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
+import { Theme, withTheme } from '@material-ui/core/styles'
 
 import { AccountWidget } from '../Modals/AccountWidget'
 import { MenuItem } from './MenuItem'
 import { NavItem } from './NavItem'
 import NotificationsWidget from '../Modals/NotificationsWidget'
-import { CheckInWidget } from '../Modals/CheckInWidget'
+import CheckInWidget from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
-import { SnackbarProvider } from '../SnackbarProvider'
+import { HelpWidget } from './HelpWidget'
 
 interface ReduxProps {
 	currentUser: any
 }
 
-interface IProps extends ReduxProps {
+interface StyleProps {
+	theme: Theme
+}
+
+interface IProps extends ReduxProps, StyleProps {
 	onSignOut: () => void
 	loading: boolean
 	schoolName?: string
@@ -30,9 +35,12 @@ class Sidebar extends React.Component<IProps> {
 	render() {
 		const details = this.props.currentUser.details
 		const { initials, color } = details || { initials: '', color: '' }
+		const style = {
+			backgroundColor: this.props.theme.palette.primary.main
+		}
 		return (
 			<div className='sidebar'>
-				<nav className='sidebar__nav'>
+				<nav className='sidebar__nav' style={style}>
 					{this.props.loading ? (
 						<>
 							<div style={{height: 200, width: 48}}>
@@ -61,7 +69,7 @@ class Sidebar extends React.Component<IProps> {
 							</div>
 							<div className='nav_bottom'>
 								<NotificationsWidget />
-								<NavItem title='Help' icon='help' />
+								<HelpWidget />
 								<AccountWidget onSignOut={this.props.onSignOut} initials={initials} background={`#${color}`} />								
 							</div>
 						</>
@@ -123,4 +131,4 @@ const mapStateToProps = (state: any) => ({
 	currentUser: state.auth.user
 })
 
-export default connect(mapStateToProps, null)(Sidebar)
+export default connect(mapStateToProps, null)(withTheme(Sidebar))

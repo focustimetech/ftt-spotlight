@@ -15,7 +15,7 @@ class Block extends JsonResource
     public function toArray($request)
     {
         return [
-            'block_number' => $this->block_number,
+            'block_id' => $this->id,
             'flex' => $this->flex == 1 ? true : false,
             'label' => $this->label,
             'day_of_week' => $this->day_of_week,

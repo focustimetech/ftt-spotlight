@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
 import { authReducer } from './authReducer'
+import { checkinReducer } from './checkinReducer'
 import { settingsReducer } from './settingsReducer'
 import { starReducer } from './starReducer'
 import { staffReducer } from './staffReducer'
@@ -17,5 +18,6 @@ export const rootReducer = combineReducers({
     staff: staffReducer,
     studentProfile: studentProfileReducer,
     studentSchedule: studentScheduleReducer,
-    notifications: notificationReducer
+    notifications: notificationReducer,
+    checkin: checkinReducer
 })

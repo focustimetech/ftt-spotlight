@@ -12,6 +12,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
+    public static function findByUsername($username)
+    {
+        return User::where('username', $username)->first();
+    }
+
     public function findForPassport($username)
     {
         return $this->where('username', $username)->first();
@@ -19,10 +24,30 @@ class User extends Authenticatable
 
     public function staff()
     {
-        /**
-         * @TODO Need to check if $this->accoutn_type === 'staff', else throw 403
-         */
-        return Staff::findOrFail($this->id);
+        if ($this->account_type === 'staff')
+            return Staff::findOrFail($this->id);
+        else
+            abort(403, 'User is not a staff member.');
+    }
+
+    public function student()
+    {
+        if ($this->account_type === 'student')
+            return Student::findOrFail($this->id);
+        else
+            abort(403, 'User is not a student.');
+        
+    }
+
+    public function getRole()
+    {
+        if ($this->account_type === 'staff') {
+            $staff = $this->staff();
+            return $staff->administrator == true ? 'admin' : 'teacher';
+        } else if ($this->account_type === 'student')
+            return 'student';
+        else
+            return null;            
     }
 
     /**

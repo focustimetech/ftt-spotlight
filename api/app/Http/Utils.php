@@ -81,4 +81,17 @@ class Utils {
         }
         return "Just now";
     }
+
+    /**
+     * Returns a formated date range from two time values.
+     */
+    public static function formatRangeString($start, $end) {
+        $start_date = date('j', $start);
+        $end_date = date('j', $end);
+        $start_month = date('M', $start);
+        $end_month = date('n', $start) < date('n', $end) ? date('M', $end) : "";
+        $start_year = date('Y', $start) < date('Y', $end) ? date('Y', $start) : "";
+        $end_year = date('Y', $end);
+        return "$start_month $start_date". ($start_year ? ", $start_year" : ""). " - ". ($end_month ? "$end_month " : ""). "$end_date, $end_year";
+    }
 }

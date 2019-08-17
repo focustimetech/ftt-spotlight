@@ -10,14 +10,12 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        return Setting::all()->groupBy('group_id')->map(function($item, $key) {
-            $group = SettingsGroup::findOrFail($key);
-            return [
-                'name' => $group->name,
-                'description' => $group->description,
-                'settings' => $item
-            ];
-        })->values();
+        return [
+            'values' => Setting::all()->flatMap(function($setting) {
+                return [$setting->key => $setting];
+            }),
+            'groups' => SettingsGroup::all()
+        ];
     }
 
     public function update(Request $request)

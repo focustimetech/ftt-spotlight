@@ -20,9 +20,4 @@ class Topic extends Model
     {
         return $this->belongsTo('App\Staff');
     }
-
-    public function blockSchedule()
-    {
-        return $this->belongsTo('App\BlockSchedule');
-    }
 }

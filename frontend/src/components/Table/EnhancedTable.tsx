@@ -332,7 +332,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 												>
 													{selectable && (
 														<TableCell padding={'checkbox'}>
-															<Checkbox checked={isSelected} />
+															<Checkbox checked={isSelected} color='primary'/>
 														</TableCell>
 													)}
 													{columns.map((column: ITableHeaderColumn, index: number) => {

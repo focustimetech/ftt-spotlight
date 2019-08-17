@@ -15,6 +15,10 @@ class Student extends Model
         }
     }
 
+    public function airRequests()
+    {
+        return $this->hasMany('App\AirRequest');
+    }
     public function appointments()
     {
         return $this->hasMany('App\Appointment', 'student_id');

@@ -37,3 +37,9 @@ export const FETCH_SETTINGS = 'FETCH_SETTINGS'
 
 // Notifications
 export const FETCH_NOTIFICATIONS = 'FETCH_NOTIFICATIONS'
+
+// Check-in
+export const FETCH_CHECKIN_STATUS = 'FETCH_CHECKIN_STATUS'
+export const ENABLE_AIR = 'ENABLE_AIR'
+export const DISABLE_AIR = 'DISABLE_AIR'
+export const CHECK_IN = 'CHECK_IN'

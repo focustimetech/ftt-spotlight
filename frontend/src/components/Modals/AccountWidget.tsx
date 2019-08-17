@@ -39,15 +39,15 @@ export class AccountWidget extends React.Component<IProps, IState> {
             <>
                 <NavItem className='nav_account' title='Account' onClick={this.handleClickOpen}>
                     <Avatar className='nav_avatar' style={{ background }}>{initials}</Avatar>
-                    <Menu
-                        open={menuOpen}
-                        anchorEl={menuRef}
-                        onClose={this.handleClose}
-                    >
-                        <MenuItem>Profile</MenuItem>
-                        <MenuItem onClick={() => this.props.onSignOut()}>Sign Out</MenuItem>
-                    </Menu>
                 </NavItem>
+                <Menu
+                    open={menuOpen}
+                    anchorEl={menuRef}
+                    onClose={this.handleClose}
+                >
+                    <MenuItem>Profile</MenuItem>
+                    <MenuItem onClick={() => this.props.onSignOut()}>Sign Out</MenuItem>
+                </Menu>
             </>
         )
     }

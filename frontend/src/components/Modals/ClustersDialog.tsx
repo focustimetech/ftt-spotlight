@@ -58,6 +58,7 @@ export class ClustersDialog extends React.Component<IProps, IState> {
                                     <ListItemIcon>
                                         <Checkbox
                                             checked={this.state.selected.indexOf(index) !== -1}
+                                            color='primary'
                                         />
                                     </ListItemIcon>
                                     {cluster}

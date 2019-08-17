@@ -13,4 +13,14 @@ class SchedulePlan extends Model
     {
         return $this->hasOne('App\Staff', 'id', 'staff_id');
     }
+
+    public function student()
+    {
+        return $this->hasOne('App\Student');
+    }
+
+    public function block()
+    {
+        return $this->hasOne('App\Block');
+    }
 }

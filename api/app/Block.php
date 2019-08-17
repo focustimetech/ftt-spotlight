@@ -6,34 +6,44 @@ use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
 {
-    public static function atTime($time) {
+    /**
+     * @TODO This is still incorrect.
+     */
+    public static function atTime($time, $mode = 0) {
         $time_of_day = date("H:i:s", $time);
         $day_of_week = date('w', $time) + 1;
 
-        /**
-         * @TODO Make sure we use ? for safely passing params with ALL instances of whereRaw
-         * @TODO Make config file to determine $mode
-         */
-        $mode = 'NEXT'; // 'NEXT', 'NONE'
-        if ($mode) {
-            if ($mode === 'PREV') {
-                $block_schedule = BlockSchedule::where('day_of_week', $day_of_week)->where('start', '<=', $time_of_day)->orderBy('end', 'DESC')->get()->first();
-            } else if ($mode === 'NEXT') {
-                $block_schedule = BlockSchedule::where('day_of_week', $day_of_week)
-                    ->where('end', '>=', $time_of_day)
-                    ->orderBy('end', 'ASC')
-                    ->get()->first();
+        $schedule_blocks = BlockSchedule::orderBy('day_of_week')->orderBy('start');
+        // Select exact block first
+        $schedule_block = BlockSchedule::where('day_of_week', $day_of_week)
+            ->where('start', '>=', $time_of_day)
+            ->where('end', '<=', $time_of_day)
+            ->first();
+
+        if ($schedule_block != null) {
+            return $schedule_block->block()->first();
+        }
+        if ($mode === -1) {
+            // Round to previous
+            $schedule_block = $schedule_blocks
+                ->where('start', '<=', $time_of_day)
+                ->where('day_of_week', $day_of_week)
+                ->first();
+            if ($schedule_block == null) {
+                $schedule_block = $schedule_blocks->get()->last();
             }
-        } else {
-            $block_schedule = BlockSchedule::where('day_of_week', $day_of_week)
+        } else if ($mode === 1) {
+            // Round to next
+            $schedule_block = $schedule_blocks
                 ->where('start', '>=', $time_of_day)
-                ->where('end', '<=', $time_of_day)
-                ->get()->first();
+                ->where('day_of_week', $day_of_week)
+                ->first();
+            if ($schedule_block == null) {
+                $schedule_block = $schedule_blocks->get()->first();
+            }
         }
 
-        if ($block_schedule) {
-            return $block_schedule->block();
-        }
+        return $schedule_block ? $schedule_block->block()->first() : null;
     }
 
     public static function flexBlocks()
@@ -45,6 +55,24 @@ class Block extends Model
     {
         return $this->belongsToMany('App\Course', 'block_course', 'block_id', 'course_id')
             ->withPivot('staff_id');
+    }
+
+    /**
+     * Get the Topic for the block from the given staff member's ID and time
+     */
+    public function getTopic($staff_id, $time)
+    {
+        $date = date('Y-m-d', $time);
+        $staff = Staff::findOrFail($staff_id);
+        $topic_ids = $staff->getTopics()->pluck('id')->toArray();
+        $block_topics = TopicSchedule::whereIn('topic_id', $topic_ids)
+            ->get()->where('date', $date);
+
+        $schedule_blocks = $block_topics->map(function ($block_topic) {
+            return ScheduleBlock::find($block_topic->schedule_block_id);
+        });
+
+        return $schedule_blocks->block()->first();
     }
 
     public function schedule()

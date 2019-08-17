@@ -2,7 +2,7 @@
     width: 100%;
 
     &__content {
-        padding: 16px 32px;
+        padding: 16px 24px;
     
         .check-in_heading {
             display: flex;
@@ -28,9 +28,8 @@
             }
         }
 
-        .check-in-input,
-        .air-check-ins {
-            margin: 0 16px;
-        }   
+        .check-in_data {
+            margin: 0 16px 8px;
+        }
     }
 }

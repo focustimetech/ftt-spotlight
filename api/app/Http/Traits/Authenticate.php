@@ -4,6 +4,7 @@ namespace App\Http\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\User;
 
 trait Authenticate
 {
@@ -12,12 +13,16 @@ trait Authenticate
         $http = new \GuzzleHttp\Client;
 
         try {
+            $user = User::findByUsername($request->username);
+            $user_role = $user->getRole();
+
             $request->request->add([
                 'grant_type' => 'password',
                 'client_id' => config('services.passport.client_id'),
                 'client_secret' => config('services.passport.client_secret'),
                 'username' => $request->username,
                 'password' => $request->password,
+                'scope' => $user_role
             ]);
 
             $tokenRequest = Request::create(

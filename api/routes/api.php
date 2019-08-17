@@ -13,23 +13,38 @@ use Illuminate\Http\Request;
 |
 */
 
-// @TODO add names for routes
+// Unauthenticates Routes
 Route::post('login', 'AuthController@login');
 
-// Authenticated Routes
+// All Users
 Route::middleware('auth:api')->group(function() {
     // Auth
     Route::post('logout', 'AuthController@logout');
     Route::get('user', 'AuthController@user');
     Route::post('verify-user', 'AuthController@verify');
 
+    // Topics
+    Route::get('topics', 'TopicsController@index');
+
+    // Staff
+    Route::get('staff', 'StaffController@index');
+    Route::get('staff/{id}', 'StaffController@show');
+
+    // Search
+    Route::get('search', 'SearchController@search');
+
+    // Settings
+    Route::get('settings', 'SettingsController@index');
+});
+
+// Teacher and Administrator Routes
+Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
     // Starred
     Route::get('starred', 'StarController@index');
     Route::post('star', 'StarController@star');
     Route::post('unstar', 'StarController@unstar');
 
     // Topics
-    Route::get('topics', 'TopicsController@index');
     Route::post('topics', 'TopicsController@store');
     Route::delete('topics/{id}', 'TopicsController@destroy');
 
@@ -37,10 +52,6 @@ Route::middleware('auth:api')->group(function() {
     Route::get('students', 'StudentsController@index');
     Route::get('students/{id}', 'StudentsController@show');
     Route::get('students/profile/{id}', 'StudentsController@profile');
-    Route::post('students', 'StudentsController@store');
-    Route::post('students/upload', 'StudentsController@upload');
-    Route::put('students', 'StudentsController@store');
-    Route::delete('students/{id}', 'StudentsController@destroy');
 
     // Notifications
     Route::get('notifications', 'NotificationsController@index');
@@ -51,26 +62,29 @@ Route::middleware('auth:api')->group(function() {
     Route::get('check-in/status/self', 'LedgerController@status');
     Route::post('check-in/air/enable', 'LedgerController@enableAir');
     Route::post('check-in/air/disable', 'LedgerController@disableAir');
+
+    // Student Schedule
+    Route::get('students/{id}/schedule', 'StudentScheduleController@index');
+    Route::get('students/{id}/schedule/{timestamp}', 'StudentScheduleController@index');
 });
 
-// COMPLETE
+// Administrator Routes
+Route::middleware(['auth:api', 'scopes:admin'])->group(function() {
+    // Students
+    Route::post('students', 'StudentsController@store');
+    Route::post('students/upload', 'StudentsController@upload');
+    Route::put('students', 'StudentsController@store');
+    Route::delete('students/{id}', 'StudentsController@destroy');
 
-// Staff
-Route::get('staff', 'StaffController@index');
-Route::get('staff/{id}', 'StaffController@show');
-Route::post('staff', 'StaffController@store');
-Route::put('staff', 'StaffController@store');
-Route::delete('staff/{id}', 'StaffController@destroy');
+    // Staff
+    Route::post('staff', 'StaffController@store');
+    Route::put('staff', 'StaffController@store');
+    Route::delete('staff/{id}', 'StaffController@destroy');
 
-// Student Schedule
-Route::get('students/{id}/schedule', 'StudentScheduleController@index');
-Route::get('students/{id}/schedule/{timestamp}', 'StudentScheduleController@index');
+    // Settings
+    Route::put('settings', 'SettingsController@update');
+});
 
-
-// Search
-Route::get('search', 'SearchController@search');
-
-// INCOMPLETE
 
 // Clusters
 Route::post('clusters/students', 'ClustersController@attach');
@@ -90,7 +104,3 @@ Route::delete('block/{id}', 'BlockController@destroy');
 
 // Attendance
 Route::get('attendance/{id}', 'AttendanceController@attendance');
-
-// Settings
-Route::get('settings', 'SettingsController@index');
-Route::put('settings', 'SettingsController@update');

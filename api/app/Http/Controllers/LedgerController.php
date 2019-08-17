@@ -89,8 +89,17 @@ class LedgerController extends Controller
         $date = date('Y-m-d', $now);
         $time_string = date('M d', $now);
         $block = Block::atTime($now, -1);
-        $ledger_entries = LedgerEntry::where('staff_id', $staff->id)->where('date', $date)->where('block_id', $block->id)->get();
-        $schedule_plans = SchedulePlan::where('staff_id', $staff->id)->where('date', $date)->where('block_id', 9)->get();
+        $ledger_entries = LedgerEntry::where('staff_id', $staff->id)
+            ->where('date', $date)
+            ->where('block_id', $block->id)
+            ->get();
+        $ledger_student_ids = $ledger_entries->pluck('student_id')->toArray();
+        $schedule_plans = SchedulePlan::whereNotIn('student_id', $ledger_student_ids)
+            ->where('staff_id', $staff->id)
+            ->where('date', $date)
+            ->where('block_id', 9)
+            ->get();
+
         return [
             'block' => $block,
             'air_enabled' => $staff->airUser() != null,

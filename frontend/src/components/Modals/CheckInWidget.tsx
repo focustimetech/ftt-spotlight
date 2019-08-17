@@ -173,6 +173,13 @@ class CheckInWidget extends React.Component<IProps, IState> {
                                 </ListItem>
                             </List>
                         </div>
+                        <div className='check-in_heading'>
+                            <Icon>event</Icon>
+                            <h4 className='heading_type'>Scheduled</h4>
+                        </div>
+                        <div className='check-in_data'>
+                            <p>No students schedule.</p>
+                        </div>
                     </div>
                 </Dialog>
             </>

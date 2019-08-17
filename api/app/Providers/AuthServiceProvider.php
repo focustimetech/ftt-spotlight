@@ -28,5 +28,12 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes(function ($router) {
             $router->forAccessTokens();
         });
+
+        // Register user permissions
+        Passport::tokensCan([
+            'student' => 'Student',
+            'teacher' => 'Teacher',
+            'admin' => 'Administrator'
+        ]);
     }
 }

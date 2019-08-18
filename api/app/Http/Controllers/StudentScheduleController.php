@@ -14,7 +14,7 @@ use App\TopicSchedule;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
-// use App\Http\Resources\Block as BlockResource;
+use App\Http\Resources\BlockSchedule as BlockScheduleResource;
 use App\Http\Resources\Course as CourseResource;
 use App\Http\Utils;
 
@@ -105,7 +105,7 @@ class StudentScheduleController extends Controller
                             }
                         }
                         else {
-                            $day_block['scheduled'] = Course::find($block->pivot->course_id);
+                            $day_block['scheduled'] = new CourseResource(Course::find($block->pivot->course_id));
                         }
                         array_push($schedule_day['blocks'], $day_block);
                     }

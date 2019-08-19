@@ -22,7 +22,7 @@ import { Attendance } from './Attendance'
 import { Tabs, TopNav } from './TopNav'
 import Schedule from './Schedule'
 import { StarButton } from './StarButton'
-import { IStudentDetails } from '../types/student';
+import { IStudent } from '../types/student';
 
 interface IReduxProps {
 	student: any
@@ -115,7 +115,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 
 		const { menuRef, editDialogOpen } = this.state
 		const menuOpen: boolean = Boolean(this.state.menuRef)
-		const studentDetails: IStudentDetails = {
+		const studentDetails: IStudent = {
 			id: this.props.student.id,
 			first_name: this.props.student.first_name,
 			last_name: this.props.student.last_name,

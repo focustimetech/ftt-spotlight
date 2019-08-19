@@ -20,7 +20,7 @@ import { ScheduleBlockDialog } from './Modals/ScheduleBlockDialog'
 import { fetchStudentSchedule } from '../actions/studentScheduleActions'
 import { BlockSchedule } from './BlockSchedule';
 
-export interface BlockDetails {
+export interface IBlockDetails {
 	date: string,
 	start: string,
 	end: string,
@@ -32,7 +32,7 @@ export interface BlockDetails {
 	appointments?: any[]
 }
 
-const emptyBlockDetails: BlockDetails = {
+const emptyIBlockDetails: IBlockDetails = {
 	date: '',
 	start: '',
 	end: '',
@@ -57,7 +57,7 @@ interface IState {
 	datePickerOpen: boolean
 	datePickerRange: Date
 	dialogOpen: boolean
-	blockDetails: BlockDetails
+	blockDetails: IBlockDetails
 }
 
 class Schedule extends React.Component<IProps, IState> {
@@ -66,7 +66,7 @@ class Schedule extends React.Component<IProps, IState> {
 		datePickerOpen: false,
 		datePickerRange: new Date(),
 		dialogOpen: false,
-		blockDetails: emptyBlockDetails
+		blockDetails: emptyIBlockDetails
 	}
 
 	handleDatePickerOpen = () => {
@@ -106,7 +106,7 @@ class Schedule extends React.Component<IProps, IState> {
 		}
 	}
 
-	handleBlockClick = (blockDetails: BlockDetails): void => {
+	handleBlockClick = (blockDetails: IBlockDetails): void => {
 		this.setState({ blockDetails, dialogOpen: true })
 		// console.log('handleBlockClick()')
 	}

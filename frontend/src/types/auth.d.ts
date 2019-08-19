@@ -1,5 +1,5 @@
-import { IStaffDetails } from "./staff";
-import { IStudentDetails } from './student'
+import { IStaff } from "./staff";
+import { IStudent } from './student'
 
 export interface ICredentials {
     username: string
@@ -12,12 +12,12 @@ interface IUserProperties {
 }
 
 export interface IStaffUser extends IUserProperties {
-    details: IStaffDetails
+    details: IStaff
     account_type: 'staff'
 }
 
 export interface IStudentUser extends IUserProperties {
-    details: IStudentDetails
+    details: IStudent
     account_type: 'student'
 }
 

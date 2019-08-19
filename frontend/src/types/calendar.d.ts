@@ -39,27 +39,14 @@ interface ICalendarDay {
 
 type ICalendarEvent = any
 
-type ICalendarBlock = IScheduleBlock & (IStudentBlock | IStaffBlock)
-
-// Might change from here...
-interface IScheduleBlock {
-    id: number
-    flex: boolean
-    day_of_week: number
-    start: string
-    end: string
-    pending: boolean
+export interface ICalendarBlock {
+    badgeCount: number
+    title: string
+    details: IBlockDetails
+    memo?: string
+    variant?: string
+    onClick: (blockDetails: IBlockDetails) => void
 }
-
-interface IStudentBlock {
-    type: 'student'
-    editable: boolean
-}
-
-interface IStaffBlock {
-    type: 'staff'
-}
-// ... to here.
 
 interface ICalendarDate {
     full_date: string

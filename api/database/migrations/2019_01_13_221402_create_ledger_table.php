@@ -17,6 +17,7 @@ class CreateLedgerTable extends Migration
     public function up()
     {
         Schema::create('ledger', function (Blueprint $table) {
+            $table->increments('id');
             $table->date('date'); // Date checked in
             $table->time('time'); // Time checked in
             $table->unsignedInteger('method')

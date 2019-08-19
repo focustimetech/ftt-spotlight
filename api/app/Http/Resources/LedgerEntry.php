@@ -32,6 +32,7 @@ class LedgerEntry extends JsonResource
         }
 
         $params = [
+            'id' => $this->id,
             'date' => date('M j, Y', strtotime($this->date)),
             'time' => date('g:i A', strtotime($this->date. ' '. $this->time)),
             'staff' => new StaffResource(Staff::find($this->staff_id)),
@@ -40,7 +41,7 @@ class LedgerEntry extends JsonResource
         ];
 
         if ($this->topic_id) {
-            $params['topic'] = Topic::find($this->topic_id)->topic;
+            $params['topic'] = new TopicResource(Topic::find($this->topic_id)->topic);
         }
 
         return $params;

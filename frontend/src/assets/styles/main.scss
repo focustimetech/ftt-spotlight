@@ -8,6 +8,7 @@
 @import "layouts/form";
 
 /* Components */
+@import "components/calendar";
 @import "components/check-in_modal";
 @import "components/content";
 @import "components/empty_state";
@@ -16,7 +17,6 @@
 @import "components/not_found";
 @import "components/notifications_modal";
 @import "components/profile";
-@import "components/schedule";
 @import "components/search_modal";
 @import "components/settings";
 @import "components/sidebar";

@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { IStaffDetails, IStaffTitle } from '../../types/staff';
+import { IStaff, IStaffTitle } from '../../types/staff';
 import { Tabs } from '../TopNav'
 import { UploadUserForm, IListItem } from './UploadUserForm'
 import { isEmpty } from '../../utils/utils'
@@ -21,14 +21,14 @@ import { isEmpty } from '../../utils/utils'
 interface IProps {
     edit?: boolean
     open: boolean
-    staffDetails?: IStaffDetails
+    staffDetails?: IStaff
     onClose: () => void
     onSubmit: () => void
 }
 
 const TITLES: IStaffTitle[] = ['Dr.', 'Miss', 'Ms.', 'Mlle.', 'Mme.', 'Mr.', 'Mrs.', 'Prof.']
 
-const emptyStaffDetails: IStaffDetails = {
+const emptyStaffDetails: IStaff = {
     id: 0,
     name: '',
     email: '',
@@ -52,7 +52,7 @@ export const StaffInfoDialog = (props: IProps) => {
     
 	const [tab, setTab]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
 
-    const [details, setDetails]: [IStaffDetails, React.Dispatch<React.SetStateAction<IStaffDetails>>]
+    const [details, setDetails]: [IStaff, React.Dispatch<React.SetStateAction<IStaff>>]
         = React.useState(edit ? props.staffDetails : emptyStaffDetails)
 
     const handleInputChange = (name: string, value: string | number | boolean) => {

@@ -1,18 +1,23 @@
 import * as React from 'react'
 import * as classNames from 'classnames'
 
-import { BlockDetails } from './Schedule'
-import { Badge, ButtonBase, Card, CardActionArea, CardContent } from '@material-ui/core'
-// import ButtonBase from '@material-ui/core/ButtonBase';
+import {
+    Badge,
+    Card,
+    CardActionArea,
+    CardContent
+} from '@material-ui/core'
+
+import { IBlockDetails } from '../../types/calendar'
 
 interface IProps {
     id: number
     badgeCount: number
     title: string
-    details: BlockDetails
+    details: IBlockDetails
     memo?: string
     variant?: string
-    onClick: (blockDetails: BlockDetails) => void
+    onClick: (blockDetails: IBlockDetails) => void
 }
 
 export const ScheduleBlock = (props: IProps) => {

@@ -1,5 +1,5 @@
-.schedule_container {
-	.schedule_header {
+.calendar_container {
+	.calendar_header {
 		display: flex;
 		align-items: center;
 
@@ -8,13 +8,13 @@
 		}
 	}
 
-	.schedule {
+	.calendar {
 		width: 100%;
 		padding: 16px 0 0 0;
 		display: flex;
 		flex-flow: row wrap;
 
-		.schedule_row {
+		.calendar_row {
 			width: 100%;
 			display: flex;
 
@@ -95,7 +95,7 @@
 				}
 			}
 
-			.schedule_events {
+			.calendar_events {
 				width: 100%;
 				padding: 8px 0 0 0;
 				border-right: 1px solid #EEE;
@@ -108,7 +108,7 @@
 				}
 			}
 
-			.schedule_blocks {
+			.calendar_blocks {
 				width: 100%;
 				padding: 8px 16px 16px 0;
 				border-right: 1px solid #EEE;
@@ -148,7 +148,7 @@
 	}
 }
 
-.schedule-block-dialog {
+.calendar-block-dialog {
 	&__title {
 		.dialog-title__content {
 			height: 86px;
@@ -187,7 +187,7 @@
 		margin-bottom: 16px;
 	}
 
-	.log {
+	.calendar_item {
 		display: flex;
 		flex-flow: row;
 		line-height: 24px;

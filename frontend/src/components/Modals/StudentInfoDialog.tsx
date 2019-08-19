@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { IStudentDetails } from '../../types/student';
+import { IStudent } from '../../types/student';
 import { Tabs } from '../TopNav'
 import { UploadUserForm, IListItem } from './UploadUserForm'
 import { isEmpty } from '../../utils/utils'
@@ -22,14 +22,14 @@ import { isEmpty } from '../../utils/utils'
 interface IProps {
     edit?: boolean
     open: boolean
-    studentDetails?: IStudentDetails
+    studentDetails?: IStudent
     onClose: () => void
     onSubmit: () => void
 }
 
 const GRADES: number[] = [9, 10, 11, 12]
 
-const emptyStudentDetails: IStudentDetails = {
+const emptyStudentDetails: IStudent = {
     id: 0,
     first_name: '',
     last_name: '',
@@ -50,7 +50,7 @@ export const StudentInfoDialog = (props: IProps) => {
     
 	const [tab, setTab]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
 
-    const [details, setDetails]: [IStudentDetails, React.Dispatch<React.SetStateAction<IStudentDetails>>]
+    const [details, setDetails]: [IStudent, React.Dispatch<React.SetStateAction<IStudent>>]
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
 
     const handleInputChange = (event: any) => {

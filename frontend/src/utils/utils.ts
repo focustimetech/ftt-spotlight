@@ -36,6 +36,25 @@ export const isEmpty = (obj: Object): boolean => {
 }
 
 /**
+ * Determines whether an object is an array.
+ * @param object The object.
+ * @return `true` if the object is an array.
+ */
+export const isArray = (object: any): boolean => {
+    return Array.isArray(object)
+}
+
+/**
+ * Creates an array from an object. If the given object is already an array,
+ * the original array is returned.
+ * @param object The object or array
+ * @return An array containing either the object, or all original array entries
+ */
+export const makeArray = (object: any): any[] => {
+    return isArray(object) ? object : [object]
+}
+
+/**
  * Verify whether a user's password is correct by checking with the server.
  * @param password The password.
  * @return `Promise<Void>` resulting from `axios` request.

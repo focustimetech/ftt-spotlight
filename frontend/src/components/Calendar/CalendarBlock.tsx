@@ -8,9 +8,11 @@ import {
     CardContent
 } from '@material-ui/core'
 
-import { ICalendarBlock } from '../../types/calendar'
+import { ICalendarBlock, IBlockDetails } from '../../types/calendar'
 
-type IProps = ICalendarBlock
+interface IProps extends ICalendarBlock {
+    onClick: (blockDetails: IBlockDetails) => void
+}
 
 export const CalendarBlock = (props: IProps) => {
     const { memo, title, variant, badgeCount } = props

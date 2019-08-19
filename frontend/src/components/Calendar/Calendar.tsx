@@ -109,7 +109,7 @@ export const Calendar = (props: IProps) => {
 	}
 
 	return (
-		<div className='schedule_container'>
+		<div className='calendar_container'>
 			{props.loading || !(props.calendar) ? (
 				<CalendarLoader />
 			) : (
@@ -119,7 +119,7 @@ export const Calendar = (props: IProps) => {
 						open={dialogOpen}
 						onClose={handleDialogClose}
 					/>
-					<ul className='schedule_header'>
+					<ul className='calendar_header'>
 						<li>
 							<MuiPickersUtilsProvider utils={DateFnsUtils}>
 								<DatePicker
@@ -128,6 +128,8 @@ export const Calendar = (props: IProps) => {
 									onClose={() => setDatePickerOpen(false)}
 									value={datePickerRange}
 									onChange={handleDatePickerSelect}
+									minDate={props.minDate}
+									maxDate={props.maxDate}
 									TextFieldComponent={() => null}
 								/>
 							</MuiPickersUtilsProvider>
@@ -159,7 +161,7 @@ export const Calendar = (props: IProps) => {
 							))}
 						</div>
 						<div className='calendar_row'>
-							{props.calendar.map((calendarDay: any) => (
+							{props.calendar.map((calendarDay: ICalendarDay) => (
 								<div className='calendar_events'>
 									{calendarDay.events.map((event: ICalendarEvent, index: number) => (
 										<div className='event' key={index}>{event.name || 'event'}</div>
@@ -167,13 +169,14 @@ export const Calendar = (props: IProps) => {
 								</div>
 							))}
 						</div>
-						<div className='schedule_row'>
+						<div className='calendar_row'>
 							{props.calendar.map((calendarDay: ICalendarDay, index: number) => (
-								<div className='schedule_blocks' key={index}>
+								<div className='calendar_blocks' key={index}>
 									{calendarDay.blocks.map((block: ICalendarBlock, blockIndex: number) => (
 										<CalendarBlock
 											key={blockIndex}
 											{...block}
+											onClick={() => handleBlockClick(block.details)}
 										/>
 									))}
 								</div>

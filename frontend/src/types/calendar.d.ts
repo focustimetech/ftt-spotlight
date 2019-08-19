@@ -13,19 +13,22 @@ export interface IBlockSchedule extends IBlock {
     end: string
 }
 
+/*
 export interface ICalendarItemGroup {
     name: string
-    items: ICalendarItemDetails[]
-    actions: ICalendarItemAction[]
+    items?: ICalendarItemDetails[]
+    actions?: ICalendarItemAction[]
 }
+*/
 
 export interface IBlockDetails {
-	date: string,
-	start: string,
-	end: string,
-	flex: boolean,
-	pending: boolean,
-	itemGroups: ICalendarItemGroup[]
+	date: string
+	start: string
+	end: string
+    flex: boolean
+    label: string
+	pending: boolean
+	data: ICalendarItemData
 }
 
 interface ICalendarDay {
@@ -75,17 +78,21 @@ export interface ICalendarItemDetails {
 }
 
 export interface ICalendarItemAction {
-    value: string,
+    value: string
     callback: (params: any) => any
 }
+
 
 export type ICheckInMethod = 'air' | 'manual'
 
 export interface ILedgerEntry {
+    id: number
     date: string
+    time: string
     staff: IStaff
     student: IStudent
-    method: ICheckInMethod 
+    method: ICheckInMethod
+    topic?: ITopic
 }
 
 export interface IAppointment {
@@ -105,12 +112,13 @@ export interface ITopic {
     staff: IStaff
 }
 
-interface IScheduledTopic extends ITopic {
-    type: 'topic'
+export interface IScheduled extends IStaff {
+    topic?: ITopic
 }
 
-interface IScheduledStaff extends IStaff {
-    type: 'staff'
+export interface ICalendarItemData {
+    appointments?: IAppointment[]
+    ledgerEntries?: ILedgerEntry[]
+    scheduled?: IScheduled[]
+    topics?: ITopic[]
 }
-
-export type IScheduled = IScheduledStaff | IScheduledTopic

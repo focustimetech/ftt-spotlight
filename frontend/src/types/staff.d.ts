@@ -1,4 +1,4 @@
-export interface IStaffDetails {
+export interface IStaff {
     id?: number
     name?: string
     account_type: IStaffAccountType

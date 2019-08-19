@@ -45,7 +45,6 @@ export interface ICalendarBlock {
     details: IBlockDetails
     memo?: string
     variant?: string
-    onClick: (blockDetails: IBlockDetails) => void
 }
 
 interface ICalendarDate {

@@ -50,7 +50,9 @@ class StudentScheduleController extends Controller
         $student_schedule = [
             'range' => Utils::formatRangeString($start_time, $end_time),
             'next' => $next_time <= $year_end ? date('Y-m-d\TH:i:s', $next_time) : null,
-            'previous' => $previous_time >= $year_start ? date('Y-m-d\TH:i:s', $previous_time) : null
+            'previous' => $previous_time >= $year_start ? date('Y-m-d\TH:i:s', $previous_time) : null,
+            'min_date' => date('Y-m-d', strtotime(app('settings')['start_datetime'])),
+            'max_date' => date('Y-m-d', strtotime(app('settings')['end_datetime']))
         ];
 
         for ($week_start = $start_time; $week_start < $end_time; $week_start = strtotime('+1 week', $week_start)) {

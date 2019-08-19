@@ -60,7 +60,7 @@ export const CalendarDialogItem = (props: IProps) => {
             </div>
             {(actions && actions.length) && (
                 <>
-                    <IconButton onClick={handleClick}><Icon>alarm</Icon></IconButton>
+                    <IconButton onClick={handleClick}><Icon>more_vert</Icon></IconButton>
                     <Menu
                         ref={menuRef}
                         open={Boolean(menuRef)}

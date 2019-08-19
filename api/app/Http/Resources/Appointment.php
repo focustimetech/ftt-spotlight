@@ -27,7 +27,7 @@ class Appointment extends JsonResource
             'memo' => $this->memo,
             'staff' => new StaffResource(Staff::find($this->staff_id)),
             'date' => $this->date,
-            'block' => Block::find($this->block_id),
+            'block' => new BlockResource(Block::find($this->block_id)),
             'student' => new StudentResource(Student::find($this->student_id))
         ];
     }

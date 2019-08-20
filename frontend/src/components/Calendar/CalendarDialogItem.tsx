@@ -58,11 +58,11 @@ export const CalendarDialogItem = (props: IProps) => {
                 </h6>
                 {memo && <p className='calendar__memo'>{memo}</p>}
             </div>
-            {(actions && actions.length) && (
-                <div className='actions'>
+            {(actions && actions.length > 0) && (
+                <div className='calendar_item__actions'>
                     <IconButton onClick={handleClick}><Icon>more_vert</Icon></IconButton>
                     <Menu
-                        ref={menuRef}
+                        anchorEl={menuRef}
                         open={Boolean(menuRef)}
                         onClose={() => handleClose()}
                     >

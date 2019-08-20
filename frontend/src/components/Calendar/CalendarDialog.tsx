@@ -65,11 +65,10 @@ export const CalendarDialog = (props: IProps) => {
                                         }}
                                         key={log.id}
                                         isEditing={isEditing}
-                                        actions={[]}
                                     />
                                 ))
                             ) : (
-                                <p>No attendance recorded</p>
+                                <p className='empty_text'>No attendance recorded</p>
                             )}
                         </section>
                     </>
@@ -98,7 +97,7 @@ export const CalendarDialog = (props: IProps) => {
                                     />
                                 ))
                             ) : (
-                                <p>No attendance recorded</p>
+                                <p className='empty_text'>Nothing scheduled</p>
                             )}
                         </section>
                     </>
@@ -126,7 +125,7 @@ export const CalendarDialog = (props: IProps) => {
                                     />
                                 ))
                             ) : (
-                                <p>No attendance recorded</p>
+                                <p className='empty_text'>No appointments booked</p>
                             )}
                         </section>
                     </>

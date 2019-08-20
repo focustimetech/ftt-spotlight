@@ -13,14 +13,6 @@ export interface IBlockSchedule extends IBlock {
     end: string
 }
 
-/*
-export interface ICalendarItemGroup {
-    name: string
-    items?: ICalendarItemDetails[]
-    actions?: ICalendarItemAction[]
-}
-*/
-
 export interface IBlockDetails {
 	date: string
 	start: string
@@ -102,9 +94,16 @@ export interface IScheduled extends IStaff {
     topic?: ITopic
 }
 
+/* Will be removed because of ICalendarDialogGroup... */
 export interface ICalendarItemData {
     appointments?: IAppointment[]
     ledgerEntries?: ILedgerEntry[]
     scheduled?: IScheduled[]
     topics?: ITopic[]
+}
+
+export interface ICalendarDialogGroup {
+    name: string
+    items: () => ICalendarItemDetails[]
+    actions?: ICalendarItemAction[]
 }

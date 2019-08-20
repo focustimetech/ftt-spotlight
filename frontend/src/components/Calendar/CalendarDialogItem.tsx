@@ -12,14 +12,12 @@ import {
 import { ICalendarItemDetails, ICalendarItemAction } from '../../types/calendar'
 
 interface IProps {
-    details: ICalendarItemDetails,
-    isEditing: boolean,
+    details: ICalendarItemDetails
     actions?: ICalendarItemAction[]
 }
 
 export const CalendarDialogItem = (props: IProps) => {
     const { id, variant, time, title, memo, method } = props.details
-    const { actions, isEditing } = props
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
         = React.useState(null)
 
@@ -58,7 +56,7 @@ export const CalendarDialogItem = (props: IProps) => {
                 </h6>
                 {memo && <p className='calendar__memo'>{memo}</p>}
             </div>
-            {(actions && actions.length > 0) && (
+            {(props.actions && props.actions.length > 0) && (
                 <div className='calendar_item__actions'>
                     <IconButton onClick={handleClick}><Icon>more_vert</Icon></IconButton>
                     <Menu
@@ -66,7 +64,7 @@ export const CalendarDialogItem = (props: IProps) => {
                         open={Boolean(menuRef)}
                         onClose={() => handleClose()}
                     >
-                        {actions.map((action: ICalendarItemAction) => (
+                        {props.actions.map((action: ICalendarItemAction) => (
                             <MenuItem onClick={() => action.callback}>{action.value}</MenuItem>
                         ))}
                     </Menu>

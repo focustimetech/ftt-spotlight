@@ -11,15 +11,18 @@ import {
     IAppointment,
     IBlockDetails,
     ICalendarItemAction,
+    ICalendarDialogGroup,
     ILedgerEntry,
     IScheduled,
+    ICalendarItemDetails,
 } from '../../types/calendar'
 import { IStaff } from '../../types/staff'
 import { CalendarDialogItem } from './CalendarDialogItem'
 import { EnhancedDialogTitle } from '../Modals/EnhancedDialogTitle'
 
 interface IProps {
-    details: IBlockDetails
+    blockDetails: IBlockDetails
+    calendarDialogGroups: ICalendarDialogGroup[]
     open: boolean
     onClose: () => void
 }
@@ -36,10 +39,7 @@ export const CalendarDialog = (props: IProps) => {
         props.onClose()
     }
 
-    const { data, date, end, flex, label, pending, start } = props.details
-    const appointmentActions: ICalendarItemAction[] = pending ? (
-        [{ value: 'Cancel Appointment', callback: () => null }]
-    ) : []
+    const { data, date, end, flex, label, pending, start } = props.blockDetails
 
     return (
         <Dialog open={props.open} className='calendar-block-dialog'>
@@ -48,7 +48,24 @@ export const CalendarDialog = (props: IProps) => {
                 <h3 className='date'>{date}</h3>
             </EnhancedDialogTitle>
             <DialogContent>
-                {data.ledgerEntries && (
+                {props.calendarDialogGroups && props.calendarDialogGroups.length > 0 ? (
+                    props.calendarDialogGroups.map((calendarGroup: ICalendarDialogGroup) => (
+                        <>
+                            <h5 className='section-header'>{calendarGroup.name}</h5>
+                            <section className='section'>
+                                {calendarGroup.items().map((itemDetails: ICalendarItemDetails) => (
+                                    <CalendarDialogItem
+                                        details={itemDetails}
+                                        actions={calendarGroup.actions}
+                                    />
+                                ))}
+                            </section>
+                        </>
+                    ))
+                ) : (
+                    <p className='empty_text'>Nothing to show</p>
+                )}
+                {/*data.ledgerEntries && (
                     <>
                         <h5 className='section-header'>Logs</h5>
                         <section className='section'>
@@ -70,6 +87,7 @@ export const CalendarDialog = (props: IProps) => {
                             ) : (
                                 <p className='empty_text'>No attendance recorded</p>
                             )}
+                            <Button variant='contained'>Amend</Button>
                         </section>
                     </>
                 )}
@@ -127,9 +145,10 @@ export const CalendarDialog = (props: IProps) => {
                             ) : (
                                 <p className='empty_text'>No appointments booked</p>
                             )}
+                            <Button variant='contained'>Book Appointment</Button>
                         </section>
                     </>
-                )}
+                )*/}
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => handleEditingToggle()} color='primary'>{isEditing ? 'Done' : 'Edit'}</Button>

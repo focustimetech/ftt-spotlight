@@ -21,7 +21,13 @@ import { Calendar } from './Calendar/Calendar'
 import { Tabs, TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IStudent } from '../types/student';
-import { ICalendarDay, ICalendarBlock, ICalendarItemData, IBlockDetails } from '../types/calendar'
+import {
+	ICalendarDay,
+	ICalendarBlock,
+	ICalendarItemData,
+	IBlockDetails,
+	ICalendarDialogGroup
+} from '../types/calendar'
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
 import { fetchStudentSchedule } from '../actions/studentScheduleActions'
@@ -158,7 +164,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 
 		let calendar: ICalendarDay[] = null
 		if (this.props.schedule && !isEmpty(this.props.schedule)) {
-			// console.log('SCHEDULE:', this.props.schedule)
 			calendar = this.props.schedule.schedule.map((scheduleDay: any) => {
 				const calendarDay: ICalendarDay = {
 					date: scheduleDay.date,
@@ -203,6 +208,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 				return calendarDay
 			})
 		}
+
+		const calendarDialogGroups: ICalendarDialogGroup[] = [
+			{ name: 'Logs', items: () => {
+				return null
+			}}
+		]
 
 		return (
 			<div className='content' id='content'>
@@ -281,6 +292,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							minDate={this.props.schedule.min_date}
 							maxDate={this.props.schedule.max_date}
 							calendar={calendar}
+							calendarDialogGroups={calendarDialogGroups}
 							onNext={this.handleNext}
 							onPrevious={this.handlePrevious}
 						/>

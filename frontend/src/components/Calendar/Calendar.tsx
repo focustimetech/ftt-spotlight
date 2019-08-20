@@ -13,7 +13,13 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { CalendarDialog } from './CalendarDialog'
 import { CalendarBlock } from './CalendarBlock'
-import { ICalendarDay, ICalendarEvent, IBlockDetails, ICalendarBlock } from '../../types/calendar'
+import {
+	ICalendarDay,
+	ICalendarEvent,
+	IBlockDetails,
+	ICalendarBlock,
+	ICalendarDialogGroup
+} from '../../types/calendar'
 
 const emptyIBlockDetails: IBlockDetails = {
 	date: '',
@@ -34,7 +40,8 @@ interface IProps {
     rangeLabel: string
     minDate: Date
     maxDate: Date
-    calendar: ICalendarDay[]
+	calendar: ICalendarDay[]
+	calendarDialogGroups: ICalendarDialogGroup[]
 }
 
 export const Calendar = (props: IProps) => {
@@ -109,7 +116,6 @@ export const Calendar = (props: IProps) => {
 		setDatePickerRange(event.target.value)
 	}
 
-	console.log('CALENDAR:', props.calendar)
 	return (
 		<div className='calendar_container'>
 			{props.loading || !(props.calendar) ? (
@@ -117,9 +123,10 @@ export const Calendar = (props: IProps) => {
 			) : (
 				<>
 					<CalendarDialog
-						details={blockDetails}
+						blockDetails={blockDetails}
 						open={dialogOpen}
 						onClose={handleDialogClose}
+						calendarDialogGroups={props.calendarDialogGroups}
 					/>
 					<ul className='calendar_header'>
 						<li>

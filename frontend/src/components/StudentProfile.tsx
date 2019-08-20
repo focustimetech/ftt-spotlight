@@ -248,9 +248,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 			{
 				name: 'Scheduled',
 				key: 'scheduled',
-				itemMap: (scheduledItem: IScheduled, blockDetails: IBlockDetails) => {
-				console.log('scheduleItem:', scheduledItem)
-				return {
+				itemMap: (scheduledItem: IScheduled, blockDetails: IBlockDetails) => ({
 					title: scheduledItem.name,
 					variant: blockDetails.pending ? null : (
 						blockDetails.flex === true ? (
@@ -264,7 +262,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						)
 					),
 					memo: scheduledItem.topic ? scheduledItem.topic.topic : undefined
-				}},
+				}),
 				emptyState: (
 					<p className='empty_text'>Nothing scheduled</p>
 				)

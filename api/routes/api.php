@@ -39,6 +39,10 @@ Route::middleware('auth:api')->group(function() {
 
 // Teacher and Administrator Routes
 Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
+    // Appointments
+    Route::get('appointments/{id}', 'AppointmentsController@find');
+    Route::post('appointments/create', 'AppointmentsController@create');
+    Route::delete('appointments/{id}', 'AppointmentsController@delete');
     // Starred
     Route::get('starred', 'StarController@index');
     Route::post('star', 'StarController@star');

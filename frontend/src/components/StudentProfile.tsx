@@ -22,11 +22,12 @@ import { Tabs, TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IStudent } from '../types/student';
 import {
+	IAppointment,
 	ICalendarDay,
 	ICalendarBlock,
-	ICalendarItemData,
 	IBlockDetails,
-	ICalendarDialogGroup
+	ICalendarDialogGroup,
+	ILedgerEntry
 } from '../types/calendar'
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
@@ -181,7 +182,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						const variant: string = block.logs[0] ? 'attended' : (
 							block.pending ? 'pending' : 'missed'
 						)
-						const data: ICalendarItemData = {
+						const data: any = {
 							appointments: makeArray(block.appointments),
 							ledgerEntries: makeArray(block.logs),
 							scheduled: makeArray(block.scheduled)
@@ -193,14 +194,14 @@ class StudentProfile extends React.Component<IProps, IState> {
 							flex: block.flex,
 							label: block.label,
 							pending: block.pending,
-							data
 						}
 						const calendarBlock: ICalendarBlock = {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
 							memo: block.logs[0] && block.flex? block.logs[0].topic.topic || null : null,
-							details
+							details,
+							data
 						}
 						return calendarBlock
 					})
@@ -210,9 +211,33 @@ class StudentProfile extends React.Component<IProps, IState> {
 		}
 
 		const calendarDialogGroups: ICalendarDialogGroup[] = [
-			{ name: 'Logs', items: () => {
-				return null
-			}}
+			{
+				name: 'Logs',
+				key: 'ledgerEntries',
+				itemMap: (log: ILedgerEntry) => ({
+					id: log.id,
+					time: log.time,
+					title: log.staff.name,
+					memo: log.topic.topic,
+					variant: 'success',
+					method: log.method
+				})
+			},
+			{
+				name: 'Appointments',
+				key: 'appointments',
+				itemMap: (appointment: IAppointment, blockDetails: IBlockDetails) => ({
+					id: appointment.id,
+					title: appointment.staff.name,
+					memo: appointment.memo,
+					variant: blockDetails.pending ? 'pending' : (
+						this.props.schedule.schedule.logs
+						&& this.props.schedule.schedule.logs.some(((log: any) => (
+							log.staff.id === appointment.staff.id
+						))) ? 'success' : 'fail'
+					)
+				})
+			}
 		]
 
 		return (

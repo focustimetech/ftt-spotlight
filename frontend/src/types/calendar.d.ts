@@ -20,7 +20,6 @@ export interface IBlockDetails {
     flex: boolean
     label: string
 	pending: boolean
-	data: ICalendarItemData
 }
 
 interface ICalendarDay {
@@ -37,6 +36,7 @@ export interface ICalendarBlock {
     details: IBlockDetails
     memo?: string
     variant?: string
+    data: any
 }
 
 interface ICalendarDate {
@@ -94,16 +94,9 @@ export interface IScheduled extends IStaff {
     topic?: ITopic
 }
 
-/* Will be removed because of ICalendarDialogGroup... */
-export interface ICalendarItemData {
-    appointments?: IAppointment[]
-    ledgerEntries?: ILedgerEntry[]
-    scheduled?: IScheduled[]
-    topics?: ITopic[]
-}
-
 export interface ICalendarDialogGroup {
     name: string
-    items: () => ICalendarItemDetails[]
+    key: string
+    itemMap: (item: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
     actions?: ICalendarItemAction[]
 }

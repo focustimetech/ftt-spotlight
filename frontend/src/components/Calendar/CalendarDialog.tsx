@@ -22,6 +22,7 @@ import { EnhancedDialogTitle } from '../Modals/EnhancedDialogTitle'
 
 interface IProps {
     blockDetails: IBlockDetails
+    blockData: any
     calendarDialogGroups: ICalendarDialogGroup[]
     open: boolean
     onClose: () => void
@@ -39,7 +40,7 @@ export const CalendarDialog = (props: IProps) => {
         props.onClose()
     }
 
-    const { data, date, end, flex, label, pending, start } = props.blockDetails
+    const { date, end, flex, label, pending, start } = props.blockDetails
 
     return (
         <Dialog open={props.open} className='calendar-block-dialog'>
@@ -53,12 +54,15 @@ export const CalendarDialog = (props: IProps) => {
                         <>
                             <h5 className='section-header'>{calendarGroup.name}</h5>
                             <section className='section'>
-                                {calendarGroup.items().map((itemDetails: ICalendarItemDetails) => (
-                                    <CalendarDialogItem
-                                        details={itemDetails}
-                                        actions={calendarGroup.actions}
-                                    />
-                                ))}
+                                {props.blockData[calendarGroup.key]
+                                    .map((data: any) => calendarGroup.itemMap(props.blockDetails, data))
+                                    .map((itemDetails: ICalendarItemDetails) => (
+                                        <CalendarDialogItem
+                                            details={itemDetails}
+                                            actions={calendarGroup.actions}
+                                        />
+                                    )
+                                )}
                             </section>
                         </>
                     ))

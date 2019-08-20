@@ -31,7 +31,6 @@ export const EnhancedTableHead = (props: IProps) => {
 	})
 
 	const createSortHandler = (property: string) => {
-		console.log('createSortHandler()')
 		props.onRequestSort(property)
 	}
 	return (

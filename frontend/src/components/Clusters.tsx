@@ -180,7 +180,7 @@ export class Clusters extends React.Component<IProps, IState> {
                                                     <ListItem key={student.id}>
                                                         {student.name}
                                                         <ListItemSecondaryAction>
-                                                            <IconButton onClick={() => console.log('clicked') /*this.onRemoveFromCluster(cluster.id, student.id)*/}>
+                                                            <IconButton onClick={() => null}>
                                                                 <Icon>close</Icon>
                                                             </IconButton>
                                                         </ListItemSecondaryAction>

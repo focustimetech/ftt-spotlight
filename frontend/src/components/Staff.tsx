@@ -72,7 +72,6 @@ class Staff extends React.Component<IProps, IState> {
 				profile: staff.id
 			}
 		})
-		console.log('this.props.staff:', this.props.staff)
 		const columns: ITableHeaderColumn[] = [
 			{
 				id: 'last_name',

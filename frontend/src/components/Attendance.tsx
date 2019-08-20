@@ -41,8 +41,6 @@ export class Attendance extends React.Component<{}, IState> {
             
         })
 
-        console.log(tableData)
-
         return (
             <>
                 <div className='simple-table attendance-table'>

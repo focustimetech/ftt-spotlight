@@ -86,9 +86,7 @@ class Students extends React.Component<IProps, IState> {
 		}
 	}
 
-	handleCheckIn = (ids: number[]) => {
-		// console.log('IDs:', ids)
-	}
+	handleCheckIn = (ids: number[]) => {}
 
 	onAddDialogOpen = () => {
 		this.setState({ addDialogOpen: true })

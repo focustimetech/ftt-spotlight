@@ -270,7 +270,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 												{`${this.props.student.first_name} ${this.props.student.last_name}`}
 												<span className='grade'>{`Grade ${this.props.student.grade}`}</span>
 											</h3>
-											<a onClick={() => console.log('clicked cluster')}>
+											<a onClick={() => null}>
 												<h5 className='cluster-list'>{this.props.student.clusters && (
 													listToTruncatedString(this.props.student.clusters.map((cluster: any) => cluster.name), 'Cluster')
 												)}</h5>

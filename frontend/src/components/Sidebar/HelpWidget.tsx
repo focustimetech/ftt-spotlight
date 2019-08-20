@@ -45,9 +45,7 @@ export const HelpWidget = () => {
         setDialogOpen(false)
     }
 
-    const handleSubmit = (event: any) => {
-        console.log('handleSubmit()')
-    }
+    const handleSubmit = (event: any) => {}
 
     return (
         <>

@@ -65,9 +65,7 @@ class Login extends React.Component<IProps, IState> {
 				this.setState({ redirectToReferrer: true })
 			},
 			(err: any) => {
-				this.setState({ loading: false, errors: err.response.data.errors }, () => {
-					// console.log(this.state.errors)
-				})
+				this.setState({ loading: false, errors: err.response.data.errors }, () => null)
 			}
 		)
 	}
@@ -81,8 +79,6 @@ class Login extends React.Component<IProps, IState> {
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
 	
 		if (this.state.redirectToReferrer) {
-			// console.log(this.props.location)
-			// console.log('login redirecting to: ', from)
 			return <Redirect to={from} />
 		}
 		return (

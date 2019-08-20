@@ -91,7 +91,6 @@ class CheckInWidget extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log(this.props.checkInStatus)
         return (
             <>
                 <NavItem

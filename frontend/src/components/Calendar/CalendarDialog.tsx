@@ -1,25 +1,18 @@
 import * as React from 'react'
-import * as classNames from 'classnames'
 
 import {
     Button,
     Dialog,
     DialogContent,
     DialogActions,
-    Icon,
-    IconButton,
-    Tooltip
 } from '@material-ui/core'
 
 import {
     IAppointment,
     IBlockDetails,
     ICalendarItemAction,
-    ICalendarItemData,
-    ICalendarItemDetails,
     ILedgerEntry,
     IScheduled,
-    ITopic
 } from '../../types/calendar'
 import { IStaff } from '../../types/staff'
 import { CalendarDialogItem } from './CalendarDialogItem'
@@ -49,8 +42,8 @@ export const CalendarDialog = (props: IProps) => {
     ) : []
 
     return (
-        <Dialog open={props.open} className='schedule-block-dialog'>
-            <EnhancedDialogTitle className='schedule-block-dialog__title' onClose={handleClose}>
+        <Dialog open={props.open} className='calendar-block-dialog'>
+            <EnhancedDialogTitle className='calendar-block-dialog__title' onClose={handleClose}>
                 <h4 className='label'>{label || 'Unlaballed Block'}<span>{`${start} - ${end}`}</span></h4>
                 <h3 className='date'>{date}</h3>
             </EnhancedDialogTitle>
@@ -99,7 +92,7 @@ export const CalendarDialog = (props: IProps) => {
                                                     data.ledgerEntries.length > 0 ? 'success' : 'fail'
                                                 )
                                             ),
-                                            memo: scheduledItem.topic.topic
+                                            memo: scheduledItem.topic ? scheduledItem.topic.topic : undefined
                                         }}
                                         isEditing={isEditing}
                                     />

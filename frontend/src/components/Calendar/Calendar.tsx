@@ -84,13 +84,13 @@ export const Calendar = (props: IProps) => {
 		</>
 	)
 
-	const PreviousButton = () => (
+	const previousButton = (
 		<IconButton disabled={!props.hasPrevious} onClick={() => props.onPrevious()}>
 			<Icon>chevron_left</Icon>
 		</IconButton>
 	)
 
-	const NextButton = () => (
+	const nextButton = (
 		<IconButton disabled={!props.hasNext} onClick={() => props.onNext()}>
 			<Icon>chevron_right</Icon>
 		</IconButton>
@@ -98,6 +98,7 @@ export const Calendar = (props: IProps) => {
 
 	const handleBlockClick = (blockDetails: IBlockDetails) => {
 		setBlockDetials(blockDetails)
+		setDialogOpen(true)
 	}
 
 	const handleDialogClose = () => {
@@ -108,6 +109,7 @@ export const Calendar = (props: IProps) => {
 		setDatePickerRange(event.target.value)
 	}
 
+	console.log('CALENDAR:', props.calendar)
 	return (
 		<div className='calendar_container'>
 			{props.loading || !(props.calendar) ? (
@@ -136,19 +138,18 @@ export const Calendar = (props: IProps) => {
 							<Button onClick={() => setDatePickerOpen(true)}>{props.rangeLabel || 'Select Date'}</Button>
 						</li>
 						<li>
-							{props.hasPrevious ? <PreviousButton /> : (
+							{props.hasPrevious ? previousButton : (
 								<Tooltip title='Back' placement='top'>
-									<PreviousButton />
+									{previousButton}
 								</Tooltip>
 							)}
 						</li>
 						<li>
-							{props.hasNext ? <NextButton /> : (
+							{props.hasNext ? nextButton : (
 								<Tooltip title='Next' placement='top'>
-									<NextButton />
+									{nextButton}
 								</Tooltip>
 							)}
-							
 						</li>
 					</ul>
 					<div className='calendar'>
@@ -172,13 +173,13 @@ export const Calendar = (props: IProps) => {
 						<div className='calendar_row'>
 							{props.calendar.map((calendarDay: ICalendarDay, index: number) => (
 								<div className='calendar_blocks' key={index}>
-									{calendarDay.blocks.map((block: ICalendarBlock, blockIndex: number) => (
-										<CalendarBlock
+									{calendarDay.blocks.map((block: ICalendarBlock, blockIndex: number) => {
+										return <CalendarBlock
 											key={blockIndex}
 											{...block}
 											onClick={() => handleBlockClick(block.details)}
 										/>
-									))}
+									})}
 								</div>
 							))}
 						</div>

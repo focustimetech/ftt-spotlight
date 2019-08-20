@@ -158,7 +158,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 
 		let calendar: ICalendarDay[] = null
 		if (this.props.schedule && !isEmpty(this.props.schedule)) {
-			console.log('SCHEDULE:', this.props.schedule)
+			// console.log('SCHEDULE:', this.props.schedule)
 			calendar = this.props.schedule.schedule.map((scheduleDay: any) => {
 				const calendarDay: ICalendarDay = {
 					date: scheduleDay.date,
@@ -194,7 +194,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							memo: block.logs[0] && block.flex? block.logs[0].topic || null : null,
+							memo: block.logs[0] && block.flex? block.logs[0].topic.topic || null : null,
 							details
 						}
 						return calendarBlock

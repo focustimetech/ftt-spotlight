@@ -56,10 +56,10 @@ export const CalendarDialogItem = (props: IProps) => {
                         </span>
                     )}
                 </h6>
-                {memo && <p className='log__memo'>{memo}</p>}
+                {memo && <p className='calendar__memo'>{memo}</p>}
             </div>
             {(actions && actions.length) && (
-                <>
+                <div className='actions'>
                     <IconButton onClick={handleClick}><Icon>more_vert</Icon></IconButton>
                     <Menu
                         ref={menuRef}
@@ -70,7 +70,7 @@ export const CalendarDialogItem = (props: IProps) => {
                             <MenuItem onClick={() => action.callback}>{action.value}</MenuItem>
                         ))}
                     </Menu>
-                </>          
+                </div>          
             )}
         </div>
     )

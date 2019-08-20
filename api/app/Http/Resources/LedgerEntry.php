@@ -41,7 +41,7 @@ class LedgerEntry extends JsonResource
         ];
 
         if ($this->topic_id) {
-            $params['topic'] = new TopicResource(Topic::find($this->topic_id)->topic);
+            $params['topic'] = new TopicResource(Topic::find($this->topic_id));
         }
 
         return $params;

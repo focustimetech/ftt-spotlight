@@ -11,7 +11,7 @@ import {
 import { ICalendarBlock, IBlockDetails } from '../../types/calendar'
 
 interface IProps extends ICalendarBlock {
-    onClick: (blockDetails: IBlockDetails, data: any) => void
+    onClick: (blockDetails: IBlockDetails) => void
 }
 
 export const CalendarBlock = (props: IProps) => {
@@ -23,7 +23,7 @@ export const CalendarBlock = (props: IProps) => {
             <Card className='block'>
                 <CardActionArea
                     className={classNames('block__inner', {[`--${variant}`]: variant})}
-                    onClick={() => props.onClick(props.details, props.data)}
+                    onClick={() => props.onClick(props.details)}
                 >
                     <CardContent className='block__content'>
                         <h6 className='block__label'>{label || 'No Label'}</h6>

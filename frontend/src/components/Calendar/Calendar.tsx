@@ -27,7 +27,8 @@ const emptyIBlockDetails: IBlockDetails = {
 	end: '',
 	label: '',
 	pending: true,
-	flex: false
+	flex: false,
+	data: {}
 }
 
 interface IProps {
@@ -52,8 +53,6 @@ export const Calendar = (props: IProps) => {
 		= React.useState(false)
 	const [blockDetails, setBlockDetials]: [IBlockDetails, React.Dispatch<React.SetStateAction<IBlockDetails>>]
 		= React.useState(emptyIBlockDetails)
-	const [blockData, setBlockData]: [any, React.Dispatch<React.SetStateAction<any>>]
-		= React.useState({})
 
 	const CalendarLoader = () => (
 		<>
@@ -104,9 +103,8 @@ export const Calendar = (props: IProps) => {
 		</IconButton>
 	)
 
-	const handleBlockClick = (blockDetails: IBlockDetails, blockData: any) => {
+	const handleBlockClick = (blockDetails: IBlockDetails) => {
 		setBlockDetials(blockDetails)
-		setBlockData(blockData)
 		setDialogOpen(true)
 	}
 
@@ -126,7 +124,6 @@ export const Calendar = (props: IProps) => {
 				<>
 					<CalendarDialog
 						blockDetails={blockDetails}
-						blockData={blockData}
 						open={dialogOpen}
 						onClose={handleDialogClose}
 						calendarDialogGroups={props.calendarDialogGroups}
@@ -187,7 +184,7 @@ export const Calendar = (props: IProps) => {
 										return <CalendarBlock
 											key={blockIndex}
 											{...block}
-											onClick={() => handleBlockClick(block.details, block.data)}
+											onClick={() => handleBlockClick(block.details)}
 										/>
 									})}
 								</div>

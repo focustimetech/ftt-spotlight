@@ -16,13 +16,13 @@ import {
     IScheduled,
     ICalendarItemDetails,
 } from '../../types/calendar'
+import { isEmpty } from '../../utils/utils'
 import { IStaff } from '../../types/staff'
 import { CalendarDialogItem } from './CalendarDialogItem'
 import { EnhancedDialogTitle } from '../Modals/EnhancedDialogTitle'
 
 interface IProps {
     blockDetails: IBlockDetails
-    blockData: any
     calendarDialogGroups: ICalendarDialogGroup[]
     open: boolean
     onClose: () => void
@@ -39,8 +39,8 @@ export const CalendarDialog = (props: IProps) => {
         setEditing(false)
         props.onClose()
     }
-
-    const { date, end, flex, label, pending, start } = props.blockDetails
+    console.log('PROPS:', props)
+    const { data, date, end, flex, label, pending, start } = props.blockDetails
 
     return (
         <Dialog open={props.open} className='calendar-block-dialog'>
@@ -50,22 +50,31 @@ export const CalendarDialog = (props: IProps) => {
             </EnhancedDialogTitle>
             <DialogContent>
                 {props.calendarDialogGroups && props.calendarDialogGroups.length > 0 ? (
-                    props.calendarDialogGroups.map((calendarGroup: ICalendarDialogGroup) => (
-                        <>
-                            <h5 className='section-header'>{calendarGroup.name}</h5>
-                            <section className='section'>
-                                {props.blockData[calendarGroup.key]
-                                    .map((data: any) => calendarGroup.itemMap(props.blockDetails, data))
-                                    .map((itemDetails: ICalendarItemDetails) => (
-                                        <CalendarDialogItem
-                                            details={itemDetails}
-                                            actions={calendarGroup.actions}
-                                        />
+                    props.calendarDialogGroups.map((calendarGroup: ICalendarDialogGroup) => {
+                        const items: ICalendarItemDetails[] = !isEmpty(data) ? (
+                            data[calendarGroup.key].map((data: any) => calendarGroup.itemMap(data, props.blockDetails))
+                        ) : null
+                        return (
+                            <>
+                                <h5 className='section-header'>{calendarGroup.name}</h5>
+                                <section className='section'>
+                                    {items ? (
+                                        items.length ? (
+                                            items.map((itemDetails: ICalendarItemDetails) => (
+                                                <CalendarDialogItem
+                                                    details={itemDetails}
+                                                    actions={calendarGroup.actions}
+                                                />
+                                            ))
+                                        ) : calendarGroup.emptyState
+                                    ) : (
+                                        <p className='empty_text'>No data available</p>
                                     )
-                                )}
-                            </section>
-                        </>
-                    ))
+                                }
+                                </section>
+                            </>
+                        )
+                    })
                 ) : (
                     <p className='empty_text'>Nothing to show</p>
                 )}
@@ -89,7 +98,7 @@ export const CalendarDialog = (props: IProps) => {
                                     />
                                 ))
                             ) : (
-                                <p className='empty_text'>No attendance recorded</p>
+                                
                             )}
                             <Button variant='contained'>Amend</Button>
                         </section>

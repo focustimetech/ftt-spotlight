@@ -27,7 +27,8 @@ import {
 	ICalendarBlock,
 	IBlockDetails,
 	ICalendarDialogGroup,
-	ILedgerEntry
+	ILedgerEntry,
+	IScheduled
 } from '../types/calendar'
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
@@ -194,14 +195,14 @@ class StudentProfile extends React.Component<IProps, IState> {
 							flex: block.flex,
 							label: block.label,
 							pending: block.pending,
+							data
 						}
 						const calendarBlock: ICalendarBlock = {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
 							memo: block.logs[0] && block.flex? block.logs[0].topic.topic || null : null,
-							details,
-							data
+							details
 						}
 						return calendarBlock
 					})
@@ -221,7 +222,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 					memo: log.topic.topic,
 					variant: 'success',
 					method: log.method
-				})
+				}),
+				emptyState: (
+					<p className='empty_text'>No attendance recorded</p>
+				),
 			},
 			{
 				name: 'Appointments',
@@ -231,12 +235,39 @@ class StudentProfile extends React.Component<IProps, IState> {
 					title: appointment.staff.name,
 					memo: appointment.memo,
 					variant: blockDetails.pending ? 'pending' : (
-						this.props.schedule.schedule.logs
-						&& this.props.schedule.schedule.logs.some(((log: any) => (
+						blockDetails.data.ledgerEntries
+						&& blockDetails.data.ledgerEntries.some(((log: any) => (
 							log.staff.id === appointment.staff.id
 						))) ? 'success' : 'fail'
 					)
-				})
+				}),
+				emptyState: (
+					<p className='empty_text'>No appointments booked</p>
+				),
+			},
+			{
+				name: 'Scheduled',
+				key: 'scheduled',
+				itemMap: (scheduledItem: IScheduled, blockDetails: IBlockDetails) => {
+				console.log('scheduleItem:', scheduledItem)
+				return {
+					title: scheduledItem.name,
+					variant: blockDetails.pending ? null : (
+						blockDetails.flex === true ? (
+							blockDetails.data.ledgerEntries
+							&& blockDetails.data.ledgerEntries.some(((log: any) => (
+								log.staff.id === scheduledItem.id))
+							) ? 'success' : 'fail'
+						) : (
+							blockDetails.data && blockDetails.data.ledgerEntries
+							&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
+						)
+					),
+					memo: scheduledItem.topic ? scheduledItem.topic.topic : undefined
+				}},
+				emptyState: (
+					<p className='empty_text'>Nothing scheduled</p>
+				)
 			}
 		]
 

@@ -19,7 +19,8 @@ export interface IBlockDetails {
 	end: string
     flex: boolean
     label: string
-	pending: boolean
+    pending: boolean
+    data: any
 }
 
 interface ICalendarDay {
@@ -36,7 +37,6 @@ export interface ICalendarBlock {
     details: IBlockDetails
     memo?: string
     variant?: string
-    data: any
 }
 
 interface ICalendarDate {
@@ -98,5 +98,6 @@ export interface ICalendarDialogGroup {
     name: string
     key: string
     itemMap: (item: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
+    emptyState: any
     actions?: ICalendarItemAction[]
 }

@@ -46,7 +46,7 @@ interface IState {
 
 class CheckInWidget extends React.Component<IProps, IState> {
     state: IState = {
-        open: true, // Change this to false
+        open: false, // Change this to false
         airCheckInEnabled: false,
         loadingAirStatus: false,
         loadingCheckIn: false,

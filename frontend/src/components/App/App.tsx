@@ -4,14 +4,16 @@ import * as React from 'react'
 import * as classNames from 'classnames'
 import { connect } from 'react-redux'
 import {
-	BrowserRouter as Router, 
+	BrowserRouter as Router,
 	Redirect,
 	Route,
+	RouteComponentProps,
 	Switch
 } from 'react-router-dom'
 
 import { getCurrentUser } from '../../actions/authActions'
 import { fetchSettings } from '../../actions/settingsActions'
+import { IUser } from '../../types/auth'
 import { ClassSchedule } from '../ClassSchedule'
 import { Clusters } from '../Clusters'
 import { Dashboard } from '../Dashboard'
@@ -22,7 +24,6 @@ import Students from '../Students'
 import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Staff'
 import { Splash } from './Splash'
-import { ISettingsGroup } from '../../types/appSettings'
 
 /**
  * @TODO Create typedefs for Settings
@@ -31,7 +32,7 @@ interface ReduxProps {
 	getCurrentUser: () => any
 	fetchSettings: () => any
 	settings: any
-	currentUser: any
+	currentUser: IUser
 }
 
 interface IState {
@@ -69,9 +70,6 @@ class App extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		/**
-		 * @TODO Create transition from loading
-		 */
 		return this.state.loadingUser || this.state.loadingSettings ? (
 			<Splash />
 		) : (
@@ -86,14 +84,16 @@ class App extends React.Component<IProps, IState> {
 									schoolName={this.props.settings.values['school_name'].value || null}
 								/>
 								<Switch>
-									<Route path='/' exact render={(props) => (
+									<Route path='/' exact render={(props: RouteComponentProps) => (
 										<Redirect to='/dashboard' />
 									)} />
 									<Route path='/clusters/:clusterID?' component={Clusters} />
 									<Route exact path='/dashboard' component={Dashboard} />
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff' component={Staff} />
-									<Route path='/students/:studentID' component={StudentProfile} />
+									<Route path='/students/:studentID' render={(props: RouteComponentProps) => (
+										<StudentProfile {...props} actor={this.props.currentUser}/>
+									)}/>
 									<Route path='/students' component={Students} />
 									<Route path='/class-schedule' component={ClassSchedule} />
 									<Route component={NotFound} />

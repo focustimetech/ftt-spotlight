@@ -20,6 +20,7 @@ import { Attendance } from './Attendance'
 import { Calendar } from './Calendar/Calendar'
 import { Tabs, TopNav } from './TopNav'
 import { StarButton } from './StarButton'
+import { IUser } from '../types/auth'
 import { IStudent } from '../types/student';
 import {
 	IAppointment,
@@ -45,7 +46,7 @@ interface IReduxProps {
 }
 
 interface IProps extends RouteComponentProps, IReduxProps {
-	editable: boolean
+	actor: IUser
 }
 
 interface IState {
@@ -120,6 +121,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 			this.fetchSchedule(this.props.schedule.next)
 		}
 	}
+
+	handleCancelAppointment = (id: number) => {
+		console.log('canceled')
+	} 
 
 	componentWillMount() {
 		const params: any = this.props.match.params
@@ -225,7 +230,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 				}),
 				emptyState: (
 					<p className='empty_text'>No attendance recorded</p>
-				),
+				)
 			},
 			{
 				name: 'Appointments',
@@ -244,6 +249,17 @@ class StudentProfile extends React.Component<IProps, IState> {
 				emptyState: (
 					<p className='empty_text'>No appointments booked</p>
 				),
+				actions: (appointment: IAppointment) => {
+					console.log({
+						'ACTOR:': this.props.actor,
+						'APPOINTMENT:': appointment
+					})
+					return !isEmpty(appointment) && this.props.actor.account_type === 'staff' && (
+						this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id
+					) ? [
+						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointment(appointment.id) }
+					] : undefined
+				}
 			},
 			{
 				name: 'Scheduled',

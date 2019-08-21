@@ -18,12 +18,13 @@ class Staff extends JsonResource
         return [
             'id' => $this->id,
             'staff_type' => $this['staff_type'],
-            'administrator' => $this['administrator'] ? true : false,
+            'account_type' => $this->administrator ? 'admin' : 'teacher',
+            'administrator' => $this->administrator == true,
             'name' => $this->getName(),
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'title' => $this->title,
-            'email' => $this['email']
+            'email' => $this->email
         ];
     }
 }

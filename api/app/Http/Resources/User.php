@@ -6,6 +6,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Staff;
 use App\Student;
+use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\Student as StudentResource;
 
 class User extends JsonResource
 {
@@ -19,10 +21,10 @@ class User extends JsonResource
     {
         switch($this->account_type) {
             case 'staff':
-                $details = Staff::findOrFail($this->user_id);
+                $details = new StaffResource(Staff::findOrFail($this->user_id));
                 break;
             case 'student':
-                $details = Student::findOrFail($this->user_id);
+                $details = new StudentResource(Student::findOrFail($this->user_id));
                 break;
         }
 

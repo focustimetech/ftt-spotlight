@@ -19,4 +19,4 @@ export type IStaffTitle =
     | 'Mrs.'
     | 'Prof.'
 
-export type IStaffAccountType = 'teacher' | 'administrator'
+export type IStaffAccountType = 'teacher' | 'admin'

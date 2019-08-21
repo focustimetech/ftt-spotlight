@@ -57,7 +57,7 @@ export interface ICalendarItemDetails {
 
 export interface ICalendarItemAction {
     value: string
-    callback: (params: any) => any
+    callback: (...params: any) => void
 }
 
 
@@ -97,7 +97,7 @@ export interface IScheduled extends IStaff {
 export interface ICalendarDialogGroup {
     name: string
     key: string
-    itemMap: (item: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
+    itemMap: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
     emptyState: any
-    actions?: ICalendarItemAction[]
+    actions?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemAction[]
 }

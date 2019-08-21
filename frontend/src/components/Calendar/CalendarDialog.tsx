@@ -40,7 +40,7 @@ export const CalendarDialog = (props: IProps) => {
         props.onClose()
     }
     console.log('PROPS:', props)
-    const { data, date, end, flex, label, pending, start } = props.blockDetails
+    const { date, end, flex, label, pending, start } = props.blockDetails
 
     return (
         <Dialog open={props.open} className='calendar-block-dialog'>
@@ -51,26 +51,37 @@ export const CalendarDialog = (props: IProps) => {
             <DialogContent>
                 {props.calendarDialogGroups && props.calendarDialogGroups.length > 0 ? (
                     props.calendarDialogGroups.map((calendarGroup: ICalendarDialogGroup) => {
+                        /*
                         const items: ICalendarItemDetails[] = !isEmpty(data) ? (
                             data[calendarGroup.key].map((data: any) => calendarGroup.itemMap(data, props.blockDetails))
                         ) : null
+                        const actions: ICalendarItemAction[] | undefined
+                            = calendarGroup.actions ? calendarGroup.actions(data, props.blockDetails) : undefined
+                        */
                         return (
                             <>
                                 <h5 className='section-header'>{calendarGroup.name}</h5>
                                 <section className='section'>
-                                    {items ? (
-                                        items.length ? (
-                                            items.map((itemDetails: ICalendarItemDetails) => (
-                                                <CalendarDialogItem
-                                                    details={itemDetails}
-                                                    actions={calendarGroup.actions}
-                                                />
-                                            ))
+                                    {!isEmpty(props.blockDetails.data) ? (
+                                        props.blockDetails.data[calendarGroup.key].length > 0 ? (
+                                            props.blockDetails.data[calendarGroup.key]
+                                                .map((data: any) => {
+                                                    const itemDetails: ICalendarItemDetails = calendarGroup.itemMap(data, props.blockDetails)
+                                                    const actions: ICalendarItemAction[] = calendarGroup.actions ? (
+                                                        calendarGroup.actions(data, props.blockDetails)
+                                                    ) : undefined
+                                                    return (
+                                                        <CalendarDialogItem
+                                                            details={itemDetails}
+                                                            actions={actions}
+                                                        />
+                                                    )
+                                                })
+                                                
                                         ) : calendarGroup.emptyState
                                     ) : (
                                         <p className='empty_text'>No data available</p>
-                                    )
-                                }
+                                    )}
                                 </section>
                             </>
                         )

@@ -64,23 +64,24 @@ export const CalendarDialog = (props: IProps) => {
                                 <section className='section'>
                                     {!isEmpty(props.blockDetails.data) ? (
                                         props.blockDetails.data[calendarGroup.key].length > 0 ? (
-                                            props.blockDetails.data[calendarGroup.key]
-                                                .map((data: any) => {
-                                                    const itemDetails: ICalendarItemDetails = calendarGroup.itemMap(data, props.blockDetails)
-                                                    const actions: ICalendarItemAction[] = calendarGroup.actions ? (
-                                                        calendarGroup.actions(data, props.blockDetails)
-                                                    ) : undefined
-                                                    return (
-                                                        <CalendarDialogItem
-                                                            details={itemDetails}
-                                                            actions={actions}
-                                                        />
-                                                    )
-                                                })
-                                                
+                                            props.blockDetails.data[calendarGroup.key].map((data: any) => {
+                                                const itemDetails: ICalendarItemDetails = calendarGroup.itemMap(data, props.blockDetails)
+                                                const actions: ICalendarItemAction[] = calendarGroup.actions ? (
+                                                    calendarGroup.actions(data, props.blockDetails)
+                                                ) : undefined
+                                                return <>
+                                                    <CalendarDialogItem
+                                                        details={itemDetails}
+                                                        actions={actions}
+                                                    />
+                                                </>
+                                            })
                                         ) : calendarGroup.emptyState
                                     ) : (
                                         <p className='empty_text'>No data available</p>
+                                    )}
+                                    {calendarGroup.children && (
+                                        calendarGroup.children
                                     )}
                                 </section>
                             </>

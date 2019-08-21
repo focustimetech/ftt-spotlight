@@ -43,7 +43,7 @@ export const CalendarDialogItem = (props: IProps) => {
     }
 
     return (
-        <div className={classNames('calendar_item', `--${variant}`)} key={id}>
+        <div className={classNames('calendar_item', 'calendar_item__container', `--${variant}`)} key={id}>
             <div onClick={handleClick}>
                 <h6 className='calendar_item__title'>
                     {title}

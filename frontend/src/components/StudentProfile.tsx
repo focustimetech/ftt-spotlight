@@ -6,10 +6,12 @@ import { connect } from 'react-redux'
 
 import {
 	Avatar,
+	Button,
 	Icon,
 	IconButton,
 	Menu,
-	MenuItem
+	MenuItem,
+	TextField
 } from '@material-ui/core'
 
 import { isEmpty, makeArray } from '../utils/utils'
@@ -18,6 +20,7 @@ import { listToTruncatedString } from '../utils/utils'
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { Attendance } from './Attendance'
 import { Calendar } from './Calendar/Calendar'
+import { CalendarAppointmentWidget } from './Calendar/CalendarAppointmentWidget'
 import { Tabs, TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
@@ -122,9 +125,9 @@ class StudentProfile extends React.Component<IProps, IState> {
 		}
 	}
 
-	handleCancelAppointment = (id: number) => {
-		console.log('canceled')
-	} 
+	handleCancelAppointment = (id: number) => {}
+
+	handleCreateAppointment = () => {}
 
 	componentWillMount() {
 		const params: any = this.props.match.params
@@ -249,11 +252,8 @@ class StudentProfile extends React.Component<IProps, IState> {
 				emptyState: (
 					<p className='empty_text'>No appointments booked</p>
 				),
+				children: <CalendarAppointmentWidget onSubmit={this.handleCreateAppointment} />,
 				actions: (appointment: IAppointment) => {
-					console.log({
-						'ACTOR:': this.props.actor,
-						'APPOINTMENT:': appointment
-					})
 					return !isEmpty(appointment) && this.props.actor.account_type === 'staff' && (
 						this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id
 					) ? [

@@ -150,6 +150,7 @@
 
 .calendar-block-dialog {
 	&__title {
+		width: 600px;
 		.dialog-title__content {
 			height: 86px;
 			width: unset;
@@ -180,6 +181,7 @@
 	.section-header {
 		color: rgba(0,0,0,0.87);
 		text-transform: uppercase;
+		margin: 0 0 12px 0;
 	}
 
 	.section {
@@ -199,8 +201,14 @@
 		padding: 8px 16px;
 		position: relative;
 		box-shadow: $elevation1;
-		margin-bottom: 4px;
 		border-radius: 4px;
+
+		&__container {
+			& + .calendar_item__container,
+			& + * .calendar_item__container {
+				margin-top: 8px;
+			}
+		}
 
 		&__title {
 			display: flex;

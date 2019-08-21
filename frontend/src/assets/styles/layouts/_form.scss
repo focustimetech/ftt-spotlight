@@ -59,3 +59,14 @@
 		margin-left: -12px;
 	}
 }
+
+.chips_container {
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	margin-bottom: 8px;
+
+	& > * {
+		margin: 4px;
+	}
+}

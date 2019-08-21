@@ -1,6 +1,5 @@
 import * as React from 'react'
 import ContentLoader from 'react-content-loader'
-import SwipeableViews from 'react-swipeable-views'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
 
@@ -18,10 +17,9 @@ import { isEmpty, makeArray } from '../utils/utils'
 import { StarredItem } from '../reducers/starReducer'
 import { listToTruncatedString } from '../utils/utils'
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
-import { Attendance } from './Attendance'
 import { Calendar } from './Calendar/Calendar'
 import { NewAppointment } from './Calendar/NewAppointment'
-import { Tabs, TopNav } from './TopNav'
+import { TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
 import { IStudent } from '../types/student';
@@ -54,7 +52,6 @@ interface IProps extends RouteComponentProps, IReduxProps {
 }
 
 interface IState {
-	tab: number
 	loadingProfile: boolean
 	loadingSchedule: boolean
 	editDialogOpen: boolean
@@ -66,7 +63,6 @@ interface IState {
 
 class StudentProfile extends React.Component<IProps, IState> {
 	state: IState = {
-		tab: 1,
 		loadingProfile: false,
 		loadingSchedule: false,
 		editDialogOpen: false,
@@ -74,10 +70,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 		studentID: -1,
 		menuRef: null,
 		blockDetails: null
-	}
-
-	handleTabChange = (event: any, value: any) => {
-		this.setState({ tab: value })
 	}
 
 	toggleStarred = (isStarred: boolean) => {
@@ -186,11 +178,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 			this.props.newStarred.isStarred !== false
 		) : this.props.student.starred
 
-		const navTabs: Tabs = {
-			value: this.state.tab,
-			onChange: this.handleTabChange,
-			tabs: ['Attendance', 'Schedule']
-		}
 		const avatarColor = this.props.student.color || 'red'
 
 		const { menuRef, editDialogOpen } = this.state
@@ -336,7 +323,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					studentDetails={studentDetails}
 				/>
 				<div className='profile'>
-					<TopNav className='--tabs' tabs={navTabs}>
+					<TopNav>
 						<ul>
 							<li className='profile_title'>
 								{this.state.loadingProfile ? (
@@ -393,24 +380,22 @@ class StudentProfile extends React.Component<IProps, IState> {
 							</ul>
 						)}
 					</TopNav>
-					<SwipeableViews index={this.state.tab}>
-						<Calendar
-							hasNext={Boolean(this.props.schedule.next)}
-							hasPrevious={Boolean(this.props.schedule.previous)}
-							loading={this.state.loadingSchedule || !calendar}
-							rangeLabel={this.props.schedule.range}
-							minDate={this.props.schedule.min_date}
-							maxDate={this.props.schedule.max_date}
-							calendar={calendar}
-							calendarDialogGroups={calendarDialogGroups}
-							onNext={this.handleNext}
-							onPrevious={this.handlePrevious}
-							onBlockClick={this.handleBlockClick}
-							dialogOpen={this.state.calendarDialogOpen}
-							onDialogOpen={this.handleCalendarDialogOpen}
-							onDialogClose={this.handleCalendarDialogClose}
-						/>
-					</SwipeableViews>
+					<Calendar
+						hasNext={Boolean(this.props.schedule.next)}
+						hasPrevious={Boolean(this.props.schedule.previous)}
+						loading={this.state.loadingSchedule || !calendar}
+						rangeLabel={this.props.schedule.range}
+						minDate={this.props.schedule.min_date}
+						maxDate={this.props.schedule.max_date}
+						calendar={calendar}
+						calendarDialogGroups={calendarDialogGroups}
+						onNext={this.handleNext}
+						onPrevious={this.handlePrevious}
+						onBlockClick={this.handleBlockClick}
+						dialogOpen={this.state.calendarDialogOpen}
+						onDialogOpen={this.handleCalendarDialogOpen}
+						onDialogClose={this.handleCalendarDialogClose}
+					/>
 				</div>
 			</div>
 		)

@@ -51,20 +51,13 @@ export const CalendarDialog = (props: IProps) => {
             <DialogContent>
                 {props.calendarDialogGroups && props.calendarDialogGroups.length > 0 ? (
                     props.calendarDialogGroups.map((calendarGroup: ICalendarDialogGroup) => {
-                        /*
-                        const items: ICalendarItemDetails[] = !isEmpty(data) ? (
-                            data[calendarGroup.key].map((data: any) => calendarGroup.itemMap(data, props.blockDetails))
-                        ) : null
-                        const actions: ICalendarItemAction[] | undefined
-                            = calendarGroup.actions ? calendarGroup.actions(data, props.blockDetails) : undefined
-                        */
                         return (
-                            <>
+                            <div key={calendarGroup.key}>
                                 <h5 className='section-header'>{calendarGroup.name}</h5>
                                 <section className='section'>
                                     {!isEmpty(props.blockDetails.data) ? (
                                         props.blockDetails.data[calendarGroup.key].length > 0 ? (
-                                            props.blockDetails.data[calendarGroup.key].map((data: any) => {
+                                            props.blockDetails.data[calendarGroup.key].map((data: any, index: number) => {
                                                 const itemDetails: ICalendarItemDetails = calendarGroup.itemMap(data, props.blockDetails)
                                                 const actions: ICalendarItemAction[] = calendarGroup.actions ? (
                                                     calendarGroup.actions(data, props.blockDetails)
@@ -73,6 +66,7 @@ export const CalendarDialog = (props: IProps) => {
                                                     <CalendarDialogItem
                                                         details={itemDetails}
                                                         actions={actions}
+                                                        key={index}
                                                     />
                                                 </>
                                             })
@@ -84,7 +78,7 @@ export const CalendarDialog = (props: IProps) => {
                                         calendarGroup.children
                                     )}
                                 </section>
-                            </>
+                            </div>
                         )
                     })
                 ) : (

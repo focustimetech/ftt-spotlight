@@ -169,8 +169,8 @@ export const Calendar = (props: IProps) => {
 							))}
 						</div>
 						<div className='calendar_row'>
-							{props.calendar.map((calendarDay: ICalendarDay) => (
-								<div className='calendar_events'>
+							{props.calendar.map((calendarDay: ICalendarDay, index: number) => (
+								<div className='calendar_events' key={index}>
 									{calendarDay.events.map((event: ICalendarEvent, index: number) => (
 										<div className='event' key={index}>{event.name || 'event'}</div>
 									))}

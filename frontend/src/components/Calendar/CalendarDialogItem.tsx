@@ -65,7 +65,7 @@ export const CalendarDialogItem = (props: IProps) => {
                         onClose={() => handleClose()}
                     >
                         {props.actions.map((action: ICalendarItemAction) => (
-                            <MenuItem onClick={() => action.callback}>{action.value}</MenuItem>
+                            <MenuItem key={action.value} onClick={() => action.callback}>{action.value}</MenuItem>
                         ))}
                     </Menu>
                 </div>          

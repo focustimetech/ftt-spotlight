@@ -74,7 +74,7 @@ export const CalendarDialog = (props: IProps) => {
                                         <p className='empty_text'>No data available</p>
                                     )}
                                     {calendarGroup.children && (
-                                        calendarGroup.children
+                                        calendarGroup.children(props.blockDetails)
                                     )}
                                 </section>
                             </div>

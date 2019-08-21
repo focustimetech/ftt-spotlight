@@ -100,6 +100,6 @@ export interface ICalendarDialogGroup {
     key: string
     itemMap: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
     emptyState: any
-    children?: any
+    children? (blockDetails?: IBlockDetails): any
     actions?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemAction[]
 }

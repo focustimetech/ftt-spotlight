@@ -182,7 +182,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 	}
 
 	render () {
-		console.log('STATE:', this.state)
 		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.student.id && this.props.newStarred.item_type === 'student' ? (
 			this.props.newStarred.isStarred !== false
 		) : this.props.student.starred
@@ -285,11 +284,20 @@ class StudentProfile extends React.Component<IProps, IState> {
 				emptyState: (
 					<p className='empty_text'>No appointments booked</p>
 				),
-				children: <NewAppointment onSubmit={this.handleCreateAppointment} onClose={this.handleCalendarDialogClose}/>,
-				actions: (appointment: IAppointment) => {
-					return !isEmpty(appointment) && this.props.actor.account_type === 'staff' && (
-						this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id
-					) ? [
+				children: (blockDetails: IBlockDetails) => {
+					return blockDetails.pending ? (
+						<NewAppointment
+							onSubmit={this.handleCreateAppointment}
+							onClose={this.handleCalendarDialogClose}
+						/>
+					) : undefined
+				},
+				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
+					console.log ('block DETAILS:', blockDetails)
+					return!isEmpty(appointment)
+					&& this.props.actor.account_type === 'staff'
+					&& (this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id) ?
+					[
 						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointment(appointment.id) }
 					] : undefined
 				}

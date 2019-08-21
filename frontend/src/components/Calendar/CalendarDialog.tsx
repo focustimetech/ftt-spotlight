@@ -39,7 +39,6 @@ export const CalendarDialog = (props: IProps) => {
         setEditing(false)
         props.onClose()
     }
-    console.log('PROPS:', props)
     const { date, end, flex, label, pending, start } = props.blockDetails
 
     return (

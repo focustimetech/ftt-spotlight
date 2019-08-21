@@ -14,6 +14,7 @@ export interface IBlockSchedule extends IBlock {
 }
 
 export interface IBlockDetails {
+    block_id: number
 	date: string
 	start: string
 	end: string
@@ -74,9 +75,9 @@ export interface ILedgerEntry {
 }
 
 export interface IAppointment {
-    id: number
+    id?: number
     memo: string
-    staff: IStaff
+    staff?: IStaff
     date: string
     block_schedule: IBlockSchedule
     student: IStudent

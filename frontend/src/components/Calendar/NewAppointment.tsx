@@ -6,19 +6,28 @@ import {
     IconButton,
     TextField,
 } from '@material-ui/core'
+import { LoadingButton } from '../Form/LoadingButton'
 
 interface IProps {
-    onSubmit: (memo: string) => void
+    onSubmit: (memo: string) => any
+    onClose: () => void
 }
 
-export const CalendarAppointmentWidget = (props: IProps) => {
+export const NewAppointment = (props: IProps) => {
     const [open, setOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+        = React.useState(false)
+    const [errored, setErrored]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
         = React.useState(false)
     const [inputValue, setInputValue]: [string, React.Dispatch<React.SetStateAction<string>>]
         = React.useState('')
+    const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+    = React.useState(false)
 
     const handleChange = (event: any) => {
+        if (loading)
+            return
         setInputValue(event.target.value)
+        setErrored(false)
     }
 
     const handleOpen = () => {
@@ -28,10 +37,19 @@ export const CalendarAppointmentWidget = (props: IProps) => {
     const handleClose = () => {
         setInputValue('')
         setOpen(false)
+        setLoading(false)
+        setErrored(false)
+        props.onClose()
     }
 
     const handleSubmit = () => {
-        props.onSubmit(inputValue)
+        setLoading(true)
+        setErrored(false)
+        props.onSubmit(inputValue).then(
+            (res: any) => {
+                handleClose()
+            }
+        )
     }
     
     return (
@@ -48,7 +66,7 @@ export const CalendarAppointmentWidget = (props: IProps) => {
                     fullWidth
                     multiline
                 />
-                <Button onClick={() => handleSubmit()} variant='text' color='primary'>Submit</Button>
+                <LoadingButton loading={loading} onClick={() => handleSubmit()} variant='text' color='primary'>Submit</LoadingButton>
                 <Button onClick={() => handleClose()} variant='text'>Cancel</Button>
             </> : (
                 <div className='calendar_item__container'>

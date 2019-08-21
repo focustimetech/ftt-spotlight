@@ -21,8 +21,8 @@ class AppointmentsController extends Controller
         $appointment = new Appointment;
         $appointment->staff_id = $staff->id;
         $appointment->student_id = $request->input('student_id');
-        $appointment->date = $request->input('date');
-        $appointment->block_id = $request->input('block');
+        $appointment->date = date('Y-m-d', strtotime($request->input('date')));
+        $appointment->block_id = $request->input('block_id');
         $appointment->memo = $request->input('memo');
 
         if ($appointment->save()) {

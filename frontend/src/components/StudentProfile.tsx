@@ -20,7 +20,7 @@ import { listToTruncatedString } from '../utils/utils'
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { Attendance } from './Attendance'
 import { Calendar } from './Calendar/Calendar'
-import { CalendarAppointmentWidget } from './Calendar/CalendarAppointmentWidget'
+import { NewAppointment } from './Calendar/NewAppointment'
 import { Tabs, TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
@@ -37,6 +37,7 @@ import {
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
 import { fetchStudentSchedule } from '../actions/studentScheduleActions'
+import { IAppointmentRequest, createAppointment, deleteAppointment } from '../actions/appointmentActions';
 
 interface IReduxProps {
 	student: any
@@ -57,8 +58,10 @@ interface IState {
 	loadingProfile: boolean
 	loadingSchedule: boolean
 	editDialogOpen: boolean
+	calendarDialogOpen: boolean
 	studentID: number
 	menuRef: any
+	blockDetails: IBlockDetails
 }
 
 class StudentProfile extends React.Component<IProps, IState> {
@@ -67,8 +70,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 		loadingProfile: false,
 		loadingSchedule: false,
 		editDialogOpen: false,
+		calendarDialogOpen: false,
 		studentID: -1,
-		menuRef: null
+		menuRef: null,
+		blockDetails: null
 	}
 
 	handleTabChange = (event: any, value: any) => {
@@ -125,9 +130,35 @@ class StudentProfile extends React.Component<IProps, IState> {
 		}
 	}
 
-	handleCancelAppointment = (id: number) => {}
+	handleBlockClick = (blockDetails: IBlockDetails) => {
+		this.setState({ blockDetails })
+	}
 
-	handleCreateAppointment = () => {}
+	handleCalendarDialogOpen = () => {
+		this.setState({ calendarDialogOpen: true })
+	}
+
+	handleCalendarDialogClose = () => {
+		this.setState({ calendarDialogOpen: false })
+	}
+
+	handleCancelAppointment = (id: number) => {
+
+	}
+
+	handleCreateAppointment = (memo: string): any => {
+		const appointment: IAppointmentRequest = {
+			student_id: this.state.studentID,
+			memo,
+			block_id: this.state.blockDetails.block_id,
+			date: this.state.blockDetails.date
+		}
+		return createAppointment(appointment).then(
+			(res: any) => {
+				return this.props.fetchStudentSchedule(this.state.studentID)
+			}
+		)
+	}
 
 	componentWillMount() {
 		const params: any = this.props.match.params
@@ -151,6 +182,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 	}
 
 	render () {
+		console.log('STATE:', this.state)
 		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.student.id && this.props.newStarred.item_type === 'student' ? (
 			this.props.newStarred.isStarred !== false
 		) : this.props.student.starred
@@ -197,6 +229,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							scheduled: makeArray(block.scheduled)
 						}
 						const details: IBlockDetails = {
+							block_id: block.id,
 							date: `${scheduleDay.date.day} ${scheduleDay.date.full_date}`,
 							start: block.start,
 							end: block.end,
@@ -252,7 +285,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 				emptyState: (
 					<p className='empty_text'>No appointments booked</p>
 				),
-				children: <CalendarAppointmentWidget onSubmit={this.handleCreateAppointment} />,
+				children: <NewAppointment onSubmit={this.handleCreateAppointment} onClose={this.handleCalendarDialogClose}/>,
 				actions: (appointment: IAppointment) => {
 					return !isEmpty(appointment) && this.props.actor.account_type === 'staff' && (
 						this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id
@@ -353,7 +386,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 						)}
 					</TopNav>
 					<SwipeableViews index={this.state.tab}>
-						<Attendance />
 						<Calendar
 							hasNext={Boolean(this.props.schedule.next)}
 							hasPrevious={Boolean(this.props.schedule.previous)}
@@ -365,6 +397,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 							calendarDialogGroups={calendarDialogGroups}
 							onNext={this.handleNext}
 							onPrevious={this.handlePrevious}
+							onBlockClick={this.handleBlockClick}
+							dialogOpen={this.state.calendarDialogOpen}
+							onDialogOpen={this.handleCalendarDialogOpen}
+							onDialogClose={this.handleCalendarDialogClose}
 						/>
 					</SwipeableViews>
 				</div>

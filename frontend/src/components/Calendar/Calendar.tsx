@@ -22,6 +22,7 @@ import {
 } from '../../types/calendar'
 
 const emptyIBlockDetails: IBlockDetails = {
+	block_id: 0,
 	date: '',
 	start: '',
 	end: '',
@@ -42,6 +43,10 @@ interface IProps {
     maxDate: Date
 	calendar: ICalendarDay[]
 	calendarDialogGroups: ICalendarDialogGroup[]
+	dialogOpen?: boolean
+	onDialogOpen?: () => void
+	onDialogClose?: () => void
+	onBlockClick?: (blockDetails: IBlockDetails) => void
 }
 
 export const Calendar = (props: IProps) => {
@@ -51,7 +56,7 @@ export const Calendar = (props: IProps) => {
 		= React.useState(new Date())
 	const [dialogOpen, setDialogOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 		= React.useState(false)
-	const [blockDetails, setBlockDetials]: [IBlockDetails, React.Dispatch<React.SetStateAction<IBlockDetails>>]
+	const [blockDetails, setBlockDetails]: [IBlockDetails, React.Dispatch<React.SetStateAction<IBlockDetails>>]
 		= React.useState(emptyIBlockDetails)
 
 	const CalendarLoader = () => (
@@ -104,17 +109,24 @@ export const Calendar = (props: IProps) => {
 	)
 
 	const handleBlockClick = (blockDetails: IBlockDetails) => {
-		setBlockDetials(blockDetails)
+		setBlockDetails(blockDetails)
+		props.onDialogOpen()
 		setDialogOpen(true)
+		if (props.onBlockClick) {
+			props.onBlockClick(blockDetails)
+		}
 	}
 
 	const handleDialogClose = () => {
 		setDialogOpen(false)
+		props.onDialogClose()
 	}
 
 	const handleDatePickerSelect = (event: any) => {
 		setDatePickerRange(event.target.value)
 	}
+
+	console.log('PROPS:', props)
 
 	return (
 		<div className='calendar_container'>
@@ -124,7 +136,7 @@ export const Calendar = (props: IProps) => {
 				<>
 					<CalendarDialog
 						blockDetails={blockDetails}
-						open={dialogOpen}
+						open={dialogOpen && props.dialogOpen !== false}
 						onClose={handleDialogClose}
 						calendarDialogGroups={props.calendarDialogGroups}
 					/>

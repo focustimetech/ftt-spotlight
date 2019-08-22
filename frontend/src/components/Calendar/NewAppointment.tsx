@@ -49,6 +49,11 @@ export const NewAppointment = (props: IProps) => {
             (res: any) => {
                 handleClose()
             }
+        ).catch(
+            (error: any) => {
+                setErrored(true)
+                setLoading(false)
+            }
         )
     }
     
@@ -62,6 +67,8 @@ export const NewAppointment = (props: IProps) => {
                     label='New Appointment'
                     placeholder='Memo'
                     margin='normal'
+                    helperText={errored ? 'Please try that again.' : undefined}
+                    error={errored}
                     autoFocus
                     fullWidth
                     multiline

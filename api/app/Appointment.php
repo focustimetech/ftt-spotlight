@@ -14,6 +14,11 @@ class Appointment extends Model
         return $this->belongsTo('App\Student', 'id', 'student_id');
     }
 
+    public function staff()
+    {
+        return $this->belongsTo('App\Staff', 'id', 'staff_id');
+    }
+
     public function getLedgerEntry()
     {
         return LedgerEntry::where('student_id', $this->student_id)

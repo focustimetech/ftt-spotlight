@@ -20,6 +20,16 @@ class Staff extends Model
 		'password', 'remember_token'
 	];
 
+	public function appointments()
+	{
+		return $this->hasMany('App\Appointment');
+	}
+
+	public function plans()
+	{
+		return $this->hasMany('App\SchedulePlan');
+	}
+
 	public function airUser()
 	{
 		return $this->hasOne('App\AirUser');
@@ -68,6 +78,11 @@ class Staff extends Model
 		return $this->hasMany('App\Topic')->where('deleted', false)->get();
 	}
 
+	public function ledgerEntries()
+	{
+		return $this->hasMany('App\LedgerEntry');
+	}
+
 	public function notifications()
 	{
 		return $this->hasMany('App\Notification');
@@ -99,6 +114,11 @@ class Staff extends Model
 	public function starred()
 	{
 		return $this->hasMany('App\Starred');
+	}
+
+	public function topics()
+	{
+		return $this->hasMany('App\Topic');
 	}
 
 	public function user()

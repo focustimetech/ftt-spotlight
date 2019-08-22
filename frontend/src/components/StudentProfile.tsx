@@ -108,9 +108,21 @@ class StudentProfile extends React.Component<IProps, IState> {
 		this.setState({ editDialogOpen: false })
 	}
 
+	getURLDateTime = (): string => {
+		const searchParams = new URLSearchParams(this.props.location.search)
+		return searchParams.get('date')
+	}
+
+	setURLDateTime = (dateTime: string) => {
+		this.props.history.push({
+			pathname: this.props.location.pathname,
+			search: `?date=${dateTime}`
+		})
+	}
+
 	fetchSchedule = (dateTime?: string) => {
 		this.setState({ loadingSchedule: true })
-		this.props.fetchStudentSchedule(this.state.studentID, dateTime).then(
+		this.props.fetchStudentSchedule(this.state.studentID, dateTime || this.getURLDateTime()).then(
 			(res: any) => {
 				this.setState({ loadingSchedule: false })
 			}
@@ -120,13 +132,20 @@ class StudentProfile extends React.Component<IProps, IState> {
 	handlePrevious = () => {
 		if (this.props.schedule.previous) {
 			this.fetchSchedule(this.props.schedule.previous)
+			this.setURLDateTime(this.props.schedule.previous)
 		}
 	}
 
 	handleNext = () => {
 		if (this.props.schedule.next) {
 			this.fetchSchedule(this.props.schedule.next)
+			this.setURLDateTime(this.props.schedule.next)
 		}
+	}
+
+	handleDatePickerChange = (date: Date) => {
+		this.fetchSchedule(date.toISOString())
+		this.setURLDateTime(date.toISOString())
 	}
 
 	handleBlockClick = (blockDetails: IBlockDetails) => {
@@ -159,7 +178,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 		const appointmentID: number = appointment.id
 		return deleteAppointment(appointmentID)
 			.then((res: any) => {
-				return this.props.fetchStudentSchedule(this.state.studentID)
+				return this.props.fetchStudentSchedule(this.state.studentID, this.getURLDateTime())
 			})
 	}
 
@@ -172,7 +191,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 		}
 		return createAppointment(appointment)
 			.then((res: any) => {
-				return this.props.fetchStudentSchedule(this.state.studentID)
+				return this.props.fetchStudentSchedule(this.state.studentID, this.getURLDateTime())
 			})
 	}
 
@@ -421,6 +440,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						calendarDialogGroups={calendarDialogGroups}
 						onNext={this.handleNext}
 						onPrevious={this.handlePrevious}
+						onDatePickerChange={this.handleDatePickerChange}
 						onBlockClick={this.handleBlockClick}
 						dialogOpen={this.state.calendarDialogOpen}
 						onDialogOpen={this.handleCalendarDialogOpen}

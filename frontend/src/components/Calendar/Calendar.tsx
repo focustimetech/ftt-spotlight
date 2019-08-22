@@ -34,7 +34,8 @@ const emptyIBlockDetails: IBlockDetails = {
 
 interface IProps {
     onPrevious: () => void
-    onNext: () => void
+	onNext: () => void
+	onDatePickerChange: (date: Date) => void
     loading: boolean
     hasPrevious: boolean
     hasNext: boolean
@@ -122,8 +123,9 @@ export const Calendar = (props: IProps) => {
 		props.onDialogClose()
 	}
 
-	const handleDatePickerSelect = (event: any) => {
-		setDatePickerRange(event.target.value)
+	const handleDatePickerSelect = (date: Date) => {
+		setDatePickerRange(date)
+		props.onDatePickerChange(date)
 	}
 
 	return (

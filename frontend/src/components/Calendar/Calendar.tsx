@@ -126,8 +126,6 @@ export const Calendar = (props: IProps) => {
 		setDatePickerRange(event.target.value)
 	}
 
-	console.log('PROPS:', props)
-
 	return (
 		<div className='calendar_container'>
 			{props.loading || !(props.calendar) ? (

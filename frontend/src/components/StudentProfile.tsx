@@ -142,7 +142,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 	}
 
 	handleCancelAppointmentDialogOpen = (appointment: IAppointment) => {
-		console.log('APP:', appointment)
 		this.setState({
 			cancelAppointmentDialogOpen: true,
 			cancelAppointment: appointment

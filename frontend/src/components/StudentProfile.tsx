@@ -19,6 +19,7 @@ import { listToTruncatedString } from '../utils/utils'
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { Calendar } from './Calendar/Calendar'
 import { NewAppointment } from './Calendar/NewAppointment'
+import { CancelAppointment } from './Calendar/CancelAppointment'
 import { TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
@@ -59,6 +60,9 @@ interface IState {
 	studentID: number
 	menuRef: any
 	blockDetails: IBlockDetails
+	cancelAppointmentDialogOpen: boolean
+	cancelAppointmentDialogItem: any
+	cancelAppointment: IAppointment
 }
 
 class StudentProfile extends React.Component<IProps, IState> {
@@ -69,7 +73,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 		calendarDialogOpen: false,
 		studentID: -1,
 		menuRef: null,
-		blockDetails: null
+		blockDetails: null,
+		cancelAppointmentDialogOpen: false,
+		cancelAppointmentDialogItem: null,
+		cancelAppointment: null
 	}
 
 	toggleStarred = (isStarred: boolean) => {
@@ -134,22 +141,40 @@ class StudentProfile extends React.Component<IProps, IState> {
 		this.setState({ calendarDialogOpen: false })
 	}
 
-	handleCancelAppointment = (id: number) => {
-
+	handleCancelAppointmentDialogOpen = (appointment: IAppointment) => {
+		console.log('APP:', appointment)
+		this.setState({
+			cancelAppointmentDialogOpen: true,
+			cancelAppointment: appointment
+		})
 	}
 
-	handleCreateAppointment = (memo: string): any => {
+	handleCancelAppointmentDialogClose = () => {
+		this.setState({
+			cancelAppointmentDialogOpen: false,
+			calendarDialogOpen: false
+		})
+	}
+
+	handleCancelAppointment = (appointment: IAppointment): Promise<any> => {
+		const appointmentID: number = appointment.id
+		return deleteAppointment(appointmentID)
+			.then((res: any) => {
+				return this.props.fetchStudentSchedule(this.state.studentID)
+			})
+	}
+
+	handleCreateAppointment = (memo: string): Promise<any> => {
 		const appointment: IAppointmentRequest = {
 			student_id: this.state.studentID,
 			memo,
 			block_id: this.state.blockDetails.block_id,
 			date: this.state.blockDetails.date
 		}
-		return createAppointment(appointment).then(
-			(res: any) => {
+		return createAppointment(appointment)
+			.then((res: any) => {
 				return this.props.fetchStudentSchedule(this.state.studentID)
-			}
-		)
+			})
 	}
 
 	componentWillMount() {
@@ -280,12 +305,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 					) : undefined
 				},
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
-					console.log ('block DETAILS:', blockDetails)
 					return!isEmpty(appointment)
 					&& this.props.actor.account_type === 'staff'
-					&& (this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id) ?
+					&& (this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id)
+					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointment(appointment.id) }
+						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
 					] : undefined
 				}
 			},
@@ -315,6 +340,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 
 		return (
 			<div className='content' id='content'>
+				<CancelAppointment
+					open={this.state.cancelAppointmentDialogOpen}
+					appointment={this.state.cancelAppointment}
+					onClose={this.handleCancelAppointmentDialogClose}
+					onSubmit={this.handleCancelAppointment}
+				/>
 				<StudentInfoDialog
 					open={editDialogOpen}
 					onClose={this.handleCloseEditDialog}

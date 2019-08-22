@@ -192,74 +192,74 @@
 	.empty_text {
 		font-style: italic;
 	}
+}
 
-	.calendar_item {
+.calendar_item {
+	display: flex;
+	flex-flow: row;
+	line-height: 24px;
+	justify-content: space-between;
+	padding: 8px 16px;
+	position: relative;
+	box-shadow: $elevation1;
+	border-radius: 4px;
+
+	&__container {
+		& + .calendar_item__container,
+		& + * .calendar_item__container {
+			margin-top: 8px;
+		}
+	}
+
+	&__title {
+		display: flex;
+		font-size: unset;
+		font-weight: 500;
+		margin: 0;
+		
+		& > span {
+			display: flex;
+			align-items: center;
+			margin-left: 8px;
+			padding-left: 8px;
+			border-left: 1px solid #888;
+			color: #888;
+			font-weight: 400;
+
+			.icon {
+				margin-left: 8px;
+				cursor: pointer;
+			}
+		}
+	}
+
+	&__memo {
+		margin: 0;
+	}
+
+	&__actions {
+		margin-left: 16px;
 		display: flex;
 		flex-flow: row;
-		line-height: 24px;
-		justify-content: space-between;
-		padding: 8px 16px;
-		position: relative;
-		box-shadow: $elevation1;
-		border-radius: 4px;
+		align-items: center;
+	}
 
-		&__container {
-			& + .calendar_item__container,
-			& + * .calendar_item__container {
-				margin-top: 8px;
-			}
-		}
+	&::after {
+		background: #EEE;
+		content: '';
+		width: 8px;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		border-radius: 4px 0 0 4px;
+	}
 
-		&__title {
-			display: flex;
-			font-size: unset;
-			font-weight: 500;
-			margin: 0;
-			
-			& > span {
-				display: flex;
-				align-items: center;
-				margin-left: 8px;
-				padding-left: 8px;
-				border-left: 1px solid #888;
-				color: #888;
-				font-weight: 400;
+	&.--success::after {
+		background: $success;
+	}
 
-				.icon {
-					margin-left: 8px;
-					cursor: pointer;
-				}
-			}
-		}
-	
-		&__memo {
-			margin: 0;
-		}
-
-		&__actions {
-			margin-left: 16px;
-			display: flex;
-			flex-flow: row;
-			align-items: center;
-		}
-
-		&::after {
-			background: #EEE;
-			content: '';
-			width: 8px;
-			height: 100%;
-			position: absolute;
-			top: 0;
-			left: 0;
-			border-radius: 4px 0 0 4px;
-		}
-
-		&.--success::after {
-			background: $success;
-		}
-
-		&.--fail::after {
-			background: $failure;
-		}
+	&.--fail::after {
+		background: $failure;
 	}
 }

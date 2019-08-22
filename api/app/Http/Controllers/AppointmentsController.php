@@ -17,7 +17,6 @@ class AppointmentsController extends Controller
     public function create(Request $request)
     {
         $staff = auth()->user()->staff();
-
         $appointment = new Appointment;
         $appointment->staff_id = $staff->id;
         $appointment->student_id = $request->input('student_id');
@@ -33,9 +32,12 @@ class AppointmentsController extends Controller
     public function delete($id)
     {
         $appointment = Appointment::findOrFail($id);
-
-        if ($appointment->delete()) {
-            return new AppointmentResource($appointment);
-        }
+        $staff = auth()->user()->staff();
+        if ($appointment->staff_id === $staff->id || $staff->administrator == true) {
+            if ($appointment->delete()) {
+                return new AppointmentResource($appointment);
+            }
+        } else
+            abort(403, 'Cannot delete Appointment.');
     }
 }

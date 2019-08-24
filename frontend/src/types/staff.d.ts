@@ -20,3 +20,12 @@ export type IStaffTitle =
     | 'Prof.'
 
 export type IStaffAccountType = 'teacher' | 'admin'
+
+export interface INotification {
+    id: number,
+    date: string,
+    time: string,
+    approximateTime: string,
+    body: string,
+    read: boolean
+}

@@ -19,7 +19,7 @@ import {
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 import { SnackbarProvider, ISnackbar, ISnackbarButton } from '../SnackbarProvider'
-import { INotification } from '../../reducers/types'
+import { INotification } from '../../types/staff'
 import { fetchNotifications } from '../../actions/notificationsActions'
 
 interface IState {

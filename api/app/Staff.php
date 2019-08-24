@@ -116,11 +116,6 @@ class Staff extends Model
 		return $this->hasMany('App\Starred');
 	}
 
-	public function topics()
-	{
-		return $this->hasMany('App\Topic');
-	}
-
 	public function user()
 	{
 		return $this->hasOne('App\User', 'user_id')->where('account_type', 'staff')->first();

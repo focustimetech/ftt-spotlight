@@ -70,6 +70,10 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
     // Student Schedule
     Route::get('students/{id}/schedule', 'StudentScheduleController@index');
     Route::get('students/{id}/schedule/{timestamp}', 'StudentScheduleController@index');
+
+    // Staff Schedule
+    Route::get('staff/{id}/schedule', 'StaffScheduleController@index');
+    Route::get('staff/{id}/schedule/{timestamp}', 'StaffScheduleController@index');
 });
 
 // Administrator Routes

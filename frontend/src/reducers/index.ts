@@ -10,6 +10,7 @@ import { studentReducer } from './studentReducer'
 import { studentProfileReducer} from './studentProfileReducer'
 import { studentScheduleReducer } from './studentScheduleReducer'
 import { notificationReducer } from './notificationReducer'
+import { staffProfileReducer } from './staffProfileReducer';
 
 export const rootReducer = combineReducers({
     auth: authReducer,
@@ -17,6 +18,7 @@ export const rootReducer = combineReducers({
     starred: starReducer,
     students: studentReducer,
     staff: staffReducer,
+    staffProfile: staffProfileReducer,
     staffSchedule: staffScheduleReducer,
     studentProfile: studentProfileReducer,
     studentSchedule: studentScheduleReducer,

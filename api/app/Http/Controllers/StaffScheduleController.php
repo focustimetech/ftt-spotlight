@@ -16,6 +16,7 @@ use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\BlockSchedule as BlockScheduleResource;
 use App\Http\Resources\Course as CourseResource;
+use App\Http\Resources\Topic as TopicResource;
 use App\Http\Utils;
 
 class StaffScheduleController extends Controller
@@ -45,10 +46,8 @@ class StaffScheduleController extends Controller
         $appointments = $staff->appointments();
         $ledger_entries = $staff->ledgerEntries();
         $plans = $staff->plans();
-        $topics = $staff->getTopics();
+        $topic_schedules = TopicSchedule::whereIn('topic_id', $staff->getTopics()->pluck('id')->toArray());
         
-        
-
         $staff_schedule = [
             'range' => Utils::formatRangeString($start_time, $end_time),
             'next' => $next_time <= $year_end ? date('Y-m-d\TH:i:s', $next_time) : null,
@@ -80,7 +79,7 @@ class StaffScheduleController extends Controller
                     ],
                     'events' => []
                 ];
-                $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, $topics, &$schedule_day, $year_start, $year_end) {
+                $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, $topic_schedules, &$schedule_day, $year_start, $year_end) {
                     if (strtotime($date. ' '. $block_schedule->end) < $year_start || strtotime("$date $block_schedule->start") > $year_end) {
                         // Only include blocks within school year
                         echo "RET (\$date = $date; \$year_start = ". date('Y-m-d H:i:s', $year_start). ");";
@@ -96,6 +95,9 @@ class StaffScheduleController extends Controller
                             'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
                             'pending' => strtotime($date. ' '. $block_schedule->end) > time()
                         ];
+                        $topic_schedule = $topic_schedules->where('block_schedule_id', $block_schedule->id)->where('date', $date)->first();
+                        if ($topic_schedule)
+                            $day_block['topic'] = new TopicResource($topic_schedule->topic()->first());
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
                         $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->get()->where('date', $date)->where('block_id', $block->id));
                         /*

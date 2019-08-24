@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Staff;
 use App\User;
 use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\StaffProfile as StaffProfileResource;
 
 class StaffController extends Controller
 {
@@ -69,5 +70,15 @@ class StaffController extends Controller
         if ($staff->delete()) {
             return new StaffResource($staff);
         }
+    }
+
+    /**
+     * Retreive a collection of data about the staff member
+     */
+    public function profile($id)
+    {
+        $staff = Staff::findOrFail($id);
+
+        return new StaffProfileResource($staff);
     }
 }

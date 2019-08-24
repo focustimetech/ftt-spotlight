@@ -28,6 +28,7 @@ Route::middleware('auth:api')->group(function() {
 
     // Staff
     Route::get('staff', 'StaffController@index');
+    Route::get('staff/profile/{id}', 'StaffController@profile');
     Route::get('staff/{id}', 'StaffController@show');
 
     // Search

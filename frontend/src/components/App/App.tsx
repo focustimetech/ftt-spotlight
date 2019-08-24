@@ -23,6 +23,7 @@ import StudentProfile from '../StudentProfile'
 import Students from '../Students'
 import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Staff'
+import StaffProfile from '../StaffProfile'
 import { Splash } from './Splash'
 
 /**
@@ -90,6 +91,9 @@ class App extends React.Component<IProps, IState> {
 									<Route path='/clusters/:clusterID?' component={Clusters} />
 									<Route exact path='/dashboard' component={Dashboard} />
 									<Route path='/settings' component={Settings} />
+									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
+										<StaffProfile {...props} actor={this.props.currentUser}/>
+									)}/>
 									<Route path='/staff' component={Staff} />
 									<Route path='/students/:studentID' render={(props: RouteComponentProps) => (
 										<StudentProfile {...props} actor={this.props.currentUser}/>

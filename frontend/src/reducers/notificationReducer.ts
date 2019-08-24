@@ -1,5 +1,5 @@
 import { FETCH_NOTIFICATIONS } from '../actions/types'
-import { INotification } from './types'
+import { INotification } from '../types/staff'
 
 interface IState {
     items: INotification[]

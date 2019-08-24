@@ -32,6 +32,9 @@ export const FETCH_STUDENT_PROFILE = 'FETCH_STUDENT_PROFILE'
 // Student Schedule
 export const FETCH_STUDENT_SCHEDULE = 'FETCH_STUDENT_SCHEDULE'
 
+// Staff Schedule
+export const FETCH_STAFF_SCHEDULE = 'FETCH_STAFF_SCHEDULE'
+
 // Settings
 export const FETCH_SETTINGS = 'FETCH_SETTINGS'
 

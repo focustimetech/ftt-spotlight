@@ -35,8 +35,12 @@ import {
 } from '../types/calendar'
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
-import { fetchStudentSchedule } from '../actions/studentScheduleActions'
-import { IAppointmentRequest, createAppointment, deleteAppointment } from '../actions/appointmentActions';
+import {
+	IAppointmentRequest,
+	createAppointment,
+	deleteAppointment,
+	fetchStudentSchedule
+} from '../actions/studentScheduleActions'
 
 interface IReduxProps {
 	student: any

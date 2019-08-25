@@ -1,5 +1,6 @@
 import { IStaff } from './staff'
 import { IStudent } from './student'
+import { TopicColor } from '../theme'
 
 export interface IBlock {
     id: number
@@ -32,12 +33,19 @@ interface ICalendarDay {
 
 type ICalendarEvent = any
 
+export type ICalendarBlockVariant = TopicColor
+    | 'pending'
+    | 'missed'
+    | 'attended'
+    | 'orange'
+    | 'purple'
+
 export interface ICalendarBlock {
     badgeCount: number
     title: string
     details: IBlockDetails
     memo?: string
-    variant?: string
+    variant?: ICalendarBlockVariant
 }
 
 interface ICalendarDate {

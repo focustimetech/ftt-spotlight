@@ -31,7 +31,8 @@ import {
 	IBlockDetails,
 	ICalendarDialogGroup,
 	ILedgerEntry,
-	IScheduled
+	IScheduled,
+	ICalendarBlockVariant
 } from '../types/calendar'
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStudentProfile } from '../actions/studentProfileActions'
@@ -253,7 +254,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						) : (
 							block.scheduled.name
 						)
-						const variant: string = block.logs[0] ? 'attended' : (
+						const variant: ICalendarBlockVariant = block.logs[0] ? 'attended' : (
 							block.pending ? 'pending' : 'missed'
 						)
 						const data: any = {

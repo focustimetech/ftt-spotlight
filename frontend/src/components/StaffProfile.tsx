@@ -27,7 +27,8 @@ import {
 	IBlockDetails,
 	ICalendarDialogGroup,
 	ILedgerEntry,
-	IScheduled
+	IScheduled,
+	ICalendarBlockVariant
 } from '../types/calendar'
 import { deleteAppointment } from '../actions/studentScheduleActions'
 import { starItem, unstarItem } from '../actions/starActions'
@@ -228,7 +229,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 						)
 						*/
 						const title: string = 'is a block.'
-						const variant: string = block.logs[0] ? 'attended' : (
+						const variant: ICalendarBlockVariant = block.logs[0] ? 'attended' : (
 							block.pending ? 'pending' : 'missed'
 						)
 						const data: any = {

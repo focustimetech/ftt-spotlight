@@ -267,8 +267,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 				itemMap: (log: ILedgerEntry) => ({
 					id: log.id,
 					time: log.time,
-					title: log.staff.name,
-					memo: log.topic.topic,
+					title: log.student.name,
 					variant: 'success',
 					method: log.method
 				}),
@@ -281,7 +280,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 				key: 'appointments',
 				itemMap: (appointment: IAppointment, blockDetails: IBlockDetails) => ({
 					id: appointment.id,
-					title: appointment.staff.name,
+					title: appointment.student.name,
 					memo: appointment.memo,
 					variant: blockDetails.pending ? 'pending' : (
 						blockDetails.data.ledgerEntries

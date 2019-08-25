@@ -100,6 +100,7 @@ class StaffScheduleController extends Controller
                             $day_block['topic'] = new TopicResource($topic_schedule->topic()->first());
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
                         $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->get()->where('date', $date)->where('block_id', $block->id));
+                        $day_block['scheduled'] = $plans->get()->where('date', $date)->where('block_id', $block->id);
                         /*
                         if ($block->flex) {
                             $plan = $plans->get()->where('date', $date)->where('block_id', $block->id)->flatten()->first();

@@ -201,6 +201,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 	}
 
 	render () {
+		console.log(this.props.schedule)
 		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.staff.id && this.props.newStarred.item_type === 'staff' ? (
 			this.props.newStarred.isStarred !== false
 		) : this.props.staff.starred
@@ -217,25 +218,20 @@ class StaffProfile extends React.Component<IProps, IState> {
 					date: scheduleDay.date,
 					events: scheduleDay.events,
 					blocks: scheduleDay.blocks.map((block: any) => {
-						/*
-						const title: string = block.flex ? (
-							block.logs[0] ? (
-								block.logs[0].staff.name 
-							) : (
-								block.scheduled ? block.scheduled.name : 'No Schedule'
-							)
-						) : (
-							block.scheduled.name
-						)
-						*/
-						const title: string = 'is a block.'
-						const variant: ICalendarBlockVariant = block.logs[0] ? 'attended' : (
-							block.pending ? 'pending' : 'missed'
+						const title: string = block.topic ? block.topic.topic :  'No Schedule'
+						const appointments: IAppointment[] = makeArray(block.appointments)
+						const ledgerEntries: ILedgerEntry[] = makeArray(block.logs)
+						const missedAppointment: boolean = appointments.some((appointment: IAppointment) => {
+							return ledgerEntries.every((ledgerEntry: ILedgerEntry) => {
+								return appointment.staff.id !== ledgerEntry.staff.id
+							})
+						})
+						const variant: ICalendarBlockVariant = missedAppointment ? 'missed' : (
+							block.topic ? block.topic.color : 'pending'
 						)
 						const data: any = {
-							appointments: makeArray(block.appointments),
-							ledgerEntries: makeArray(block.logs),
-							// scheduled: makeArray(block.scheduled)
+							appointments: appointments,
+							ledgerEntries: ledgerEntries,
 						}
 						const details: IBlockDetails = {
 							block_id: block.id,
@@ -251,7 +247,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							memo: block.logs[0] && block.flex? block.logs[0].topic.topic || null : null,
+							// memo: block.logs[0] && block.flex? block.logs[0].topic.topic || null : null,
 							details
 						}
 						return calendarBlock

@@ -11,19 +11,45 @@ export const theme: Theme = createMuiTheme({
 })
 
 export interface IColor {
-    name: string,
-    label: string,
-    hex: string
+    name: TopicColor,
+    label: string
 }
 
 const colors: IColor[] = [
-    { name: 'blue', label: 'Blue', hex: '0000FF' },
-    { name: 'green', label: 'Green', hex: '00FF00' },
-    { name: 'red', label: 'Red', hex: 'FF0000' }
+    { name: 'pink', label: 'Pink' },
+    { name: 'purple', label: 'Purple' },
+    { name: 'deep-purple', label: 'Deep Purple' },
+    { name: 'indigo', label: 'Indigo' },
+    { name: 'blue', label: 'Blue' },
+    { name: 'light-blue', label: 'Light Blue' },
+    { name: 'cyan', label: 'Cyan' },
+    { name: 'teal', label: 'Teal' },
+    { name: 'green', label: 'Green' },
+    { name: 'light-green', label: 'Light Green' },
+    { name: 'lime', label: 'Lime' },
+    { name: 'yellow', label: 'Yellow' },
+    { name: 'amber', label: 'Amber' },
+    { name: 'orange', label: 'Orange' },
+    { name: 'deep-orange', label: 'Deep Orange' },
+    { name: 'brown', label: 'Brown' },
+    { name: 'blue-grey', label: 'Blue Grey' }    
 ]
 
 export type TopicColor = 
-    | 'red'
-    | 'green'
+    | 'pink'
+    | 'purple'
+    | 'deep-purple'
+    | 'indigo'
     | 'blue'
+    | 'light-blue'
+    | 'cyan'
+    | 'teal'
+    | 'green'
+    | 'light-green'
+    | 'lime'
     | 'yellow'
+    | 'amber'
+    | 'orange'
+    | 'deep-orange'
+    | 'brown'
+    | 'blue-grey'

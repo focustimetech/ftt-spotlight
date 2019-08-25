@@ -26,6 +26,26 @@ const USER_COLORS = [
     '607D8B'
 ];
 
+const TOPIC_COLORS = [
+    'pink',
+    'purple',
+    'deep-purple',
+    'indigo',
+    'blue',
+    'light-blue',
+    'cyan',
+    'teal',
+    'green',
+    'light-green',
+    'lime',
+    'yellow',
+    'amber',
+    'orange',
+    'deep-orange',
+    'brown',
+    'blue-grey'
+];
+
 /**
  * Class for useful utility functions.
  */
@@ -47,7 +67,10 @@ class Utils {
      */
     public static function topicColor($index = -1)
     {
-        return self::userColor($index);
+        if ($index && $index > 0 && $index < count(TOPIC_COLORS)) {
+            return TOPIC_COLORS[$index];
+        }
+        return TOPIC_COLORS[array_rand(TOPIC_COLORS)];
     }
 
     /**

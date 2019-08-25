@@ -82,7 +82,6 @@ class StaffScheduleController extends Controller
                 $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, $topic_schedules, &$schedule_day, $year_start, $year_end) {
                     if (strtotime($date. ' '. $block_schedule->end) < $year_start || strtotime("$date $block_schedule->start") > $year_end) {
                         // Only include blocks within school year
-                        echo "RET (\$date = $date; \$year_start = ". date('Y-m-d H:i:s', $year_start). ");";
                         return;
                     }
                     $block = $blocks->where('id', $block_schedule->block_id)->first();
@@ -95,7 +94,7 @@ class StaffScheduleController extends Controller
                             'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
                             'pending' => strtotime($date. ' '. $block_schedule->end) > time()
                         ];
-                        $topic_schedule = $topic_schedules->where('block_schedule_id', $block_schedule->id)->where('date', $date)->first();
+                        $topic_schedule = $topic_schedules->get()->where('block_id', $block_schedule->block_id)->where('date', $date)->first();
                         if ($topic_schedule)
                             $day_block['topic'] = new TopicResource($topic_schedule->topic()->first());
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        

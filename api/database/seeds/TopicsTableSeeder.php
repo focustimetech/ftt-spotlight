@@ -14,7 +14,7 @@ class TopicsTableSeeder extends Seeder
         $staff_list = App\Staff::all();
 
         $staff_list->each(function($staff) {
-            factory(App\Topic::class, 2)->create([
+            factory(App\Topic::class, 4)->create([
                 'staff_id' => $staff->id
             ]);
         });
@@ -30,7 +30,7 @@ class TopicsTableSeeder extends Seeder
                     factory(App\TopicSchedule::class)->create([
                         'topic_id' => $topic->id,
                         'date' => date('Y-m-d', $time),
-                        'block_schedule_id' => $block->id
+                        'block_id' => $block->block_id
                     ]);
                 });
             });

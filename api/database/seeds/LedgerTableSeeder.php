@@ -40,20 +40,14 @@ class LedgerTableSeeder extends Seeder
                             ];
                             if ($block->flex) {
                                 $topic_ids = $staff->getTopics()->pluck('id')->toArray();
-                                $topic_schedule = App\TopicSchedule::whereIn('topic_id', $topic_ids)->where('date', $date)->where('block_schedule_id', $schedule_block->id)->first();
-                                // dd("\$schedule_block_id: $schedule_block_id");
+                                $topic_schedule = App\TopicSchedule::whereIn('topic_id', $topic_ids)->where('date', $date)->where('block_id', $schedule_block->block_id)->first();
                                 $params['topic_id'] = $topic_schedule->topic_id;
-                                // dd($topic_schedule);
                             }
-                            // dd("\$staff->id: $staff->id \n \$date: $date \n \$topic_ids[0]: $topic_ids[0] \n \$schedule_block->id: $schedule_block->id \n \$topic_schedule: $topic_schedule \n");
-                            // die;
                             factory(App\LedgerEntry::class)->create($params);
                         }
                     });
                 });
                 $time = strtotime('+1 day', $time); // next day
-                // echo "\$block_time: $block_time \n";
-                // echo "time(): ".date('Y-m-d', time()). "\n\n";
             } while (strtotime(date('Y-m-d', $time). ' '. $block_time) <= time());
         });
     }

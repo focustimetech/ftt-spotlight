@@ -14,8 +14,8 @@ class TopicSchedule extends Model
         return $this->hasOne('App\Topic', 'id', 'topic_id');
     }
 
-    public function blockSchedule()
+    public function block()
     {
-        return $this->hasOne('App\BlockSchedule', 'id', 'block_schedule_id');
+        return $this->hasOne('App\Block', 'id', 'block_id');
     }
 }

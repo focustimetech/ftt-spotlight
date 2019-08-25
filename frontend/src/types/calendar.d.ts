@@ -55,7 +55,7 @@ interface ICalendarDate {
 
 export interface ICalendarItemDetails {
     id?: number
-    variant: ICalendarBlockVariant
+    variant: string
     title: string
     time?: string
     memo?: string

@@ -100,7 +100,7 @@ class StudentScheduleController extends Controller
                                 $staff = $plan->staff()->first();
                                 $topic_ids = $staff->getTopics()->pluck('id')->toArray();
                                 $day_block['scheduled'] = new StaffResource($staff);
-                                $topic = TopicSchedule::whereIn('topic_id', $topic_ids)->where('date', $date)->where('block_schedule_id', $block_schedule->id)->first();
+                                $topic = TopicSchedule::whereIn('topic_id', $topic_ids)->where('date', $date)->where('block_id', $block_schedule->block_id)->first();
                                 if ($topic) {
                                     $day_block['scheduled']['topic'] = $topic->topic;
                                 }

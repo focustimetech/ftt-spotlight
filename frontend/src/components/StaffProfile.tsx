@@ -230,8 +230,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 							block.topic ? block.topic.color : 'pending'
 						)
 						const data: any = {
-							appointments: appointments,
-							ledgerEntries: ledgerEntries,
+							appointments,
+							ledgerEntries,
 						}
 						const details: IBlockDetails = {
 							block_id: block.id,

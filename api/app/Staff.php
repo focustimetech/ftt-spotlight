@@ -25,6 +25,27 @@ class Staff extends Model
 		return $this->hasMany('App\Appointment');
 	}
 
+	public function courses()
+	{
+		return $this->belongsToMany('App\Course', 'block_course', 'staff_id', 'course_id');
+	}
+
+	/**
+     * Returns all blocks that a staff member participates in.
+     */
+    public function getBlocks()
+    {
+        return $this->courses()->get()->flatMap(function($course) {
+            return $course->blocks()->get();
+        })->merge(Block::flexBlocks());
+	}
+
+	public function getBlockSchedule()
+	{
+		return BlockSchedule::whereIn('block_id', $this->getBlocks()->pluck('id')->toArray())
+			->orderBy('day_of_week')->orderBy('start')->get();
+	}
+
 	public function plans()
 	{
 		return $this->hasMany('App\SchedulePlan');

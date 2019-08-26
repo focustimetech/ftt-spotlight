@@ -42,7 +42,8 @@ class StaffScheduleController extends Controller
         $previous_time = strtotime('-1 weeks +1 days', $start_time);
         
         $staff = Staff::findOrFail($id);
-        $blocks = Block::all();
+        $blocks = $staff->getBlocks();
+        $staff_block_schedule = $staff->getBlockSchedule();
         $appointments = $staff->appointments();
         $ledger_entries = $staff->ledgerEntries();
         $plans = $staff->plans();
@@ -67,8 +68,8 @@ class StaffScheduleController extends Controller
                     continue;
                 }
                 $date = date('Y-m-d', $time);
-                $blocks_of_day = BlockSchedule::where('day_of_week', $day_of_week)->get();
-                //echo "count(\$blocks_of_day): ". count($blocks_of_day). ';';
+                $blocks_of_day = $staff_block_schedule->where('day_of_week', $day_of_week);
+
                 $schedule_day = [
                     'blocks' => [],
                     'date' => [
@@ -94,29 +95,17 @@ class StaffScheduleController extends Controller
                             'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
                             'pending' => strtotime($date. ' '. $block_schedule->end) > time()
                         ];
-                        $topic_schedule = $topic_schedules->get()->where('block_id', $block_schedule->block_id)->where('date', $date)->first();
-                        if ($topic_schedule)
-                            $day_block['topic'] = new TopicResource($topic_schedule->topic()->first());
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
                         $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->get()->where('date', $date)->where('block_id', $block->id));
-                        $day_block['scheduled'] = $plans->get()->where('date', $date)->where('block_id', $block->id);
-                        /*
+                        $day_block['planned'] = $plans->get()->where('date', $date)->where('block_id', $block->id);
                         if ($block->flex) {
-                            $plan = $plans->get()->where('date', $date)->where('block_id', $block->id)->flatten()->first();
-                            if ($plan) {
-                                $staff = $plan->staff()->first();
-                                $topic_ids = $staff->getTopics()->pluck('id')->toArray();
-                                $day_block['scheduled'] = new StaffResource($staff);
-                                $topic = TopicSchedule::whereIn('topic_id', $topic_ids)->where('date', $date)->where('block_schedule_id', $block_schedule->id)->first();
-                                if ($topic) {
-                                    $day_block['scheduled']['topic'] = $topic->topic;
-                                }
-                            }
+                            $topic_schedule = $topic_schedules->get()->where('block_id', $block_schedule->block_id)->where('date', $date)->first();
+                            if ($topic_schedule)
+                                $day_block['scheduled'] = new TopicResource($topic_schedule->topic()->first());
                         }
                         else {
                             $day_block['scheduled'] = new CourseResource(Course::find($block->pivot->course_id));
                         }
-                        */
                         array_push($schedule_day['blocks'], $day_block);
                     }
                 });

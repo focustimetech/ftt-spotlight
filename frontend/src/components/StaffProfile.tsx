@@ -218,7 +218,9 @@ class StaffProfile extends React.Component<IProps, IState> {
 					date: scheduleDay.date,
 					events: scheduleDay.events,
 					blocks: scheduleDay.blocks.map((block: any) => {
-						const title: string = block.topic ? block.topic.topic :  'No Schedule'
+						const title: string = block.flex ? (
+							block.scheduled ? block.scheduled.topic : 'No Schedule'
+						) : block.scheduled.name
 						const appointments: IAppointment[] = makeArray(block.appointments)
 						const ledgerEntries: ILedgerEntry[] = makeArray(block.logs)
 						const missedAppointment: boolean = appointments.some((appointment: IAppointment) => {
@@ -227,7 +229,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 							})
 						})
 						const variant: ICalendarBlockVariant = missedAppointment ? 'missed' : (
-							block.topic ? block.topic.color : 'pending'
+							block.flex && block.scheduled ? block.scheduled.color : 'pending'
 						)
 						const data: any = {
 							appointments,

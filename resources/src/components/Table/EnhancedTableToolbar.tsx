@@ -177,7 +177,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 									<IconButton onClick={this.props.handleFilterOpen}>
 									<Badge
 										invisible={this.props.filters.length === 0}
-										color='primary'
+										color='secondary'
 										variant='dot'
 									>
 										<Icon>filter_list</Icon>

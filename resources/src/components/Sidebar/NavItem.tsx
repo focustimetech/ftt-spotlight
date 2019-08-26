@@ -26,7 +26,7 @@ export const NavItem = (props: IProps) => {
             {props.badgeCount
             ? <Badge
                 badgeContent={props.badgeCount || 0}
-                color='primary'
+                color='secondary'
                 max={9}
                 invisible={props.badgeCount === 0}
             >

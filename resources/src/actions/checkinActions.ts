@@ -4,7 +4,7 @@ import { FETCH_CHECKIN_STATUS, ENABLE_AIR, DISABLE_AIR, CHECK_IN } from './types
 
 export const fetchCheckInStatus = () => {
     return (dispatch: any) => {
-        return axios.get('http://localhost:8000/api/check-in/status/self')
+        return axios.get('/api/check-in/status/self')
             .then((res: any) => {
                 const status = res.data
                 dispatch({
@@ -17,7 +17,7 @@ export const fetchCheckInStatus = () => {
 
 export const enableAir = () => {
     return (dispatch: any) => {
-        return axios.post('http://localhost:8000/api/check-in/air/enable')
+        return axios.post('/api/check-in/air/enable')
             .then((res: any) => {
                 const status = res.data
                 dispatch({
@@ -30,7 +30,7 @@ export const enableAir = () => {
 
 export const disableAir = () => {
     return (dispatch: any) => {
-        return axios.post('http://localhost:8000/api/check-in/air/disable')
+        return axios.post('/api/check-in/air/disable')
             .then((res: any) => {
                 const status = res.data
                 dispatch({
@@ -43,7 +43,7 @@ export const disableAir = () => {
 
 export const checkIn = (input: string) => {
     return (dispatch: any) => {
-        return axios.post('http://localhost:8000/api/check-in/')
+        return axios.post('/api/check-in/')
             .then((res: any) => {
                 const status = res.data
                 dispatch({

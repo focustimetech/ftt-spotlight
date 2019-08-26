@@ -10,14 +10,14 @@ export interface IAppointmentRequest {
 }
 
 export const createAppointment = (appointment: IAppointmentRequest): Promise<any> => {
-    return axios.post('http://localhost:8000/api/appointments/create', appointment)
+    return axios.post('/api/appointments/create', appointment)
         .then((res: any) => {
             return res.data
         })
 }
 
 export const deleteAppointment = (appointmentID: number): Promise<any> => {
-    const url = `http://localhost:8000/api/appointments/${appointmentID}`
+    const url = `/api/appointments/${appointmentID}`
     return axios.delete(url)
         .then((res: any) => {
             return res.data
@@ -26,7 +26,7 @@ export const deleteAppointment = (appointmentID: number): Promise<any> => {
 
 export const fetchStudentSchedule = (studentID: number, dateTime?: string) => {
     return (dispatch: any) => {
-        return axios.get(`http://localhost:8000/api/students/${studentID}/schedule${dateTime ? `/${dateTime}` : ''}`)
+        return axios.get(`/api/students/${studentID}/schedule${dateTime ? `/${dateTime}` : ''}`)
             .then((res: any) => {
                 const schedule = res.data
                 dispatch({

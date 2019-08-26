@@ -60,5 +60,5 @@ export const makeArray = (object: any): any[] => {
  * @return `Promise<Void>` resulting from `axios` request.
  */
 export const verifyPassword = (password: string): Promise<void> => {
-    return axios.post('http://localhost:8000/api/verify-user', { password })
+    return axios.post('/api/verify-user', { password })
 }

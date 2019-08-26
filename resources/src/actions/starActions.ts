@@ -9,7 +9,7 @@ export interface StarRequest {
 
 export const fetchStarred = () => {
     return (dispatch: any) => {
-        return axios.get('http://localhost:8000/api/starred')
+        return axios.get('/api/starred')
             .then(res => {
                 const starred = res.data
                 dispatch({
@@ -22,7 +22,7 @@ export const fetchStarred = () => {
 
 export const starItem = (starred: StarredItem) => {
     return (dispatch: any) => {
-        const uri = 'http://localhost:8000/api/star'
+        const uri = '/api/star'
         axios.post(uri, starred)
         return dispatch({
             type: STAR_ITEM,
@@ -33,7 +33,7 @@ export const starItem = (starred: StarredItem) => {
 
 export const unstarItem = (starred: StarRequest) => {
     return (dispatch: any) => {
-        const uri = 'http://localhost:8000/api/unstar'
+        const uri = '/api/unstar'
         axios.post(uri, starred)
         return dispatch({
             type: UNSTAR_ITEM,

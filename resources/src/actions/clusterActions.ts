@@ -10,7 +10,7 @@ import {
 } from './types'
 
 export const fetchClusters = () => (dispatch: any) => {
-    return axios.get('http://localhost:8000/api/clusters')
+    return axios.get('/api/clusters')
         .then((res: any) => dispatch({
             type: FETCH_CLUSTERS,
             payload: res.data
@@ -18,7 +18,7 @@ export const fetchClusters = () => (dispatch: any) => {
 }
 
 export const attachStudents = (studentClusters: any) => (dispatch: any) => {
-    return axios.post('http://localhost:8000/api/clusters/students', studentClusters)
+    return axios.post('/api/clusters/students', studentClusters)
         .then((res: any) => dispatch({
             type: ATTACH_STUDENTS,
             payload: res.data
@@ -26,7 +26,7 @@ export const attachStudents = (studentClusters: any) => (dispatch: any) => {
 }
 
 export const detatchStudents = (studentClusters: any) => (dispatch: any) => {
-    return axios.delete('http://localhost:8000/api/clusters/students', studentClusters)
+    return axios.delete('/api/clusters/students', studentClusters)
         .then((res: any) => dispatch({
             type: DETATCH_STUDENTS,
             payload: res.data

@@ -19,8 +19,8 @@ export const uploadCSV = (
         return
 
     const url = userType === 'student'
-        ? 'http://localhost:8000/api/students/upload'
-        : 'http://localhost:8000/api/staff/upload'
+        ? '/api/students/upload'
+        : '/api/staff/upload'
 
     const file = files.pop()
     const formData = new FormData

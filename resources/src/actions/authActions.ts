@@ -12,7 +12,7 @@ interface ICredentials {
 
 export const login = (credentials: ICredentials) => {
     return (dispatch: any) => {
-        return axios.post('http://localhost:8000/api/login', credentials)
+        return axios.post('/api/login', credentials)
             .then(res => {
                 const token = res.data.access_token
                 setAuthorizationToken(token)
@@ -23,7 +23,7 @@ export const login = (credentials: ICredentials) => {
 
 export const getCurrentUser = () => {
     return (dispatch: any) => {
-        return axios.get('http://localhost:8000/api/user')
+        return axios.get('/api/user')
             .then(res => {
                 const user: IUser = res.data
                 dispatch({

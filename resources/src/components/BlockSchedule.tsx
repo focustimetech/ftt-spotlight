@@ -38,7 +38,7 @@ export class BlockSchedule extends React.Component<IProps, IState> {
 	}
 
 	componentDidMount() {
-		axios.get('http://localhost:8000/api/blocks')
+		axios.get('/api/blocks')
 			.then((res) => {
 				const blocks: Block[] = res.data.reduce((acc: Block[], block: Block) => {
 					acc[block.day_of_week] = block

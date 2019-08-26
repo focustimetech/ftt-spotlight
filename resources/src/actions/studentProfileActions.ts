@@ -4,7 +4,7 @@ import { FETCH_STUDENT_PROFILE } from './types'
 
 export const fetchStudentProfile = (studentID: number) => {
     return (dispatch: any) => {
-        return axios.get(`http://localhost:8000/api/students/profile/${studentID}`)
+        return axios.get(`/api/students/profile/${studentID}`)
             .then((res: any) => {
                 const student = res.data
                 dispatch({

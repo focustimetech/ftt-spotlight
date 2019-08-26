@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./dist/",
+        "outDir": "./public/js",
         "sourceMap": true,
         "noImplicitAny": true,
         "module": "commonjs",
@@ -9,6 +9,6 @@
         "jsx": "react"
     },
     "include": [
-        "./src/**/*"
+        "./resources/**/*"
     ]
 }

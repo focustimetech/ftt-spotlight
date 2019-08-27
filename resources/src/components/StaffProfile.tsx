@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import {
 	Avatar,
+	Button,
 	Icon,
 	IconButton,
 	Menu,
@@ -20,6 +21,7 @@ import { TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
 import { IStaff } from '../types/staff';
+import { IStudent } from '../types/student'
 import {
 	IAppointment,
 	ICalendarDay,
@@ -27,7 +29,7 @@ import {
 	IBlockDetails,
 	ICalendarDialogGroup,
 	ILedgerEntry,
-	IScheduled,
+	ITopic,
 	ICalendarBlockVariant
 } from '../types/calendar'
 import { deleteAppointment } from '../actions/studentScheduleActions'
@@ -292,7 +294,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					<p className='empty_text'>No appointments booked</p>
 				),
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
-					return!isEmpty(appointment)
+					return !isEmpty(appointment)
 					&& this.props.actor.account_type === 'staff'
 					&& (this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
@@ -301,32 +303,44 @@ class StaffProfile extends React.Component<IProps, IState> {
 					] : undefined
 				}
 			},
-			/*
+			{
+				name: 'Topic',
+				key: 'scheduled',
+				emptyState: (
+					<>
+						<p className='empty_text'>Nothing scheduled</p>
+						<Button variant='text' color='primary'>Set Topic</Button>
+					</>
+				),
+				actions: (scheduled: ITopic, blockDetails: IBlockDetails) => {
+					/*
+					return !isEmpty(scheduled)
+					&& blockDetails.flex
+					&& this.props.actor.account_type === 'staff'
+					&& (this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id)
+					
+					[
+						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
+					] : undefined
+						[
+						{ value: 'Update Topic', callback: () => null },
+						{ value: 'Remove Topic', callback: () => null },
+					]
+					*/
+				}
+			},
 			{
 				name: 'Scheduled',
-				key: 'scheduled',
-				itemMap: (scheduledItem: IScheduled, blockDetails: IBlockDetails) => ({
-					title: scheduledItem.name,
-					variant: blockDetails.pending ? null : (
-						blockDetails.flex === true ? (
-							blockDetails.data.ledgerEntries
-							&& blockDetails.data.ledgerEntries.some(((log: any) => (
-								log.staff.id === scheduledItem.id))
-							) ? 'success' : 'fail'
-						) : (
-							blockDetails.data && blockDetails.data.ledgerEntries
-							&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
-						)
-					),
-					memo: scheduledItem.topic ? scheduledItem.topic.topic : undefined
-				}),
+				key: 'planned',
 				emptyState: (
-					<p className='empty_text'>Nothing scheduled</p>
-				)
+					<p className='empty_text'>No students scheduled</p>
+				),
+				children: (student: IStudent) => ([
+					<h3>{student.name}</h3>
+				])
 			}
-			*/
 		]
-
+		console.log(this.props.staff)
 		return (
 			<div className='content' id='content'>
 				<CancelAppointment
@@ -353,14 +367,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 										<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.staff.initials}</Avatar>
 										<div>
 											<h3 className='name'>
-												{`${this.props.staff.first_name} ${this.props.staff.last_name}`}
-												<span className='grade'>{`Grade ${this.props.staff.grade}`}</span>
+												{this.props.staff.name}
+												{this.props.staff.administrator && (
+													<span className='grade'>Administrator</span>
+												)}
 											</h3>
-											<a onClick={() => null}>
-												<h5 className='cluster-list'>{this.props.staff.clusters && (
-													listToTruncatedString(this.props.staff.clusters.map((cluster: any) => cluster.name), 'Cluster')
-												)}</h5>
-											</a>
 										</div>
 									</>
 								)}	

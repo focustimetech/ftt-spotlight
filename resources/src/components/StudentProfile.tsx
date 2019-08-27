@@ -319,7 +319,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 				emptyState: (
 					<p className='empty_text'>No appointments booked</p>
 				),
-				children: (blockDetails: IBlockDetails) => {
+				child: (blockDetails: IBlockDetails) => {
 					return blockDetails.pending ? (
 						<NewAppointment
 							onSubmit={this.handleCreateAppointment}

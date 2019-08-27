@@ -19,6 +19,7 @@ class StaffProfile extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'name' => $this->getName(),
+            'administrator' => $this->administrator == true,
             'initials' => $this->initials,
             'color' => $this->color,
             'starred' => auth()->user()->staff()->starred()->get()->some(function($item) {

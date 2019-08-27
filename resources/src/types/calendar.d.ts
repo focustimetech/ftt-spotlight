@@ -104,8 +104,9 @@ export interface IScheduled extends IStaff {
 export interface ICalendarDialogGroup {
     name: string
     key: string
-    itemMap: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
+    itemMap?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
     emptyState: any
-    children? (blockDetails?: IBlockDetails): any
+    child? (blockDetails?: IBlockDetails): any
+    children? (item?: any, blockDetails?: IBlockDetails): any
     actions?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemAction[]
 }

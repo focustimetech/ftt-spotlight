@@ -40,7 +40,7 @@ export const CalendarDialog = (props: IProps) => {
         props.onClose()
     }
     const { date, end, flex, label, pending, start } = props.blockDetails
-
+    console.log('CalendarDialog.PROPS:', props)
     return (
         <Dialog open={props.open} className='calendar-block-dialog'>
             <EnhancedDialogTitle className='calendar-block-dialog__title' onClose={handleClose}>
@@ -55,8 +55,11 @@ export const CalendarDialog = (props: IProps) => {
                                 <h5 className='section-header'>{calendarGroup.name}</h5>
                                 <section className='section'>
                                     {!isEmpty(props.blockDetails.data) ? (
-                                        props.blockDetails.data[calendarGroup.key].length > 0 ? (
+                                        props.blockDetails.data[calendarGroup.key]
+                                        && props.blockDetails.data[calendarGroup.key].length > 0 ? (
                                             props.blockDetails.data[calendarGroup.key].map((data: any, index: number) => {
+                                                if (!calendarGroup.itemMap)
+                                                    return
                                                 const itemDetails: ICalendarItemDetails = calendarGroup.itemMap(data, props.blockDetails)
                                                 const actions: ICalendarItemAction[] = calendarGroup.actions ? (
                                                     calendarGroup.actions(data, props.blockDetails)
@@ -67,14 +70,19 @@ export const CalendarDialog = (props: IProps) => {
                                                         actions={actions}
                                                         key={index}
                                                     />
+                                                    {calendarGroup.children && (
+                                                        calendarGroup.children(data, props.blockDetails)
+                                                    )}
                                                 </>
                                             })
-                                        ) : calendarGroup.emptyState
+                                        ) : (
+                                            !calendarGroup.children && calendarGroup.emptyState
+                                        )
                                     ) : (
                                         <p className='empty_text'>No data available</p>
                                     )}
-                                    {calendarGroup.children && (
-                                        calendarGroup.children(props.blockDetails)
+                                    {calendarGroup.child && (
+                                        calendarGroup.child(props.blockDetails)
                                     )}
                                 </section>
                             </div>

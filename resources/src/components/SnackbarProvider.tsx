@@ -64,7 +64,7 @@ export const SnackbarProvider = (props: IProps) => {
                             handleClose()
                         button.callback()
                     }
-                    return <Button key={index} color='primary' onClick={onClick}>{button.text}</Button>
+                    return <Button key={index} color='secondary' onClick={onClick}>{button.text}</Button>
                 }),
                 closeButton && (
                     <IconButton onClick={handleClose}><Icon>close</Icon></IconButton>

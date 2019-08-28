@@ -5,12 +5,13 @@ import { checkinReducer } from './checkinReducer'
 import { settingsReducer } from './settingsReducer'
 import { starReducer } from './starReducer'
 import { staffReducer } from './staffReducer'
+import { staffProfileReducer } from './staffProfileReducer'
 import { staffScheduleReducer } from './staffScheduleReducer'
 import { studentReducer } from './studentReducer'
 import { studentProfileReducer} from './studentProfileReducer'
 import { studentScheduleReducer } from './studentScheduleReducer'
 import { notificationReducer } from './notificationReducer'
-import { staffProfileReducer } from './staffProfileReducer';
+import { topicReducer } from './topicReducer'
 
 export const rootReducer = combineReducers({
     auth: authReducer,
@@ -23,5 +24,6 @@ export const rootReducer = combineReducers({
     studentProfile: studentProfileReducer,
     studentSchedule: studentScheduleReducer,
     notifications: notificationReducer,
-    checkin: checkinReducer
+    checkin: checkinReducer,
+    topics: topicReducer
 })

@@ -15,7 +15,7 @@ interface IAction {
     payload: any
 }
 
-export const topicsReducer = (state = initialState, action: IAction) => {
+export const topicReducer = (state = initialState, action: IAction) => {
     switch (action.type) {
         case FETCH_TOPICS:
             return {

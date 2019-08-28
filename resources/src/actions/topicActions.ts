@@ -37,7 +37,7 @@ export const createTopic = (topic: ITopicRequest) => {
 
 export const deleteTopic = (topicID: number) => {
     return (dispatch: any) => {
-        return axios.post(`/api/topics/${topicID}`)
+        return axios.delete(`/api/topics/${topicID}`)
             .then(res => {
                 const topic: ITopic = res.data
                 dispatch({

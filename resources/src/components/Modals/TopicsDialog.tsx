@@ -21,6 +21,7 @@ import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { LoadingButton } from '../Form/LoadingButton';
 import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
 import { ColorsDialog } from './ColorsDialog'
+import { DeleteTopic } from './DeleteTopic'
 import { createTopic, deleteTopic, fetchTopics} from '../../actions/topicActions'
 
 const emptyTopic: ITopicRequest = {
@@ -48,6 +49,8 @@ interface IState {
     newTopicOpen: boolean
     colorDialogOpen: boolean
     newTopic: ITopicRequest
+    deleteTopicDialogOpen: boolean
+    deleteTopic: ITopic
 }
 
 class TopicsDialog extends React.Component<IProps, IState> {
@@ -58,7 +61,9 @@ class TopicsDialog extends React.Component<IProps, IState> {
         newTopicErrored: false,
         newTopicOpen: false,
         colorDialogOpen: false,
-        newTopic: emptyTopic
+        newTopic: emptyTopic,
+        deleteTopicDialogOpen: false,
+        deleteTopic: null
     }
 
     handleNewTopicOpen = () => {
@@ -88,16 +93,30 @@ class TopicsDialog extends React.Component<IProps, IState> {
         })
     }
 
-    handleColorDialogClose = () => {
-        this.setState({ colorDialogOpen: false })
-    }
-
     handleColorDialogOpen = () => {
         this.setState({ colorDialogOpen: true })
     }
 
-    handleDeleteTopic = (topic: ITopic) => {
+    handleColorDialogClose = () => {
+        this.setState({ colorDialogOpen: false })
+    }
 
+    handleDeleteTopicDialogOpen = () => {
+        this.setState({ deleteTopicDialogOpen: true })
+    }
+
+    handleDeleteTopicDialogClose = () => {
+        this.setState({ deleteTopicDialogOpen: false })
+    }
+
+    handleDeleteTopic = (topic: ITopic) => {
+        this.setState({ deleteTopic: topic })
+        this.handleDeleteTopicDialogOpen()
+    }
+
+    onDeleteTopic = (): Promise<any> => {
+        this.setState({ })
+        return this.props.deleteTopic(this.state.deleteTopic.id)
     }
 
     componentDidMount() {
@@ -111,82 +130,88 @@ class TopicsDialog extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-            <Dialog className='topics_dialog' open={this.props.open}>
-                <EnhancedDialogTitle title='Topics' onClose={this.props.onClose} />
-                <DialogContent>
-                    {this.state.loadingTopics ? (
-                        <h2>Loading</h2>
-                    ) : (
-                        <>
-                            {((!this.props.topics || this.props.topics.length === 0) && !this.state.newTopicOpen) && (
-                                <EmptyStateIcon variant='not-found'>
-                                    <h3>You don't have any Topics yet.</h3>
-                                    <Button
-                                        variant='contained'
-                                        color='primary'
-                                        onClick={() => this.handleNewTopicOpen()}
-                                    >New Topic</Button>
-                                </EmptyStateIcon>
-                            )}
-                            {(this.props.topics && this.props.topics.length > 0) && (
-                                this.props.topics.map((topic: ITopic) => (
-                                    <CalendarDialogItem
-                                        details={{
-                                            id: topic.id,
-                                            title: topic.memo,
-                                            variant: topic.color
-                                        }}
-                                        actions={[
-                                            { value: 'Delete Topic', callback: () => this.handleDeleteTopic(topic)}
-                                        ]}
-                                    />
-                                ))
-                            )}
-                            {this.state.newTopicOpen && (
-                                <>
-                                    <div className='topics_dialog__new'>
-                                        <div className={classNames('color_swatch', `--${this.state.newTopic.color}`)}>
-                                            <Tooltip title='Change Color' placement='top'>
-                                                <IconButton onClick={() => this.handleColorDialogOpen()}>
-                                                    <Icon>palette</Icon>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </div>
-                                        <TextField
-                                            value={this.state.newTopic.memo}
-                                            onChange={this.handleNewTopicChange}
-                                            variant='filled'
-                                            label='New Topic'
-                                            placeholder='What will you be offering?'
-                                            margin='none'
-                                            helperText={this.state.newTopicErrored ? 'Please try that again.' : undefined}
-                                            error={this.state.errored}
-                                            autoFocus
-                                            fullWidth
+                <Dialog className='topics_dialog' open={this.props.open}>
+                    <EnhancedDialogTitle title='Topics' onClose={this.props.onClose} />
+                    <DialogContent>
+                        {this.state.loadingTopics ? (
+                            <h2>Loading</h2>
+                        ) : (
+                            <>
+                                {((!this.props.topics || this.props.topics.length === 0) && !this.state.newTopicOpen) && (
+                                    <EmptyStateIcon variant='not-found'>
+                                        <h3>You don't have any Topics yet.</h3>
+                                        <Button
+                                            variant='contained'
+                                            color='primary'
+                                            onClick={() => this.handleNewTopicOpen()}
+                                        >New Topic</Button>
+                                    </EmptyStateIcon>
+                                )}
+                                {(this.props.topics && this.props.topics.length > 0) && (
+                                    this.props.topics.map((topic: ITopic) => (
+                                        <CalendarDialogItem
+                                            details={{
+                                                id: topic.id,
+                                                title: topic.memo,
+                                                variant: topic.color
+                                            }}
+                                            actions={[
+                                                { value: 'Delete Topic', callback: () => this.handleDeleteTopic(topic)}
+                                            ]}
                                         />
-                                    </div>
-                                    <LoadingButton
-                                        variant='contained'
-                                        color='primary'
-                                        onClick={() => this.handleNewTopic()}
-                                        loading={this.state.loadingNewTopic}
-                                    >Submit</LoadingButton>
-                                </>
-                            )}
-                        </>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button variant='text' color='primary' onClick={() => this.handleNewTopicOpen()}>New Topic</Button>
-                    <Button variant='text' onClick={() => this.props.onClose()}>Cancel</Button>
-                </DialogActions>
-            </Dialog>
-            <ColorsDialog
-                open={this.state.colorDialogOpen}
-                onClose={this.handleColorDialogClose}
-                onSelect={this.handleTopicColorChange}
-                selected={this.state.newTopic.color}
-            />
+                                    ))
+                                )}
+                                {this.state.newTopicOpen && (
+                                    <>
+                                        <div className='topics_dialog__new'>
+                                            <div className={classNames('color_swatch', `--${this.state.newTopic.color}`)}>
+                                                <Tooltip title='Change Color' placement='top'>
+                                                    <IconButton onClick={() => this.handleColorDialogOpen()}>
+                                                        <Icon>palette</Icon>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </div>
+                                            <TextField
+                                                value={this.state.newTopic.memo}
+                                                onChange={this.handleNewTopicChange}
+                                                variant='filled'
+                                                label='New Topic'
+                                                placeholder='What will you be offering?'
+                                                margin='none'
+                                                helperText={this.state.newTopicErrored ? 'Please try that again.' : undefined}
+                                                error={this.state.errored}
+                                                autoFocus
+                                                fullWidth
+                                            />
+                                        </div>
+                                        <LoadingButton
+                                            variant='contained'
+                                            color='primary'
+                                            onClick={() => this.handleNewTopic()}
+                                            loading={this.state.loadingNewTopic}
+                                        >Submit</LoadingButton>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant='text' color='primary' onClick={() => this.handleNewTopicOpen()}>New Topic</Button>
+                        <Button variant='text' onClick={() => this.props.onClose()}>Cancel</Button>
+                    </DialogActions>
+                </Dialog>
+                <ColorsDialog
+                    open={this.state.colorDialogOpen}
+                    onClose={this.handleColorDialogClose}
+                    onSelect={this.handleTopicColorChange}
+                    selected={this.state.newTopic.color}
+                />
+                <DeleteTopic
+                    open={this.state.deleteTopicDialogOpen}
+                    topic={this.state.deleteTopic}
+                    onClose={this.handleDeleteTopicDialogClose}
+                    onSubmit={this.onDeleteTopic}
+                />
         </>
         )
     }

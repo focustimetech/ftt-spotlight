@@ -21,6 +21,7 @@ class TopicsController extends Controller
         $topic = new Topic;
 
         $topic->memo = $request->input('memo');
+        $topic->color = $request->input('color');
         $topic->staff_id = auth()->user()->staff()->id;
 
         if ($topic->save()) {

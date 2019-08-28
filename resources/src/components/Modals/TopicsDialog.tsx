@@ -71,7 +71,24 @@ class TopicsDialog extends React.Component<IProps, IState> {
     }
 
     handleNewTopic = () => {
-        
+        this.setState({
+            loadingNewTopic: true,
+            newTopicErrored: false
+        })
+        this.props.createTopic(this.state.newTopic)
+            .then((res: any) => {
+                this.setState({
+                    loadingNewTopic: false,
+                    newTopicOpen: false,
+                    newTopic: emptyTopic
+                })
+            })
+            .catch((error: any) => {
+                this.setState({
+                    loadingNewTopic: false,
+                    newTopicErrored: true
+                })
+            })
     }
 
     handleNewTopicChange = (event: any) => {
@@ -80,7 +97,8 @@ class TopicsDialog extends React.Component<IProps, IState> {
             return
         this.setState((state: IState) => {
             return {
-                newTopic: { ...state.newTopic, memo }
+                newTopic: { ...state.newTopic, memo },
+                newTopicErrored: false
             }
         })
     }
@@ -115,7 +133,6 @@ class TopicsDialog extends React.Component<IProps, IState> {
     }
 
     onDeleteTopic = (): Promise<any> => {
-        this.setState({ })
         return this.props.deleteTopic(this.state.deleteTopic.id)
     }
 

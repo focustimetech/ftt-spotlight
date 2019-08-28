@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 
 import {
     Button,
@@ -18,17 +19,20 @@ import { ITopicRequest } from '../../actions/topicActions'
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { LoadingButton } from '../Form/LoadingButton';
+import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
 import { ColorsDialog } from './ColorsDialog'
+import { createTopic, deleteTopic, fetchTopics} from '../../actions/topicActions'
 
 const emptyTopic: ITopicRequest = {
-    memo: 'hello',
+    memo: '',
     color: 'blue'
 }
 
 interface ReduxProps {
-    topics?: ITopic[]
-    fetchTopics?: () => Promise<any>
-    createTopic?: (topic: ITopicRequest) => Promise<any>
+    topics: ITopic[]
+    createTopic: (topic: ITopicRequest) => Promise<any>
+    deleteTopic: (topicID: number) => Promise<any>
+    fetchTopics: () => Promise<any>
 }
 
 interface IProps extends ReduxProps {
@@ -92,8 +96,16 @@ class TopicsDialog extends React.Component<IProps, IState> {
         this.setState({ colorDialogOpen: true })
     }
 
-    componentDidMount() {
+    handleDeleteTopic = (topic: ITopic) => {
 
+    }
+
+    componentDidMount() {
+        this.setState({ loadingTopics: true })
+        this.props.fetchTopics()
+            .then(res => {
+                this.setState({ loadingTopics: false })
+            })
     }
 
     render() {
@@ -117,11 +129,18 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                 </EmptyStateIcon>
                             )}
                             {(this.props.topics && this.props.topics.length > 0) && (
-                                <List>
-                                    {this.props.topics.map((topic: ITopic) => (
-                                        <ListItem key={topic.id}>{topic.memo}</ListItem>
-                                    ))}
-                                </List>
+                                this.props.topics.map((topic: ITopic) => (
+                                    <CalendarDialogItem
+                                        details={{
+                                            id: topic.id,
+                                            title: topic.memo,
+                                            variant: topic.color
+                                        }}
+                                        actions={[
+                                            { value: 'Delete Topic', callback: () => this.handleDeleteTopic(topic)}
+                                        ]}
+                                    />
+                                ))
                             )}
                             {this.state.newTopicOpen && (
                                 <div className='topics_dialog__new'>
@@ -149,7 +168,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <LoadingButton variant='text' color='primary' loading={false}>New Topic</LoadingButton>
+                    <Button variant='text' color='primary' onClick={() => this.handleNewTopicOpen()}>New Topic</Button>
                     <Button variant='text' onClick={() => this.props.onClose()}>Cancel</Button>
                 </DialogActions>
             </Dialog>
@@ -164,4 +183,15 @@ class TopicsDialog extends React.Component<IProps, IState> {
     }
 }
 
-export default TopicsDialog
+const mapStateToProps = (state: any) => ({
+    topics: state.topics.items,
+    newTopic: state.topics.item
+})
+
+const mapDispatchToProps = {
+    createTopic,
+    deleteTopic,
+    fetchTopics
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TopicsDialog)

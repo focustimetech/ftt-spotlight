@@ -16,7 +16,7 @@ use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\BlockSchedule as BlockScheduleResource;
 use App\Http\Resources\Course as CourseResource;
-use App\Http\Resources\Topic as TopicResource;
+use App\Http\Resources\TopicSchedule as TopicScheduleResource;
 use App\Http\Utils;
 
 class StaffScheduleController extends Controller
@@ -101,7 +101,7 @@ class StaffScheduleController extends Controller
                         if ($block->flex) {
                             $topic_schedule = $topic_schedules->get()->where('block_id', $block_schedule->block_id)->where('date', $date)->first();
                             if ($topic_schedule)
-                                $day_block['scheduled'] = new TopicResource($topic_schedule->topic()->first());
+                                $day_block['scheduled'] = new TopicScheduleResource($topic_schedule);
                         }
                         else {
                             $day_block['scheduled'] = new CourseResource(Course::find($block->pivot->course_id));

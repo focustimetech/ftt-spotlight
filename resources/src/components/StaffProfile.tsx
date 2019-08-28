@@ -30,6 +30,7 @@ import {
 	ICalendarDialogGroup,
 	ILedgerEntry,
 	ITopic,
+	ITopicSchedule,
 	ICalendarBlockVariant,
 	IScheduled
 } from '../types/calendar'
@@ -226,7 +227,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 						) : block.scheduled.name
 						const appointments: IAppointment[] = makeArray(block.appointments)
 						const ledgerEntries: ILedgerEntry[] = makeArray(block.logs)
-						const topic: ITopic[] = block.flex && block.scheduled ? makeArray(block.scheduled) : undefined
+						const topic: ITopicSchedule[] = block.flex && block.scheduled ? makeArray(block.scheduled) : undefined
 						const missedAppointment: boolean = !block.pending && appointments.some((appointment: IAppointment) => {
 							return ledgerEntries.every((ledgerEntry: ILedgerEntry) => {
 								return appointment.staff.id !== ledgerEntry.staff.id
@@ -315,10 +316,10 @@ class StaffProfile extends React.Component<IProps, IState> {
 						<Button variant='text' color='primary'>Set Topic</Button>
 					</>
 				),
-				itemMap: (topic: ITopic, blockDetails: IBlockDetails) => ({
-					id: topic.id,
-					title: topic.topic,
-					variant: topic.color
+				itemMap: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
+					id: topicSchedule.id,
+					title: topicSchedule.topic,
+					variant: topicSchedule.color
 				}),
 				actions: (topic: ITopic, blockDetails: IBlockDetails) => {
 					return !isEmpty(topic)

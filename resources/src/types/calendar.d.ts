@@ -97,6 +97,12 @@ export interface ITopic {
     staff: IStaff
 }
 
+export interface ITopicSchedule extends ITopic {
+    topic_id: number
+    date: string
+    block: IBlock
+}
+
 export interface IScheduled extends IStaff {
     topic?: ITopic
 }

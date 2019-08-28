@@ -32,6 +32,9 @@ export const CalendarDialogItem = (props: IProps) => {
             methodIcon = 'wifi'
             methodTitle = 'Via Air Check-in'
             break
+        case 'role-call':
+            methodIcon = 'assignment'
+            methodTitle = 'Via roll call'
     }
 
     const handleClick = (event: any) => {

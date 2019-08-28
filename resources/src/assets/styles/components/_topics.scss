@@ -1,3 +1,21 @@
+.topics_dialog {
+    &__new {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        margin: 16px 0;
+
+        .color_swatch {
+            margin-right: 8px;
+            border-radius: 50%;
+            
+            & * {
+                color: rgba(255,255,255,0.87);
+            }
+        }
+    }
+}
+
 .colors_dialog {
     &__colors {
         display: grid;
@@ -20,82 +38,86 @@
             margin: 0;
         }
 
-        &__swatch {width: 24px;
+        &__swatch {
+            width: 24px;
             height: 24px;
             border-radius: 50%;
             margin-right: 8px;
-
-            &.--red {
-                background: $red;
-            }
-        
-            &.--pink {
-                background: $pink;
-            }
-        
-            &.--purple {
-                background: $purple;
-            }
-        
-            &.--deep-purple {
-                background: $deep-purple;
-            }
-        
-            &.--indigo {
-                background: $indigo;
-            }
-        
-            &.--blue {
-                background: $blue;
-            }
-        
-            &.--light-blue {
-                background: $light-blue;
-            }
-        
-            &.--cyan {
-                background: $cyan;
-            }
-        
-            &.--teal {
-                background: $teal;
-            }
-        
-            &.--green {
-                background: $green;
-            }
-        
-            &.--light-green {
-                background: $light-green;
-            }
-        
-            &.--lime {
-                background: $lime;
-            }
-        
-            &.--yellow {
-                background: $yellow;
-            }
-        
-            &.--amber {
-                background: $amber;
-            }
-        
-            &.--orange {
-                background: $orange;
-            }
-        
-            &.--deep-orange {
-                background: $deep-orange;
-            }
-        
-            &.--brown {
-                background: $brown;
-            }
-        
-            &.--blue-grey {
-                background: $blue-grey;
-            }
         }
+    }
+}
+
+.colors_dialog .color__swatch,
+.topics_dialog .color_swatch {
+    &.--red {
+        background: $red;
+    }
+
+    &.--pink {
+        background: $pink;
+    }
+
+    &.--purple {
+        background: $purple;
+    }
+
+    &.--deep-purple {
+        background: $deep-purple;
+    }
+
+    &.--indigo {
+        background: $indigo;
+    }
+
+    &.--blue {
+        background: $blue;
+    }
+
+    &.--light-blue {
+        background: $light-blue;
+    }
+
+    &.--cyan {
+        background: $cyan;
+    }
+
+    &.--teal {
+        background: $teal;
+    }
+
+    &.--green {
+        background: $green;
+    }
+
+    &.--light-green {
+        background: $light-green;
+    }
+
+    &.--lime {
+        background: $lime;
+    }
+
+    &.--yellow {
+        background: $yellow;
+    }
+
+    &.--amber {
+        background: $amber;
+    }
+
+    &.--orange {
+        background: $orange;
+    }
+
+    &.--deep-orange {
+        background: $deep-orange;
+    }
+
+    &.--brown {
+        background: $brown;
+    }
+
+    &.--blue-grey {
+        background: $blue-grey;
     }
 }

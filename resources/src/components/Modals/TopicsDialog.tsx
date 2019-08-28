@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 
 import {
@@ -8,9 +9,8 @@ import {
     DialogContent,
     Icon,
     IconButton,
-    List,
-    ListItem,
-    TextField
+    TextField,
+    Tooltip
 } from '@material-ui/core'
 
 import { ITopic } from '../../types/calendar'
@@ -143,26 +143,35 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                 ))
                             )}
                             {this.state.newTopicOpen && (
-                                <div className='topics_dialog__new'>
-                                    <TextField
-                                        value={this.state.newTopic.memo}
-                                        onChange={this.handleNewTopicChange}
-                                        variant='filled'
-                                        label='New Topic'
-                                        placeholder='What will you be offering?'
-                                        margin='normal'
-                                        helperText={this.state.newTopicErrored ? 'Please try that again.' : undefined}
-                                        error={this.state.errored}
-                                        autoFocus
-                                        fullWidth
-                                    />
+                                <>
+                                    <div className='topics_dialog__new'>
+                                        <div className={classNames('color_swatch', `--${this.state.newTopic.color}`)}>
+                                            <Tooltip title='Change Color' placement='top'>
+                                                <IconButton onClick={() => this.handleColorDialogOpen()}>
+                                                    <Icon>palette</Icon>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                        <TextField
+                                            value={this.state.newTopic.memo}
+                                            onChange={this.handleNewTopicChange}
+                                            variant='filled'
+                                            label='New Topic'
+                                            placeholder='What will you be offering?'
+                                            margin='none'
+                                            helperText={this.state.newTopicErrored ? 'Please try that again.' : undefined}
+                                            error={this.state.errored}
+                                            autoFocus
+                                            fullWidth
+                                        />
+                                    </div>
                                     <LoadingButton
-                                        variant='text'
+                                        variant='contained'
                                         color='primary'
                                         onClick={() => this.handleNewTopic()}
                                         loading={this.state.loadingNewTopic}
                                     >Submit</LoadingButton>
-                                </div>
+                                </>
                             )}
                         </>
                     )}

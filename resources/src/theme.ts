@@ -22,6 +22,7 @@ export interface IColor {
 }
 
 const colors: IColor[] = [
+    { name: 'red', label: 'Red' },
     { name: 'pink', label: 'Pink' },
     { name: 'purple', label: 'Purple' },
     { name: 'deep-purple', label: 'Deep Purple' },
@@ -42,6 +43,7 @@ const colors: IColor[] = [
 ]
 
 export type TopicColor = 
+    | 'red'
     | 'pink'
     | 'purple'
     | 'deep-purple'

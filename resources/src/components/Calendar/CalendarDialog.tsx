@@ -40,7 +40,7 @@ export const CalendarDialog = (props: IProps) => {
         props.onClose()
     }
     const { date, end, flex, label, pending, start } = props.blockDetails
-    console.log('CalendarDialog.PROPS:', props)
+    //console.log('CalendarDialog.PROPS:', props)
     return (
         <Dialog open={props.open} className='calendar-block-dialog'>
             <EnhancedDialogTitle className='calendar-block-dialog__title' onClose={handleClose}>

@@ -30,7 +30,8 @@ import {
 	ICalendarDialogGroup,
 	ILedgerEntry,
 	ITopic,
-	ICalendarBlockVariant
+	ICalendarBlockVariant,
+	IScheduled
 } from '../types/calendar'
 import { deleteAppointment } from '../actions/studentScheduleActions'
 import { starItem, unstarItem } from '../actions/starActions'
@@ -225,7 +226,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 						) : block.scheduled.name
 						const appointments: IAppointment[] = makeArray(block.appointments)
 						const ledgerEntries: ILedgerEntry[] = makeArray(block.logs)
-						const missedAppointment: boolean = appointments.some((appointment: IAppointment) => {
+						const topic: ITopic[] = block.flex && block.scheduled ? makeArray(block.scheduled) : undefined
+						const missedAppointment: boolean = !block.pending && appointments.some((appointment: IAppointment) => {
 							return ledgerEntries.every((ledgerEntry: ILedgerEntry) => {
 								return appointment.staff.id !== ledgerEntry.staff.id
 							})
@@ -236,6 +238,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 						const data: any = {
 							appointments,
 							ledgerEntries,
+							topic
 						}
 						const details: IBlockDetails = {
 							block_id: block.id,
@@ -305,28 +308,28 @@ class StaffProfile extends React.Component<IProps, IState> {
 			},
 			{
 				name: 'Topic',
-				key: 'scheduled',
+				key: 'topic',
 				emptyState: (
 					<>
 						<p className='empty_text'>Nothing scheduled</p>
 						<Button variant='text' color='primary'>Set Topic</Button>
 					</>
 				),
-				actions: (scheduled: ITopic, blockDetails: IBlockDetails) => {
-					/*
-					return !isEmpty(scheduled)
+				itemMap: (topic: ITopic, blockDetails: IBlockDetails) => ({
+					id: topic.id,
+					title: topic.topic,
+					variant: topic.color
+				}),
+				actions: (topic: ITopic, blockDetails: IBlockDetails) => {
+					return !isEmpty(topic)
 					&& blockDetails.flex
+					&& blockDetails.pending
 					&& this.props.actor.account_type === 'staff'
-					&& (this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id)
-					
+					&& topic.staff.id === this.props.actor.details.id ?					
 					[
-						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
-					] : undefined
-						[
 						{ value: 'Update Topic', callback: () => null },
 						{ value: 'Remove Topic', callback: () => null },
-					]
-					*/
+					] : undefined
 				}
 			},
 			{
@@ -340,7 +343,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 				])
 			}
 		]
-		console.log(this.props.staff)
+		//console.log(this.props.staff)
 		return (
 			<div className='content' id='content'>
 				<CancelAppointment

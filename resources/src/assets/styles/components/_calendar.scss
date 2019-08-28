@@ -31,6 +31,96 @@
 					background: #EEE;
 					color: rgba(0,0,0,0.87);
 					font-family: unset;
+
+					&.--red {
+						background: $red;
+						color: $on-color;
+					}
+				
+					&.--pink {
+						background: $pink;
+						color: $on-color;
+					}
+				
+					&.--purple {
+						background: $purple;
+						color: $on-color;
+					}
+				
+					&.--deep-purple {
+						background: $deep-purple;
+						color: $on-color;
+					}
+				
+					&.--indigo {
+						background: $indigo;
+						color: $on-color;
+					}
+				
+					&.--blue {
+						background: $blue;
+						color: $on-color;
+					}
+				
+					&.--light-blue {
+						background: $light-blue;
+						color: $on-color;
+					}
+				
+					&.--cyan {
+						background: $cyan;
+						color: $on-color;
+					}
+				
+					&.--teal {
+						background: $teal;
+						color: $on-color;
+					}
+				
+					&.--green {
+						background: $green;
+						color: $on-color;
+					}
+				
+					&.--light-green {
+						background: $light-green;
+						color: $on-color;
+					}
+				
+					&.--lime {
+						background: $lime;
+						color: $on-color;
+					}
+				
+					&.--yellow {
+						background: $yellow;
+						color: $on-color;
+					}
+				
+					&.--amber {
+						background: $amber;
+						color: $on-color;
+					}
+				
+					&.--orange {
+						background: $orange;
+						color: $on-color;
+					}
+				
+					&.--deep-orange {
+						background: $deep-orange;
+						color: $on-color;
+					}
+				
+					&.--brown {
+						background: $brown;
+						color: $on-color;
+					}
+				
+					&.--blue-grey {
+						background: $blue-grey;
+						color: $on-color;
+					}
 				}
 
 				&__content {
@@ -261,5 +351,77 @@
 
 	&.--fail::after {
 		background: $failure;
+	}
+
+	&.--red::after {
+		background: $red;
+	}
+
+	&.--pink::after {
+		background: $pink;
+	}
+
+	&.--purple::after {
+		background: $purple;
+	}
+
+	&.--deep-purple::after {
+		background: $deep-purple;
+	}
+
+	&.--indigo::after {
+		background: $indigo;
+	}
+
+	&.--blue::after {
+		background: $blue;
+	}
+
+	&.--light-blue::after {
+		background: $light-blue;
+	}
+
+	&.--cyan::after {
+		background: $cyan;
+	}
+
+	&.--teal::after {
+		background: $teal;
+	}
+
+	&.--green::after {
+		background: $green;
+	}
+
+	&.--light-green::after {
+		background: $light-green;
+	}
+
+	&.--lime::after {
+		background: $lime;
+	}
+
+	&.--yellow::after {
+		background: $yellow;
+	}
+
+	&.--amber::after {
+		background: $amber;
+	}
+
+	&.--orange::after {
+		background: $orange;
+	}
+
+	&.--deep-orange::after {
+		background: $deep-orange;
+	}
+
+	&.--brown::after {
+		background: $brown;
+	}
+
+	&.--blue-grey::after {
+		background: $blue-grey;
 	}
 }

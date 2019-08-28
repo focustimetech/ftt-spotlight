@@ -49,3 +49,8 @@ export const FETCH_CHECKIN_STATUS = 'FETCH_CHECKIN_STATUS'
 export const ENABLE_AIR = 'ENABLE_AIR'
 export const DISABLE_AIR = 'DISABLE_AIR'
 export const CHECK_IN = 'CHECK_IN'
+
+// Topics
+export const FETCH_TOPICS = 'FETCH_TOPICS'
+export const CREATE_TOPIC = 'CREATE_TOPIC'
+export const DELETE_TOPIC = 'DELETE_TOPIC'

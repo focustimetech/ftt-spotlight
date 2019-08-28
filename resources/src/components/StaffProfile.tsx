@@ -10,6 +10,7 @@ import {
 	IconButton,
 	Menu,
 	MenuItem,
+	Tooltip,
 } from '@material-ui/core'
 
 import { isEmpty, makeArray } from '../utils/utils'
@@ -62,6 +63,7 @@ interface IState {
 	cancelAppointmentDialogItem: any
 	cancelAppointment: IAppointment
 	topicsDialogOpen: boolean
+	topcisDialogMode: 'edit' | 'select'
 }
 
 class StaffProfile extends React.Component<IProps, IState> {
@@ -76,7 +78,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 		cancelAppointmentDialogOpen: false,
 		cancelAppointmentDialogItem: null,
 		cancelAppointment: null,
-		topicsDialogOpen: false
+		topicsDialogOpen: false,
+		topcisDialogMode: 'edit'
 	}
 
 	toggleStarred = (isStarred: boolean) => {
@@ -182,8 +185,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 		this.setState({ calendarDialogOpen: false })
 	}
 
-	handleTopicsDialogOpen = () => {
-		this.setState({ topicsDialogOpen: true })
+	handleTopicsDialogOpen = (mode: 'edit' | 'select') => {
+		this.setState({
+			topicsDialogOpen: true,
+			topcisDialogMode: mode
+		})
 	}
 
 	handleTopicsDialogClose = () => {
@@ -359,7 +365,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 					onClose={this.handleCancelAppointmentDialogClose}
 					onSubmit={this.handleCancelAppointment}
 				/>
-				<TopicsDialog open={this.state.topicsDialogOpen} onClose={this.handleTopicsDialogClose} />
+				<TopicsDialog
+					open={this.state.topicsDialogOpen}
+					onClose={this.handleTopicsDialogClose}
+					mode={this.state.topcisDialogMode}	
+				/>
 				<div className='profile'>
 					<TopNav>
 						<ul>
@@ -401,9 +411,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 									<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
 								</li>
 								<li>
-									<IconButton onClick={() => this.handleTopicsDialogOpen()}>
-										<Icon>school</Icon>
-									</IconButton>
+									<Tooltip title='Topics'>
+										<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
+											<Icon>school</Icon>
+										</IconButton>
+									</Tooltip>
 								</li>
 								<li>
 									<IconButton onClick={this.handleMenuOpen}>

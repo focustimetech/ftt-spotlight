@@ -345,6 +345,10 @@
 		border-radius: 4px 0 0 4px;
 	}
 
+	&.--selectable {
+		cursor: pointer;
+	}
+
 	&.--success::after {
 		background: $success;
 	}

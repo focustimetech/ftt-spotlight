@@ -8,6 +8,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
+    DialogTitle,
     Icon,
     IconButton,
     TextField,
@@ -43,7 +44,7 @@ interface IProps extends ReduxProps {
     open: boolean
     mode: 'edit' | 'select'
     onClose: () => void
-    onSelect: (topic: ITopic) => void
+    onSelect?: (topic: ITopic) => void
 }
 
 interface IState {
@@ -152,6 +153,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
 
     handleClick = (topic: ITopic) => {
         this.props.onSelect(topic)
+        this.props.onClose()
     }
 
     componentDidMount() {
@@ -172,7 +174,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
         return (
             <>
                 <Dialog className='topics_dialog' open={this.props.open}>
-                    <EnhancedDialogTitle title='Topics' onClose={this.props.onClose} />
+                    <DialogTitle>{this.props.mode === 'edit' ? 'Topics' : 'Select Topic'}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             {this.props.mode === 'edit'
@@ -246,7 +248,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
                     </DialogContent>
                     <DialogActions>
                         <Button variant='text' color='primary' onClick={() => this.handleNewTopicOpen()}>New Topic</Button>
-                        <Button variant='text' onClick={() => this.handleClose()}>Cancel</Button>
+                        <Button variant='text' onClick={() => this.handleClose()}>{this.props.mode === 'edit' ? 'Close' : 'Cancel'}</Button>
                     </DialogActions>
                 </Dialog>
                 <ColorsDialog

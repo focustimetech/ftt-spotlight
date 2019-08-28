@@ -38,6 +38,8 @@ export const CalendarDialogItem = (props: IProps) => {
             methodTitle = 'Via roll call'
     }
 
+    const clickable: boolean = Boolean(props.onClick)
+
     const handleClick = (event: any) => {
         setMenuRef(event.currentTarget)
     }
@@ -51,18 +53,30 @@ export const CalendarDialogItem = (props: IProps) => {
         setMenuRef(null)
     }
 
+    const innerContent = (
+        <h6 className='calendar_item__title'>
+            {title}
+            {time && (
+                <span className='calendar_item__time'>
+                    {time}
+                    <Tooltip className='icon' title={methodTitle}><Icon>{methodIcon}</Icon></Tooltip>
+                </span>
+            )}
+        </h6>
+    )
+
     return (
-        <div className={classNames('calendar_item', 'calendar_item__container', `--${variant}`)} key={id}>
-            <div onClick={handleClick}>
-                <h6 className='calendar_item__title'>
-                    {title}
-                    {time && (
-                        <span className='calendar_item__time'>
-                            {time}
-                            <Tooltip className='icon' title={methodTitle}><Icon>{methodIcon}</Icon></Tooltip>
-                        </span>
-                    )}
-                </h6>
+        <div
+            className={classNames(
+                'calendar_item',
+                'calendar_item__container',
+                `--${variant}`,
+                {['--selectable']: clickable}
+            )}
+            key={id}
+        >
+            <div onClick={clickable ? () => props.onClick() : undefined}>
+                {innerContent}
                 {memo && <p className='calendar__memo'>{memo}</p>}
             </div>
             {(props.actions && props.actions.length > 0) && (

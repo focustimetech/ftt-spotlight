@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { FETCH_TOPICS, CREATE_TOPIC, DELETE_TOPIC } from './types'
+import { FETCH_TOPICS, NEW_TOPIC, DELETE_TOPIC } from './types'
 import { TopicColor } from '../theme'
 import { ITopic } from '../types/calendar'
 
@@ -28,7 +28,7 @@ export const createTopic = (topic: ITopicRequest) => {
             .then(res => {
                 const topic: ITopic = res.data
                 dispatch({
-                    type: CREATE_TOPIC,
+                    type: NEW_TOPIC,
                     payload: topic
                 })
             })

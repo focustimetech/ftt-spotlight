@@ -1,4 +1,4 @@
-import { FETCH_TOPICS, CREATE_TOPIC, DELETE_TOPIC } from '../actions/types'
+import { FETCH_TOPICS, NEW_TOPIC, DELETE_TOPIC } from '../actions/types'
 
 interface IState {
     items: any[]
@@ -22,7 +22,7 @@ export const topicsReducer = (state = initialState, action: IAction) => {
                 ...state,
                 items: action.payload
             }
-        case CREATE_TOPIC:
+        case NEW_TOPIC:
             return {
                 ...state,
                 item: action.payload

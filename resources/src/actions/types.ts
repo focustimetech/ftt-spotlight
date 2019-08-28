@@ -52,5 +52,5 @@ export const CHECK_IN = 'CHECK_IN'
 
 // Topics
 export const FETCH_TOPICS = 'FETCH_TOPICS'
-export const CREATE_TOPIC = 'CREATE_TOPIC'
+export const NEW_TOPIC = 'NEW_TOPIC'
 export const DELETE_TOPIC = 'DELETE_TOPIC'

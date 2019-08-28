@@ -29,14 +29,7 @@ interface IProps {
 }
 
 export const CalendarDialog = (props: IProps) => {
-    const [isEditing, setEditing] = React.useState(false)
-
-    const handleEditingToggle = () => {
-        setEditing(isEditing === false)
-    }
-
     const handleClose = () => {
-        setEditing(false)
         props.onClose()
     }
     const { date, end, flex, label, pending, start } = props.blockDetails
@@ -93,7 +86,6 @@ export const CalendarDialog = (props: IProps) => {
                 )}
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => handleEditingToggle()} color='primary'>{isEditing ? 'Done' : 'Edit'}</Button>
                 <Button onClick={() => handleClose()}>Close</Button>
             </DialogActions>
         </Dialog>

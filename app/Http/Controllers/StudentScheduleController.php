@@ -102,7 +102,7 @@ class StudentScheduleController extends Controller
                                 $day_block['scheduled'] = new StaffResource($staff);
                                 $topic = TopicSchedule::whereIn('topic_id', $topic_ids)->where('date', $date)->where('block_id', $block_schedule->block_id)->first();
                                 if ($topic) {
-                                    $day_block['scheduled']['topic'] = $topic->topic;
+                                    $day_block['scheduled']['topic'] = $topic->memo;
                                 }
                             }
                         }

@@ -17,7 +17,7 @@ class CreateTopicsTable extends Migration
     {
         Schema::create('topics', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('topic');
+            $table->string('memo');
             $table->string('color')
                 ->default(Utils::topicColor(0));
             $table->boolean('deleted')

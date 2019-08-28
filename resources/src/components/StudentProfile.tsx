@@ -294,7 +294,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					id: log.id,
 					time: log.time,
 					title: log.staff.name,
-					memo: log.topic.topic,
+					memo: log.topic.memo,
 					variant: 'success',
 					method: log.method
 				}),
@@ -353,7 +353,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
 						)
 					),
-					memo: scheduledItem.topic ? scheduledItem.topic.topic : undefined
+					memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
 				}),
 				emptyState: (
 					<p className='empty_text'>Nothing scheduled</p>

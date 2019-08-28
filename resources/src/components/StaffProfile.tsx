@@ -223,7 +223,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					events: scheduleDay.events,
 					blocks: scheduleDay.blocks.map((block: any) => {
 						const title: string = block.flex ? (
-							block.scheduled ? block.scheduled.topic : 'No Schedule'
+							block.scheduled ? block.scheduled.topic.memo : 'No Schedule'
 						) : block.scheduled.name
 						const appointments: IAppointment[] = makeArray(block.appointments)
 						const ledgerEntries: ILedgerEntry[] = makeArray(block.logs)
@@ -234,7 +234,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 							})
 						})
 						const variant: ICalendarBlockVariant = missedAppointment ? 'missed' : (
-							block.flex && block.scheduled ? block.scheduled.color : 'pending'
+							block.flex && block.scheduled ? block.scheduled.topic.color : 'pending'
 						)
 						const data: any = {
 							appointments,
@@ -255,7 +255,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							// memo: block.logs[0] && block.flex? block.logs[0].topic.topic || null : null,
+							// memo: block.logs[0] && block.flex? block.logs[0].topic.memo || null : null,
 							details
 						}
 						return calendarBlock
@@ -318,15 +318,15 @@ class StaffProfile extends React.Component<IProps, IState> {
 				),
 				itemMap: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
 					id: topicSchedule.id,
-					title: topicSchedule.topic,
-					variant: topicSchedule.color
+					title: topicSchedule.topic.memo,
+					variant: topicSchedule.topic.color
 				}),
-				actions: (topic: ITopic, blockDetails: IBlockDetails) => {
-					return !isEmpty(topic)
+				actions: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => {
+					return !isEmpty(topicSchedule)
 					&& blockDetails.flex
 					&& blockDetails.pending
 					&& this.props.actor.account_type === 'staff'
-					&& topic.staff.id === this.props.actor.details.id ?					
+					&& topicSchedule.topic.staff.id === this.props.actor.details.id ?					
 					[
 						{ value: 'Update Topic', callback: () => null },
 						{ value: 'Remove Topic', callback: () => null },

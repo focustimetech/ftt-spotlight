@@ -19,7 +19,7 @@ class Topic extends JsonResource
     {
         return [
             'id' => $this->id,
-            'topic' => $this->topic,
+            'memo' => $this->memo,
             'color' => $this->color,
             'deleted' => $this->deleted == true,
             'staff' => new StaffResource(Staff::find($this->staff_id))

@@ -91,16 +91,17 @@ export interface IAppointment {
 
 export interface ITopic {
     id: number
-    topic: string
+    memo: string
     color: string
     deleted: boolean
     staff: IStaff
 }
 
-export interface ITopicSchedule extends ITopic {
-    topic_id: number
+export interface ITopicSchedule {
+    id: number
     date: string
     block: IBlock
+    topic: ITopic
 }
 
 export interface IScheduled extends IStaff {

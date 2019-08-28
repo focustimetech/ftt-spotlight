@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Topic extends Model
 {
     protected $fillable = [
-        'topic', 'staff_id'
+        'memo', 'staff_id'
     ];
 
     public function delete()

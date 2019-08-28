@@ -14,6 +14,7 @@ import { ICalendarItemDetails, ICalendarItemAction } from '../../types/calendar'
 interface IProps {
     details: ICalendarItemDetails
     actions?: ICalendarItemAction[]
+    onClick?: () => void
 }
 
 export const CalendarDialogItem = (props: IProps) => {

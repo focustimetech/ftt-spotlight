@@ -7,6 +7,7 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
+    DialogContentText,
     Icon,
     IconButton,
     TextField,
@@ -23,6 +24,7 @@ import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
 import { ColorsDialog } from './ColorsDialog'
 import { DeleteTopic } from './DeleteTopic'
 import { createTopic, deleteTopic, fetchTopics} from '../../actions/topicActions'
+import { isEmpty } from '../../utils/utils'
 
 const emptyTopic: ITopicRequest = {
     memo: '',
@@ -31,6 +33,7 @@ const emptyTopic: ITopicRequest = {
 
 interface ReduxProps {
     topics: ITopic[]
+    newTopic: ITopic
     createTopic: (topic: ITopicRequest) => Promise<any>
     deleteTopic: (topicID: number) => Promise<any>
     fetchTopics: () => Promise<any>
@@ -38,7 +41,9 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps {
     open: boolean
+    mode: 'edit' | 'select'
     onClose: () => void
+    onSelect: (topic: ITopic) => void
 }
 
 interface IState {
@@ -68,6 +73,10 @@ class TopicsDialog extends React.Component<IProps, IState> {
 
     handleNewTopicOpen = () => {
         this.setState({ newTopicOpen: true })
+    }
+
+    handleNewTopicClose = () => {
+        this.setState({ newTopicOpen: false })
     }
 
     handleNewTopic = () => {
@@ -136,6 +145,15 @@ class TopicsDialog extends React.Component<IProps, IState> {
         return this.props.deleteTopic(this.state.deleteTopic.id)
     }
 
+    handleClose = () => {
+        this.props.onClose()
+        this.setState({ newTopicOpen: false })
+    }
+
+    handleClick = (topic: ITopic) => {
+        this.props.onSelect(topic)
+    }
+
     componentDidMount() {
         this.setState({ loadingTopics: true })
         this.props.fetchTopics()
@@ -144,12 +162,24 @@ class TopicsDialog extends React.Component<IProps, IState> {
             })
     }
 
+    componentWillReceiveProps(nextProps: IProps) {
+		if (nextProps.newTopic && !isEmpty(nextProps.newTopic)) {
+            this.props.topics.unshift(nextProps.newTopic)
+		}
+	}
+
     render() {
         return (
             <>
                 <Dialog className='topics_dialog' open={this.props.open}>
                     <EnhancedDialogTitle title='Topics' onClose={this.props.onClose} />
                     <DialogContent>
+                        <DialogContentText>
+                            {this.props.mode === 'edit'
+                                ? 'Create new Topics or edit already existing ones.'
+                                : 'Select a Topic to use for the block.'
+                            }
+                        </DialogContentText>
                         {this.state.loadingTopics ? (
                             <h2>Loading</h2>
                         ) : (
@@ -167,14 +197,15 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                 {(this.props.topics && this.props.topics.length > 0) && (
                                     this.props.topics.map((topic: ITopic) => (
                                         <CalendarDialogItem
+                                            onClick={this.props.mode === 'select' ? () => this.handleClick(topic) : undefined}
                                             details={{
                                                 id: topic.id,
                                                 title: topic.memo,
                                                 variant: topic.color
                                             }}
-                                            actions={[
+                                            actions={this.props.mode === 'edit' ? [
                                                 { value: 'Delete Topic', callback: () => this.handleDeleteTopic(topic)}
-                                            ]}
+                                            ] : undefined}
                                         />
                                     ))
                                 )}
@@ -202,11 +233,12 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                             />
                                         </div>
                                         <LoadingButton
-                                            variant='contained'
+                                            variant='text'
                                             color='primary'
                                             onClick={() => this.handleNewTopic()}
                                             loading={this.state.loadingNewTopic}
                                         >Submit</LoadingButton>
+                                        <Button variant='text' onClick={() => this.handleNewTopicClose()}>Cancel</Button>
                                     </>
                                 )}
                             </>
@@ -214,7 +246,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
                     </DialogContent>
                     <DialogActions>
                         <Button variant='text' color='primary' onClick={() => this.handleNewTopicOpen()}>New Topic</Button>
-                        <Button variant='text' onClick={() => this.props.onClose()}>Cancel</Button>
+                        <Button variant='text' onClick={() => this.handleClose()}>Cancel</Button>
                     </DialogActions>
                 </Dialog>
                 <ColorsDialog

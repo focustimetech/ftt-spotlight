@@ -14,13 +14,7 @@ import {
 
 import { isEmpty, makeArray } from '../utils/utils'
 import { StarredItem } from '../reducers/starReducer'
-import { listToTruncatedString } from '../utils/utils'
-import { CancelAppointment } from './Calendar/CancelAppointment'
-import { Calendar } from './Calendar/Calendar'
-import { TopNav } from './TopNav'
-import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
-import { IStaff } from '../types/staff';
 import { IStudent } from '../types/student'
 import {
 	IAppointment,
@@ -29,11 +23,14 @@ import {
 	IBlockDetails,
 	ICalendarDialogGroup,
 	ILedgerEntry,
-	ITopic,
 	ITopicSchedule,
 	ICalendarBlockVariant,
-	IScheduled
 } from '../types/calendar'
+import { CancelAppointment } from './Calendar/CancelAppointment'
+import { Calendar } from './Calendar/Calendar'
+import { TopNav } from './TopNav'
+import { StarButton } from './StarButton'
+import TopicsDialog from './Modals/TopicsDialog'
 import { deleteAppointment } from '../actions/studentScheduleActions'
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStaffProfile } from '../actions/staffProfileActions'
@@ -64,6 +61,7 @@ interface IState {
 	cancelAppointmentDialogOpen: boolean
 	cancelAppointmentDialogItem: any
 	cancelAppointment: IAppointment
+	topicsDialogOpen: boolean
 }
 
 class StaffProfile extends React.Component<IProps, IState> {
@@ -77,7 +75,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 		blockDetails: null,
 		cancelAppointmentDialogOpen: false,
 		cancelAppointmentDialogItem: null,
-		cancelAppointment: null
+		cancelAppointment: null,
+		topicsDialogOpen: false
 	}
 
 	toggleStarred = (isStarred: boolean) => {
@@ -183,6 +182,14 @@ class StaffProfile extends React.Component<IProps, IState> {
 		this.setState({ calendarDialogOpen: false })
 	}
 
+	handleTopicsDialogOpen = () => {
+		this.setState({ topicsDialogOpen: true })
+	}
+
+	handleTopicsDialogClose = () => {
+		this.setState({ topicsDialogOpen: false })
+	}
+
 	componentWillMount() {
 		const params: any = this.props.match.params
 		const { staffID } = params
@@ -255,7 +262,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							// memo: block.logs[0] && block.flex? block.logs[0].topic.memo || null : null,
 							details
 						}
 						return calendarBlock
@@ -344,7 +350,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 				])
 			}
 		]
-		//console.log(this.props.staff)
+
 		return (
 			<div className='content' id='content'>
 				<CancelAppointment
@@ -353,6 +359,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					onClose={this.handleCancelAppointmentDialogClose}
 					onSubmit={this.handleCancelAppointment}
 				/>
+				<TopicsDialog open={this.state.topicsDialogOpen} onClose={this.handleTopicsDialogClose} />
 				<div className='profile'>
 					<TopNav>
 						<ul>
@@ -392,6 +399,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 							<ul className='right_col'>
 								<li>
 									<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
+								</li>
+								<li>
+									<IconButton onClick={() => this.handleTopicsDialogOpen()}>
+										<Icon>school</Icon>
+									</IconButton>
 								</li>
 								<li>
 									<IconButton onClick={this.handleMenuOpen}>

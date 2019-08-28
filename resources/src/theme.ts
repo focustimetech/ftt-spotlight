@@ -21,7 +21,7 @@ export interface IColor {
     label: string
 }
 
-const colors: IColor[] = [
+export const COLORS: IColor[] = [
     { name: 'red', label: 'Red' },
     { name: 'pink', label: 'Pink' },
     { name: 'purple', label: 'Purple' },

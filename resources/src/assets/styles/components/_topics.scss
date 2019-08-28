@@ -1,0 +1,101 @@
+.colors_dialog {
+    &__colors {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 4px;
+    }
+
+    .color {
+        display: flex;
+        align-items: center;
+        padding: 4px;
+        cursor: pointer;
+
+        &.--selected {
+            outline: 2px solid $primary;
+        }
+
+        &__name {
+            font-weight: 400;
+            margin: 0;
+        }
+
+        &__swatch {width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 8px;
+
+            &.--red {
+                background: $red;
+            }
+        
+            &.--pink {
+                background: $pink;
+            }
+        
+            &.--purple {
+                background: $purple;
+            }
+        
+            &.--deep-purple {
+                background: $deep-purple;
+            }
+        
+            &.--indigo {
+                background: $indigo;
+            }
+        
+            &.--blue {
+                background: $blue;
+            }
+        
+            &.--light-blue {
+                background: $light-blue;
+            }
+        
+            &.--cyan {
+                background: $cyan;
+            }
+        
+            &.--teal {
+                background: $teal;
+            }
+        
+            &.--green {
+                background: $green;
+            }
+        
+            &.--light-green {
+                background: $light-green;
+            }
+        
+            &.--lime {
+                background: $lime;
+            }
+        
+            &.--yellow {
+                background: $yellow;
+            }
+        
+            &.--amber {
+                background: $amber;
+            }
+        
+            &.--orange {
+                background: $orange;
+            }
+        
+            &.--deep-orange {
+                background: $deep-orange;
+            }
+        
+            &.--brown {
+                background: $brown;
+            }
+        
+            &.--blue-grey {
+                background: $blue-grey;
+            }
+        }
+    }
+}

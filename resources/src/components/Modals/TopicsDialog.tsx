@@ -23,9 +23,9 @@ import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { LoadingButton } from '../Form/LoadingButton';
 import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
 import { ColorsDialog } from './ColorsDialog'
-import { DeleteTopic } from './DeleteTopic'
 import { createTopic, deleteTopic, fetchTopics} from '../../actions/topicActions'
 import { isEmpty } from '../../utils/utils'
+import { ConfirmationDialog } from './ConfirmationDialog';
 
 const emptyTopic: ITopicRequest = {
     memo: '',
@@ -257,9 +257,15 @@ class TopicsDialog extends React.Component<IProps, IState> {
                     onSelect={this.handleTopicColorChange}
                     selected={this.state.newTopic.color}
                 />
-                <DeleteTopic
+                <ConfirmationDialog
                     open={this.state.deleteTopicDialogOpen}
-                    topic={this.state.deleteTopic}
+                    item={this.state.deleteTopic}
+                    title='Delete Topic'
+                    bodyText='The following Topic will be deleted:'
+                    calendarItem={{
+                        title: this.state.deleteTopic.memo,
+                        variant: this.state.deleteTopic.color
+                    }}
                     onClose={this.handleDeleteTopicDialogClose}
                     onSubmit={this.onDeleteTopic}
                 />

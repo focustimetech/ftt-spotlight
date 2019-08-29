@@ -10,23 +10,32 @@ import {
     DialogTitle
 } from '@material-ui/core'
 
-import { ITopic } from '../../types/calendar'
 import { LoadingButton } from '../Form/LoadingButton'
 
+interface ICalendarItemPreview {
+    title: string
+    memo?: string
+    variant?: string
+}
+
 interface IProps {
-    topic: ITopic
+    title: string
+    bodyText: string
     open: boolean
-    onSubmit: (topic: ITopic) => Promise<any>
+    calendarItem?: ICalendarItemPreview
+    confirmButtonText?: string
+    item?: any
+    onSubmit: (item: any) => Promise<any>
     onClose: () => void
 }
 
-export const DeleteTopic = (props: IProps) => {
+export const ConfirmationDialog = (props: IProps) => {
     const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
         = React.useState(false)
 
     const handleSubmit = () => {
         setLoading(true)
-        props.onSubmit(props.topic)
+        props.onSubmit(props.item)
             .then((res: any) => {
                 setLoading(false)
                 props.onClose()
@@ -38,23 +47,31 @@ export const DeleteTopic = (props: IProps) => {
 
     return (
         <Dialog open={props.open}>
-            <DialogTitle>Delete Topic</DialogTitle>
+            <DialogTitle>{props.title}</DialogTitle>
             <DialogContent>
-                {props.topic ? <>
-                    <DialogContentText>The following topic will be deleted:</DialogContentText>
-                    <div className={classNames('calendar_item', `--${props.topic.color}`)}>
+                {props.bodyText && (
+                    <DialogContentText>{props.bodyText}</DialogContentText>
+                )}
+                {props.calendarItem && (
+                    <div className={classNames(
+                        'calendar_item',
+                        {[`--${props.calendarItem.variant}`]: Boolean(props.calendarItem.variant)}
+                    )}>
                         <div>
                             <h6 className='calendar_item__title'>
-                                {props.topic.memo}
+                                {props.calendarItem.memo}
                             </h6>
                         </div>
                     </div>
-                </> : (
-                    <DialogContentText>Are you sure you want to delete this topic?</DialogContentText>
                 )}
             </DialogContent>
             <DialogActions>
-                <LoadingButton loading={loading} variant='text' color='primary' onClick={() => handleSubmit()}>Confirm</LoadingButton>
+                <LoadingButton
+                    loading={loading}
+                    variant='text'
+                    color='primary'
+                    onClick={() => handleSubmit()}
+                >{props.confirmButtonText || 'Confirm'}</LoadingButton>
                 <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
             </DialogActions>
         </Dialog>

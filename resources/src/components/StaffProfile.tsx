@@ -196,6 +196,17 @@ class StaffProfile extends React.Component<IProps, IState> {
 		this.setState({ topicsDialogOpen: false })
 	}
 
+	handleChangeTopic = () => {
+		this.setState({
+			topicsDialogOpen: true,
+			topcisDialogMode: 'select'
+		})
+	}
+
+	handleRemoveTopic = () => {
+		
+	}
+
 	componentWillMount() {
 		const params: any = this.props.match.params
 		const { staffID } = params
@@ -340,8 +351,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 					&& this.props.actor.account_type === 'staff'
 					&& topicSchedule.topic.staff.id === this.props.actor.details.id ?					
 					[
-						{ value: 'Update Topic', callback: () => null },
-						{ value: 'Remove Topic', callback: () => null },
+						{ value: 'Change Topic', callback: () => this.handleChangeTopic() },
+						{ value: 'Remove Topic', callback: () => this.handleRemoveTopic() },
 					] : undefined
 				}
 			},

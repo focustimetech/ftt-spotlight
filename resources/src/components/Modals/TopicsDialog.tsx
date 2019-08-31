@@ -43,7 +43,7 @@ interface IProps extends ReduxProps {
     open: boolean
     mode: 'edit' | 'select'
     onClose: () => void
-    onSelect?: (topic: ITopic) => void
+    onSelect: (topic: ITopic) => void
 }
 
 interface IState {

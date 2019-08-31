@@ -62,7 +62,6 @@ class Sidebar extends React.Component<IProps> {
 					) : (
 						<>
 							<div className='nav_top'>
-								<NavItem title='Spotlight' to='/' icon='home' />
 								<SearchWidget />
 								<StarredWidget />
 								<CheckInWidget />
@@ -110,14 +109,7 @@ class Sidebar extends React.Component<IProps> {
 							<ul className='menu_list'>
 								<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
 								<MenuItem to='/students' icon='face' label='Students' />
-								<MenuItem to='/clusters' icon='group' label='Cluster' />
-								<MenuItem to='/class-schedule' icon='date_range' label='Class Schedule' />
-								<MenuItem to='/event' icon='event' label='Events' />
-								<MenuItem to='/reporting' icon='assignment' label='Reporting' />
-								<MenuItem to='/settings' icon='settings' label='Settings' />
 							</ul>
-							{//<SnackbarProvider />
-							}
 						</>
 					)}
 				</div>

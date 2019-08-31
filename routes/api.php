@@ -44,6 +44,7 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
     Route::get('appointments/{id}', 'AppointmentsController@find');
     Route::post('appointments/create', 'AppointmentsController@create');
     Route::delete('appointments/{id}', 'AppointmentsController@delete');
+ 
     // Starred
     Route::get('starred', 'StarController@index');
     Route::post('star', 'StarController@star');
@@ -52,6 +53,8 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
     // Topics
     Route::post('topics', 'TopicsController@store');
     Route::delete('topics/{id}', 'TopicsController@destroy');
+    Route::post('topics/schedule', 'TopicsController@createTopicSchedule');
+    Route::delete('topics/schedule/{id}', 'TopicsController@deleteTopicSchedule');
 
     // Students
     Route::get('students', 'StudentsController@index');
@@ -94,7 +97,6 @@ Route::middleware(['auth:api', 'scopes:admin'])->group(function() {
     Route::put('settings', 'SettingsController@update');
 });
 
-
 // Clusters
 Route::post('clusters/students', 'ClustersController@attach');
 Route::delete('clusters/students', 'ClustersController@detach');
@@ -106,7 +108,6 @@ Route::get('clusters/{id}', 'ClustersController@show');
 
 // Blocks
 Route::get('blocks', 'BlockController@index');
-    // Route::get('block/{time}', 'BlockController@show');
 Route::post('blocks', 'BlockController@store');
 Route::put('blocks', 'BlockController@store');
 Route::delete('block/{id}', 'BlockController@destroy');

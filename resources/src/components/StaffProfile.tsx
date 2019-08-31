@@ -406,7 +406,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 											</h3>
 										</div>
 									</>
-								)}	
+								)}
 							</li>
 						</ul>
 						{this.state.loadingProfile ? (

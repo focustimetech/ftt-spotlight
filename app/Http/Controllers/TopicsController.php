@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Topic;
+use App\TopicSchedule;
 use App\Http\Resources\Topic as TopicResource;
+use App\Http\Resources\TopicSchedule as TopicScheduleResource;
 
 class TopicsController extends Controller
 {
@@ -43,5 +45,32 @@ class TopicsController extends Controller
         if ($topic->save()) {
             return new TopicResource($topic);
         }
+    }
+
+    public function createTopicSchedule(Request $request)
+    {
+        $topic_schedule = new TopicSchedule();
+        $staff = auth()->user()->staff();
+
+        $topic_schedule->block_id = $request->input('block_id');
+        $topic_schedule->date = $request->input('date');
+        $topic_schedule->topic_id = $request->input('topic_id');
+
+        if ($topic_schedule->save())
+            return new TopicScheduleResource($topic_schedule);
+    }
+
+    public function deleteTopicSchedule($id)
+    {
+        $topic_schedule = TopicSchedule::findOrFail($id);
+        $staff = auth()->user()->staff();
+
+        if ($topic_schedule->topic()->first()->staff()->first()->id === $staff->id) {
+            if ($topic_schedule->delete())
+                return new TopicScheduleResource($topic_schedule);
+        }
+        else
+            abort(403, 'Cannot remove Topic.');
+        
     }
 }

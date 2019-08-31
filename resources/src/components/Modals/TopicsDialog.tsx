@@ -19,7 +19,6 @@ import { ITopic } from '../../types/calendar'
 import { TopicColor } from '../../theme'
 import { ITopicRequest } from '../../actions/topicActions'
 import { EmptyStateIcon } from '../EmptyStateIcon'
-import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { LoadingButton } from '../Form/LoadingButton';
 import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
 import { ColorsDialog } from './ColorsDialog'
@@ -69,7 +68,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
         colorDialogOpen: false,
         newTopic: emptyTopic,
         deleteTopicDialogOpen: false,
-        deleteTopic: null
+        deleteTopic: { id: 0, color: null, deleted: false, memo: '', staff: null }
     }
 
     handleNewTopicOpen = () => {

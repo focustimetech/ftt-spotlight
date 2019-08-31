@@ -11,14 +11,14 @@ export interface ISnackbar {
     buttons?: ISnackbarButton[]
 }
 
-export const pushSnackbar = (snackbar: ISnackbar) => (dispatch: (action: IAction) => void) => {
+export const queueSnackbar = (snackbar: ISnackbar) => (dispatch: (action: IAction) => void) => {
     return dispatch({
         type: QUEUE_SNACKBAR,
         payload: snackbar
     })
 }
 
-export const popSnackbar = () => (dispatch: (action: IAction) => void) => {
+export const dequeueSnackbar = () => (dispatch: (action: IAction) => void) => {
     return dispatch({
         type: DEQUEUE_SNACKBAR,
         payload: null

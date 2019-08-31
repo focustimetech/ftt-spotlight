@@ -26,7 +26,7 @@ export const snackbarReducer = (state = initialState, action: IAction) => {
         case DEQUEUE_SNACKBAR:
             return {
                 item: state.items[state.items.length - 1] || null,
-                items: state.items.slice(0, state.items.length)
+                items: state.items.slice(0, state.items.length - 1)
             }
         default:
             return state

@@ -8,10 +8,11 @@ import {
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/styles';
 
-import { ISnackbar, ISnackbarButton, popSnackbar } from '../actions/snackbarActions'
+import { ISnackbar, ISnackbarButton, dequeueSnackbar } from '../actions/snackbarActions'
 
 interface ReduxProps {
     currentSnackbar: ISnackbar
+    snackbars: ISnackbar[]
     getNextSnackbar: () => void
 }
 
@@ -23,7 +24,7 @@ interface IState {
 
 class Snackbar extends React.Component<IProps, IState> {
     state: IState = {
-        open: false
+        open: true
     }
     
     handleExited = () => {
@@ -39,6 +40,14 @@ class Snackbar extends React.Component<IProps, IState> {
         this.setState({ open: false })
     }
 
+    componentWillReceiveProps(nextProps: IProps) {
+        if (!nextProps.currentSnackbar) {
+            if (nextProps.snackbars.length === 0)
+                return
+            this.props.getNextSnackbar()
+        }
+    }
+
     render() {
         const snackbar = this.props.currentSnackbar
         const messageStyle: CSSProperties = {
@@ -47,7 +56,7 @@ class Snackbar extends React.Component<IProps, IState> {
             textOverflow: 'ellipses'
         }
 
-        return (
+        return !snackbar ? null : (
             <MuiSnackbar
                 anchorOrigin={{
                     vertical: 'bottom',
@@ -72,7 +81,10 @@ class Snackbar extends React.Component<IProps, IState> {
     }
 }
 
-const mapStateToProps = (state: any) => ({ currentSnackbar: state.snackbar })
-const mapDispatchToProps = { popSnackbar }
+const mapStateToProps = (state: any) => ({
+    currentSnackbar: state.snackbars.item,
+    snackbars: state.snackbars.items
+})
+const mapDispatchToProps = { getNextSnackbar: dequeueSnackbar }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Snackbar)

@@ -40,6 +40,7 @@ import { fetchStaffProfile } from '../actions/staffProfileActions'
 import { fetchStaffSchedule } from '../actions/staffScheduleActions'
 
 interface IReduxProps {
+	currentUser: IUser
 	staff: any
 	schedule: any
 	newStarred: StarredItem
@@ -49,9 +50,7 @@ interface IReduxProps {
 	fetchStaffSchedule: (staffID: number, dateTime?: string) => any
 }
 
-interface IProps extends RouteComponentProps, IReduxProps {
-	actor: IUser
-}
+interface IProps extends RouteComponentProps, IReduxProps {}
 
 interface IState {
 	loadingProfile: boolean
@@ -200,13 +199,22 @@ class StaffProfile extends React.Component<IProps, IState> {
 		this.setState({ topicsDialogOpen: false })
 	}
 
+	handleSetTopic = () => {
+		this.handleTopicsDialogOpen('select')
+		this.setState({ onTopicSelect: this.onTopicSelect })
+	}
+
+	onTopicSelect = (): Promise<any> => {
+		return null
+	}
+
 	handleRemoveTopic = () => {
 		
 	}
 
 	componentWillMount() {
 		const params: any = this.props.match.params
-		const { staffID } = params
+		const staffID: number = Number(params.staffID)
 		this.setState({ staffID })
 	}
 
@@ -226,7 +234,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 	}
 
 	render () {
-		console.log(this.props.schedule)
+		const isOwner: boolean = this.props.currentUser.account_type === 'staff'
+		&& this.state.staffID === this.props.currentUser.details.id
 		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.staff.id && this.props.newStarred.item_type === 'staff' ? (
 			this.props.newStarred.isStarred !== false
 		) : this.props.staff.starred
@@ -319,8 +328,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 				),
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
 					return !isEmpty(appointment)
-					&& this.props.actor.account_type === 'staff'
-					&& (this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id)
+					&& this.props.currentUser.account_type === 'staff'
+					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
 					[
 						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
@@ -345,8 +354,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 					return !isEmpty(topicSchedule)
 					&& blockDetails.flex
 					&& blockDetails.pending
-					&& this.props.actor.account_type === 'staff'
-					&& topicSchedule.topic.staff.id === this.props.actor.details.id ?					
+					&& this.props.currentUser.account_type === 'staff'
+					&& topicSchedule.topic.staff.id === this.props.currentUser.details.id ?					
 					[
 						{ value: 'Change Topic', callback: () => this.handleTopicsDialogOpen('select') },
 						{ value: 'Remove Topic', callback: () => this.handleRemoveTopic() },
@@ -416,16 +425,19 @@ class StaffProfile extends React.Component<IProps, IState> {
 							</div>
 						) : (
 							<ul className='right_col'>
-								<li>
-									<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
-								</li>
-								<li>
-									<Tooltip title='Topics'>
-										<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
-											<Icon>school</Icon>
-										</IconButton>
-									</Tooltip>
-								</li>
+								{isOwner ? (
+									<li>
+										<Tooltip title='Topics'>
+											<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
+												<Icon>school</Icon>
+											</IconButton>
+										</Tooltip>
+									</li>
+								) : (
+									<li>
+										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
+									</li>
+								)}								
 								<li>
 									<IconButton onClick={this.handleMenuOpen}>
 										<Icon>more_vert</Icon>
@@ -465,6 +477,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
+	currentUser: state.auth.user,
 	staff: state.staffProfile.staff,
 	schedule: state.staffSchedule.schedule,
 	newStarred: state.starred.item

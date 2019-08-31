@@ -44,6 +44,7 @@ import {
 } from '../actions/studentScheduleActions'
 
 interface IReduxProps {
+	currentUser: IUser
 	student: any
 	schedule: any
 	newStarred: StarredItem
@@ -53,9 +54,7 @@ interface IReduxProps {
 	fetchStudentSchedule: (studentID: number, dateTime?: string) => any
 }
 
-interface IProps extends RouteComponentProps, IReduxProps {
-	actor: IUser
-}
+interface IProps extends RouteComponentProps, IReduxProps {}
 
 interface IState {
 	loadingProfile: boolean
@@ -329,8 +328,8 @@ class StudentProfile extends React.Component<IProps, IState> {
 				},
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
 					return!isEmpty(appointment)
-					&& this.props.actor.account_type === 'staff'
-					&& (this.props.actor.details.administrator === true || this.props.actor.details.id === appointment.staff.id)
+					&& this.props.currentUser.account_type === 'staff'
+					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
 					[
 						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
@@ -458,6 +457,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
+	currentUser: state.auth.user,
 	student: state.studentProfile.student,
 	schedule: state.studentSchedule.schedule,
 	newStarred: state.starred.item

@@ -93,11 +93,11 @@ class App extends React.Component<IProps, IState> {
 									<Route exact path='/dashboard' component={Dashboard} />
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
-										<StaffProfile {...props} actor={this.props.currentUser}/>
+										<StaffProfile {...props}/>
 									)}/>
 									<Route path='/staff' component={Staff} />
 									<Route path='/students/:studentID' render={(props: RouteComponentProps) => (
-										<StudentProfile {...props} actor={this.props.currentUser}/>
+										<StudentProfile {...props} />
 									)}/>
 									<Route path='/students' component={Students} />
 									<Route path='/class-schedule' component={ClassSchedule} />

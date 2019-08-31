@@ -19,6 +19,7 @@ import { Clusters } from '../Clusters'
 import { Dashboard } from '../Dashboard'
 import { NotFound } from '../NotFound'
 import Settings from '../Settings'
+import Snackbar from '../Snackbar'
 import StudentProfile from '../StudentProfile'
 import Students from '../Students'
 import Sidebar from '../Sidebar/Sidebar'
@@ -110,6 +111,7 @@ class App extends React.Component<IProps, IState> {
 							</>
 						}
 					</div>
+					<Snackbar />
 				</Router>
 			</>
 		)

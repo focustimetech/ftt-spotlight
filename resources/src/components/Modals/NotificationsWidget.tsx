@@ -18,7 +18,7 @@ import {
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
-import { SnackbarProvider, ISnackbar, ISnackbarButton } from '../SnackbarProvider'
+import { ISnackbar, ISnackbarButton, queueSnackbar } from '../../actions/snackbarActions'
 import { INotification } from '../../types/staff'
 import { fetchNotifications } from '../../actions/notificationsActions'
 
@@ -32,6 +32,7 @@ interface IState {
 interface ReduxProps {
     notifications: INotification[]
     fetchNotifications: () => any
+    queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends ReduxProps {}
@@ -168,11 +169,10 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                         this.handleClick(id)
                     }, 300)
                 }
-            },
-            closeOnCallback: true
+            }
         })
 
-        this.queueSnackbar(newNotifications.length === 1 ? ({
+        this.props.queueSnackbar(newNotifications.length === 1 ? ({
             message: newNotifications[0].body,
             buttons: [showNotificationButton(newNotifications[0].id)]
         }) : ({
@@ -187,13 +187,8 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         }).length
 
         const disableActions: boolean = !(this.props.notifications && this.props.notifications.length > 0)
-        
-        const snackbar = this.state.snackbars.length > 0 ? (
-            this.state.snackbars[this.state.snackbars.length - 1]
-        ) : null
         return (
             <>
-                <SnackbarProvider snackbar={snackbar} getNext={this.getNextSnackbar}/>
                 <NavItem
                     title='Notifications'
                     icon='notifications'
@@ -270,6 +265,6 @@ const mapStateToProps = (state: any) => ({
     notifications: state.notifications.items
 })
 
-const mapDispatchToProps = { fetchNotifications }
+const mapDispatchToProps = { fetchNotifications, queueSnackbar }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotificationsWidget)

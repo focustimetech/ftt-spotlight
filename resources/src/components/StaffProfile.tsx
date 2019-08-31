@@ -17,6 +17,7 @@ import { isEmpty, makeArray } from '../utils/utils'
 import { StarredItem } from '../reducers/starReducer'
 import { IUser } from '../types/auth'
 import { IStudent } from '../types/student'
+import { ConfirmationDialog } from './Modals/ConfirmationDialog'
 import {
 	IAppointment,
 	ICalendarDay,
@@ -24,6 +25,7 @@ import {
 	IBlockDetails,
 	ICalendarDialogGroup,
 	ILedgerEntry,
+	ITopic,
 	ITopicSchedule,
 	ICalendarBlockVariant,
 } from '../types/calendar'
@@ -64,6 +66,7 @@ interface IState {
 	cancelAppointment: IAppointment
 	topicsDialogOpen: boolean
 	topcisDialogMode: 'edit' | 'select'
+	onTopicSelect: (topic: ITopic) => void
 }
 
 class StaffProfile extends React.Component<IProps, IState> {
@@ -79,7 +82,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 		cancelAppointmentDialogItem: null,
 		cancelAppointment: null,
 		topicsDialogOpen: false,
-		topcisDialogMode: 'edit'
+		topcisDialogMode: 'edit',
+		onTopicSelect: () => null
 	}
 
 	toggleStarred = (isStarred: boolean) => {
@@ -194,13 +198,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 
 	handleTopicsDialogClose = () => {
 		this.setState({ topicsDialogOpen: false })
-	}
-
-	handleChangeTopic = () => {
-		this.setState({
-			topicsDialogOpen: true,
-			topcisDialogMode: 'select'
-		})
 	}
 
 	handleRemoveTopic = () => {
@@ -336,7 +333,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 				emptyState: (
 					<>
 						<p className='empty_text'>Nothing scheduled</p>
-						<Button variant='text' color='primary'>Set Topic</Button>
+						<Button variant='text' color='primary' onClick={() => this.handleTopicsDialogOpen('select')}>Set Topic</Button>
 					</>
 				),
 				itemMap: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
@@ -351,7 +348,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					&& this.props.actor.account_type === 'staff'
 					&& topicSchedule.topic.staff.id === this.props.actor.details.id ?					
 					[
-						{ value: 'Change Topic', callback: () => this.handleChangeTopic() },
+						{ value: 'Change Topic', callback: () => this.handleTopicsDialogOpen('select') },
 						{ value: 'Remove Topic', callback: () => this.handleRemoveTopic() },
 					] : undefined
 				}
@@ -379,7 +376,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 				<TopicsDialog
 					open={this.state.topicsDialogOpen}
 					onClose={this.handleTopicsDialogClose}
-					mode={this.state.topcisDialogMode}	
+					mode={this.state.topcisDialogMode}
+					onSelect={this.state.onTopicSelect}
 				/>
 				<div className='profile'>
 					<TopNav>

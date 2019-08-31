@@ -18,7 +18,7 @@ export const pushSnackbar = (snackbar: ISnackbar) => (dispatch: (action: IAction
     })
 }
 
-export const popSnackbar = () => (dispatch: (action: IAction)) => {
+export const popSnackbar = () => (dispatch: (action: IAction) => void) => {
     return dispatch({
         type: DEQUEUE_SNACKBAR,
         payload: null

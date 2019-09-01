@@ -3,17 +3,18 @@ import classNames from 'classnames'
 
 import {
     Icon,
-    IconButton,
     Tooltip,
     Menu,
     MenuItem
 } from '@material-ui/core'
 
+import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ICalendarItemDetails, ICalendarItemAction } from '../../types/calendar'
 
 interface IProps {
     details: ICalendarItemDetails
     actions?: ICalendarItemAction[]
+    loading?: boolean
     onClick?: () => void
 }
 
@@ -53,18 +54,6 @@ export const CalendarDialogItem = (props: IProps) => {
         setMenuRef(null)
     }
 
-    const innerContent = (
-        <h6 className='calendar_item__title'>
-            {title}
-            {time && (
-                <span className='calendar_item__time'>
-                    {time}
-                    <Tooltip className='icon' title={methodTitle}><Icon>{methodIcon}</Icon></Tooltip>
-                </span>
-            )}
-        </h6>
-    )
-
     return (
         <div
             className={classNames(
@@ -74,14 +63,25 @@ export const CalendarDialogItem = (props: IProps) => {
                 {['--selectable']: clickable}
             )}
             key={id}
+            onClick={clickable ? () => props.onClick() : undefined}
         >
-            <div onClick={clickable ? () => props.onClick() : undefined}>
-                {innerContent}
+            <div>
+                <h6 className='calendar_item__title'>
+                    {title}
+                    {time && (
+                        <span className='calendar_item__time'>
+                            {time}
+                            <Tooltip className='icon' title={methodTitle}><Icon>{methodIcon}</Icon></Tooltip>
+                        </span>
+                    )}
+                </h6>
                 {memo && <p className='calendar__memo'>{memo}</p>}
             </div>
             {(props.actions && props.actions.length > 0) && (
                 <div className='calendar_item__actions'>
-                    <IconButton onClick={handleClick}><Icon>more_vert</Icon></IconButton>
+                    <LoadingIconButton onClick={handleClick} loading={props.loading === true}>
+                        <Icon>more_vert</Icon>
+                    </LoadingIconButton>
                     <Menu
                         anchorEl={menuRef}
                         open={Boolean(menuRef)}

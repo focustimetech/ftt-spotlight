@@ -51,9 +51,10 @@ class TopicsController extends Controller
     {
         $topic_schedule = new TopicSchedule();
         $staff = auth()->user()->staff();
+        $date = date('Y-m-d', strtotime($request->input('date')));
 
         $topic_schedule->block_id = $request->input('block_id');
-        $topic_schedule->date = $request->input('date');
+        $topic_schedule->date = $date;
         $topic_schedule->topic_id = $request->input('topic_id');
 
         if ($topic_schedule->save())

@@ -34,10 +34,13 @@ import { Calendar } from './Calendar/Calendar'
 import { TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import TopicsDialog from './Modals/TopicsDialog'
+import { queueSnackbar, ISnackbar } from '../actions/snackbarActions'
 import { deleteAppointment } from '../actions/studentScheduleActions'
 import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStaffProfile } from '../actions/staffProfileActions'
 import { fetchStaffSchedule } from '../actions/staffScheduleActions'
+import { createTopicSchedule, deleteTopicSchedule, ITopicScheduleRequest } from '../actions/topicActions'
+import { LoadingButton } from './Form/LoadingButton'
 
 interface IReduxProps {
 	currentUser: IUser
@@ -47,7 +50,10 @@ interface IReduxProps {
 	fetchStaffProfile: (staffID: number) => any
 	starItem: (item: StarredItem) => any
 	unstarItem: (item: StarredItem) => any
+	queueSnackbar: (snackbar: ISnackbar) => any
 	fetchStaffSchedule: (staffID: number, dateTime?: string) => any
+	createTopicSchedule: (topicSchedule: ITopicScheduleRequest) => Promise<any>
+	deleteTopicSchedule: (topicScheduleID: number) => Promise<any>
 }
 
 interface IProps extends RouteComponentProps, IReduxProps {}
@@ -55,6 +61,7 @@ interface IProps extends RouteComponentProps, IReduxProps {}
 interface IState {
 	loadingProfile: boolean
 	loadingSchedule: boolean
+	loadingSetTopic: boolean
 	editDialogOpen: boolean
 	calendarDialogOpen: boolean
 	staffID: number
@@ -72,6 +79,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 	state: IState = {
 		loadingProfile: false,
 		loadingSchedule: false,
+		loadingSetTopic: false,
 		editDialogOpen: false,
 		calendarDialogOpen: false,
 		staffID: 0,
@@ -201,11 +209,32 @@ class StaffProfile extends React.Component<IProps, IState> {
 
 	handleSetTopic = () => {
 		this.handleTopicsDialogOpen('select')
-		this.setState({ onTopicSelect: this.onTopicSelect })
+		this.setState({ onTopicSelect: this.onTopicSet })
 	}
 
-	onTopicSelect = (): Promise<any> => {
-		return null
+	onTopicSet = (topic: ITopic) => {
+		this.setState({ loadingSetTopic: true })
+		const topicSchedule: ITopicScheduleRequest = {
+			topic_id: topic.id,
+			block_id: this.state.blockDetails.block_id,
+			date: this.state.blockDetails.date
+		}
+		this.props.createTopicSchedule(topicSchedule)
+			.then(res => {
+				this.props.fetchStaffSchedule(this.state.staffID, this.getURLDateTime())
+					.then((res: any) => {
+						this.setState({
+							loadingSetTopic: false,
+							calendarDialogOpen: false
+						})
+						this.props.queueSnackbar({
+							message: 'Set Topic successfully.'
+						})
+					})
+			})
+			.catch(error => {
+				this.setState({ loadingSetTopic: false })
+			})
 	}
 
 	handleRemoveTopic = () => {
@@ -346,7 +375,12 @@ class StaffProfile extends React.Component<IProps, IState> {
 				emptyState: (
 					<>
 						<p className='empty_text'>Nothing scheduled</p>
-						<Button variant='text' color='primary' onClick={() => this.handleTopicsDialogOpen('select')}>Set Topic</Button>
+						<LoadingButton
+							loading={this.state.loadingSetTopic}
+							variant='text'
+							color='primary'
+							onClick={() => this.handleSetTopic()}
+						>Set Topic</LoadingButton>
 					</>
 				),
 				itemMap: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
@@ -484,12 +518,15 @@ const mapStateToProps = (state: any) => ({
 	currentUser: state.auth.user,
 	staff: state.staffProfile.staff,
 	schedule: state.staffSchedule.schedule,
-	newStarred: state.starred.item
+	newStarred: state.starred.item,
 })
 
 const mapDispatchToProps = {
+	createTopicSchedule,
+	deleteTopicSchedule,
 	fetchStaffProfile,
 	fetchStaffSchedule,
+	queueSnackbar,
 	starItem,
 	unstarItem
 }

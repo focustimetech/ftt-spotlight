@@ -3,6 +3,7 @@ import axios from 'axios'
 import { FETCH_TOPICS, NEW_TOPIC, DELETE_TOPIC } from './types'
 import { TopicColor } from '../theme'
 import { ITopic } from '../types/calendar'
+import { ReduxAction } from '../types/app'
 
 export interface ITopicRequest {
     memo: string
@@ -10,7 +11,7 @@ export interface ITopicRequest {
 }
 
 export const fetchTopics = () => {
-    return (dispatch: any) => {
+    return (dispatch: (action: ReduxAction<ITopic[]>) => void) => {
         return axios.get('/api/topics')
             .then(res => {
                 const topics: ITopic[] = res.data
@@ -23,7 +24,7 @@ export const fetchTopics = () => {
 }
 
 export const createTopic = (topic: ITopicRequest) => {
-    return (dispatch: any) => {
+    return (dispatch: (action: ReduxAction<ITopic>) => void) => {
         return axios.post('/api/topics', topic)
             .then(res => {
                 const topic: ITopic = res.data
@@ -36,7 +37,7 @@ export const createTopic = (topic: ITopicRequest) => {
 }
 
 export const deleteTopic = (topicID: number) => {
-    return (dispatch: any) => {
+    return (dispatch: (action: ReduxAction<ITopic>) => void) => {
         return axios.delete(`/api/topics/${topicID}`)
             .then(res => {
                 const topic: ITopic = res.data

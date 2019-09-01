@@ -347,6 +347,7 @@
 
 	&.--selectable {
 		cursor: pointer;
+		user-select: none;
 	}
 
 	&.--success::after {

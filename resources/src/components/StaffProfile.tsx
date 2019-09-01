@@ -212,6 +212,10 @@ class StaffProfile extends React.Component<IProps, IState> {
 		
 	}
 
+	onRemoveTopic = (): Promise<any> => {
+		return null
+	}
+
 	componentWillMount() {
 		const params: any = this.props.match.params
 		const staffID: number = Number(params.staffID)

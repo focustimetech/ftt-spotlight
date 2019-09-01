@@ -53,7 +53,9 @@ export const CHECK_IN = 'CHECK_IN'
 // Topics
 export const FETCH_TOPICS = 'FETCH_TOPICS'
 export const NEW_TOPIC = 'NEW_TOPIC'
+export const NEW_TOPIC_SCHEDULE = 'NEW_TOPIC_SCHEDULE'
 export const DELETE_TOPIC = 'DELETE_TOPIC'
+export const DELETE_TOPIC_SCHEDULE = 'DELETE_TOPIC_SCHEDULE'
 
 // Snackbar
 export const QUEUE_SNACKBAR = 'QUEUE_SNACKBAR'

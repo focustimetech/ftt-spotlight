@@ -23,7 +23,7 @@ class TopicsTableSeeder extends Seeder
         $end_time = strtotime('+28 days', $time);
         do {
             $day_of_week = date('w', $time) + 1;
-            $blocks = App\BlockSchedule::filter(function($block_schedule) use ($day_of_week) {
+            $blocks = App\BlockSchedule::all()->filter(function($block_schedule) use ($day_of_week) {
                 return $block_schedule->day_of_week === $day_of_week
                 && $block_schedule->block()->first()->flex == true;
             });

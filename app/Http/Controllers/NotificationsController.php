@@ -17,6 +17,7 @@ class NotificationsController extends Controller
     {
         $notifications = auth()->user()->staff()
             ->notifications()->get();
+
         $notifications->map(function($notification) {
             $notification->archive();
             return $notification;

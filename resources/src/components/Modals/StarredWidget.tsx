@@ -170,7 +170,7 @@ class StarredWidget extends React.Component<IProps, IState> {
                             </Fade>
                             {!this.state.loading && starredCount === 0 && (
                                 <EmptyStateIcon variant='starred'>
-                                    <h2>No Starred items found</h2>
+                                    <h2>Your Starred list is empty</h2>
                                     <h3>Items you add to your Starred list will appear here.</h3>
                                 </EmptyStateIcon>
                             )}

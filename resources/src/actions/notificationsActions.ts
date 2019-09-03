@@ -5,7 +5,9 @@ import {
     ARCHIVE_NOTIFICATION,
     FETCH_NOTIFICATIONS,
     MARK_ALL_NOTIFICATIONS_READ,
-    MARK_NOTIFICATION_READ
+    MARK_NOTIFICATION_READ,
+    MARK_NOTIFICATION_UNREAD,
+    UNARCHIVE_NOTIFICATION
 } from './types'
 import { ReduxAction } from '../types/app'
 
@@ -57,6 +59,26 @@ export const markNotificationAsRead = (notificationID: number) => {
         axios.put(`/api/notifications/read/${notificationID}`)
         return dispatch({
             type: MARK_NOTIFICATION_READ,
+            payload: null
+        })
+    }
+}
+
+export const markNotificationAsUnread = (notificationID: number) => {
+    return (dispatch: (action: ReduxAction<void>) => void) => {
+        axios.put(`/api/notifications/unread/${notificationID}`)
+        return dispatch({
+            type: MARK_NOTIFICATION_UNREAD,
+            payload: null
+        })
+    }
+}
+
+export const unarchiveNotification = (notificationID: number) => {
+    return (dispatch: (action: ReduxAction<void>) => void) => {
+        axios.put(`/api/notifications/unarchive/${notificationID}`)
+        return dispatch({
+            type: UNARCHIVE_NOTIFICATION,
             payload: null
         })
     }

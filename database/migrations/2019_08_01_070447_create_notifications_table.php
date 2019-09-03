@@ -19,6 +19,8 @@ class CreateNotificationsTable extends Migration
             $table->string('body');
             $table->boolean('read')
                 ->default(false);
+            $table->boolean('archived')
+                ->default(false);
             $table->timestamps();
         });
     }

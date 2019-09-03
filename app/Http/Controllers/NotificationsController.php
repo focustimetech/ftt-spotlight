@@ -97,7 +97,7 @@ class NotificationsController extends Controller
      */
     public function markNotificationUnread($id)
     {
-        return $this->markRead($id, false);
+        return $this->markNotificationRead($id, false);
     }
 
     /**

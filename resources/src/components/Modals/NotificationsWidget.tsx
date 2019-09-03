@@ -97,17 +97,35 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         }
     }
 
-    handleClick = (id: number) => {
+    handleClick = (notification: INotification) => {
+        const { id, read } = notification
+        if (this.state.openNotifications.indexOf(id) >= 0) {
+            // Notification is open
+            this.handleCloseNotification(id)
+        } else {
+            // Notification is closed
+            this.handleOpenNotification(id)
+        }
+        if (!read)
+            this.handleMarkRead(notification)
+    }
+
+    handleCloseNotification = (id: number) => {
         this.setState((state: IState) => {
-            const { openNotifications } = state
-            const isOpen = openNotifications.indexOf(id) >= 0
             return {
                 ...state,
-                openNotifications: isOpen ? (
-                    openNotifications.filter((notificationID: number) => notificationID !== id)
-                ) : (
-                    [...openNotifications, id]
-                ) 
+                openNotifications: state.openNotifications.filter((notificationID: number) => {
+                    return notificationID !== id
+                })
+            }
+        })
+    }
+
+    handleOpenNotification = (id: number) => {
+        this.setState((state: IState) => {
+            return {
+                ...state,
+                openNotifications: [...state.openNotifications, id]
             }
         })
     }
@@ -116,12 +134,21 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         this.props.fetchNotifications()
     }
 
-    handleArchive = (id: number) => {
+    handleArchive = (notification: INotification) => {
         
     }
 
-    handleMarkRead = (id: number) => {
+    handleUnarchive = (notification: INotification) => {
+        
+    }
 
+    handleMarkRead = (notification: INotification) => {
+        this.props.markNotificationAsRead(notification)
+    }
+
+    handleMarkUnread = (notification: INotification) => {
+        this.handleCloseNotification(notification.id)
+        this.props.markNotificationAsUnread(notification)
     }
 
     handleArchiveAll = () => {
@@ -129,7 +156,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
     }
 
     handleMarkAllRead = () => {
-        
+        this.props.markAllNotificationsAsRead()
     }
 
     componentDidMount() {
@@ -177,7 +204,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                 this.handleClickOpen()
                 if (id) {
                     window.setTimeout(() => {
-                        this.handleClick(id)
+                        this.handleOpenNotification(id)
                     }, 300)
                 }
             }
@@ -222,14 +249,15 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                             <Grow in={this.props.notifications && this.props.notifications.length > 0}>
                                 <div className='content-inner'>
                                     {this.props.notifications.map((notification: INotification) => {
-                                        const expanded = this.state.openNotifications.indexOf(notification.id) >= 0
+                                        const expanded: boolean = this.state.openNotifications.indexOf(notification.id) >= 0
+                                        const read: boolean = expanded || notification.read
                                         return (
                                             <ExpansionPanel
-                                                className={classNames('notification', {['--read']: notification.read})}
+                                                className={classNames('notification', {['--read']: read})}
                                                 expanded={expanded}
                                                 key={notification.id}
                                             >
-                                                <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification.id)}>
+                                                <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification)}>
                                                     <div className='notification__info'>
                                                         {expanded ? (
                                                             <>
@@ -239,7 +267,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                                                         ) : (
                                                             <>
                                                                 <p className='header'>
-                                                                    {!notification.read && <span className='unread-badge' />}
+                                                                    {!read && <span className='unread-badge' />}
                                                                     {notification.body}
                                                                 </p>
                                                                 <p className='time'>{notification.approximateTime}</p>
@@ -249,8 +277,8 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                                                 </ExpansionPanelSummary>
                                                 <ExpansionPanelDetails><p>{notification.body}</p></ExpansionPanelDetails>
                                                 <ExpansionPanelActions>
-                                                    <Button onClick={() => this.handleMarkRead(notification.id)}>Mark Unread</Button>
-                                                    <Button onClick={() => this.handleArchive(notification.id)}>Archive</Button>
+                                                    <Button onClick={() => this.handleMarkUnread(notification)}>Mark Unread</Button>
+                                                    <Button onClick={() => this.handleArchive(notification)}>Archive</Button>
                                                 </ExpansionPanelActions>
                                             </ExpansionPanel>
                                         )

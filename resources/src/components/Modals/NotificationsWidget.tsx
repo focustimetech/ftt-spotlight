@@ -19,6 +19,7 @@ import {
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 import { ISnackbar, ISnackbarButton, queueSnackbar } from '../../actions/snackbarActions'
+import { ConfirmationDialog } from './ConfirmationDialog'
 import { INotification } from '../../types/staff'
 import {
     archiveAllNotifications,
@@ -31,6 +32,7 @@ import {
 } from '../../actions/notificationsActions'
 
 interface IState {
+    archiveAllDialogOpen: boolean
     open: boolean
     loading: boolean
     openNotifications: number[]
@@ -46,7 +48,6 @@ interface ReduxProps {
     markNotificationAsRead: (notification: INotification) => void
     markNotificationAsUnread: (notification: INotification) => void
     unarchiveNotification: (notification: INotification) => void
-
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
@@ -77,6 +78,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
     )
 
     state: IState = {
+        archiveAllDialogOpen: false,
         open: false,
         loading: false,
         openNotifications: [],
@@ -135,11 +137,20 @@ class NotificationsWidget extends React.Component<IProps, IState> {
     }
 
     handleArchive = (notification: INotification) => {
-        
+        this.props.archiveNotification(notification)
+        this.props.queueSnackbar({
+            message: 'Archived 1 message.',
+            buttons: [
+                { text: 'Undo', callback: () => this.handleUnarchive(notification)}
+            ]
+        })
     }
 
     handleUnarchive = (notification: INotification) => {
-        
+        this.props.unarchiveNotification(notification)
+        this.props.queueSnackbar({
+            message: 'Unarchived 1 message.'
+        })
     }
 
     handleMarkRead = (notification: INotification) => {
@@ -152,7 +163,15 @@ class NotificationsWidget extends React.Component<IProps, IState> {
     }
 
     handleArchiveAll = () => {
+        this.setState({ archiveAllDialogOpen: true })
+    }
 
+    handleArchiveAllDialogClose = () => {
+        this.setState({ archiveAllDialogOpen: false })
+    }
+
+    onArchiveAll = (): Promise<any> => {
+        return null
     }
 
     handleMarkAllRead = () => {
@@ -241,10 +260,15 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
                             <div className='notifications_modal__actions'>
-                                <Button disabled={disableActions}>
-                                    {`Mark ${unreadCount > 0 ? unreadCount : 'all'} as read`}
+                                <Button
+                                    disabled={disableActions || unreadCount === 0}
+                                    onClick={() => this.handleMarkAllRead()}
+                                >{`Mark ${unreadCount > 0 ? unreadCount : 'all'} as read`}
                                 </Button>
-                                <Button disabled={disableActions}>Archive all</Button>
+                                <Button
+                                    disabled={disableActions}
+                                    onClick={() => this.handleArchiveAll()}
+                                >Archive all</Button>
                             </div>
                             <Grow in={this.props.notifications && this.props.notifications.length > 0}>
                                 <div className='content-inner'>
@@ -295,6 +319,13 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                         </div>
 					</div>
 				</Drawer>
+                <ConfirmationDialog
+                    open={this.state.archiveAllDialogOpen}
+                    bodyText='Are you sure you want to archive all Notifications? This action cannot be undone.'
+                    title='Archive all Notifications'
+                    onClose={this.handleArchiveAllDialogClose}
+                    onSubmit={this.onArchiveAll}
+                />
             </>
         )
     }

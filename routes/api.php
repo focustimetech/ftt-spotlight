@@ -63,7 +63,12 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
 
     // Notifications
     Route::get('notifications', 'NotificationsController@index');
-    Route::put('notifications', 'NotificationsController@update');
+    Route::put('notifications/archive/{id}', 'NotificationsController@archiveNotification');
+    Route::put('notifications/unarchive/{id}', 'NotificationsController@unarchiveNotification');
+    Route::put('notifications/read/{id}', 'NotificationsController@markNotificationRead');
+    Route::put('notifications/unread/{id}', 'NotificationsController@markNotificationUnread');
+    Route::put('notifications/archive/all', 'NotificationsController@archiveAllNotifications');
+    Route::put('notifications/read/all', 'NotificationsController@markAllNotificationsRead');
 
     // Ledger
     Route::post('check-in', 'LedgerController@store');

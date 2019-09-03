@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
 {
-    public function staff()
+    public function archive()
     {
-        return $this->belongsTo('App\Staff');
+        $this->attributes['archived'] = true;
+        $this->save();
     }
 
     public function markRead()
@@ -20,6 +21,17 @@ class Notification extends Model
     public function markUnread()
     {
         $this->attributes['read'] = false;
+        $this->save();
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo('App\Staff');
+    }
+
+    public function unarchive()
+    {
+        $this->attributes['archived'] = false;
         $this->save();
     }
 }

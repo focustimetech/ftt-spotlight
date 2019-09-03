@@ -20,7 +20,15 @@ import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 import { ISnackbar, ISnackbarButton, queueSnackbar } from '../../actions/snackbarActions'
 import { INotification } from '../../types/staff'
-import { fetchNotifications } from '../../actions/notificationsActions'
+import {
+    archiveAllNotifications,
+    archiveNotification,
+    fetchNotifications,
+    markAllNotificationsAsRead,
+    markNotificationAsRead,
+    markNotificationAsUnread,
+    unarchiveNotification
+} from '../../actions/notificationsActions'
 
 interface IState {
     open: boolean
@@ -31,7 +39,14 @@ interface IState {
 
 interface ReduxProps {
     notifications: INotification[]
-    fetchNotifications: () => any
+    archiveAllNotifications: () => void
+    archiveNotification: (notification: INotification) => void
+    fetchNotifications: () => Promise<any>
+    markAllNotificationsAsRead: () => void
+    markNotificationAsRead: (notification: INotification) => void
+    markNotificationAsUnread: (notification: INotification) => void
+    unarchiveNotification: (notification: INotification) => void
+
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
@@ -261,6 +276,15 @@ const mapStateToProps = (state: any) => ({
     notifications: state.notifications.items
 })
 
-const mapDispatchToProps = { fetchNotifications, queueSnackbar }
+const mapDispatchToProps = {
+    archiveAllNotifications,
+    archiveNotification,
+    fetchNotifications,
+    markAllNotificationsAsRead,
+    markNotificationAsRead,
+    markNotificationAsUnread,
+    unarchiveNotification,
+    queueSnackbar
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotificationsWidget)

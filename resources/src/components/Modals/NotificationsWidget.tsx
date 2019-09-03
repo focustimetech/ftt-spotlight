@@ -101,24 +101,20 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         this.props.fetchNotifications()
     }
 
-    getNextSnackbar = () => {
-        this.setState((state: IState) => {
-            state.snackbars.pop()
-            return {
-                ...state,
-                snackbars: state.snackbars
-            }
-        })
+    handleArchive = (id: number) => {
+        
     }
 
-    queueSnackbar = (snackbar: ISnackbar) => {
-        this.setState((state: IState) => {
-            state.snackbars.unshift(snackbar)
-            return {
-                ...state,
-                snackbars: state.snackbars
-            }
-        })
+    handleMarkRead = (id: number) => {
+
+    }
+
+    handleArchiveAll = () => {
+
+    }
+
+    handleMarkAllRead = () => {
+        
     }
 
     componentDidMount() {
@@ -238,8 +234,8 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                                                 </ExpansionPanelSummary>
                                                 <ExpansionPanelDetails><p>{notification.body}</p></ExpansionPanelDetails>
                                                 <ExpansionPanelActions>
-                                                    <Button>Mark Unread</Button>
-                                                    <Button>Delete</Button>
+                                                    <Button onClick={() => this.handleMarkRead(notification.id)}>Mark Unread</Button>
+                                                    <Button onClick={() => this.handleArchive(notification.id)}>Archive</Button>
                                                 </ExpansionPanelActions>
                                             </ExpansionPanel>
                                         )

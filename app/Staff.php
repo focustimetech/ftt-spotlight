@@ -106,7 +106,8 @@ class Staff extends Model
 
 	public function notifications()
 	{
-		return $this->hasMany('App\Notification');
+		return $this->hasMany('App\Notification')
+			->where('archived', false);
 	}
 
 	public function scheduleEntries()

@@ -138,6 +138,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
 
     handleArchive = (notification: INotification) => {
         this.props.archiveNotification(notification)
+        this.handleCloseNotification(notification.id)
         this.props.queueSnackbar({
             message: 'Archived 1 message.',
             buttons: [
@@ -171,7 +172,12 @@ class NotificationsWidget extends React.Component<IProps, IState> {
     }
 
     onArchiveAll = (): Promise<any> => {
-        return null
+        this.props.archiveAllNotifications()
+        this.props.queueSnackbar({ message: 'Archived all messages.' })
+        this.setState({ openNotifications: [] })
+        return new Promise((resolve, reject) => {
+            resolve()
+        })
     }
 
     handleMarkAllRead = () => {

@@ -83,6 +83,9 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
     // Staff Schedule
     Route::get('staff/{id}/schedule', 'StaffScheduleController@index');
     Route::get('staff/{id}/schedule/{timestamp}', 'StaffScheduleController@index');
+
+    // Feedback
+    Route::post('feedback', 'FeedbackController@create');
 });
 
 // Administrator Routes

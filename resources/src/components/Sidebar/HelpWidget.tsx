@@ -1,4 +1,5 @@
 import * as React from 'react'
+import axios from 'axios'
 
 import {
     Button,
@@ -9,6 +10,7 @@ import {
     DialogContent,
     DialogContentText,
     FormControlLabel,
+    Icon,
     Menu,
     MenuItem,
     TextField,
@@ -16,6 +18,7 @@ import {
 
 import { NavItem } from './NavItem'
 import { EnhancedDialogTitle } from '../Modals/EnhancedDialogTitle'
+import { LoadingButton } from '../Form/LoadingButton'
 
 interface IChip {
     label: string,
@@ -24,14 +27,18 @@ interface IChip {
 
 const chips: IChip[] = [
     { label: 'Unexpected Behavior', value: 'unexpected-behavior' },
-    { label: 'Confusing Feature', value: 'confusing-feature' },
-    { label: 'Missing Feature', value: 'missing-feature' },
+    { label: 'New Feature', value: 'new-feature' },
     { label: 'Permissions', value: 'permissions' },
     { label: 'Connectivity', value: 'connectivity' },
     { label: 'Other', value: 'other' }
 ]
 
-export const HelpWidget = () => {
+interface IProps {
+    userEmail: string
+    onSendFeedback: () => void
+}
+
+export const HelpWidget = (props: IProps) => {
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
         = React.useState(null)
     const [dialogOpen, setDialogOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -41,7 +48,9 @@ export const HelpWidget = () => {
     const [selectedChips, setSelectedChips]: [string[], React.Dispatch<React.SetStateAction<string[]>>]
         = React.useState([])
     const [allowReply, setAllowReply]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-    = React.useState(true)
+        = React.useState(true)
+    const [uploading, setUploading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+        = React.useState(false)
     const menuOpen: boolean = Boolean(menuRef)
 
     const handleInputChange = (event: any) => {
@@ -52,12 +61,12 @@ export const HelpWidget = () => {
         setMenuRef(event.currentTarget)
     }
 
-    const handleClose = () => {
+    const handleMenuClose = () => {
         setMenuRef(null)
     }
 
     const handleDialogOpen = () => {
-        handleClose()
+        handleMenuClose()
         setDialogOpen(true)
     }
 
@@ -77,7 +86,21 @@ export const HelpWidget = () => {
         setAllowReply(!allowReply)
     }
 
-    const handleSubmit = (event: any) => {}
+    const handleSubmit = (event: any) => {
+        const data = {
+            allow_response: allowReply,
+            feedback: inputValue,
+            tags: selectedChips.join(','),
+            email: props.userEmail
+        }
+        setUploading(true)
+        axios.post('/api/feedback', data)
+            .then(res => {
+                setUploading(false)
+                handleDialogClose()
+                props.onSendFeedback()
+            })
+    }
 
     return (
         <>
@@ -89,7 +112,7 @@ export const HelpWidget = () => {
             <Menu
                 open={menuOpen}
                 anchorEl={menuRef}
-                onClose={handleClose}
+                onClose={handleMenuClose}
             >
                 <MenuItem onClick={handleDialogOpen}>Provide Feedback</MenuItem>
             </Menu>
@@ -104,6 +127,8 @@ export const HelpWidget = () => {
                                 <Chip
                                     onClick={() => {selected ? handleDeselectChip(chip.value) : handleSelectChip(chip.value)}}
                                     variant={selected ? 'default' : 'outlined'}
+                                    onDelete={selected ? () => null : undefined}
+                                    deleteIcon={selected ? <Icon>done</Icon> : undefined}
                                     label={chip.label}
                                 />
                             )
@@ -132,7 +157,12 @@ export const HelpWidget = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button variant='text' onClick={() => handleDialogClose()}>Cancel</Button>
-                    <Button variant='contained' color='primary' onClick={handleSubmit}>Send</Button>
+                    <LoadingButton
+                        loading={uploading}
+                        variant='contained'
+                        color='primary'
+                        onClick={handleSubmit}
+                    >Send</LoadingButton>
                 </DialogActions>
             </Dialog>
         </>

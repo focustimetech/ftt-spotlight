@@ -12,9 +12,12 @@ import CheckInWidget from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
 import { HelpWidget } from './HelpWidget'
+import { IStaffUser } from '../../types/auth';
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions';
 
 interface ReduxProps {
-	currentUser: any
+	currentUser: IStaffUser
+	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface StyleProps {
@@ -32,9 +35,14 @@ interface IProps extends ReduxProps, StyleProps {
  * in which a modal nav manu should be used.
  */
 class Sidebar extends React.Component<IProps> {
+	handleFeedbackSent = () => {
+		this.props.queueSnackbar({ message: 'Thanks for your feedback!' })
+	}
+
 	render() {
-		const details = this.props.currentUser.details
-		const { initials, color } = details || { initials: '', color: '' }
+		// const { initials, color } = this.props.currentUser || { initials: '', color: '' }
+		const initials = ''
+		const color = ''
 		const style = {
 			backgroundColor: this.props.theme.palette.primary.main
 		}
@@ -68,7 +76,7 @@ class Sidebar extends React.Component<IProps> {
 							</div>
 							<div className='nav_bottom'>
 								<NotificationsWidget />
-								<HelpWidget />
+								<HelpWidget onSendFeedback={() => this.handleFeedbackSent()} userEmail={this.props.currentUser.details.email}/>
 								<AccountWidget onSignOut={this.props.onSignOut} initials={initials} background={`#${color}`} />								
 							</div>
 						</>
@@ -122,4 +130,6 @@ const mapStateToProps = (state: any) => ({
 	currentUser: state.auth.user
 })
 
-export default connect(mapStateToProps, null)(withTheme(Sidebar))
+const mapDispatchToProps = { queueSnackbar }
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(Sidebar))

@@ -97,6 +97,9 @@ export const HelpWidget = (props: IProps) => {
         axios.post('/api/feedback', data)
             .then(res => {
                 setUploading(false)
+                setInputValue('')
+                setAllowReply(true)
+                setSelectedChips([])
                 handleDialogClose()
                 props.onSendFeedback()
             })

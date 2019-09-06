@@ -14,3 +14,6 @@
 Auth::routes();
 
 Route::view('/{path?}', 'app')->where('path', '.*');
+Route::get('/login', function() {
+    return Redirect::to('/');
+});

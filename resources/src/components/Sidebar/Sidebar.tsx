@@ -35,10 +35,6 @@ interface IProps extends ReduxProps, StyleProps {
  * in which a modal nav manu should be used.
  */
 class Sidebar extends React.Component<IProps> {
-	handleFeedbackSent = () => {
-		this.props.queueSnackbar({ message: 'Thanks for your feedback!' })
-	}
-
 	render() {
 		// const { initials, color } = this.props.currentUser || { initials: '', color: '' }
 		const initials = ''
@@ -76,7 +72,7 @@ class Sidebar extends React.Component<IProps> {
 							</div>
 							<div className='nav_bottom'>
 								<NotificationsWidget />
-								<HelpWidget onSendFeedback={() => this.handleFeedbackSent()} userEmail={this.props.currentUser.details.email}/>
+								<HelpWidget />
 								<AccountWidget onSignOut={this.props.onSignOut} initials={initials} background={`#${color}`} />								
 							</div>
 						</>

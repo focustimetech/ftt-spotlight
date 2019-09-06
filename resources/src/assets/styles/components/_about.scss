@@ -1,0 +1,17 @@
+.about-spotlight {
+    text-align: center;
+
+    &__logo {
+        width: 450px;
+        height: 72px;
+        background-image: url("/static/images/logo.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    &__version {
+        span {
+            font-weight: 500;
+        }
+    }
+}

@@ -8,11 +8,14 @@ import {
 
 import { NavItem } from './NavItem'
 import FeedbackDialog from '../Modals/FeedbackDialog'
+import { AboutDialog } from '../Modals/AboutDialog'
 
 export const HelpWidget = () => {
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
         = React.useState(null)
     const [feedbackDialogOpen, setFeedbackDialogOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+        = React.useState(false)
+    const [aboutDialogOpen, setAboutDialogOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
         = React.useState(false)
     const menuOpen: boolean = Boolean(menuRef)
 
@@ -29,8 +32,9 @@ export const HelpWidget = () => {
         setFeedbackDialogOpen(true)
     }
 
-    const handleFeedbackDialogClose = () => {
-        setFeedbackDialogOpen(false)
+    const handleAboutDialogOpen = () => {
+        handleMenuClose()
+        setAboutDialogOpen(true)
     }
 
     return (
@@ -46,8 +50,10 @@ export const HelpWidget = () => {
                 onClose={handleMenuClose}
             >
                 <MenuItem onClick={handleFeedbackDialogOpen}>Provide Feedback</MenuItem>
+                <MenuItem onClick={handleAboutDialogOpen}>About Spotlight</MenuItem>
             </Menu>
-            <FeedbackDialog open={feedbackDialogOpen} onClose={handleFeedbackDialogClose}/>
+            <FeedbackDialog open={feedbackDialogOpen} onClose={() => setFeedbackDialogOpen(false)}/>
+            <AboutDialog open={aboutDialogOpen} onClose={() => setAboutDialogOpen(false)} />
         </>
     )
 }

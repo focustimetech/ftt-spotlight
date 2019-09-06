@@ -5,8 +5,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
-    DialogTitle,
     Typography
 } from '@material-ui/core'
 
@@ -18,7 +16,6 @@ interface IProps {
 export const AboutDialog = (props: IProps) => {
     return (
         <Dialog open={props.open}>
-            <DialogTitle>About Spotlight</DialogTitle>
             <DialogContent>
                 <div className='about-spotlight'>
                     <div className='about-spotlight__logo' />

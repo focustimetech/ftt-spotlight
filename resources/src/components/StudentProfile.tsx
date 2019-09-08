@@ -126,7 +126,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 
 	fetchSchedule = (dateTime?: string) => {
 		this.setState({ loadingSchedule: true })
-		this.props.fetchStudentSchedule(this.state.studentID, dateTime || this.getURLDateTime()).then(
+		if (!this.props.currentUser)
+			return
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
+		this.props.fetchStudentSchedule(studentID, dateTime || this.getURLDateTime()).then(
 			(res: any) => {
 				this.setState({ loadingSchedule: false })
 			}
@@ -180,22 +183,24 @@ class StudentProfile extends React.Component<IProps, IState> {
 
 	handleCancelAppointment = (appointment: IAppointment): Promise<any> => {
 		const appointmentID: number = appointment.id
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
 		return deleteAppointment(appointmentID)
 			.then((res: any) => {
-				return this.props.fetchStudentSchedule(this.state.studentID, this.getURLDateTime())
+				return this.props.fetchStudentSchedule(studentID, this.getURLDateTime())
 			})
 	}
 
 	handleCreateAppointment = (memo: string): Promise<any> => {
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
 		const appointment: IAppointmentRequest = {
-			student_id: this.state.studentID,
+			student_id: studentID,
 			memo,
 			block_id: this.state.blockDetails.block_id,
 			date: this.state.blockDetails.date
 		}
 		return createAppointment(appointment)
 			.then((res: any) => {
-				return this.props.fetchStudentSchedule(this.state.studentID, this.getURLDateTime())
+				return this.props.fetchStudentSchedule(studentID, this.getURLDateTime())
 			})
 	}
 
@@ -206,18 +211,30 @@ class StudentProfile extends React.Component<IProps, IState> {
 	}
 
 	componentDidMount() {
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
 		this.fetchSchedule()
 		this.setState({ loadingProfile: true })
-		this.props.fetchStudentSchedule(this.state.studentID).then(
+		this.props.fetchStudentSchedule(studentID).then(
 			(res: any) => {
 				this.setState({ loadingSchedule: false })
 			}
 		)
-		this.props.fetchStudentProfile(this.state.studentID).then(
+		this.props.fetchStudentProfile(studentID).then(
 			(res: any) => {
 				this.setState({ loadingProfile: false })
 			}
 		)
+	}
+
+	getStudentID = (): number => {
+		return this.props.currentUser.account_type === 'student'
+			? this.props.currentUser.details.id
+			: this.state.studentID
+	}
+
+	isOwnProfile = (): boolean => {
+		return this.props.currentUser
+			&& this.props.currentUser.account_type === 'student'
 	}
 
 	render () {

@@ -2,9 +2,9 @@ import axios from 'axios'
 
 import { FETCH_STUDENT_PROFILE } from './types'
 
-export const fetchStudentProfile = (studentID: number) => {
+export const fetchStudentProfile = (studentID?: number) => {
     return (dispatch: any) => {
-        return axios.get(`/api/students/profile/${studentID}`)
+        return axios.get(`/api/students/profile/${studentID || 'self'}`)
             .then((res: any) => {
                 const student = res.data
                 dispatch({

@@ -24,9 +24,14 @@ export const deleteAppointment = (appointmentID: number): Promise<any> => {
         })
 }
 
-export const fetchStudentSchedule = (studentID: number, dateTime?: string) => {
+export const fetchStudentSchedule = (studentID?: number, dateTime?: string) => {
+    let baseURL: string
+    if (studentID)
+        baseURL = `/api/students/${studentID}/schedule`
+    else
+        baseURL = '/api/students/self/schedule'
     return (dispatch: any) => {
-        return axios.get(`/api/students/${studentID}/schedule${dateTime ? `/${dateTime}` : ''}`)
+        return axios.get(`${baseURL}${dateTime ? `/${dateTime}` : ''}`)
             .then((res: any) => {
                 const schedule = res.data
                 dispatch({

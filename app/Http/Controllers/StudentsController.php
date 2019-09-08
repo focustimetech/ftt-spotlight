@@ -101,4 +101,14 @@ class StudentsController extends Controller
 
         return new StudentProfileResource($student);
     }
+
+    /**
+     * Retreive student profile information about the authenticated user.
+     * Fails if authenticated user is not a student.
+     */
+    public function authProfile()
+    {
+        $student = auth()->user()->student();
+        return $this->profile($student->id);
+    }
 }

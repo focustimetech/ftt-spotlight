@@ -40,8 +40,12 @@ Route::middleware('auth:api')->group(function() {
 
 // Student Routes
 Route::middleware(['auth:api', 'scopes:student'])->group(function() {
+    // Schedule
     Route::get('students/self/schedule', 'StudentScheduleController@indexProfile');
     Route::get('students/self/schedule/{timestamp}', 'StudentScheduleController@indexProfile');
+
+    // Profile
+    Route::get('students/profile/self', 'StudentsController@authProfile');
 });
 
 // Teacher and Administrator Routes

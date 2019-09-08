@@ -22,6 +22,16 @@ class User extends Authenticatable
         return $this->where('username', $username)->first();
     }
 
+    public function isStaff()
+    {
+        return $this->account_type === 'staff';
+    }
+
+    public function isStudent()
+    {
+        return $this->account_tpype === 'student';
+    }
+
     public function staff()
     {
         if ($this->account_type === 'staff')

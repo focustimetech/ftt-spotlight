@@ -119,4 +119,12 @@ class StudentScheduleController extends Controller
         }
         return $student_schedule;
     }
+
+    public function indexProfile($datetime = null)
+    {
+        $student = auth()->user()->student();
+        if ($student) {
+            return $this->index($student->id, $datetime);
+        }
+    }
 }

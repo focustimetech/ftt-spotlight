@@ -38,6 +38,16 @@ Route::middleware('auth:api')->group(function() {
     Route::get('settings', 'SettingsController@index');
 });
 
+// Student Routes
+Route::middleware(['auth:api', 'scopes:student'])->group(function() {
+    // Schedule
+    Route::get('students/self/schedule', 'StudentScheduleController@indexProfile');
+    Route::get('students/self/schedule/{timestamp}', 'StudentScheduleController@indexProfile');
+
+    // Profile
+    Route::get('students/profile/self', 'StudentsController@authProfile');
+});
+
 // Teacher and Administrator Routes
 Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
     // Appointments
@@ -105,6 +115,7 @@ Route::middleware(['auth:api', 'scopes:admin'])->group(function() {
     Route::put('settings', 'SettingsController@update');
 });
 
+// Incomplete
 // Clusters
 Route::post('clusters/students', 'ClustersController@attach');
 Route::delete('clusters/students', 'ClustersController@detach');

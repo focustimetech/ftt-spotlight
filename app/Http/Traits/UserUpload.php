@@ -10,6 +10,7 @@ use App\User;
 use App\Staff;
 use App\Student;
 use App\Imports\StudentImport;
+use App\Imports\StaffImport;
 
 trait UserUpload
 {
@@ -31,7 +32,8 @@ trait UserUpload
     public function processFile($filename, $account_type)
     {
         if ($account_type === 'staff') {
-            Excel::import(new Staff, $filename);
+            Excel::import(new StaffImport, $filename);
+            echo "processing staff";
         }
         else if ($account_type === 'student') {
             Excel::import(new StudentImport, $filename);

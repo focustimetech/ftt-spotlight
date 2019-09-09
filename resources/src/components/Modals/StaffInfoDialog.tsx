@@ -40,10 +40,10 @@ const emptyStaffDetails: IStaff = {
 }
 
 const defaultListItems: IListItem[] = [
-    { label: 'First Name', value: 'first_name' },
+    { label: 'Email Address', value: 'email' },
     { label: 'Last Name', value: 'last_name' },
-    { label: 'Grade', value: 'grade' },
-    { label: 'Student Number', value: 'student_number' },
+    { label: 'First Name', value: 'first_name' },
+    { label: 'Title', value: 'title' },
 ]
 
 export const StaffInfoDialog = (props: IProps) => {

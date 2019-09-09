@@ -87,7 +87,7 @@ class App extends React.Component<IProps, IState> {
 								/>
 								<Switch>
 									<Route path='/' exact render={(props: RouteComponentProps) => (
-										<Redirect to='/dashboard' />
+										<Redirect to='/students' />
 									)} />
 									<Route path='/clusters/:clusterID?' component={Clusters} />
 									<Route exact path='/dashboard' component={Dashboard} />

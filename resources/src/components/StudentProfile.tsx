@@ -84,6 +84,8 @@ class StudentProfile extends React.Component<IProps, IState> {
 	}
 
 	toggleStarred = (isStarred: boolean) => {
+		if (this.props.currentUser.account_type !== 'staff')
+			return
 		const starredItem: StarredItem = {
 			item_id: this.props.student.id,
 			item_type: 'student'
@@ -336,7 +338,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					<p className='empty_text'>No appointments booked</p>
 				),
 				child: (blockDetails: IBlockDetails) => {
-					return blockDetails.pending ? (
+					return blockDetails.pending && this.props.currentUser.account_type === 'staff' ? (
 						<NewAppointment
 							onSubmit={this.handleCreateAppointment}
 							onClose={this.handleCalendarDialogClose}
@@ -432,21 +434,25 @@ class StudentProfile extends React.Component<IProps, IState> {
 							</div>
 						) : (
 							<ul className='right_col'>
-								<li>
-									<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
-								</li>
-								<li>
-									<IconButton onClick={this.handleMenuOpen}>
-										<Icon>more_vert</Icon>
-									</IconButton>
-									<Menu
-										open={menuOpen}
-										anchorEl={menuRef}
-										onClose={this.handleMenuClose}
-									>
-										<MenuItem onClick={() => this.handleOpenEditDialog()}>Edit Student</MenuItem>
-									</Menu>
-								</li>
+								{this.props.currentUser.account_type === 'staff' && (
+									<>
+										<li>
+											<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
+										</li>
+										<li>
+											<IconButton onClick={this.handleMenuOpen}>
+												<Icon>more_vert</Icon>
+											</IconButton>
+											<Menu
+												open={menuOpen}
+												anchorEl={menuRef}
+												onClose={this.handleMenuClose}
+											>
+												<MenuItem onClick={() => this.handleOpenEditDialog()}>Edit Student</MenuItem>
+											</Menu>
+										</li>
+									</>
+								)}
 							</ul>
 						)}
 					</TopNav>

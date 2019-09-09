@@ -96,7 +96,7 @@ class CheckInWidget extends React.Component<IProps, IState> {
                 <NavItem
                     title='Check-in'
                     icon='how_to_reg'
-                    badgeCount={3}
+                    badgeCount={0}
                     onClick={() => this.handleClickOpen()}
                 />
                 <Dialog
@@ -138,46 +138,6 @@ class CheckInWidget extends React.Component<IProps, IState> {
                                     }}
                                 />
                             </form>
-                        </div>
-                        <div className='check-in_heading'>
-                            <Icon>wifi</Icon>
-                            <h4 className='heading_type'>Air Check-in</h4>
-                            <h3 className={classNames('heading_status', {'--online': this.state.airCheckInEnabled})}>
-                                {this.state.airCheckInEnabled ? 'Online' : 'Offline'}
-                            </h3>
-                            <Switch 
-                                checked={this.state.airCheckInEnabled}
-                                onChange={() => this.toggleAirCheckIn()}
-                                color='primary'
-                            />
-                            <Grow in={this.state.airCheckInEnabled !== this.props.checkInStatus.air_enabled}>
-                                <CircularProgress color='primary' size={24}/>
-                            </Grow>
-                        </div>
-                        <div className='check-in_data'>
-                            <List dense>
-                                <ListItem button>
-                                    <ListItemAvatar><Avatar>CU</Avatar></ListItemAvatar>
-                                    <span>Curtis Upshall</span>
-                                    <ListItemSecondaryAction>
-                                        <Checkbox color='primary' />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                <ListItem button>
-                                    <ListItemAvatar><Avatar>VL</Avatar></ListItemAvatar>
-                                    <span>Vlad Lyesin</span>
-                                    <ListItemSecondaryAction>
-                                        <Checkbox color='primary' />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            </List>
-                        </div>
-                        <div className='check-in_heading'>
-                            <Icon>event</Icon>
-                            <h4 className='heading_type'>Scheduled</h4>
-                        </div>
-                        <div className='check-in_data'>
-                            <p>No students schedule.</p>
                         </div>
                     </div>
                 </Dialog>

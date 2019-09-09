@@ -7,7 +7,7 @@ use App\User;
 
 class StudentsObserver
 {
-    public function saved(Student $student) {
+    public function created(Student $student) {
         $user = new User;
 
         $user->account_type = 'student';

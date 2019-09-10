@@ -31,13 +31,13 @@ trait UserUpload
 
     public function processFile($filename, $account_type)
     {
+        echo "Processing $filename...\n";
         if ($account_type === 'staff') {
             Excel::import(new StaffImport, $filename);
-            echo "processing staff";
         }
         else if ($account_type === 'student') {
             Excel::import(new StudentImport, $filename);
-            echo "processing students.";
         }
+        echo "Processed $filename.\n";
     }
 }

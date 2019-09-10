@@ -126,9 +126,6 @@ class Login extends React.Component<IProps, IState> {
 									>Sign In</LoadingButton>
 								</DialogActions>
 							</form>
-							<ul className='links_list'>
-								<a href='https://focustime.ca'><li>Help</li></a>
-							</ul>
 						</div>
 					</div>
 				</div>

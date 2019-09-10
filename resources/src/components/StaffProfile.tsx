@@ -476,18 +476,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
 									</li>
 								)}								
-								<li>
-									<IconButton onClick={this.handleMenuOpen}>
-										<Icon>more_vert</Icon>
-									</IconButton>
-									<Menu
-										open={menuOpen}
-										anchorEl={menuRef}
-										onClose={this.handleMenuClose}
-									>
-										<MenuItem onClick={() => this.handleOpenEditDialog()}>Edit Staff</MenuItem>
-									</Menu>
-								</li>
 							</ul>
 						)}
 					</TopNav>

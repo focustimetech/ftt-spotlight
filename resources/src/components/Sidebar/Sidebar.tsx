@@ -113,6 +113,7 @@ class Sidebar extends React.Component<IProps> {
 							<ul className='menu_list'>
 								<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
 								<MenuItem to='/students' icon='face' label='Students' />
+								<MenuItem to='/power-scheduler' icon='offline_bolt' label='Power Scheduler' />
 							</ul>
 						</>
 					)}

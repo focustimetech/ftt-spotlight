@@ -29,10 +29,10 @@ export const listToTruncatedString = (list: string[], objectName?: string): stri
  * @return `true` if the object is empty, `false` otherwise.
  */
 export const isEmpty = (obj: Object): boolean => {
-    if (!obj) {
+    if (!obj)
         return true
-    }
-    return Object.keys(obj).length === 0 && obj.constructor === Object
+    else
+        return Object.keys(obj).length === 0 && obj.constructor === Object
 }
 
 /**
@@ -51,7 +51,10 @@ export const isArray = (object: any): boolean => {
  * @return An array containing either the object, or all original array entries
  */
 export const makeArray = (object: any): any[] => {
-    return isArray(object) ? object : [object]
+    if (!object)
+        return []
+    else
+        return isArray(object) ? object : [object]
 }
 
 /**

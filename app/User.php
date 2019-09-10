@@ -29,21 +29,21 @@ class User extends Authenticatable
 
     public function isStudent()
     {
-        return $this->account_tpype === 'student';
+        return $this->account_type === 'student';
     }
 
     public function staff()
     {
-        if ($this->account_type === 'staff')
-            return Staff::findOrFail($this->id);
+        if ($this->isStaff())
+            return Staff::findOrFail($this->user_id);
         else
             abort(403, 'User is not a staff member.');
     }
 
     public function student()
     {
-        if ($this->account_type === 'student')
-            return Student::findOrFail($this->id);
+        if ($this->isStudent())
+            return Student::findOrFail($this->user_id);
         else
             abort(403, 'User is not a student.');
         

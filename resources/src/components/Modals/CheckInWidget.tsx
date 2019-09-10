@@ -25,19 +25,22 @@ import { NavItem } from '../Sidebar/NavItem'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { fetchCheckInStatus, enableAir, disableAir, checkIn } from '../../actions/checkinActions'
 import { ICheckInStatus } from '../../types/checkin'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 
 interface ReduxProps {
     checkInStatus: ICheckInStatus
     fetchCheckInStatus: () => any
     enableAir: () => any
     disableAir: () => any
-    checkIn: (input: string) => any
+    checkIn: (input: string) => Promise<any>
+    queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends ReduxProps {}
 
 interface IState {
     open: boolean
+    errored: boolean
     airCheckInEnabled: boolean
     loadingAirStatus: boolean
     loadingCheckIn: boolean
@@ -46,7 +49,8 @@ interface IState {
 
 class CheckInWidget extends React.Component<IProps, IState> {
     state: IState = {
-        open: false, // Change this to false
+        open: false,
+        errored: false,
         airCheckInEnabled: false,
         loadingAirStatus: false,
         loadingCheckIn: false,
@@ -62,10 +66,12 @@ class CheckInWidget extends React.Component<IProps, IState> {
     }
 
     handleChange = (event: any) => {
-        if (this.state.loadingCheckIn) {
+        if (this.state.loadingCheckIn)
             return
-        }
-        this.setState({ loadingCheckIn: event.target.value })
+        this.setState({
+            inputValue: event.target.value,
+            errored: false
+        })
     }
 
     toggleAirCheckIn = () => {
@@ -83,7 +89,20 @@ class CheckInWidget extends React.Component<IProps, IState> {
     handleSubmit = (event: any) => {
         event.preventDefault()
         this.setState({ loadingCheckIn: true })
-        
+        this.props.checkIn(this.state.inputValue)
+            .then((res: any) => {
+                this.setState({
+                    loadingCheckIn: false,
+                    inputValue: ''
+                })
+                this.props.queueSnackbar({ message: 'Checked in students successfully.' })
+            })
+            .catch((error: any) => {
+                this.setState({
+                    errored: true,
+                    loadingCheckIn: false
+                })
+            })
     }
 
     componentDidMount() {
@@ -112,7 +131,6 @@ class CheckInWidget extends React.Component<IProps, IState> {
                             <h4 className='heading_type'>Scan or Enter</h4>
                         </div>
                         <div className='check-in_data'>
-                            <p>Checking in as Mr. Upshall, Curtis for Block 2 on August 8</p>
                             <form className='check-in-input' onSubmit={this.handleSubmit}>
                                 <TextField
                                     name='check-in'
@@ -124,7 +142,8 @@ class CheckInWidget extends React.Component<IProps, IState> {
                                     margin='normal'
                                     autoFocus
                                     fullWidth
-                                    helperText='Comma separated list or single entry'
+                                    helperText={this.state.errored ? 'Please try again' : 'Single entry or comma-separated list'}
+                                    error={this.state.errored}
                                     InputProps={{
                                         endAdornment: this.state.loadingCheckIn ? (
                                             <div><CircularProgress size={24} /></div>
@@ -154,7 +173,8 @@ const mapDispatchToProps = {
     fetchCheckInStatus,
     enableAir,
     disableAir,
-    checkIn
+    checkIn,
+    queueSnackbar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckInWidget)

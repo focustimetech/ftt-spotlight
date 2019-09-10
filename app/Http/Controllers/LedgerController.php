@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 use App\Http\Resources\LedgerEntry as LedgerResource;
@@ -38,16 +39,15 @@ class LedgerController extends Controller
      */
     public function store(Request $request)
     {
-        $now = $request->input('time') ?? time();
-
-        $staff_id = $request->input('staff_id') ?? auth()->user()->staff()->id;
+        $now = time();
+        // Log::debug('Checkin in student');
+        $staff = auth()->user()->staff();
         $time = date("H:i:s", $now);
         $week_day = date('w', $now) + 1;
         $block = Block::atTime($now);
 
         $student_numbers = $request->input('student_numbers');
-        $student_ids = $request->input('student_ids');
-
+        $student_ids = [];
         $error = [];
         foreach ($student_numbers as $student_number) {
             $student = Student::findBySN($student_number);
@@ -61,14 +61,14 @@ class LedgerController extends Controller
         foreach ($student_ids as $student_id) {
             $entry = new LedgerEntry;
 
-            $entry->date = date("Y-m-d", $now);
+            $entry->date = date('Y-m-d', $now);
             $entry->time = $time;
             $entry->block_id = $block->id;
-            $entry->staff_id = $staff_id;
+            $entry->staff_id = $staff->id;
             $entry->student_id = $student_id;
-
+            // Log::debug($entry);
             if ($entry->save())
-                $collection->push($entry);
+                $ledger_entries->push($entry);
             else
                 throw new Exception("Students could not be checked in.");
         }

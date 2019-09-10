@@ -42,14 +42,14 @@ export const disableAir = () => {
 }
 
 export const checkIn = (input: string) => {
+    const data: any = {
+        student_numbers: input.split(',')
+    }
     return (dispatch: any) => {
-        return axios.post('/api/check-in/')
+        //console.log('DATA:', data)
+        return axios.post('/api/check-in', data)
             .then((res: any) => {
                 const status = res.data
-                dispatch({
-                    type: CHECK_IN,
-                    payload: status
-                })
             })
     }
 }

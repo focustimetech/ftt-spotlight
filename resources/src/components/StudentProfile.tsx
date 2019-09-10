@@ -292,7 +292,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							memo: block.logs[0] && block.flex? block.logs[0].topic.topic || null : null,
+							memo: block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null,
 							details
 						}
 						return calendarBlock
@@ -310,7 +310,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					id: log.id,
 					time: log.time,
 					title: log.staff.name,
-					memo: log.topic.memo,
+					memo: log.topic ? log.topic.memo : 'No Topic',
 					variant: 'success',
 					method: log.method
 				}),

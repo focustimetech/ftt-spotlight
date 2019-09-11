@@ -108,7 +108,7 @@ export const ChangePasswordDialog = (props: IProps) => {
                     name='new_password'
                     label='New Password'
                     variant='outlined'
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword && !loading ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(event: any) => handleChange(event, 'new')}
                     fullWidth

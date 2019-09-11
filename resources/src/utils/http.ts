@@ -16,7 +16,7 @@ export const verifyPassword = (password: string): Promise<void> => {
  */
 export const changePassword = (oldPassword: string, newPassword: string): Promise<any> => {
     return axios.post('/api/change-password', {
-        old_password: oldPassword,
-        new_Password: newPassword
+        password: oldPassword,
+        new_password: newPassword
     })
 }

@@ -29,6 +29,7 @@ import {
 	ITopicSchedule,
 	ICalendarBlockVariant,
 } from '../types/calendar'
+import { ChangePasswordDialog } from './Modals/ChangePasswordDialog'
 import { CancelAppointment } from './Calendar/CancelAppointment'
 import { Calendar } from './Calendar/Calendar'
 import { TopNav } from './TopNav'
@@ -72,6 +73,7 @@ interface IState {
 	cancelAppointment: IAppointment
 	topicsDialogOpen: boolean
 	topcisDialogMode: 'edit' | 'select'
+	passwordDialogOpen: boolean
 	onTopicSelect: (topic: ITopic) => void
 }
 
@@ -90,6 +92,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 		cancelAppointment: null,
 		topicsDialogOpen: false,
 		topcisDialogMode: 'edit',
+		passwordDialogOpen: false,
 		onTopicSelect: () => null
 	}
 
@@ -210,6 +213,18 @@ class StaffProfile extends React.Component<IProps, IState> {
 	handleSetTopic = () => {
 		this.handleTopicsDialogOpen('select')
 		this.setState({ onTopicSelect: this.onTopicSet })
+	}
+
+	onPasswordChange = () => {
+		this.props.queueSnackbar({ message: 'Changed password successfully.' })
+	}
+
+	handlePasswordDialogClose = () => {
+		this.setState({ passwordDialogOpen: false })
+	}
+
+	handlePasswordDialogOpen = () => {
+		this.setState({ passwordDialogOpen: true })
 	}
 
 	onTopicSet = (topic: ITopic) => {
@@ -426,6 +441,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 					mode={this.state.topcisDialogMode}
 					onSelect={this.state.onTopicSelect}
 				/>
+				<ChangePasswordDialog
+					open={this.state.passwordDialogOpen}
+					onClose={this.handlePasswordDialogClose}
+					onSuccess={this.onPasswordChange}
+				/>
 				<div className='profile'>
 					<TopNav>
 						<ul>
@@ -464,13 +484,22 @@ class StaffProfile extends React.Component<IProps, IState> {
 						) : (
 							<ul className='right_col'>
 								{isOwner ? (
-									<li>
-										<Tooltip title='Topics'>
-											<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
-												<Icon>school</Icon>
-											</IconButton>
-										</Tooltip>
-									</li>
+									<>
+										<li>
+											<Tooltip title='Topics'>
+												<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
+													<Icon>school</Icon>
+												</IconButton>
+											</Tooltip>
+										</li>
+										<li>
+											<Tooltip title='Change Password'>
+												<IconButton onClick={() => this.handlePasswordDialogOpen()}>
+													<Icon>lock</Icon>
+												</IconButton>
+											</Tooltip>
+										</li>
+									</>
 								) : (
 									<li>
 										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />

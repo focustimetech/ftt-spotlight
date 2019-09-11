@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 
 import { LoadingButton } from '../Form/LoadingButton'
-import { verifyPassword } from '../../utils/utils'
+import { verifyPassword } from '../../utils/http'
 
 interface IProps {
     open: boolean

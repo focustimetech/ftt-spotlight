@@ -44,6 +44,9 @@ export const ChangePasswordDialog = (props: IProps) => {
         setErrored(false)
         changePassword(oldPassword, newPassword)
             .then((res: any) => {
+                setNewPassword('')
+                setOldPassword('')
+                setConfirmPassword('')
                 setLoading(false)
                 props.onSuccess()
                 props.onClose()

@@ -4,7 +4,7 @@ import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
 import { Theme, withTheme } from '@material-ui/core/styles'
 
-import { AccountWidget } from '../Modals/AccountWidget'
+import { AccountWidget } from './AccountWidget'
 import { MenuItem } from './MenuItem'
 import { NavItem } from './NavItem'
 import NotificationsWidget from '../Modals/NotificationsWidget'

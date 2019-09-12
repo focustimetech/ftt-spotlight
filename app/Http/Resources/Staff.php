@@ -24,7 +24,7 @@ class Staff extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'title' => $this->title,
-            'initilas' => $this->initials,
+            'initials' => $this->initials,
             'color' => $this->color,
             'email' => $this->email
         ];

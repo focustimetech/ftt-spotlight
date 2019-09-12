@@ -60,6 +60,7 @@ interface IProps {
 	searchable?: boolean
 	selectable?: boolean
 	showEmptyTable?: boolean
+	onSelect?: (selected: number[]) => void
 }
 
 interface IState {
@@ -176,25 +177,27 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		})
 	}
 
-	handleClick = (event: any, id: number) => {
-		if (this.props.selectable !== false) {
-			const { selected } = this.state
-			const selectedIndex = selected.indexOf(id)
-			let newSelected: any[] = []
+	handleClick = (id: number) => {
+		if (this.props.selectable === false)
+			return
+		const { selected } = this.state
+		const selectedIndex = selected.indexOf(id)
+		let newSelected: number[] = []
 
-			if (selectedIndex === -1) {
-				newSelected = newSelected.concat(selected, id)
-			} else if (selectedIndex === 0) {
-				newSelected = newSelected.concat(selected.slice(1))
-			} else if (selectedIndex > 0) {
-				newSelected = newSelected.concat(
-					selected.slice(0, selectedIndex),
-					selected.slice(selectedIndex + 1),
-				)
-			}
-
-			this.setState({ selected: newSelected })
+		if (selectedIndex === -1) {
+			newSelected = newSelected.concat(selected, id)
+		} else if (selectedIndex === 0) {
+			newSelected = newSelected.concat(selected.slice(1))
+		} else if (selectedIndex > 0) {
+			newSelected = newSelected.concat(
+				selected.slice(0, selectedIndex),
+				selected.slice(selectedIndex + 1),
+			)
 		}
+
+		this.setState({ selected: newSelected })
+		if (this.props.onSelect)
+			this.props.onSelect(newSelected)
 	}
 
 	handleChangePage = (event: any, page: number) => {
@@ -323,7 +326,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 											return (
 												<TableRow
 													hover
-													onClick={(event: any) => this.handleClick(event, n.id)}
+													onClick={() => this.handleClick(n.id)}
 													role={selectable ? 'checkbox' : null}
 													aria-checked={isSelected}
 													tabIndex={-1}

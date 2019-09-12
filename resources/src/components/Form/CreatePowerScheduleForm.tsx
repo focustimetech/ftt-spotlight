@@ -54,6 +54,7 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
 
     handleSetSelected = (selectedStudents: number[]) => {
         this.setState({ selectedStudents })
+        console.log('Selected:', selectedStudents)
     }
 
     componentDidMount() {
@@ -130,6 +131,7 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                                     loading={this.state.loadingStudents}
                                     columns={studentTableColumns}
                                     data={students}
+                                    onSelect={this.handleSetSelected}
                                     selectable
                                     searchable
                                 />

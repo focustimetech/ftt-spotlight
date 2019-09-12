@@ -60,6 +60,21 @@ class User extends Authenticatable
             return null;            
     }
 
+    public function getDisplayRole()
+    {
+        $role = $this->getRole();
+        switch($role) {
+            case 'student':
+                return 'Student';
+            case 'teacher':
+                return 'Teacher';
+            case 'admin':
+                return 'Administrator';
+            default:
+                return 'User';
+        }
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

@@ -134,8 +134,7 @@ class Login extends React.Component<IProps, IState> {
 	}
 }
 
-/**
- * @TODO Make an interface for this stuff...
- */
+const mapStateToProps = (state: any) => ({})
+const mapDispatchToProps = { login }
 
-export default connect(null, { login })(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

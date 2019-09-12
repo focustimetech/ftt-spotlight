@@ -58,9 +58,6 @@ interface IState {
 	filters: ITableFilter[]
 }
 
-/**
- * @TODO MSeparate the handleFilterChange into 3 methods.
- */
 export class EnhancedTableFilter extends React.Component<IProps, IState> {
 	state: IState = {
 		filters: this.props.filters.length ? this.props.filters : [this.newFilter()]
@@ -175,11 +172,6 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		this.props.handleFilterClose()
 	}
 
-	/**
-	 * @TODO Add a componnentDidMount and componentDidUnmount and give it
-	 * an event listener, so users can close the window. Also allow enter key
-	 * to create a new filter, and Ctrl + Enter to apply.
-	 */
 	render() {
 		return (
 			<Grow in={this.props.open} >

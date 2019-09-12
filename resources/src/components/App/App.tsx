@@ -27,9 +27,6 @@ import Staff from '../Staff'
 import StaffProfile from '../StaffProfile'
 import { Splash } from './Splash'
 
-/**
- * @TODO Create typedefs for Settings
- */
 interface ReduxProps {
 	getCurrentUser: () => any
 	fetchSettings: () => any

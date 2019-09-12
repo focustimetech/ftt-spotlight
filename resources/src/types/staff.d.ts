@@ -1,3 +1,5 @@
+import { TopicColor } from "../theme"
+
 export interface IStaff {
     id?: number
     name?: string
@@ -7,6 +9,8 @@ export interface IStaff {
     last_name: string
     first_name: string
     title: IStaffTitle
+    initials: string
+    color: TopicColor
 }
 
 export type IStaffTitle =

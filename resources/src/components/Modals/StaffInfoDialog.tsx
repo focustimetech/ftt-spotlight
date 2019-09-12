@@ -35,7 +35,9 @@ const emptyStaffDetails: IStaff = {
     first_name: '',
     last_name: '',
     title: 'Mr.',
+    initials: '',
     account_type: 'teacher',
+    color: 'blue',
     administrator: false
 }
 

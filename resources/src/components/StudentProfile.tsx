@@ -251,7 +251,9 @@ class StudentProfile extends React.Component<IProps, IState> {
 			first_name: this.props.student.first_name,
 			last_name: this.props.student.last_name,
 			grade: this.props.student.grade,
-			student_number: this.props.student.student_number
+			student_number: this.props.student.student_number,
+			initials: this.props.student.initials,
+			color: this.props.student.color
 		}
 
 		let calendar: ICalendarDay[] = null

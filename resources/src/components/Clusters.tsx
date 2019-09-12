@@ -134,9 +134,6 @@ export class Clusters extends React.Component<IProps, IState> {
         expanded: -1
     }
 
-    /**
-     * @TODO Get URL params. If at clusters/2 for instance, the cluster having id of 2 should be expanded
-     */
     componentDidMount() {
         const params: any = this.props.match.params
         this.setState({

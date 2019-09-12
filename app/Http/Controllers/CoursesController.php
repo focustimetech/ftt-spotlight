@@ -33,10 +33,7 @@ class CoursesController extends Controller
 
         $course->name = $request->input('name');
         $course->short_name = $request->input('short_name');
-        /**
-         * @TODO Need to implement grabbing the current user's ID, in the case that it's a post request
-         * (this will be unkown when the repost is sent from the client).
-         */
+
         $course->owner = $request->input('owner');
 
         if ($course->save()) {
@@ -85,10 +82,6 @@ class CoursesController extends Controller
     public function destroy($id)
     {
         $course = Course::findOrFail($id);
-
-        /**
-         * @TODO Need to ensure that enrollment is deleted as well.
-         */
 
         if ($course->delete()) {
             return new CourseResource($course);

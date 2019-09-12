@@ -30,10 +30,6 @@ interface IProps extends ReduxProps, StyleProps {
 	schoolName?: string
 }
 
-/**
- * @TODO Need to handle the case where the screen is very narrow,
- * in which a modal nav manu should be used.
- */
 class Sidebar extends React.Component<IProps> {
 	render() {
 		// const { initials, color } = this.props.currentUser || { initials: '', color: '' }

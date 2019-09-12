@@ -163,10 +163,15 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 				) : (
 					this.props.data.map(n => n.id)
 				)
+			}, () => {
+				if (this.props.onSelect)
+					this.props.onSelect(this.state.selected)
 			})
 			return
 		}
 		this.setState({ selected: [] })
+		if (this.props.onSelect)
+				this.props.onSelect([])
 	}
 
 	handleInvertSelection = () => {

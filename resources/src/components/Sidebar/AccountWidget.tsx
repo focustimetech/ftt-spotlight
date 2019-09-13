@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom'
 import {
     Avatar,
     Menu,
-    MenuItem
+    MenuItem,
+    Typography
 } from '@material-ui/core'
 
 import { NavItem } from '../Sidebar/NavItem'
@@ -55,6 +56,10 @@ class AccountWidget extends React.Component<IProps, IState> {
                     anchorEl={menuRef}
                     onClose={this.handleClose}
                 >
+                    <div className='nav_account_details'>
+                        <h3>{this.props.currentUser.display_name}</h3>
+                        <h5>{this.props.currentUser.display_role}</h5>
+                    </div>
                     <Link to={profileLink}><MenuItem>Profile</MenuItem></Link>
                     <MenuItem onClick={() => this.props.onSignOut()}>Sign Out</MenuItem>
                 </Menu>

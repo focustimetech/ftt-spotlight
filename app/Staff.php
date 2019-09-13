@@ -46,6 +46,11 @@ class Staff extends Model
 			->orderBy('day_of_week')->orderBy('start')->get();
 	}
 
+	public function getDisplayName()
+	{
+		return $this->getName();
+	}
+
 	public function plans()
 	{
 		return $this->hasMany('App\SchedulePlan');

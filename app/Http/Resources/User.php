@@ -32,7 +32,11 @@ class User extends JsonResource
             'id' => $this->id,
             'username' => $this->username,
             'account_type' => $this->account_type,
-            'details' => $details
+            'details' => $details,
+            'display_name' => $details->getDisplayName(),
+            'display_role' => $this->getDisplayRole(),
+            'initials' => $details['initials'],
+            'color' => $details['color']
         ];
     }
 }

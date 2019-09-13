@@ -1,10 +1,14 @@
+import { TopicColor } from "../theme";
+
 export interface IStudent {
 	id: number
 	first_name: string
 	last_name: string
 	name?: string
+	initials: string
 	grade: number
 	student_number: number
+	color: TopicColor
 }
 
 export interface IFlexBlock {

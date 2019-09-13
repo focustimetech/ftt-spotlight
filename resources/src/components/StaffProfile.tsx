@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as classNames from 'classnames'
 import ContentLoader from 'react-content-loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -288,7 +289,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 			this.props.newStarred.isStarred !== false
 		) : this.props.staff.starred
 
-		const avatarColor = this.props.staff.color || 'red'
+		const avatarColor: string = this.props.staff.color || null
 
 		const { menuRef, editDialogOpen } = this.state
 		const menuOpen: boolean = Boolean(this.state.menuRef) 
@@ -461,7 +462,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 									</div>
 								) : (
 									<>
-										<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.staff.initials}</Avatar>
+										<Avatar className={classNames('profile_avatar', `--${avatarColor}`)}>{this.props.staff.initials}</Avatar>
 										<div>
 											<h3 className='name'>
 												{this.props.staff.name}

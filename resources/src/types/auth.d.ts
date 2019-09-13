@@ -9,16 +9,18 @@ export interface ICredentials {
 interface IUserProperties {
     id: number
     username: string
+    display_name: string
+    display_role: string
 }
 
-export interface IStaffUser extends IUserProperties {
+export interface IStaffUser {
     details: IStaff
     account_type: 'staff'
 }
 
-export interface IStudentUser extends IUserProperties {
+export interface IStudentUser {
     details: IStudent
     account_type: 'student'
 }
 
-export type IUser = IStaffUser | IStudentUser
+export type IUser = (IStaffUser | IStudentUser) & IUserProperties

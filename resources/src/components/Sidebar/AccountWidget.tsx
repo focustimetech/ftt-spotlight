@@ -39,8 +39,8 @@ class AccountWidget extends React.Component<IProps, IState> {
 
     render() {
         const { menuRef } = this.state
-        const { initials, color } = this.props.currentUser.details
         const menuOpen = Boolean(menuRef)
+        const { initials, color } = this.props.currentUser.details
         const profileLink = this.props.currentUser.account_type === 'staff'
             ? `/staff/${this.props.currentUser.details.id}`
             : `/students/${this.props.currentUser.details.id}`

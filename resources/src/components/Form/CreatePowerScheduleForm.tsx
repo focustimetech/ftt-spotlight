@@ -54,7 +54,6 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
 
     handleSetSelected = (selectedStudents: number[]) => {
         this.setState({ selectedStudents })
-        console.log('Selected:', selectedStudents)
     }
 
     componentDidMount() {
@@ -117,7 +116,6 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
             })
         ) : []
 
-        console.log('STUDENTS:', students)
         return (
             <>
                 <DialogContent>
@@ -149,8 +147,8 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                             <StepLabel>Select Date and Blocks</StepLabel>
                             <StepContent>
                                 <p>Select date and blocks.</p>
-                                <div className='step-actions'>
-                                    <Button variant='contained' onClick={() => this.handlePreviousStep()}>Back</Button>
+                                <div className='stepper-actions'>
+                                    <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
                                     <Button
                                         variant='contained'
                                         color='primary'

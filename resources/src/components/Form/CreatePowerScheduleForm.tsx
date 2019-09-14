@@ -130,7 +130,7 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                                     columns={studentTableColumns}
                                     data={students}
                                     onSelect={this.handleSetSelected}
-                                    selectable
+                                    selected={this.state.selectedStudents}
                                     searchable
                                 />
                                 <div className='stepper-actions'>

@@ -155,7 +155,6 @@ class Students extends React.Component<IProps, IState> {
 					data={students}
 					actions={actions}
 					searchable={true}
-					selectable={false}
 					loading={this.state.loading}
 					link={tableLink}
 				>

@@ -5,16 +5,15 @@ import ContentLoader from 'react-content-loader'
 
 import {
 	Badge,
-	Fade,
 	Grow,
 	Icon,
 	IconButton,
-	InputAdornment,
 	Menu,
 	MenuItem,
 	TextField,
 	Toolbar,
-	Tooltip
+	Tooltip,
+	Typography
 } from '@material-ui/core'
 
 import { EnhancedTableFilter} from './EnhancedTableFilter'
@@ -121,9 +120,9 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 			<Toolbar>
 				<div className='enhanced-table__toolbar'>
 					{headerString && (
-						<h3 className={classNames({
+						<Typography variant='h6' className={classNames({
 							'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
-						})}>{headerString}</h3>
+						})}>{headerString}</Typography>
 					)}
 					{filterOpen && (
 						<EnhancedTableFilter

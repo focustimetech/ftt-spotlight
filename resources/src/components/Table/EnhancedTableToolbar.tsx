@@ -29,6 +29,7 @@ interface IProps {
 	selectable: boolean
 	tableQuery: string
 	filters: ITableFilter[]
+	filtersDisabled: boolean
 	filterOpen: boolean
 	columns: ITableHeaderColumn[]
 	actions?: ITableAction[]
@@ -37,7 +38,7 @@ interface IProps {
 	handleInvertSelection: () => void
 	handleFilterOpen: () => void
 	handleFilterClose: () => void
-	handleFilterChange: (filters: ITableFilter[]) => void
+	handleFilterChange: (filters: ITableFilter[], disabled: boolean) => void
 	handleTableQueryChange: (value: string) => void
 }
 
@@ -127,6 +128,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 					{filterOpen && (
 						<EnhancedTableFilter
 							filters={this.props.filters}
+							disabled={this.props.filtersDisabled}
 							open={filterOpen}
 							handleFilterChange={this.props.handleFilterChange}
 							columns={this.props.columns.filter((column: ITableHeaderColumn) => {
@@ -175,7 +177,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 								<Tooltip title='Filter'>
 									<IconButton onClick={this.props.handleFilterOpen}>
 									<Badge
-										invisible={this.props.filters.length === 0}
+										invisible={this.props.filters.length === 0 || this.props.filtersDisabled}
 										color='secondary'
 										variant='dot'
 									>

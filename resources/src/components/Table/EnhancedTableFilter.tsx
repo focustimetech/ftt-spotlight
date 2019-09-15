@@ -4,13 +4,14 @@ import {
 	Button,
 	Icon,
 	IconButton,
+	FormControlLabel,
 	Grow,
 	MenuItem,
 	Paper,
 	Select,
 	Switch,
 	TextField,
-	Typography
+	Typography,
 } from '@material-ui/core'
 
 import {
@@ -48,19 +49,22 @@ const numericFilterRules: NumericFilterRule[] = [
 ]
 
 interface IProps {
+	disabled: boolean
 	filters: ITableFilter[]
 	columns: ITableHeaderColumn[]
 	open: boolean
-	handleFilterChange: (filters: ITableFilter[]) => void
+	handleFilterChange: (filters: ITableFilter[], disabled: boolean) => void
 	handleFilterClose: () => void
 }
 
 interface IState {
+	disabled: boolean
 	filters: ITableFilter[]
 }
 
 export class EnhancedTableFilter extends React.Component<IProps, IState> {
 	state: IState = {
+		disabled: this.props.disabled,
 		filters: this.props.filters.length ? this.props.filters : [this.newFilter()]
 	}
 
@@ -92,7 +96,7 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 	}
 
 	onApplyFilters = () => {
-		this.props.handleFilterChange(this.state.filters)
+		this.props.handleFilterChange(this.state.filters, this.state.disabled)
 	}
 
 	onUpdateFilters = () => {
@@ -196,11 +200,12 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		) : true
 	}
 
-	/**
-	 * @TODO Add a componnentDidMount and componentDidUnmount and give it
-	 * an event listener, so users can close the window. Also allow enter key
-	 * to create a new filter, and Ctrl + Enter to apply.
-	 */
+	toggleDisabled = () => {
+		this.setState((state: IState) => {
+			return { disabled: !state.disabled }
+		})
+	}
+
 	render() {
 		const haveFiltersChanged: boolean = this.state.filters.length === this.props.filters.length ? (
 			!this.state.filters.every((filter: ITableFilter, index: number) => {
@@ -209,77 +214,85 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 				return fitlerKeys.every((key: string) => {
 					return filter[key] === propFilter[key]
 				})
-			})
+			}) || this.props.disabled !== this.state.disabled
 		) : true
 
 		return (
 			<Grow in={this.props.open} >
 				<Paper className='enhanced-table__filters' elevation={6}>
 					<div className='filters-header'>
-						<Typography variant='h6'>Filters</Typography>
-						<Switch color='primary'/>
+						<FormControlLabel
+							control={
+								<Switch checked={!this.state.disabled} onClick={() => this.toggleDisabled()} color='primary'/>
+							}
+							label={
+								<Typography variant='h6'>Filters</Typography>
+							}
+							labelPlacement='start'
+						/>						
 					</div>
-					{this.state.filters.length ? (
-						<ul>
-							{this.state.filters.map((filter: ITableFilter, idx: number) => {
-								const filterRules: Array<StringFilterRule | NumericFilterRule> = filter.type === 'string' ? (
-									stringFilterRules
-								) : (
-									numericFilterRules
-								)
+					<ul>
+						{this.state.filters.map((filter: ITableFilter, idx: number) => {
+							const filterRules: Array<StringFilterRule | NumericFilterRule> = filter.type === 'string' ? (
+								stringFilterRules
+							) : (
+								numericFilterRules
+							)
 
-								return (
-									<li key={idx} className='filter-rule'>
-										<Select
-											name='id'
-											margin='dense'
-											value={filter.id}
-											onChange={(event: any) => {this.handleChangeFilterID(event.target.value, idx)}}
-										>
-											{this.props.columns.map((column: ITableHeaderColumn, idx: number) => {
-												return (
-													<MenuItem key={idx} value={column.id}>
-														{column.label}
-													</MenuItem>
-												)
-											})}
-										</Select>
-										<Select
-											name='rule'
-											margin='dense'
-											value={filter.rule}
-											onChange={(event: any) => this.handleChangeFilterRule(event.target.value, idx)}
-										>	
-											{filterRules.map((filterRule) => (
-												<MenuItem value={filterRule.value} key={filterRule.value}>
-													{filterRule.label}
+							return (
+								<li key={idx} className='filter-rule'>
+									<Select
+										name='id'
+										margin='dense'
+										value={filter.id}
+										onChange={(event: any) => {this.handleChangeFilterID(event.target.value, idx)}}
+										disabled={this.state.disabled}
+									>
+										{this.props.columns.map((column: ITableHeaderColumn, idx: number) => {
+											return (
+												<MenuItem key={idx} value={column.id}>
+													{column.label}
 												</MenuItem>
-											))}
-										</Select>
-										<TextField
-											variant='standard'
-											margin='dense'
-											placeholder='Filter value'
-											onChange={(event: any) => this.handleChangeFilterValue(event.target.value, idx)}
-											value={filter.value}
-										/>
-										<IconButton onClick={() => this.onDuplicateFilter(idx)}><Icon>filter_none</Icon></IconButton>
-										<IconButton onClick={() => this.onRemoveFilter(idx)}><Icon>close</Icon></IconButton>
-									</li>
-								)
-							})}
-							{this.state.filters.length > 0 && (
-								<li className='filter-rule_placeholder'>
-									<IconButton onClick={() => this.onAddFilter()}><Icon>add</Icon></IconButton>
+											)
+										})}
+									</Select>
+									<Select
+										name='rule'
+										margin='dense'
+										value={filter.rule}
+										onChange={(event: any) => this.handleChangeFilterRule(event.target.value, idx)}
+										disabled={this.state.disabled}
+									>	
+										{filterRules.map((filterRule) => (
+											<MenuItem value={filterRule.value} key={filterRule.value}>
+												{filterRule.label}
+											</MenuItem>
+										))}
+									</Select>
+									<TextField
+										variant='standard'
+										margin='dense'
+										placeholder='Filter value'
+										onChange={(event: any) => this.handleChangeFilterValue(event.target.value, idx)}
+										value={filter.value}
+										disabled={this.state.disabled}
+									/>
+									<IconButton onClick={() => this.onDuplicateFilter(idx)} disabled={this.state.disabled}>
+										<Icon>filter_none</Icon>
+									</IconButton>
+									<IconButton
+										disabled={this.state.filters.length === 1 || this.state.disabled}
+										onClick={() => this.onRemoveFilter(idx)}
+									><Icon>close</Icon></IconButton>
 								</li>
-							)}
-						</ul>
-					) : (
-						<div>
-							<p className='placeholder'>No filters added.</p>
-							<Button variant='text' color='primary' onClick={() => this.onAddFilter()}>Add Filter</Button>
-						</div>
-					)}
+							)
+						})}
+						{this.state.filters.length > 0 && (
+							<li className='filter-rule_placeholder'>
+								<IconButton disabled={this.state.disabled} onClick={() => this.onAddFilter()}><Icon>add</Icon></IconButton>
+							</li>
+						)}
+					</ul>
 					<div className='filters-actions'>
 						<Button variant='text' color='primary' onClick={() => this.onUpdateFilters()}>OK</Button>
 						<Button variant='text' color='primary' disabled={!haveFiltersChanged} onClick={() => this.onApplyFilters()}>Apply</Button>
@@ -290,5 +303,4 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 			</Grow>
 		)
 	}
-
 }

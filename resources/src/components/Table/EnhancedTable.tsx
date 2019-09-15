@@ -72,6 +72,7 @@ interface IState {
 	redirect: string
 	rowsPerPage: number
 	filters: ITableFilter[]
+	filtersDisabled: boolean
 	filterOpen: boolean
 }
 
@@ -84,6 +85,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		redirect: null,
 		rowsPerPage: 5,
 		filters: [],
+		filtersDisabled: true,
 		filterOpen: false,
 	}
 
@@ -95,8 +97,11 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		this.setState({ filterOpen: false })
 	}
 
-	handleFilterChange = (filters: ITableFilter[]) => {
-		this.setState({ filters })
+	handleFilterChange = (filters: ITableFilter[], disabled: boolean) => {
+		this.setState({
+			filters,
+			filtersDisabled: disabled
+		})
 	}
 
 	isSelectable = (): boolean => {
@@ -261,7 +266,8 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		const { selected } = this.props
 		const numSelected: number = selected ? selected.length : 0
 		const selectable: boolean = this.isSelectable()
-		const data: any[] = (this.props.searchable && this.state.tableQuery.length) || this.state.filters.length ? (
+		const data: any[] = (this.props.searchable && this.state.tableQuery.length)
+		|| (this.state.filters.length && !this.state.filtersDisabled) ? (
 			this.filterTableData()
 		) : (
 			this.props.data
@@ -288,6 +294,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 							columns={this.props.columns}
 							actions={this.props.actions}
 							filters={this.state.filters}
+							filtersDisabled={this.state.filtersDisabled}
 							handleInvertSelection={this.handleInvertSelection}
 							handleFilterOpen={this.handleFilterOpen}
 							handleFilterClose={this.handleFilterClose}

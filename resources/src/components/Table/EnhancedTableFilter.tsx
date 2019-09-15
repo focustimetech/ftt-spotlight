@@ -59,12 +59,14 @@ interface IProps {
 
 interface IState {
 	disabled: boolean
+	error: boolean
 	filters: ITableFilter[]
 }
 
 export class EnhancedTableFilter extends React.Component<IProps, IState> {
 	state: IState = {
 		disabled: this.props.disabled,
+		error: false,
 		filters: this.props.filters.length ? this.props.filters : [this.newFilter()]
 	}
 
@@ -96,12 +98,21 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 	}
 
 	onApplyFilters = () => {
-		this.props.handleFilterChange(this.state.filters, this.state.disabled)
+		this.setState({ error: false })
+		if (this.allFiltersValid() || this.state.disabled) {
+			this.setState({ error: false })
+			this.props.handleFilterChange(this.state.filters, this.state.disabled)
+			return true
+		}
+		else {
+			this.setState({ error: true })
+			return false
+		}
 	}
 
 	onUpdateFilters = () => {
-		this.onApplyFilters()
-		this.handleClose()
+		if (this.onApplyFilters())
+			this.handleClose()
 	}
 
 	onCancelFilters = () => {
@@ -202,7 +213,10 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 
 	toggleDisabled = () => {
 		this.setState((state: IState) => {
-			return { disabled: !state.disabled }
+			return {
+				disabled: !state.disabled,
+				error: false
+			}
 		})
 	}
 
@@ -238,6 +252,7 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 							) : (
 								numericFilterRules
 							)
+							const errored: boolean = this.state.error && filter.value.length === 0
 
 							return (
 								<li key={idx} className='filter-rule'>
@@ -275,6 +290,8 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 										placeholder='Filter value'
 										onChange={(event: any) => this.handleChangeFilterValue(event.target.value, idx)}
 										value={filter.value}
+										error={errored}
+										helperText={errored ? 'This field cannot be empty.' : undefined}
 										disabled={this.state.disabled}
 									/>
 									<IconButton onClick={() => this.onDuplicateFilter(idx)} disabled={this.state.disabled}>

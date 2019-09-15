@@ -275,7 +275,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 
 		return (
 			<div className='enhanced-table'>
-				{this.props.data.length == 0 && this.props.showEmptyTable !== false ? (
+				{this.props.data.length === 0 && !this.props.loading && this.props.showEmptyTable !== false ? (
 					<div className='empty-state'>
 						<EmptyStateIcon variant='file'>
 							<h3>{`${this.props.title ? `${this.props.title} table` : 'Table'} is empty.`}</h3>

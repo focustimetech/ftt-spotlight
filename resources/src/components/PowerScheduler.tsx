@@ -1,21 +1,51 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import DateFnsUtils from '@date-io/date-fns'
 
 import {
     Button,
+    Chip,
     DialogContent,
+    Divider,
+    ExpansionPanel,
+    ExpansionPanelActions,
+    ExpansionPanelDetails,
+    ExpansionPanelSummary,
+    Icon,
+    List,
+    ListItem,
+    Paper,
     Step,
     StepContent,
     StepLabel,
     Stepper,
+    Typography
 
 } from '@material-ui/core'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { TopNav } from './TopNav'
 import { EnhancedTable } from './Table/EnhancedTable'
 import { fetchStudents } from '../actions/studentActions'
 import { IStudent } from '../types/student'
 import { ITableHeaderColumn } from '../types/table'
+import { IBlock } from '../types/calendar'
+
+const emptyDateBlock: IDateBlock = {
+    date: new Date(),
+    dateString: new Date().toISOString(),
+    blocks: [{
+        id: 0,
+        flex: false,
+        label: 'Block 1'
+    }]
+}
+
+interface IDateBlock {
+    date: Date
+    dateString: string
+    blocks: IBlock[]
+}
 
 interface ReduxProps {
     students: IStudent[]
@@ -27,6 +57,10 @@ interface IProps extends ReduxProps {
 }
 
 interface IState {
+    date: Date
+    dateBlocks: IDateBlock[]
+    datePickerOpen: boolean
+    expandedDateBlock: number
     loadingStudents: boolean
     selectedStudents: number[]
     step: number
@@ -35,9 +69,13 @@ interface IState {
 
 class CreatePowerScheduleForm extends React.Component<IProps, IState> {
     state: IState = {
+        date: new Date(),
+        dateBlocks: [emptyDateBlock],
+        datePickerOpen: false,
+        expandedDateBlock: null,
         selectedStudents: [],
         loadingStudents: false,
-        step: 0,
+        step: 1,
         uploading: false
     }
 
@@ -55,6 +93,24 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
 
     handleSetSelected = (selectedStudents: number[]) => {
         this.setState({ selectedStudents })
+    }
+
+    handleDatePickerSelect = (date: Date) => {
+        this.setState({ date })
+    }
+
+    handleDatePickerOpen = () => {
+        this.setState({ datePickerOpen: true })
+    }
+
+    handleDatePickerClose = () => {
+        this.setState({ datePickerOpen: false })
+    }
+
+    handleDateBlockClick = (index: number) => {
+        this.setState((state: IState) => ({
+            expandedDateBlock: state.expandedDateBlock === index ? null : index
+        }))
     }
 
     componentDidMount() {
@@ -120,6 +176,15 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
         return (
             <>
                 <div className='content' id='content'>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <DatePicker
+                            open={this.state.datePickerOpen}
+                            onClose={() => this.handleDatePickerClose()}
+                            value={this.state.date}
+                            onChange={this.handleDatePickerSelect}
+                            TextFieldComponent={() => null}
+                        />
+                    </MuiPickersUtilsProvider>
                     <TopNav><h3>Power Scheduler</h3></TopNav>
                     <Stepper activeStep={this.state.step} orientation='vertical'>
                         <Step key={0}>
@@ -149,6 +214,33 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                             <StepLabel>Select Date and Blocks</StepLabel>
                             <StepContent>
                                 <p>Select date and blocks.</p>
+                                {this.state.dateBlocks.map((dateBlock: IDateBlock, index: number) => (
+                                    <ExpansionPanel
+                                        className='expansion-panel'
+                                        expanded={this.state.expandedDateBlock === index}
+                                        key={index}>
+                                        <ExpansionPanelSummary
+                                            className='expansion-panel__summary'
+                                            expandIcon={<Icon>expand_more</Icon>}
+                                            onClick={() => this.handleDateBlockClick(index)}
+                                        >
+                                            <Typography className='expansion-panel__heading' variant='body1'>
+                                                {dateBlock.dateString}
+                                            </Typography>
+                                            <div className='expansion-panel__chips'>
+                                                <Chip label='Hello World' />
+                                                <Chip label='Hello World' />
+                                                <Chip label='Hello World' />
+                                                <Chip label='Hello World' />
+                                                <Chip label='Hello World' />
+                                            </div>
+                                        </ExpansionPanelSummary>
+                                        <ExpansionPanelDetails>These are some details</ExpansionPanelDetails>
+                                        <ExpansionPanelActions>
+                                            <Button variant='text'>Delete</Button>
+                                        </ExpansionPanelActions>
+                                    </ExpansionPanel>
+                                ))}
                                 <div className='stepper-actions'>
                                     <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
                                     <Button

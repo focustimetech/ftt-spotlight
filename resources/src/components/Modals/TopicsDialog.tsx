@@ -33,7 +33,6 @@ const emptyTopic: ITopicRequest = {
 
 interface ReduxProps {
     topics: ITopic[]
-    newTopic: ITopic
     createTopic: (topic: ITopicRequest) => Promise<any>
     deleteTopic: (topicID: number) => Promise<any>
     fetchTopics: () => Promise<any>
@@ -163,12 +162,6 @@ class TopicsDialog extends React.Component<IProps, IState> {
             })
     }
 
-    componentWillReceiveProps(nextProps: IProps) {
-		if (nextProps.newTopic && !isEmpty(nextProps.newTopic)) {
-            this.props.topics.unshift(nextProps.newTopic)
-		}
-	}
-
     render() {
         return (
             <>
@@ -274,8 +267,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
-    topics: state.topics.items,
-    newTopic: state.topics.item
+    topics: state.topics.items
 })
 
 const mapDispatchToProps = {

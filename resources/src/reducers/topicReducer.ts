@@ -22,6 +22,7 @@ export const topicReducer = (state = initialState, action: ReduxAction<ITopic>) 
         case NEW_TOPIC:
             return {
                 ...state,
+                item: action.payload,
                 items: [...state.items, action.payload]
             }
         case DELETE_TOPIC:

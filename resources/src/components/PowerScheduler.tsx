@@ -19,7 +19,11 @@ import {
     StepContent,
     StepLabel,
     Stepper,
-    Typography
+    Typography,
+    FormControlLabel,
+    Checkbox,
+    Radio,
+    TextField
 
 } from '@material-ui/core'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
@@ -31,20 +35,16 @@ import { IStudent } from '../types/student'
 import { ITableHeaderColumn } from '../types/table'
 import { IBlock } from '../types/calendar'
 
-const emptyDateBlock: IDateBlock = {
-    date: new Date(),
-    dateString: new Date().toISOString(),
-    blocks: [{
-        id: 0,
-        flex: false,
-        label: 'Block 1'
-    }]
+interface IDateRange {
+    start: Date
+    end: Date
+    [key: string]: any
 }
 
-interface IDateBlock {
-    date: Date
-    dateString: string
-    blocks: IBlock[]
+interface IBlockRange {
+    start: IBlock
+    end: IBlock
+    [key: string]: any
 }
 
 interface ReduxProps {
@@ -57,32 +57,40 @@ interface IProps extends ReduxProps {
 }
 
 interface IState {
+    blockRange: IBlockRange
     date: Date
-    dateBlocks: IDateBlock[]
-    datePickerOpen: boolean
-    expandedDateBlock: number
+    datePickerOpen: 'start' | 'end' | null
+    dateRange: IDateRange
     loadingStudents: boolean
+    memo: string
     selectedStudents: number[]
     step: number
     uploading: boolean
 }
 
+const initialState: IState = {
+    blockRange: { start: null, end: null },
+    date: new Date(),
+    datePickerOpen: null,
+    dateRange: { start: new Date(), end: new Date()},
+    selectedStudents: [],
+    loadingStudents: false,
+    memo: '',
+    step: 0,
+    uploading: false,
+}
+
 class CreatePowerScheduleForm extends React.Component<IProps, IState> {
-    state: IState = {
-        date: new Date(),
-        dateBlocks: [emptyDateBlock],
-        datePickerOpen: false,
-        expandedDateBlock: null,
-        selectedStudents: [],
-        loadingStudents: false,
-        step: 1,
-        uploading: false
-    }
+    state: IState = initialState
 
     handleNextStep = () => {
         this.setState((state: IState) => ({
             step: state.step + 1
         }))
+    }
+
+    handleResetStep = () => {
+        this.setState({ step: 0 })
     }
 
     handlePreviousStep = () => {
@@ -95,22 +103,18 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
         this.setState({ selectedStudents })
     }
 
-    handleDatePickerSelect = (date: Date) => {
-        this.setState({ date })
+    handleDatePickerSelect = (date: Date, key: 'start' | 'end') => {
+        if (!key)
+            return
+        this.setState((state: IState) => {
+            return {
+                dateRange: { ...state.dateRange, [key]: date }
+            }
+        })
     }
 
-    handleDatePickerOpen = () => {
-        this.setState({ datePickerOpen: true })
-    }
-
-    handleDatePickerClose = () => {
-        this.setState({ datePickerOpen: false })
-    }
-
-    handleDateBlockClick = (index: number) => {
-        this.setState((state: IState) => ({
-            expandedDateBlock: state.expandedDateBlock === index ? null : index
-        }))
+    handleMemoChange = (event: any) => {
+        this.setState({ memo: event.target.value })
     }
 
     componentDidMount() {
@@ -176,15 +180,6 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
         return (
             <>
                 <div className='content' id='content'>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <DatePicker
-                            open={this.state.datePickerOpen}
-                            onClose={() => this.handleDatePickerClose()}
-                            value={this.state.date}
-                            onChange={this.handleDatePickerSelect}
-                            TextFieldComponent={() => null}
-                        />
-                    </MuiPickersUtilsProvider>
                     <TopNav><h3>Power Scheduler</h3></TopNav>
                     <Stepper activeStep={this.state.step} orientation='vertical'>
                         <Step key={0}>
@@ -213,34 +208,31 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                         <Step key={1}>
                             <StepLabel>Select Date and Blocks</StepLabel>
                             <StepContent>
-                                <p>Select date and blocks.</p>
-                                {this.state.dateBlocks.map((dateBlock: IDateBlock, index: number) => (
-                                    <ExpansionPanel
-                                        className='expansion-panel'
-                                        expanded={this.state.expandedDateBlock === index}
-                                        key={index}>
-                                        <ExpansionPanelSummary
-                                            className='expansion-panel__summary'
-                                            expandIcon={<Icon>expand_more</Icon>}
-                                            onClick={() => this.handleDateBlockClick(index)}
-                                        >
-                                            <Typography className='expansion-panel__heading' variant='body1'>
-                                                {dateBlock.dateString}
-                                            </Typography>
-                                            <div className='expansion-panel__chips'>
-                                                <Chip label='Hello World' />
-                                                <Chip label='Hello World' />
-                                                <Chip label='Hello World' />
-                                                <Chip label='Hello World' />
-                                                <Chip label='Hello World' />
-                                            </div>
-                                        </ExpansionPanelSummary>
-                                        <ExpansionPanelDetails>These are some details</ExpansionPanelDetails>
-                                        <ExpansionPanelActions>
-                                            <Button variant='text'>Delete</Button>
-                                        </ExpansionPanelActions>
-                                    </ExpansionPanel>
-                                ))}
+                                <p>Select the start and end date and block for the schedule.</p>
+                                <div className='power-scheduler__date'>
+                                    <Typography variant='h6'>Start</Typography>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <DatePicker
+                                            name='start'
+                                            variant='inline'
+                                            label='Start date'
+                                            value={this.state.dateRange.start}
+                                            onChange={(date: Date) => this.handleDatePickerSelect(date, 'start')}
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                                <div className='power-scheduler__date'>
+                                    <Typography variant='h6'>End</Typography>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <DatePicker
+                                            name='end'
+                                            variant='inline'
+                                            label='End date'
+                                            value={this.state.dateRange.end}
+                                            onChange={(date: Date) => this.handleDatePickerSelect(date, 'end')}
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                </div>
                                 <div className='stepper-actions'>
                                     <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
                                     <Button
@@ -248,6 +240,58 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                                         color='primary'
                                         onClick={() => this.handleNextStep()}
                                     >Next</Button>
+                                </div>
+                            </StepContent>
+                        </Step>
+                        <Step key={2}>
+                            <StepLabel>Select scheduling type</StepLabel>
+                            <StepContent>
+                                <FormControlLabel
+                                    label='Appointment'
+                                    control={<Radio checked={true} />}
+                                />
+                                <TextField
+                                    variant='filled'
+                                    label='Memo'
+                                    placeholder='Schedule change purpose'
+                                    value={this.state.memo}
+                                    onChange={this.handleMemoChange}
+                                />
+                                 <div className='stepper-actions'>
+                                    <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        disabled={this.state.memo.length === 0}
+                                        onClick={() => this.handleNextStep()}
+                                    >Next</Button>
+                                </div>
+                            </StepContent>
+                        </Step>
+                        <Step key={3}>
+                            <StepLabel>Confirm schedule change</StepLabel>
+                            <StepContent>
+                                <p>Confirm here</p>
+                                <div className='stepper-actions'>
+                                    <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        onClick={() => this.handleNextStep()}
+                                    >Next</Button>
+                                </div>
+                            </StepContent>
+                        </Step>
+                        <Step key={4} completed={this.state.step >= 4}>
+                            <StepLabel>Done</StepLabel>
+                            <StepContent>
+                                <p>All done! The schedule change has been processes successfully.</p>
+                                <div className='stepper-actions'>
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        onClick={() => this.handleResetStep()}
+                                    >Create Another</Button>
                                 </div>
                             </StepContent>
                         </Step>

@@ -1,4 +1,6 @@
 import { FETCH_TOPICS, NEW_TOPIC, DELETE_TOPIC } from '../actions/types'
+import { ReduxAction } from '../types/app'
+import { ITopic } from '../types/calendar'
 
 interface IState {
     items: any[]
@@ -10,12 +12,7 @@ const initialState: IState = {
     item: {}
 }
 
-interface IAction {
-    type: string
-    payload: any
-}
-
-export const topicReducer = (state = initialState, action: IAction) => {
+export const topicReducer = (state = initialState, action: ReduxAction<ITopic>) => {
     switch (action.type) {
         case FETCH_TOPICS:
             return {
@@ -25,7 +22,7 @@ export const topicReducer = (state = initialState, action: IAction) => {
         case NEW_TOPIC:
             return {
                 ...state,
-                item: action.payload
+                items: [...state.items, action.payload]
             }
         case DELETE_TOPIC:
             return {

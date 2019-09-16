@@ -4,17 +4,6 @@ import DateFnsUtils from '@date-io/date-fns'
 
 import {
     Button,
-    Chip,
-    DialogContent,
-    Divider,
-    ExpansionPanel,
-    ExpansionPanelActions,
-    ExpansionPanelDetails,
-    ExpansionPanelSummary,
-    Icon,
-    List,
-    ListItem,
-    Paper,
     Step,
     StepContent,
     StepLabel,
@@ -30,7 +19,9 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { TopNav } from './TopNav'
 import { EnhancedTable } from './Table/EnhancedTable'
+import { fetchStaff } from '../actions/staffActions'
 import { fetchStudents } from '../actions/studentActions'
+import { IStaff } from '../types/staff'
 import { IStudent } from '../types/student'
 import { ITableHeaderColumn } from '../types/table'
 import { IBlock } from '../types/calendar'
@@ -48,7 +39,9 @@ interface IBlockRange {
 }
 
 interface ReduxProps {
+    staff: IStaff[]
     students: IStudent[]
+    fetchStaff: () => Promise<any>
     fetchStudents: () => Promise<any>
 }
 
@@ -61,8 +54,10 @@ interface IState {
     date: Date
     datePickerOpen: 'start' | 'end' | null
     dateRange: IDateRange
+    loadingStaff: boolean
     loadingStudents: boolean
     memo: string
+    selectedStaff: number[]
     selectedStudents: number[]
     step: number
     uploading: boolean
@@ -73,7 +68,9 @@ const initialState: IState = {
     date: new Date(),
     datePickerOpen: null,
     dateRange: { start: new Date(), end: new Date()},
+    selectedStaff: [],
     selectedStudents: [],
+    loadingStaff: false,
     loadingStudents: false,
     memo: '',
     step: 0,
@@ -99,8 +96,12 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
         }))
     }
 
-    handleSetSelected = (selectedStudents: number[]) => {
+    handleSetStudentSelected = (selectedStudents: number[]) => {
         this.setState({ selectedStudents })
+    }
+
+    handleSetStaffSelected = (selectedStaff: number[]) => {
+        this.setState({ selectedStaff })
     }
 
     handleDatePickerSelect = (date: Date, key: 'start' | 'end') => {
@@ -118,10 +119,17 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.setState({ loadingStudents: true })
+        this.setState({
+            loadingStaff: true,
+            loadingStudents: true
+        })
         this.props.fetchStudents()
             .then(() => {
                 this.setState({ loadingStudents: false })
+            })
+        this.props.fetchStaff()
+            .then(() => {
+                this.setState({ loadingStaff: false })
             })
     }
 
@@ -165,6 +173,35 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
             }
         ]
 
+        const staffTableColumns: ITableHeaderColumn[] = [
+            {
+                id: 'name',
+                label: 'Name',
+                th: true,
+                isNumeric: false,
+                disablePadding: true,
+                searchable: false,
+                filterable: false,
+                visible: true
+            },
+            {
+                id: 'last_name',
+                label: 'Last Name',
+                isNumeric: false,
+                searchable: true,
+                filterable: true,
+                visible: false
+            },
+            {
+                id: 'first_name',
+                label: 'First Name',
+                isNumeric: false,
+                searchable: true,
+                filterable: true,
+                visible: false
+            }
+        ]
+
         const students = this.props.students ? (
             this.props.students.map((student: IStudent) => {
                 return {
@@ -173,6 +210,17 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                     last_name: student.last_name,
                     first_name: student.first_name,
                     grade: student.grade
+                }
+            })
+        ) : []
+
+        const staff = this.props.staff ? (
+            this.props.staff.map((staff: IStaff) => {
+                return {
+                    id: staff.id,
+                    name: staff.name,
+                    last_name: staff.last_name,
+                    first_name: staff.first_name
                 }
             })
         ) : []
@@ -191,7 +239,7 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                                     loading={this.state.loadingStudents}
                                     columns={studentTableColumns}
                                     data={students}
-                                    onSelect={this.handleSetSelected}
+                                    onSelect={this.handleSetStudentSelected}
                                     selected={this.state.selectedStudents}
                                     searchable
                                 />
@@ -248,7 +296,7 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                             <StepContent>
                                 <FormControlLabel
                                     label='Appointment'
-                                    control={<Radio checked={true} />}
+                                    control={<Radio checked={true} color='primary'/>}
                                 />
                                 <TextField
                                     variant='filled'
@@ -257,12 +305,23 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                                     value={this.state.memo}
                                     onChange={this.handleMemoChange}
                                 />
-                                 <div className='stepper-actions'>
+                                <p>Select the staff member for the Appointment.</p>
+                                <EnhancedTable
+                                    title='Staff'
+                                    loading={this.state.loadingStaff}
+                                    columns={staffTableColumns}
+                                    data={staff}
+                                    onSelect={this.handleSetStaffSelected}
+                                    selected={this.state.selectedStaff}
+                                    searchable
+                                    radio
+                                />
+                                <div className='stepper-actions'>
                                     <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
                                     <Button
                                         variant='contained'
                                         color='primary'
-                                        disabled={this.state.memo.length === 0}
+                                        disabled={this.state.memo.length === 0 || this.state.selectedStaff.length === 0}
                                         onClick={() => this.handleNextStep()}
                                     >Next</Button>
                                 </div>
@@ -302,10 +361,11 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
     }
 }
 
-const mapDispatchToProps = { fetchStudents }
+const mapDispatchToProps = { fetchStaff, fetchStudents }
 
 const mapStateToProps = (state: any) => ({
-    students: state.students.items
+    students: state.students.items,
+    staff: state.staff.items
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreatePowerScheduleForm)

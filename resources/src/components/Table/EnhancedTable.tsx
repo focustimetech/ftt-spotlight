@@ -6,6 +6,7 @@ import {
 	Checkbox,
 	Icon,
 	Paper,
+	Radio,
 	Table,
 	TableBody,
 	TableCell,
@@ -50,6 +51,7 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 }
 
 type SortOrder = 'asc' | 'desc'
+
 interface IProps {
 	columns: ITableHeaderColumn[]
 	data: any[]
@@ -57,6 +59,7 @@ interface IProps {
 	actions?: ITableAction[]
 	children?: any
 	link?: ITableLink
+	radio?: boolean
 	searchable?: boolean
 	selected?: number[]
 	showEmptyTable?: boolean
@@ -159,20 +162,22 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	handleSelectAllClick = (event: any) => {
+		if (!this.props.onSelect)
+			return
 		let newSelected: number[] = []
-		if (event.target.checked) {
+		if (event.target.checked && this.props.radio !== true) {
 			newSelected =  this.state.filters.length || this.state.tableQuery.length ? (
 				this.filterTableData().map(n => n.id)
 			) : (
 				this.props.data.map(n => n.id)
 			)
 		}
-		if (this.props.onSelect)
-			this.props.onSelect(newSelected)
+		
+		this.props.onSelect(newSelected)
 	}
 
 	handleInvertSelection = () => {
-		if (!this.isSelectable())
+		if (!this.isSelectable() || this.props.radio)
 			return
 		const newSelected: number[] = this.props.data.map(n => n.id).filter((index: number) => {
 			return this.props.selected.indexOf(index) < 0
@@ -183,19 +188,23 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	handleClick = (id: number) => {
 		if (!this.isSelectable())
 			return
-		const { selected } = this.props
-		const selectedIndex = selected.indexOf(id)
 		let newSelected: number[] = []
+		if (this.props.radio)
+			newSelected = [id]
+		else {
+			const { selected } = this.props
+			const selectedIndex = selected.indexOf(id)
 
-		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selected, id)
-		} else if (selectedIndex === 0) {
-			newSelected = newSelected.concat(selected.slice(1))
-		} else if (selectedIndex > 0) {
-			newSelected = newSelected.concat(
-				selected.slice(0, selectedIndex),
-				selected.slice(selectedIndex + 1),
-			)
+			if (selectedIndex === -1) {
+				newSelected = newSelected.concat(selected, id)
+			} else if (selectedIndex === 0) {
+				newSelected = newSelected.concat(selected.slice(1))
+			} else if (selectedIndex > 0) {
+				newSelected = newSelected.concat(
+					selected.slice(0, selectedIndex),
+					selected.slice(selectedIndex + 1),
+				)
+			}
 		}
 
 		this.props.onSelect(newSelected)
@@ -308,16 +317,17 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						<div>
 							<Table>
 								<EnhancedTableHead
-									numSelected={numSelected}
-									order={order}
-									orderBy={orderBy}
-									onSelectAllClick={this.handleSelectAllClick}
-									onRequestSort={this.handleRequestSort}
-									rowCount={data.length}
-									selectable={selectable}
 									columns={this.props.columns}
 									link={this.props.link}
 									loading={this.props.loading}
+									numSelected={numSelected}
+									order={order}
+									orderBy={orderBy}
+									onRequestSort={this.handleRequestSort}
+									onSelectAllClick={this.handleSelectAllClick}
+									radio={this.props.radio}
+									rowCount={data.length}
+									selectable={selectable}
 								/>
 								<TableBody className='enhanced-table__table-body'>
 									{this.props.loading ? (
@@ -342,7 +352,11 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 												>
 													{selectable && (
 														<TableCell padding={'checkbox'}>
-															<Checkbox checked={isSelected} color='primary'/>
+															{this.props.radio ? (
+																<Radio checked={isSelected} color='primary'/>
+															) : (
+																<Checkbox checked={isSelected} color='primary'/>
+															)}
 														</TableCell>
 													)}
 													{columns.map((column: ITableHeaderColumn, index: number) => {

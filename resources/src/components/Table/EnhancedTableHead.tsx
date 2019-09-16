@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import {
 	Checkbox,
+	Radio,
 	TableCell,
 	TableHead,
 	TableRow,
@@ -12,16 +13,17 @@ import {
 import { ITableHeaderColumn, ITableLink } from '../../types/table'
 
 interface IProps {
+	columns: ITableHeaderColumn[]
 	numSelected: number
-	onRequestSort: (property: string) => void
-	onSelectAllClick: (event: any) => void
 	order: 'asc' |'desc'
 	orderBy: string
-	columns: ITableHeaderColumn[]
 	loading: boolean
-	link?: ITableLink
 	rowCount: number
-	selectable: boolean	
+	selectable: boolean
+	link?: ITableLink
+	radio?: boolean
+	onRequestSort: (property: string) => void
+	onSelectAllClick: (event: any) => void
 }
 
 export const EnhancedTableHead = (props: IProps) => {
@@ -33,17 +35,26 @@ export const EnhancedTableHead = (props: IProps) => {
 	const createSortHandler = (property: string) => {
 		props.onRequestSort(property)
 	}
+
 	return (
 		<TableHead>
 			<TableRow>
 				{selectable && (
 					<TableCell padding='checkbox'>
-						<Checkbox
-							indeterminate={numSelected > 0 && numSelected < rowCount}
-							checked={numSelected === rowCount}
-							onChange={onSelectAllClick}
-							color='primary'
-						/>
+						{props.radio ? (
+							<Radio
+								checked={numSelected > 0}
+								onClick={onSelectAllClick}
+								color='primary'
+							/>
+						) : (
+							<Checkbox
+								indeterminate={numSelected > 0 && numSelected < rowCount}
+								checked={numSelected === rowCount}
+								onChange={onSelectAllClick}
+								color='primary'
+							/>
+						)}
 					</TableCell>
 				)}
 				{columns.map((column: ITableHeaderColumn, index: number) => (

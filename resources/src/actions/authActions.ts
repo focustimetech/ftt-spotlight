@@ -1,5 +1,4 @@
 import axios from 'axios'
-import * as jwt from 'jsonwebtoken'
 
 import { SET_CURRENT_USER } from './types'
 import { IUser } from '../types/auth'

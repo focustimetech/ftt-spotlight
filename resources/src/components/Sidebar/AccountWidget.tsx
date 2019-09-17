@@ -10,6 +10,7 @@ import {
     Typography
 } from '@material-ui/core'
 
+import { LoadingMenuItem } from '../Form/LoadingMenuItem'
 import { NavItem } from '../Sidebar/NavItem'
 import { logout } from '../../actions/authActions'
 import { IUser } from '../../types/auth'
@@ -81,7 +82,10 @@ class AccountWidget extends React.Component<IProps, IState> {
                         <h5>{this.props.currentUser.display_role}</h5>
                     </div>
                     <Link to={profileLink}><MenuItem>Profile</MenuItem></Link>
-                    <MenuItem onClick={() => this.handleSignOut()}>Sign Out</MenuItem>
+                    <LoadingMenuItem
+                        onClick={() => this.handleSignOut()}
+                        loading={this.state.loadingSignOut}
+                    >Sign Out</LoadingMenuItem>
                 </Menu>
             </>
         )

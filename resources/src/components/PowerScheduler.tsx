@@ -56,6 +56,7 @@ interface IState {
     dateRange: IDateRange
     loadingStaff: boolean
     loadingStudents: boolean
+    loadingSubmit: boolean
     memo: string
     selectedStaff: number[]
     selectedStudents: number[]
@@ -72,6 +73,7 @@ const initialState: IState = {
     selectedStudents: [],
     loadingStaff: false,
     loadingStudents: false,
+    loadingSubmit: false,
     memo: '',
     step: 0,
     uploading: false,
@@ -116,6 +118,10 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
 
     handleMemoChange = (event: any) => {
         this.setState({ memo: event.target.value })
+    }
+
+    onSubmit = () => {
+        this.setState({ loadingSubmit: true })
     }
 
     componentDidMount() {
@@ -256,9 +262,8 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                         <Step key={1}>
                             <StepLabel>Select Date and Blocks</StepLabel>
                             <StepContent>
-                                <p>Select the start and end date and block for the schedule.</p>
+                                <p>Select the date for the schedule change.</p>
                                 <div className='power-scheduler__date'>
-                                    <Typography variant='h6'>Start</Typography>
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                         <DatePicker
                                             name='start'
@@ -266,18 +271,6 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                                             label='Start date'
                                             value={this.state.dateRange.start}
                                             onChange={(date: Date) => this.handleDatePickerSelect(date, 'start')}
-                                        />
-                                    </MuiPickersUtilsProvider>
-                                </div>
-                                <div className='power-scheduler__date'>
-                                    <Typography variant='h6'>End</Typography>
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                        <DatePicker
-                                            name='end'
-                                            variant='inline'
-                                            label='End date'
-                                            value={this.state.dateRange.end}
-                                            onChange={(date: Date) => this.handleDatePickerSelect(date, 'end')}
                                         />
                                     </MuiPickersUtilsProvider>
                                 </div>

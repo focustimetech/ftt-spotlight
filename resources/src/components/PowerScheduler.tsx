@@ -19,6 +19,7 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { TopNav } from './TopNav'
 import { EnhancedTable } from './Table/EnhancedTable'
+import { LoadingButton } from './Form/LoadingButton'
 import { fetchStaff } from '../actions/staffActions'
 import { fetchStudents } from '../actions/studentActions'
 import { IStaff } from '../types/staff'
@@ -45,9 +46,7 @@ interface ReduxProps {
     fetchStudents: () => Promise<any>
 }
 
-interface IProps extends ReduxProps {
-    onSubmit: () => Promise<any>
-}
+interface IProps extends ReduxProps {}
 
 interface IState {
     blockRange: IBlockRange
@@ -120,7 +119,7 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
         this.setState({ memo: event.target.value })
     }
 
-    onSubmit = () => {
+    handleSubmit = () => {
         this.setState({ loadingSubmit: true })
     }
 
@@ -311,39 +310,13 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                                 />
                                 <div className='stepper-actions'>
                                     <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
-                                    <Button
+                                    <LoadingButton
                                         variant='contained'
                                         color='primary'
+                                        loading={this.state.loadingSubmit}
                                         disabled={this.state.memo.length === 0 || this.state.selectedStaff.length === 0}
-                                        onClick={() => this.handleNextStep()}
-                                    >Next</Button>
-                                </div>
-                            </StepContent>
-                        </Step>
-                        <Step key={3}>
-                            <StepLabel>Confirm schedule change</StepLabel>
-                            <StepContent>
-                                <p>Confirm here</p>
-                                <div className='stepper-actions'>
-                                    <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
-                                    <Button
-                                        variant='contained'
-                                        color='primary'
-                                        onClick={() => this.handleNextStep()}
-                                    >Next</Button>
-                                </div>
-                            </StepContent>
-                        </Step>
-                        <Step key={4} completed={this.state.step >= 4}>
-                            <StepLabel>Done</StepLabel>
-                            <StepContent>
-                                <p>All done! The schedule change has been processes successfully.</p>
-                                <div className='stepper-actions'>
-                                    <Button
-                                        variant='contained'
-                                        color='primary'
-                                        onClick={() => this.handleResetStep()}
-                                    >Create Another</Button>
+                                        onClick={() => this.handleSubmit()}
+                                    >Submit</LoadingButton>
                                 </div>
                             </StepContent>
                         </Step>

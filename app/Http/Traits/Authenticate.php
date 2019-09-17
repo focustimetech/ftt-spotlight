@@ -5,6 +5,7 @@ namespace App\Http\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\User;
+use App\Exceptions\UserNotFoundException;
 
 trait Authenticate
 {
@@ -13,7 +14,14 @@ trait Authenticate
         $http = new \GuzzleHttp\Client;
 
         try {
-            $user = User::findByUsername($request->username);
+            try {
+                $user = User::findByUsername($request->username);
+            } catch (UserNotFoundException $e) {
+                return response()->json([
+                    'type' => 'username',
+                    'message' => 'The user could not be found. Please check with your administrator.'
+                ], 404);
+            }
             $user_role = $user->getRole();
 
             $request->request->add([
@@ -56,7 +64,7 @@ trait Authenticate
 
         $response = $this->login($request);
         if ($response->status() === 200) {
-            return response()->json('Verified user successfully');
+            return response()->json('Verified user successfully', 200);
         } else {
             return $response;
         }

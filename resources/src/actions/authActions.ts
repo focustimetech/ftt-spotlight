@@ -9,6 +9,19 @@ interface ICredentials {
     password: string
 }
 
+export const getCurrentUser = () => {
+    return (dispatch: any) => {
+        return axios.get('/api/user')
+            .then(res => {
+                const user: IUser = res.data
+                dispatch({
+                    type: SET_CURRENT_USER,
+                    payload: user
+                })
+            }) 
+    }
+}
+
 export const login = (credentials: ICredentials) => {
     return (dispatch: any) => {
         return axios.post('/api/login', credentials)
@@ -20,15 +33,8 @@ export const login = (credentials: ICredentials) => {
     }
 }
 
-export const getCurrentUser = () => {
+export const logout = () => {
     return (dispatch: any) => {
-        return axios.get('/api/user')
-            .then(res => {
-                const user: IUser = res.data
-                dispatch({
-                    type: SET_CURRENT_USER,
-                    payload: user
-                })
-            }) 
+        return axios.post('/api/logout')
     }
 }

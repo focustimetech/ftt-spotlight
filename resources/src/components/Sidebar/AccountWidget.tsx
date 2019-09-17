@@ -11,10 +11,12 @@ import {
 } from '@material-ui/core'
 
 import { NavItem } from '../Sidebar/NavItem'
+import { logout } from '../../actions/authActions'
 import { IUser } from '../../types/auth'
 
 interface ReduxProps {
     currentUser: IUser
+    logout: () => Promise<any>
 }
 
 interface IProps extends ReduxProps {
@@ -22,11 +24,13 @@ interface IProps extends ReduxProps {
 }
 
 interface IState {
+    loadingSignOut: boolean
     menuRef: any
 }
 
 class AccountWidget extends React.Component<IProps, IState> {
     state: IState = {
+        loadingSignOut: false,
         menuRef: null
     }
 
@@ -36,6 +40,22 @@ class AccountWidget extends React.Component<IProps, IState> {
 
     handleClose = () => {
         this.setState({ menuRef: null })
+    }
+
+    handleSignOut = () => {
+        this.setState({ loadingSignOut: true })
+        this.props.logout()
+            .then(() => {
+                this.onSignOut()
+            })
+            .catch(() => {
+                this.onSignOut()
+            })
+    }
+
+    onSignOut = () => {
+        this.setState({ loadingSignOut: false })
+        this.props.onSignOut()
     }
 
     render() {
@@ -61,7 +81,7 @@ class AccountWidget extends React.Component<IProps, IState> {
                         <h5>{this.props.currentUser.display_role}</h5>
                     </div>
                     <Link to={profileLink}><MenuItem>Profile</MenuItem></Link>
-                    <MenuItem onClick={() => this.props.onSignOut()}>Sign Out</MenuItem>
+                    <MenuItem onClick={() => this.handleSignOut()}>Sign Out</MenuItem>
                 </Menu>
             </>
         )
@@ -71,6 +91,6 @@ class AccountWidget extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({
     currentUser: state.auth.user
 })
-const mapDispatchToProps = {}
+const mapDispatchToProps = { logout }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountWidget)

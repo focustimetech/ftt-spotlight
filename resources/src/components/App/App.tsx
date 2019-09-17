@@ -28,9 +28,6 @@ import StaffProfile from '../StaffProfile'
 import { Splash } from './Splash'
 import PowerScheduler from '../PowerScheduler'
 
-/**
- * @TODO Create typedefs for Settings
- */
 interface ReduxProps {
 	getCurrentUser: () => any
 	fetchSettings: () => any

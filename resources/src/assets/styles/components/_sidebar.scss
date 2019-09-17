@@ -21,6 +21,7 @@
 		.nav_account {
 			padding: 8px;
 		}
+
 		.nav_button {
 			color: inherit;
 
@@ -115,5 +116,20 @@
 				}
 			}
 		}
+	}
+}
+
+.nav_account_details {
+	padding: 8px 16px;
+
+	h3 {
+		margin: 0;
+		font-weight: 500;
+	}
+
+	h5 {
+		margin: 0;
+		font-weight: 500;
+		color: #888;
 	}
 }

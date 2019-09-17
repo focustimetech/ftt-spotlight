@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core'
 
 import { LoadingButton } from './Form/LoadingButton'
-import { ICredentials } from '../types/auth'
+import { ICredentials, ILoginError } from '../types/auth'
 import { login } from '../actions/authActions'
 
 const selectBackground = () => {
@@ -24,15 +24,18 @@ const selectBackground = () => {
 	return `url('static/images/splash/${imageList[arrayIndex]}')`
 }
 
-interface IProps extends RouteComponentProps {
+interface ReduxProps {
+	login: (credentials: ICredentials) => Promise<any>
+}
+
+interface IProps extends ReduxProps, RouteComponentProps {
 	onSignIn: () => void
-	login: (credentials: ICredentials) => any
 }
 
 interface IState {
 	user: string
 	password: string
-	errors: any[]
+	error: ILoginError | null
 	redirectToReferrer: boolean
 	loading: boolean
 }
@@ -41,7 +44,7 @@ class Login extends React.Component<IProps, IState> {
 	state: IState = {
 		user: '',
 		password: '',
-		errors: [],
+		error: null,
 		redirectToReferrer: false,
 		loading: false
 	}
@@ -50,24 +53,68 @@ class Login extends React.Component<IProps, IState> {
 
 	handleChange = (event: any) => {
 		event.preventDefault()
-		this.setState({ [event.target.name]: event.target.value } as IState)
+		this.setState({
+			[event.target.name]: event.target.value,
+			error: null
+		} as IState)
 	}
-	
-	handleLogin = () => {
+
+	handleLogin = (event: any) => {
+		event.preventDefault()
+		if (!this.validateForm())
+			return
 		this.setState({ loading: true })
 		const credentials: ICredentials = {
 			username: this.state.user,
 			password: this.state.password
 		}
-		this.props.login(credentials).then(
-			(res: any) => {
+		this.props.login(credentials)
+			.then(() => {
 				this.props.onSignIn()
 				this.setState({ redirectToReferrer: true })
-			},
-			(err: any) => {
-				this.setState({ loading: false, errors: err.response.data.errors }, () => null)
-			}
-		)
+			}, (error: any) => {
+				let loginError: ILoginError = null
+				switch (error.response.status) {
+					case 404:
+						loginError = {
+							type: 'username',
+							message: 'The user could not be found. Please check with your administrator.'
+						}
+						break
+					case 401:
+						loginError = {
+							type: 'password',
+							message: 'The given credentials were not correct.'
+						}
+						break
+					case 500:
+					default:
+						loginError = {
+							type: 'username',
+							message: 'The server encountered an error while logging you in. Please try again.'
+						}
+				}
+				this.setState({
+					loading: false,
+					error: loginError
+				})
+			})
+	}
+
+	validateForm = (): boolean => {
+		if (this.state.user.length === 0) {
+			this.setState({
+				error: { type: 'username', message: 'A username is required to log in.' }
+			})
+			return false
+		}
+		if (this.state.password.length === 0) {
+			this.setState({
+				error: { type: 'password', message: 'A password is required to log in.' }
+			})
+			return false
+		}
+		return true
 	}
 
 	componentDidMount() {
@@ -77,10 +124,10 @@ class Login extends React.Component<IProps, IState> {
 
 	render() {
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
-	
 		if (this.state.redirectToReferrer) {
 			return <Redirect to={from} />
 		}
+
 		return (
 			<div className='login-wrap'>
 				<div className='login'>
@@ -99,6 +146,12 @@ class Login extends React.Component<IProps, IState> {
 									name='user'
 									type='text'
 									label='Email or Student Number'
+									error={this.state.error && this.state.error.type === 'username'}
+									helperText={
+										this.state.error && this.state.error.type === 'username'
+											? this.state.error.message
+											: undefined
+									}
 									value={this.state.user}
 									onChange={this.handleChange}
 									margin='normal'
@@ -110,6 +163,12 @@ class Login extends React.Component<IProps, IState> {
 									name='password'
 									type='password'
 									label='Password'
+									error={this.state.error && this.state.error.type === 'password'}
+									helperText={
+										this.state.error && this.state.error.type === 'password'
+											? this.state.error.message
+											: undefined
+									}
 									value={this.state.password}
 									onChange={this.handleChange}
 									margin='normal'
@@ -119,7 +178,7 @@ class Login extends React.Component<IProps, IState> {
 								<DialogActions>
 									<LoadingButton
 										type='submit'
-										onClick={() => this.handleLogin()}
+										onClick={this.handleLogin}
 										color='primary'
 										variant='contained'
 										loading={this.state.loading}
@@ -134,8 +193,7 @@ class Login extends React.Component<IProps, IState> {
 	}
 }
 
-/**
- * @TODO Make an interface for this stuff...
- */
+const mapStateToProps = (state: any) => ({})
+const mapDispatchToProps = { login }
 
-export default connect(null, { login })(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

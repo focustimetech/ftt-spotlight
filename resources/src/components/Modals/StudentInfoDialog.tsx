@@ -35,6 +35,8 @@ const emptyStudentDetails: IStudent = {
     last_name: '',
     grade: GRADES[0],
     student_number: 0,
+    color: 'blue',
+    initials: ''
 }
 
 const defaultListItems: IListItem[] = [

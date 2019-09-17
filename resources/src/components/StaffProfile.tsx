@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as classNames from 'classnames'
 import ContentLoader from 'react-content-loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -29,6 +30,7 @@ import {
 	ITopicSchedule,
 	ICalendarBlockVariant,
 } from '../types/calendar'
+import { ChangePasswordDialog } from './Modals/ChangePasswordDialog'
 import { CancelAppointment } from './Calendar/CancelAppointment'
 import { Calendar } from './Calendar/Calendar'
 import { TopNav } from './TopNav'
@@ -72,6 +74,7 @@ interface IState {
 	cancelAppointment: IAppointment
 	topicsDialogOpen: boolean
 	topcisDialogMode: 'edit' | 'select'
+	passwordDialogOpen: boolean
 	onTopicSelect: (topic: ITopic) => void
 }
 
@@ -90,6 +93,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 		cancelAppointment: null,
 		topicsDialogOpen: false,
 		topcisDialogMode: 'edit',
+		passwordDialogOpen: false,
 		onTopicSelect: () => null
 	}
 
@@ -212,6 +216,18 @@ class StaffProfile extends React.Component<IProps, IState> {
 		this.setState({ onTopicSelect: this.onTopicSet })
 	}
 
+	onPasswordChange = () => {
+		this.props.queueSnackbar({ message: 'Changed password successfully.' })
+	}
+
+	handlePasswordDialogClose = () => {
+		this.setState({ passwordDialogOpen: false })
+	}
+
+	handlePasswordDialogOpen = () => {
+		this.setState({ passwordDialogOpen: true })
+	}
+
 	onTopicSet = (topic: ITopic) => {
 		this.setState({ loadingSetTopic: true })
 		const topicSchedule: ITopicScheduleRequest = {
@@ -273,7 +289,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 			this.props.newStarred.isStarred !== false
 		) : this.props.staff.starred
 
-		const avatarColor = this.props.staff.color || 'red'
+		const avatarColor: string = this.props.staff.color || null
 
 		const { menuRef, editDialogOpen } = this.state
 		const menuOpen: boolean = Boolean(this.state.menuRef) 
@@ -426,6 +442,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 					mode={this.state.topcisDialogMode}
 					onSelect={this.state.onTopicSelect}
 				/>
+				<ChangePasswordDialog
+					open={this.state.passwordDialogOpen}
+					onClose={this.handlePasswordDialogClose}
+					onSuccess={this.onPasswordChange}
+				/>
 				<div className='profile'>
 					<TopNav>
 						<ul>
@@ -441,7 +462,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 									</div>
 								) : (
 									<>
-										<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.staff.initials}</Avatar>
+										<Avatar className={classNames('profile_avatar', `--${avatarColor}`)}>{this.props.staff.initials}</Avatar>
 										<div>
 											<h3 className='name'>
 												{this.props.staff.name}
@@ -464,13 +485,22 @@ class StaffProfile extends React.Component<IProps, IState> {
 						) : (
 							<ul className='right_col'>
 								{isOwner ? (
-									<li>
-										<Tooltip title='Topics'>
-											<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
-												<Icon>school</Icon>
-											</IconButton>
-										</Tooltip>
-									</li>
+									<>
+										<li>
+											<Tooltip title='Topics'>
+												<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
+													<Icon>school</Icon>
+												</IconButton>
+											</Tooltip>
+										</li>
+										<li>
+											<Tooltip title='Change Password'>
+												<IconButton onClick={() => this.handlePasswordDialogOpen()}>
+													<Icon>lock</Icon>
+												</IconButton>
+											</Tooltip>
+										</li>
+									</>
 								) : (
 									<li>
 										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />

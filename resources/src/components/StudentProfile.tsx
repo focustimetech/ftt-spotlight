@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as classNames from 'classnames'
 import ContentLoader from 'react-content-loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -251,7 +252,9 @@ class StudentProfile extends React.Component<IProps, IState> {
 			first_name: this.props.student.first_name,
 			last_name: this.props.student.last_name,
 			grade: this.props.student.grade,
-			student_number: this.props.student.student_number
+			student_number: this.props.student.student_number,
+			initials: this.props.student.initials,
+			color: this.props.student.color
 		}
 
 		let calendar: ICalendarDay[] = null
@@ -407,7 +410,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 									</div>
 								) : (
 									<>
-										<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.student.initials}</Avatar>
+										<Avatar className={classNames('profile_avatar', `--${avatarColor}`)}>{this.props.student.initials}</Avatar>
 										<div>
 											<h3 className='name'>
 												{`${this.props.student.first_name} ${this.props.student.last_name}`}

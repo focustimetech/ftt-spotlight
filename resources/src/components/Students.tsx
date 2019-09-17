@@ -28,6 +28,7 @@ import { EnhancedDialogTitle } from './Modals/EnhancedDialogTitle';
 import { ClustersDialog } from './Modals/ClustersDialog';
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { isEmpty } from '../utils/utils'
+import { IStudent } from '../types/student'
 
 interface NewStudent {
 	first_name: string,
@@ -43,11 +44,8 @@ interface Cluster {
 }
 
 interface IState {
-	/**
-	 * @TODO Create typedef for students
-	 */
 	addDialogOpen: boolean
-	students: any[]
+	students: IStudent[]
 	clusters: Cluster[]
 	loading: boolean
 	snackbarOpen: boolean

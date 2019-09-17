@@ -4,7 +4,7 @@ import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
 import { Theme, withTheme } from '@material-ui/core/styles'
 
-import { AccountWidget } from '../Modals/AccountWidget'
+import AccountWidget from './AccountWidget'
 import { MenuItem } from './MenuItem'
 import { NavItem } from './NavItem'
 import NotificationsWidget from '../Modals/NotificationsWidget'
@@ -16,7 +16,6 @@ import { IStaffUser } from '../../types/auth';
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions';
 
 interface ReduxProps {
-	currentUser: IStaffUser
 	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
@@ -30,18 +29,12 @@ interface IProps extends ReduxProps, StyleProps {
 	schoolName?: string
 }
 
-/**
- * @TODO Need to handle the case where the screen is very narrow,
- * in which a modal nav manu should be used.
- */
 class Sidebar extends React.Component<IProps> {
 	render() {
-		// const { initials, color } = this.props.currentUser || { initials: '', color: '' }
-		const initials = ''
-		const color = ''
 		const style = {
 			backgroundColor: this.props.theme.palette.primary.main
 		}
+
 		return (
 			<div className='sidebar'>
 				<nav className='sidebar__nav' style={style}>
@@ -73,7 +66,7 @@ class Sidebar extends React.Component<IProps> {
 							<div className='nav_bottom'>
 								<NotificationsWidget />
 								<HelpWidget />
-								<AccountWidget onSignOut={this.props.onSignOut} initials={initials} background={`#${color}`} />								
+								<AccountWidget onSignOut={this.props.onSignOut} />								
 							</div>
 						</>
 					)}
@@ -88,16 +81,12 @@ class Sidebar extends React.Component<IProps> {
 								<rect x={64} y={100} rx={4} ry={4} height={16} width={64}/>
 								<rect x={16} y={144} rx={24} ry={24} height={32} width={32}/>
 								<rect x={64} y={152} rx={4} ry={4} height={16} width={176}/>
-
 								<rect x={16} y={196} rx={24} ry={24} height={32} width={32}/>
 								<rect x={64} y={204} rx={4} ry={4} height={16} width={96}/>
-
 								<rect x={16} y={248} rx={24} ry={24} height={32} width={32}/>
 								<rect x={64} y={256} rx={4} ry={4} height={16} width={64}/>
-
 								<rect x={16} y={300} rx={24} ry={24} height={32} width={32}/>
 								<rect x={64} y={308} rx={4} ry={4} height={16} width={80}/>
-
 								<rect x={16} y={352} rx={24} ry={24} height={32} width={32}/>
 								<rect x={64} y={360} rx={4} ry={4} height={16} width={136}/>
 							</ContentLoader>
@@ -123,10 +112,7 @@ class Sidebar extends React.Component<IProps> {
 	}
 }
 
-const mapStateToProps = (state: any) => ({
-	currentUser: state.auth.user
-})
-
+const mapStateToProps = (state: any) => ({})
 const mapDispatchToProps = { queueSnackbar }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(Sidebar))

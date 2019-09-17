@@ -13,13 +13,11 @@ import { EnhancedTable } from './Table/EnhancedTable'
 import { ITableHeaderColumn, ITableLink } from '../types/table'
 import { StaffInfoDialog } from './Modals/StaffInfoDialog'
 import { isEmpty } from '../utils/utils'
+import { IStaff } from '../types/staff'
 
 interface IState {
-	/**
-	 * @TODO Create typedef for staff?
-	 */
 	addDialogOpen: boolean
-	staff: any[]
+	staff: IStaff[]
 	loading: boolean
 }
 

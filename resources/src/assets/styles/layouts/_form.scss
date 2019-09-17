@@ -60,6 +60,25 @@
 	}
 }
 
+.menu-item-container {
+	position: relative;
+	display: block;
+	padding-left: 0;
+	transition: padding 0.2s;
+
+	&.--loading {
+		padding-left: 32px;
+	}
+
+	.menu-item-progress {
+		position: absolute;
+		top: 50%;
+		left: 28px;
+		margin-top: -12px;
+		margin-left: -12px;
+	}
+}
+
 .chips_container {
 	display: flex;
 	justify-content: flex-start;

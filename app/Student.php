@@ -82,6 +82,12 @@ class Student extends Model
             ->orderBy('day_of_week')->orderBy('start')->get();
     }
 
+    
+	public function getDisplayName()
+	{
+		return $this->getName();
+	}
+
     /**
      * Return a string containing the student's full name.
      */

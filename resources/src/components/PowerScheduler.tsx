@@ -1,4 +1,5 @@
 import * as React from 'react'
+import axios, { AxiosResponse } from 'axios'
 import { connect } from 'react-redux'
 import DateFnsUtils from '@date-io/date-fns'
 
@@ -22,6 +23,7 @@ import { EnhancedTable } from './Table/EnhancedTable'
 import { LoadingButton } from './Form/LoadingButton'
 import { fetchStaff } from '../actions/staffActions'
 import { fetchStudents } from '../actions/studentActions'
+import { queueSnackbar, ISnackbar } from '../actions/snackbarActions'
 import { IStaff } from '../types/staff'
 import { IStudent } from '../types/student'
 import { ITableHeaderColumn } from '../types/table'
@@ -44,6 +46,7 @@ interface ReduxProps {
     students: IStudent[]
     fetchStaff: () => Promise<any>
     fetchStudents: () => Promise<any>
+    queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends ReduxProps {}
@@ -78,7 +81,7 @@ const initialState: IState = {
     uploading: false,
 }
 
-class CreatePowerScheduleForm extends React.Component<IProps, IState> {
+class CreatePowerSchedule extends React.Component<IProps, IState> {
     state: IState = initialState
 
     handleNextStep = () => {
@@ -88,7 +91,7 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
     }
 
     handleResetStep = () => {
-        this.setState({ step: 0 })
+        this.setState({ ...initialState })
     }
 
     handlePreviousStep = () => {
@@ -121,6 +124,23 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
 
     handleSubmit = () => {
         this.setState({ loadingSubmit: true })
+        const data: any = {
+            student_ids: this.state.selectedStudents,
+            staff_id: this.state.selectedStaff[0],
+            memo: this.state.memo,
+            date_time: this.state.dateRange.start.toISOString()
+        }
+        axios.post('/api/power-scheduler', data)
+            .then((res: AxiosResponse<any>) => {
+                this.setState({
+                    uploading: false,
+                    step: 3
+                })
+            })
+            .catch((err: any) => {
+                console.log('Caught error')
+                this.setState({ uploading: false })
+            })
     }
 
     componentDidMount() {
@@ -320,6 +340,19 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
                                 </div>
                             </StepContent>
                         </Step>
+                        <Step key={3} completed={this.state.step >= 3}>
+                            <StepLabel>Done</StepLabel>
+                            <StepContent>
+                                <p>All done! The schedule change has been processes successfully.</p>
+                                <div className='stepper-actions'>
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        onClick={() => this.handleResetStep()}
+                                    >Create Another</Button>
+                                </div>
+                            </StepContent>
+                        </Step>
                     </Stepper>
                 </div>
             </>
@@ -327,11 +360,11 @@ class CreatePowerScheduleForm extends React.Component<IProps, IState> {
     }
 }
 
-const mapDispatchToProps = { fetchStaff, fetchStudents }
+const mapDispatchToProps = { fetchStaff, fetchStudents, queueSnackbar }
 
 const mapStateToProps = (state: any) => ({
     students: state.students.items,
     staff: state.staff.items
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreatePowerScheduleForm)
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePowerSchedule)

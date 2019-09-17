@@ -96,6 +96,9 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
 
     // Feedback
     Route::post('feedback', 'FeedbackController@create');
+
+    // Power Scheduler
+    Route::post('power-scheduler', 'PowerSchedulerController@schedule');
 });
 
 // Administrator Routes

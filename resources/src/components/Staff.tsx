@@ -96,7 +96,6 @@ class Staff extends React.Component<IProps, IState> {
 					columns={columns}
 					data={staff}
 					searchable={true}
-					selectable={false}
 					loading={this.state.loading}
 					link={tableLink}
 				>

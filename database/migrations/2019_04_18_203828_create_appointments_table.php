@@ -20,6 +20,9 @@ class CreateAppointmentsTable extends Migration
             $table->unsignedInteger('block_id');
             $table->date('date');
             $table->string('memo', 150)->default('');
+            $table->unsignedInteger('power_schedule_id')
+                ->nullable()
+                ->default(null);
             $table->timestamps();
             // Foreign keys
             $table->foreign('staff_id')->references('id')->on('staff');

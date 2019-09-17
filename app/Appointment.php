@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
 {
+    protected $fillable = [
+        'student_id', 'staff_id', 'memo', 'date', 'block_id', 'power_schedule_id'
+    ];
+
     /**
-     * See commend in LedgerEntry.php
+     * See comment in LedgerEntry.php
      */
     public function student()
     {

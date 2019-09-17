@@ -31,6 +31,7 @@ export interface ITableStringFilter {
 	type: 'string'
 	rule: ITableStringFilterType
 	value: string
+	[key: string]: any
 }
 
 export interface ITableNumericFilter {
@@ -38,6 +39,7 @@ export interface ITableNumericFilter {
 	type: 'numeric'
 	rule: ITableNumericFilterType
 	value: string
+	[key: string]: any
 }
 
 export type ITableStringFilterType = 

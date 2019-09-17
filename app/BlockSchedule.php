@@ -23,6 +23,13 @@ class BlockSchedule extends Model
         }
     }
 
+    public static function flexBlocks()
+    {
+        return BlockSchedule::all()->filter(function($block_schedule) {
+            return $block_schedule->block()->first()->flex == true;
+        });
+    }
+
     /**
      * Returns the current BlockSchedule happening. If no BlockSchedule is
      * happening at the given time, the next one is given.

@@ -26,6 +26,7 @@ import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Staff'
 import StaffProfile from '../StaffProfile'
 import { Splash } from './Splash'
+import PowerScheduler from '../PowerScheduler'
 
 interface ReduxProps {
 	getCurrentUser: () => any
@@ -88,6 +89,7 @@ class App extends React.Component<IProps, IState> {
 									)} />
 									<Route path='/clusters/:clusterID?' component={Clusters} />
 									<Route exact path='/dashboard' component={Dashboard} />
+									<Route path='/power-scheduler' component={PowerScheduler} />
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
 										<StaffProfile {...props}/>

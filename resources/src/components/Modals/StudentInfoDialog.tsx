@@ -16,7 +16,7 @@ import {
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStudent } from '../../types/student';
 import { Tabs } from '../TopNav'
-import { UploadUserForm, IListItem } from './UploadUserForm'
+import { UploadUserForm, IListItem } from '../Form/UploadUserForm'
 import { isEmpty } from '../../utils/utils'
 
 interface IProps {

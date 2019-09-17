@@ -15,7 +15,7 @@ import {
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStaff, IStaffTitle } from '../../types/staff';
 import { Tabs } from '../TopNav'
-import { UploadUserForm, IListItem } from './UploadUserForm'
+import { UploadUserForm, IListItem } from '../Form/UploadUserForm'
 import { isEmpty } from '../../utils/utils'
 
 interface IProps {

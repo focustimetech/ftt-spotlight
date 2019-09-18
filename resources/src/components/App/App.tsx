@@ -106,7 +106,9 @@ class App extends React.Component<IProps, IState> {
 								<Route path='/' exact render={(props) => (
 									<Redirect to='/profile' />
 								)} />
-								<Route path='/profile' component={StudentProfile} />
+								<Route path='/profile' render={(props: RouteComponentProps) => (
+									<StudentProfile {...props} onSignOut={this.props.onSignOut} />
+								)} />
 							</>
 						}
 					</div>

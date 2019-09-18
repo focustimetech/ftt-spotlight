@@ -62,6 +62,7 @@ export const CalendarDialog = (props: IProps) => {
                                                         details={itemDetails}
                                                         actions={actions}
                                                         key={index}
+                                                        onCloseDialog={handleClose}
                                                     />
                                                     {calendarGroup.children && (
                                                         calendarGroup.children(data, props.blockDetails)

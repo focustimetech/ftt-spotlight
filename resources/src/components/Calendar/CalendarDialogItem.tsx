@@ -16,6 +16,7 @@ interface IProps {
     details: ICalendarItemDetails
     actions?: ICalendarItemAction[]
     loading?: boolean
+    onCloseDialog: () => void
     onClick?: () => void
 }
 
@@ -56,11 +57,14 @@ export const CalendarDialogItem = (props: IProps) => {
         setMenuRef(event.currentTarget)
     }
 
-    const handleCallback = (callback: ICalendarItemAction['callback'], index: number) => {
+    const handleActionCallback = (action: ICalendarItemAction, index: number) => {
+        const { callback, closeOnCallback } = action
         setLoading(index)
         callback()
             .then(() => {
                 unsetLoading(index)
+                if (closeOnCallback)
+                    props.onCloseDialog()
                 handleClose()
             })
             .catch(() => {
@@ -108,7 +112,7 @@ export const CalendarDialogItem = (props: IProps) => {
                         {props.actions.map((action: ICalendarItemAction, index: number) => (
                             <LoadingMenuItem
                                 key={action.value}
-                                onClick={() => handleCallback(action.callback, index)}
+                                onClick={() => handleActionCallback(action, index)}
                                 loading={loadingActions.indexOf(index) !== -1}
                             >{action.value}</LoadingMenuItem>
                         ))}

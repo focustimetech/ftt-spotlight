@@ -192,6 +192,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                     this.props.topics.map((topic: ITopic) => (
                                         <CalendarDialogItem
                                             onClick={this.props.mode === 'select' ? () => this.handleClick(topic) : undefined}
+                                            onCloseDialog={this.handleClose}
                                             details={{
                                                 id: topic.id,
                                                 title: topic.memo,

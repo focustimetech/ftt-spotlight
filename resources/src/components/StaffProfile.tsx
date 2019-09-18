@@ -412,7 +412,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					&& isOwner ?				
 					[
 						{ value: 'Change Topic', callback: () => Promise.resolve(this.handleTopicsDialogOpen('select')) },
-						{ value: 'Remove Topic', callback: () => this.onRemoveTopic(topicSchedule) },
+						{ value: 'Remove Topic', callback: () => this.onRemoveTopic(topicSchedule), closeOnCallback: true }
 					] : undefined
 				}
 			},

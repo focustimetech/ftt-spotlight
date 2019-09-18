@@ -65,6 +65,7 @@ export interface ICalendarItemDetails {
 export interface ICalendarItemAction {
     value: string
     callback: (...params: any) => Promise<any>
+    closeOnCallback?: boolean
 }
 
 

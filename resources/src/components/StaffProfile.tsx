@@ -256,7 +256,12 @@ class StaffProfile extends React.Component<IProps, IState> {
 	onRemoveTopic = (topicSchedule: ITopicSchedule): Promise<any> => {
 		return this.props.deleteTopicSchedule(topicSchedule.id)
 			.then(() => {
-				this.props.fetchStaffSchedule(this.state.staffID, this.getURLDateTime())
+				return this.props.fetchStaffSchedule(this.state.staffID, this.getURLDateTime())
+					.then(() => {
+						this.props.queueSnackbar({
+							message: 'Removed Topic successfully.'
+						})
+					})
 			})
 	}
 

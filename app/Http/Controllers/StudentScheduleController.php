@@ -16,6 +16,7 @@ use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\BlockSchedule as BlockScheduleResource;
 use App\Http\Resources\Course as CourseResource;
+use App\Http\Resources\Topic as TopicResource;
 use App\Http\Utils;
 
 class StudentScheduleController extends Controller
@@ -130,16 +131,21 @@ class StudentScheduleController extends Controller
 
     public function listStaff(Request $request)
     {
-        $student = auth()->user()->student();
         $date = date('Y-m-d', strtotime($request->input('date')));
         $block_id = $request->input('block_id');
 
         $staff = Staff::all()->map(function($staff) use($date, $block_id) {
-            $topic_schedule = TopicSchedule::where('date', $date)->where('block_id', $block_id)->first();
-            $staff_resource = new StaffResource($staff);
-            if ($topic_schedule)
-                $staff_resource['topic'] = new TopicResource($topic_schedule->topic()->first());
-            return $staff_resource;
+            $topic_ids = $staff->getTopics()->pluck('id')->toArray();
+            $topic_schedule = TopicSchedule::whereIn('topic_id', $topic_ids)
+                ->get()->where('date', $date)->where('block_id', $block_id)->first();
+            $resource = [ 'staff' => new StaffResource($staff)];
+            if ($topic_schedule) {
+                $topic_resource = new TopicResource($topic_schedule->topic()->first());
+                $resource['topic'] = $topic_resource;
+            }
+            return $resource;
         });
+
+        return $staff;
     }
 }

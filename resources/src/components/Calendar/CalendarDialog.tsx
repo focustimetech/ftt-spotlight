@@ -69,7 +69,7 @@ export const CalendarDialog = (props: IProps) => {
                                                 </>
                                             })
                                         ) : (
-                                            !calendarGroup.children && calendarGroup.emptyState
+                                            !calendarGroup.children && calendarGroup.emptyState(props.blockDetails)
                                         )
                                     ) : (
                                         <p className='empty_text'>No data available</p>

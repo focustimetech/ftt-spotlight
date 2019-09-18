@@ -354,7 +354,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					variant: 'success',
 					method: log.method
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No attendance recorded</p>
 				)
 			},
@@ -372,7 +372,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 						))) ? 'success' : 'fail'
 					)
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
@@ -388,16 +388,18 @@ class StaffProfile extends React.Component<IProps, IState> {
 			{
 				name: 'Topic',
 				key: 'topic',
-				emptyState: (
-					<>
-						<p className='empty_text'>Nothing scheduled</p>
-						<LoadingButton
-							loading={this.state.loadingSetTopic}
-							variant='text'
-							color='primary'
-							onClick={() => this.handleSetTopic()}
-						>Set Topic</LoadingButton>
-					</>
+				emptyState: (blockDetails: IBlockDetails) => (
+					blockDetails.flex && blockDetails.pending && isOwner ? (
+						<>
+							<p className='empty_text'>Nothing scheduled</p>
+							<LoadingButton
+								loading={this.state.loadingSetTopic}
+								variant='text'
+								color='primary'
+								onClick={() => this.handleSetTopic()}
+							>Set Topic</LoadingButton>
+						</>
+					) : undefined					
 				),
 				itemMap: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
 					id: topicSchedule.id,
@@ -408,8 +410,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					return !isEmpty(topicSchedule)
 					&& blockDetails.flex
 					&& blockDetails.pending
-					&& this.props.currentUser.account_type === 'staff'
-					&& topicSchedule.topic.staff.id === this.props.currentUser.details.id ?					
+					&& isOwner ?				
 					[
 						{ value: 'Change Topic', callback: () => this.handleTopicsDialogOpen('select') },
 						{ value: 'Remove Topic', callback: () => this.handleRemoveTopic() },
@@ -419,7 +420,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 			{
 				name: 'Scheduled',
 				key: 'planned',
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No students scheduled</p>
 				),
 				children: (student: IStudent) => ([

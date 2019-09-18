@@ -317,7 +317,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					variant: 'success',
 					method: log.method
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No attendance recorded</p>
 				)
 			},
@@ -335,7 +335,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						))) ? 'success' : 'fail'
 					)
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
 				child: (blockDetails: IBlockDetails) => {
@@ -374,7 +374,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					),
 					memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>Nothing scheduled</p>
 				)
 			}

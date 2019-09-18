@@ -61,3 +61,11 @@ export type TopicColor =
     | 'deep-orange'
     | 'brown'
     | 'blue-grey'
+
+/**
+ * Returns a random Color.
+ * @return The a random Color.
+ */
+export const getRandomColor = (): IColor => {
+    return COLORS[Math.floor(Math.random() * COLORS.length)]
+}

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as classNames from 'classnames'
 import ContentLoader from 'react-content-loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -29,6 +30,7 @@ import {
 	ITopicSchedule,
 	ICalendarBlockVariant,
 } from '../types/calendar'
+import { ChangePasswordDialog } from './Modals/ChangePasswordDialog'
 import { CancelAppointment } from './Calendar/CancelAppointment'
 import { Calendar } from './Calendar/Calendar'
 import { TopNav } from './TopNav'
@@ -72,6 +74,7 @@ interface IState {
 	cancelAppointment: IAppointment
 	topicsDialogOpen: boolean
 	topcisDialogMode: 'edit' | 'select'
+	passwordDialogOpen: boolean
 	onTopicSelect: (topic: ITopic) => void
 }
 
@@ -90,6 +93,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 		cancelAppointment: null,
 		topicsDialogOpen: false,
 		topcisDialogMode: 'edit',
+		passwordDialogOpen: false,
 		onTopicSelect: () => null
 	}
 
@@ -212,6 +216,18 @@ class StaffProfile extends React.Component<IProps, IState> {
 		this.setState({ onTopicSelect: this.onTopicSet })
 	}
 
+	onPasswordChange = () => {
+		this.props.queueSnackbar({ message: 'Changed password successfully.' })
+	}
+
+	handlePasswordDialogClose = () => {
+		this.setState({ passwordDialogOpen: false })
+	}
+
+	handlePasswordDialogOpen = () => {
+		this.setState({ passwordDialogOpen: true })
+	}
+
 	onTopicSet = (topic: ITopic) => {
 		this.setState({ loadingSetTopic: true })
 		const topicSchedule: ITopicScheduleRequest = {
@@ -237,12 +253,16 @@ class StaffProfile extends React.Component<IProps, IState> {
 			})
 	}
 
-	handleRemoveTopic = () => {
-		
-	}
-
-	onRemoveTopic = (): Promise<any> => {
-		return null
+	onRemoveTopic = (topicSchedule: ITopicSchedule): Promise<any> => {
+		return this.props.deleteTopicSchedule(topicSchedule.id)
+			.then(() => {
+				return this.props.fetchStaffSchedule(this.state.staffID, this.getURLDateTime())
+					.then(() => {
+						this.props.queueSnackbar({
+							message: 'Removed Topic successfully.'
+						})
+					})
+			})
 	}
 
 	componentWillMount() {
@@ -273,7 +293,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 			this.props.newStarred.isStarred !== false
 		) : this.props.staff.starred
 
-		const avatarColor = this.props.staff.color || 'red'
+		const avatarColor: string = this.props.staff.color || null
 
 		const { menuRef, editDialogOpen } = this.state
 		const menuOpen: boolean = Boolean(this.state.menuRef) 
@@ -338,7 +358,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					variant: 'success',
 					method: log.method
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No attendance recorded</p>
 				)
 			},
@@ -356,7 +376,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 						))) ? 'success' : 'fail'
 					)
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
@@ -365,23 +385,25 @@ class StaffProfile extends React.Component<IProps, IState> {
 					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
+						{ value: 'Cancel Appointment', callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment)) }
 					] : undefined
 				}
 			},
 			{
 				name: 'Topic',
 				key: 'topic',
-				emptyState: (
-					<>
-						<p className='empty_text'>Nothing scheduled</p>
-						<LoadingButton
-							loading={this.state.loadingSetTopic}
-							variant='text'
-							color='primary'
-							onClick={() => this.handleSetTopic()}
-						>Set Topic</LoadingButton>
-					</>
+				emptyState: (blockDetails: IBlockDetails) => (
+					blockDetails.flex && blockDetails.pending && isOwner ? (
+						<>
+							<p className='empty_text'>Nothing scheduled</p>
+							<LoadingButton
+								loading={this.state.loadingSetTopic}
+								variant='text'
+								color='primary'
+								onClick={() => this.handleSetTopic()}
+							>Set Topic</LoadingButton>
+						</>
+					) : undefined					
 				),
 				itemMap: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
 					id: topicSchedule.id,
@@ -392,18 +414,17 @@ class StaffProfile extends React.Component<IProps, IState> {
 					return !isEmpty(topicSchedule)
 					&& blockDetails.flex
 					&& blockDetails.pending
-					&& this.props.currentUser.account_type === 'staff'
-					&& topicSchedule.topic.staff.id === this.props.currentUser.details.id ?					
+					&& isOwner ?				
 					[
-						{ value: 'Change Topic', callback: () => this.handleTopicsDialogOpen('select') },
-						{ value: 'Remove Topic', callback: () => this.handleRemoveTopic() },
+						// { value: 'Change Topic', callback: () => Promise.resolve(this.handleTopicsDialogOpen('select')) },
+						{ value: 'Remove Topic', callback: () => this.onRemoveTopic(topicSchedule), closeOnCallback: true }
 					] : undefined
 				}
 			},
 			{
 				name: 'Scheduled',
 				key: 'planned',
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No students scheduled</p>
 				),
 				children: (student: IStudent) => ([
@@ -426,6 +447,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 					mode={this.state.topcisDialogMode}
 					onSelect={this.state.onTopicSelect}
 				/>
+				<ChangePasswordDialog
+					open={this.state.passwordDialogOpen}
+					onClose={this.handlePasswordDialogClose}
+					onSuccess={this.onPasswordChange}
+				/>
 				<div className='profile'>
 					<TopNav>
 						<ul>
@@ -441,7 +467,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 									</div>
 								) : (
 									<>
-										<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.staff.initials}</Avatar>
+										<Avatar className={classNames('profile_avatar', `--${avatarColor}`)}>{this.props.staff.initials}</Avatar>
 										<div>
 											<h3 className='name'>
 												{this.props.staff.name}
@@ -464,30 +490,27 @@ class StaffProfile extends React.Component<IProps, IState> {
 						) : (
 							<ul className='right_col'>
 								{isOwner ? (
-									<li>
-										<Tooltip title='Topics'>
-											<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
-												<Icon>school</Icon>
-											</IconButton>
-										</Tooltip>
-									</li>
+									<>
+										<li>
+											<Tooltip title='Topics'>
+												<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
+													<Icon>school</Icon>
+												</IconButton>
+											</Tooltip>
+										</li>
+										<li>
+											<Tooltip title='Change Password'>
+												<IconButton onClick={() => this.handlePasswordDialogOpen()}>
+													<Icon>lock</Icon>
+												</IconButton>
+											</Tooltip>
+										</li>
+									</>
 								) : (
 									<li>
 										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
 									</li>
 								)}								
-								<li>
-									<IconButton onClick={this.handleMenuOpen}>
-										<Icon>more_vert</Icon>
-									</IconButton>
-									<Menu
-										open={menuOpen}
-										anchorEl={menuRef}
-										onClose={this.handleMenuClose}
-									>
-										<MenuItem onClick={() => this.handleOpenEditDialog()}>Edit Staff</MenuItem>
-									</Menu>
-								</li>
 							</ul>
 						)}
 					</TopNav>

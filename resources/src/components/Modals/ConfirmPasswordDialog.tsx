@@ -11,8 +11,7 @@ import {
 } from '@material-ui/core'
 
 import { LoadingButton } from '../Form/LoadingButton'
-import { verifyPassword } from '../../utils/utils'
-// import { EnhancedDialogTitle } from './EnhancedDialogTitle'
+import { verifyPassword } from '../../utils/http'
 
 interface IProps {
     open: boolean
@@ -47,8 +46,9 @@ export const ConfirmPasswordDialog = (props: IProps) => {
     const handleChange = (event: any) => {
         event.preventDefault()
         setPassword(event.target.value)
-
+        setErrored(false)
     }
+
     const onExited = () => {
         setPassword('')
     }

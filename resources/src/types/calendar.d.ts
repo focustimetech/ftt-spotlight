@@ -64,7 +64,8 @@ export interface ICalendarItemDetails {
 
 export interface ICalendarItemAction {
     value: string
-    callback: (...params: any) => void
+    callback: (...params: any) => Promise<any>
+    closeOnCallback?: boolean
 }
 
 
@@ -112,8 +113,8 @@ export interface ICalendarDialogGroup {
     name: string
     key: string
     itemMap?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
-    emptyState: any
-    child? (blockDetails?: IBlockDetails): any
+    emptyState: (blockDetails?: IBlockDetails) => any
+    child?: (blockDetails?: IBlockDetails) => any
     children? (item?: any, blockDetails?: IBlockDetails): any
     actions?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemAction[]
 }

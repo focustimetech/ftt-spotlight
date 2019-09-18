@@ -23,4 +23,21 @@ class AuthController extends Controller
 
         return response()->json('Logged out successfully', 200);
     }
+
+    public function changePassword(Request $request)
+    {
+        $user = auth()->user();
+        $new_password = $request->input('new_password');
+        $verify_response = $this->verify($request);
+        if ($verify_response->status() === 200) {
+            $user->password = bcrypt($new_password);
+            if ($user->save())
+                return response()->json('Changed password successfully', 200);
+            else {
+                return response()->json('Cannot change password.', 500);
+            }
+        } else {
+            return $verify_response;
+        }
+    }
 }

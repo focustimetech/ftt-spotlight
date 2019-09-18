@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
+    protected $fillable = [
+        'student_number', 'first_name', 'last_name', 'grade', 'initials'
+    ];
+
     public static function findBySN($student_numbers)
     {
         if (is_array($student_numbers)) {
@@ -77,6 +81,12 @@ class Student extends Model
         return BlockSchedule::whereIn('block_id', $this->getBlocks($start, $end)->pluck('id')->toArray())
             ->orderBy('day_of_week')->orderBy('start')->get();
     }
+
+    
+	public function getDisplayName()
+	{
+		return $this->getName();
+	}
 
     /**
      * Return a string containing the student's full name.

@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 /**
  * 
  * @param list A list of string items to truncate
@@ -29,10 +27,10 @@ export const listToTruncatedString = (list: string[], objectName?: string): stri
  * @return `true` if the object is empty, `false` otherwise.
  */
 export const isEmpty = (obj: Object): boolean => {
-    if (!obj) {
+    if (!obj)
         return true
-    }
-    return Object.keys(obj).length === 0 && obj.constructor === Object
+    else
+        return Object.keys(obj).length === 0 && obj.constructor === Object
 }
 
 /**
@@ -51,14 +49,8 @@ export const isArray = (object: any): boolean => {
  * @return An array containing either the object, or all original array entries
  */
 export const makeArray = (object: any): any[] => {
-    return isArray(object) ? object : [object]
-}
-
-/**
- * Verify whether a user's password is correct by checking with the server.
- * @param password The password.
- * @return `Promise<Void>` resulting from `axios` request.
- */
-export const verifyPassword = (password: string): Promise<void> => {
-    return axios.post('/api/verify-user', { password })
+    if (!object)
+        return []
+    else
+        return isArray(object) ? object : [object]
 }

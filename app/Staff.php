@@ -13,7 +13,7 @@ class Staff extends Model
 	use HasApiTokens, Notifiable;
 
 	protected $fillable = [
-		'staff_type', 'administrator', 'first_name', 'last_name', 'title', 'email'
+		'staff_type', 'administrator', 'first_name', 'last_name', 'title', 'email', 'initials'
 	];
 
 	protected $hidden = [
@@ -44,6 +44,11 @@ class Staff extends Model
 	{
 		return BlockSchedule::whereIn('block_id', $this->getBlocks()->pluck('id')->toArray())
 			->orderBy('day_of_week')->orderBy('start')->get();
+	}
+
+	public function getDisplayName()
+	{
+		return $this->getName();
 	}
 
 	public function plans()

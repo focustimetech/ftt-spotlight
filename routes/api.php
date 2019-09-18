@@ -22,6 +22,7 @@ Route::middleware('auth:api')->group(function() {
     Route::post('logout', 'AuthController@logout');
     Route::get('user', 'AuthController@user');
     Route::post('verify-user', 'AuthController@verify');
+    Route::post('change-password', 'AuthController@changePassword');
 
     // Topics
     Route::get('topics', 'TopicsController@index');
@@ -96,6 +97,9 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
 
     // Feedback
     Route::post('feedback', 'FeedbackController@create');
+
+    // Power Scheduler
+    Route::post('power-scheduler', 'PowerSchedulerController@schedule');
 });
 
 // Administrator Routes

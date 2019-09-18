@@ -26,10 +26,8 @@ import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Staff'
 import StaffProfile from '../StaffProfile'
 import { Splash } from './Splash'
+import PowerScheduler from '../PowerScheduler'
 
-/**
- * @TODO Create typedefs for Settings
- */
 interface ReduxProps {
 	getCurrentUser: () => any
 	fetchSettings: () => any
@@ -87,10 +85,11 @@ class App extends React.Component<IProps, IState> {
 								/>
 								<Switch>
 									<Route path='/' exact render={(props: RouteComponentProps) => (
-										<Redirect to='/dashboard' />
+										<Redirect to='/students' />
 									)} />
 									<Route path='/clusters/:clusterID?' component={Clusters} />
 									<Route exact path='/dashboard' component={Dashboard} />
+									<Route path='/power-scheduler' component={PowerScheduler} />
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
 										<StaffProfile {...props}/>

@@ -1,4 +1,6 @@
 .enhanced-table {
+    margin: 16px 0;
+
     .empty-state {
         padding: 64px;
         border-radius: 4px;
@@ -32,7 +34,7 @@
     }
 
     .enhanced-table__filters {
-        width: 400px;
+        width: 450px;
         position: absolute;
         top: 8px;
         right: 8px;
@@ -70,6 +72,16 @@
             }
         }
 
+        .filters-actions {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: flex-end;
+
+            & > * + * {
+                margin-left: 8px;
+            }
+        }
+
         .filter-rule {
             display: flex;
             align-items: baseline;
@@ -86,6 +98,12 @@
             &:last-child {
                 margin-bottom: 16px;
             } 
+        }
+
+        .filter-rule_placeholder {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-end;
         }
     }
 }

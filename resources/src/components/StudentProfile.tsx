@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as classNames from 'classnames'
 import ContentLoader from 'react-content-loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -253,7 +254,9 @@ class StudentProfile extends React.Component<IProps, IState> {
 			first_name: this.props.student.first_name,
 			last_name: this.props.student.last_name,
 			grade: this.props.student.grade,
-			student_number: this.props.student.student_number
+			student_number: this.props.student.student_number,
+			initials: this.props.student.initials,
+			color: this.props.student.color
 		}
 
 		let calendar: ICalendarDay[] = null
@@ -294,7 +297,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							memo: block.logs[0] && block.flex? block.logs[0].topic.topic || null : null,
+							memo: block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null,
 							details
 						}
 						return calendarBlock
@@ -312,11 +315,11 @@ class StudentProfile extends React.Component<IProps, IState> {
 					id: log.id,
 					time: log.time,
 					title: log.staff.name,
-					memo: log.topic.memo,
+					memo: log.topic ? log.topic.memo : 'No Topic',
 					variant: 'success',
 					method: log.method
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No attendance recorded</p>
 				)
 			},
@@ -334,7 +337,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						))) ? 'success' : 'fail'
 					)
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
 				child: (blockDetails: IBlockDetails) => {
@@ -346,12 +349,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 					) : undefined
 				},
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
-					return!isEmpty(appointment)
+					return !isEmpty(appointment)
 					&& this.props.currentUser.account_type === 'staff'
 					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
+						{ value: 'Cancel Appointment', callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment)) }
 					] : undefined
 				}
 			},
@@ -373,7 +376,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					),
 					memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
 				}),
-				emptyState: (
+				emptyState: () => (
 					<p className='empty_text'>Nothing scheduled</p>
 				)
 			}
@@ -409,7 +412,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 									</div>
 								) : (
 									<>
-										<Avatar style={{background: `#${avatarColor}`}} className='profile_avatar'>{this.props.student.initials}</Avatar>
+										<Avatar className={classNames('profile_avatar', `--${avatarColor}`)}>{this.props.student.initials}</Avatar>
 										<div>
 											<h3 className='name'>
 												{`${this.props.student.first_name} ${this.props.student.last_name}`}

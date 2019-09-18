@@ -9,12 +9,14 @@ import {
 } from '@material-ui/core'
 
 import { LoadingIconButton } from '../Form/LoadingIconButton'
+import { LoadingMenuItem } from '../Form/LoadingMenuItem'
 import { ICalendarItemDetails, ICalendarItemAction } from '../../types/calendar'
 
 interface IProps {
     details: ICalendarItemDetails
     actions?: ICalendarItemAction[]
     loading?: boolean
+    onCloseDialog: () => void
     onClick?: () => void
 }
 
@@ -22,6 +24,8 @@ export const CalendarDialogItem = (props: IProps) => {
     const { id, variant, time, title, memo, method } = props.details
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
         = React.useState(null)
+    const [loadingActions, setLoadingActions]: [number[], React.Dispatch<React.SetStateAction<number[]>>]
+        = React.useState([])
 
     let methodIcon = ''
     let methodTitle = ''
@@ -41,13 +45,31 @@ export const CalendarDialogItem = (props: IProps) => {
 
     const clickable: boolean = Boolean(props.onClick)
 
+    const setLoading = (index: number) => {
+        setLoadingActions([...loadingActions, index])
+    }
+
+    const unsetLoading = (index: number) => {
+        setLoadingActions(loadingActions.filter((loadingAction: number) => loadingAction !== index))
+    }
+
     const handleClick = (event: any) => {
         setMenuRef(event.currentTarget)
     }
 
-    const handleCallback = (callback: ICalendarItemAction['callback']) => {
-        handleClose()
+    const handleActionCallback = (action: ICalendarItemAction, index: number) => {
+        const { callback, closeOnCallback } = action
+        setLoading(index)
         callback()
+            .then(() => {
+                unsetLoading(index)
+                if (closeOnCallback)
+                    props.onCloseDialog()
+                handleClose()
+            })
+            .catch(() => {
+                unsetLoading(index)
+            })
     }
 
     const handleClose = () => {
@@ -87,8 +109,12 @@ export const CalendarDialogItem = (props: IProps) => {
                         open={Boolean(menuRef)}
                         onClose={() => handleClose()}
                     >
-                        {props.actions.map((action: ICalendarItemAction) => (
-                            <MenuItem key={action.value} onClick={() => handleCallback(action.callback)}>{action.value}</MenuItem>
+                        {props.actions.map((action: ICalendarItemAction, index: number) => (
+                            <LoadingMenuItem
+                                key={action.value}
+                                onClick={() => handleActionCallback(action, index)}
+                                loading={loadingActions.indexOf(index) !== -1}
+                            >{action.value}</LoadingMenuItem>
                         ))}
                     </Menu>
                 </div>          

@@ -6,6 +6,7 @@ import {
 	Checkbox,
 	Icon,
 	Paper,
+	Radio,
 	Table,
 	TableBody,
 	TableCell,
@@ -49,44 +50,45 @@ const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
 	)
 }
 
+type SortOrder = 'asc' | 'desc'
+
 interface IProps {
-	title?: string
-	loading: boolean
-	link?: ITableLink
-	children?: any
 	columns: ITableHeaderColumn[]
 	data: any[]
+	loading: boolean
 	actions?: ITableAction[]
+	children?: any
+	link?: ITableLink
+	radio?: boolean
 	searchable?: boolean
-	selectable?: boolean
+	selected?: number[]
 	showEmptyTable?: boolean
+	title?: string
+	onSelect?: (selected: number[]) => void
 }
 
 interface IState {
 	tableQuery: string
-	order: 'asc' | 'desc' // sorting order
-	orderBy: string // row id to sort by
-	selected: number[] // indices
+	order: SortOrder
+	orderBy: string
 	page: number
 	redirect: string
 	rowsPerPage: number
 	filters: ITableFilter[]
+	filtersDisabled: boolean
 	filterOpen: boolean
 }
 
-/**
- * @TODO Allow search of union columns, e.g. First name + last name
- */
 export class EnhancedTable extends React.Component<IProps, IState> {
 	state: IState = {
 		tableQuery: '',
 		order: 'asc',
 		orderBy: this.props.columns[0].id,
-		selected: [],
 		page: 0,
 		redirect: null,
 		rowsPerPage: 5,
 		filters: [],
+		filtersDisabled: true,
 		filterOpen: false,
 	}
 
@@ -98,8 +100,15 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		this.setState({ filterOpen: false })
 	}
 
-	handleFilterChange = (filters: ITableFilter[]) => {
-		this.setState({ filters })
+	handleFilterChange = (filters: ITableFilter[], disabled: boolean) => {
+		this.setState({
+			filters,
+			filtersDisabled: disabled
+		})
+	}
+
+	isSelectable = (): boolean => {
+		return Boolean(this.props.onSelect)
 	}
 
 	filterTableData = (): any[] => {
@@ -121,9 +130,6 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 				filters.some((filter: ITableFilter) => {
 					switch (filter.rule) {
 						case 'contains':
-							/**
-							 * @TODO This should return something other than false...
-							 */
 							return false
 						case 'ends-with':
 							return row[filter.id].endsWith(filter.value)
@@ -145,42 +151,46 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	handleRequestSort = (property: any) => {
-		let order: 'asc' | 'desc' = 'desc'
-
-		if (this.state.orderBy === property && this.state.order === 'desc') {
+		let order: SortOrder = 'desc'
+		if (this.state.orderBy === property && this.state.order === 'desc')
 			order = 'asc'
-		}
 
 		this.setState({ order, orderBy: property })
 	}
 
 	handleSelectAllClick = (event: any) => {
-		if (event.target.checked) {
-			this.setState({
-				selected: this.state.filters.length || this.state.tableQuery.length ? (
-					this.filterTableData().map(n => n.id)
-				) : (
-					this.props.data.map(n => n.id)
-				)
-			})
+		if (!this.props.onSelect)
 			return
+		let newSelected: number[] = []
+		if (event.target.checked && this.props.radio !== true) {
+			newSelected =  this.state.filters.length || this.state.tableQuery.length ? (
+				this.filterTableData().map(n => n.id)
+			) : (
+				this.props.data.map(n => n.id)
+			)
 		}
-		this.setState({ selected: [] })
+		
+		this.props.onSelect(newSelected)
 	}
 
 	handleInvertSelection = () => {
-		this.setState({
-			selected: this.props.data.map(n => n.id).filter((index: number) => {
-				return this.state.selected.indexOf(index) < 0
-			})
+		if (!this.isSelectable() || this.props.radio)
+			return
+		const newSelected: number[] = this.props.data.map(n => n.id).filter((index: number) => {
+			return this.props.selected.indexOf(index) < 0
 		})
+		this.props.onSelect(newSelected)
 	}
 
-	handleClick = (event: any, id: number) => {
-		if (this.props.selectable !== false) {
-			const { selected } = this.state
+	handleClick = (id: number) => {
+		if (!this.isSelectable())
+			return
+		let newSelected: number[] = []
+		if (this.props.radio)
+			newSelected = [id]
+		else {
+			const { selected } = this.props
 			const selectedIndex = selected.indexOf(id)
-			let newSelected: any[] = []
 
 			if (selectedIndex === -1) {
 				newSelected = newSelected.concat(selected, id)
@@ -192,9 +202,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 					selected.slice(selectedIndex + 1),
 				)
 			}
-
-			this.setState({ selected: newSelected })
 		}
+
+		this.props.onSelect(newSelected)
 	}
 
 	handleChangePage = (event: any, page: number) => {
@@ -206,7 +216,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	isSelected = (id: number): boolean => {
-		return this.state.selected.indexOf(id) !== -1
+		if (!this.isSelectable())
+			return false
+		return this.props.selected.indexOf(id) !== -1
 	}
 
 	handleTableQueryChange = (value: string) => {
@@ -253,20 +265,23 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		if (this.state.redirect) {
+		if (this.state.redirect)
 			return <Redirect to={this.state.redirect} />
-		}
-		const { order, orderBy, selected, rowsPerPage, page } = this.state
-		const data = (this.props.searchable && this.state.tableQuery.length) || this.state.filters.length ? (
+
+		const { order, orderBy, rowsPerPage, page } = this.state
+		const { selected } = this.props
+		const numSelected: number = selected ? selected.length : 0
+		const selectable: boolean = this.isSelectable()
+		const data: any[] = (this.props.searchable && this.state.tableQuery.length)
+		|| (this.state.filters.length && !this.state.filtersDisabled) ? (
 			this.filterTableData()
 		) : (
 			this.props.data
 		)
-		const selectable: boolean = this.props.selectable !== false
 
 		return (
 			<div className='enhanced-table'>
-				{this.props.data.length == 0 && this.props.showEmptyTable !== false ? (
+				{this.props.data.length === 0 && !this.props.loading && this.props.showEmptyTable !== false ? (
 					<div className='empty-state'>
 						<EmptyStateIcon variant='file'>
 							<h3>{`${this.props.title ? `${this.props.title} table` : 'Table'} is empty.`}</h3>
@@ -279,12 +294,13 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 							searchable={this.props.searchable}
 							selectable={selectable}
 							tableQuery={this.state.tableQuery}
-							numSelected={selected.length}
+							numSelected={numSelected}
 							numShown={data.length}
 							numTotal={this.props.data.length}
 							columns={this.props.columns}
 							actions={this.props.actions}
 							filters={this.state.filters}
+							filtersDisabled={this.state.filtersDisabled}
 							handleInvertSelection={this.handleInvertSelection}
 							handleFilterOpen={this.handleFilterOpen}
 							handleFilterClose={this.handleFilterClose}
@@ -298,16 +314,17 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						<div>
 							<Table>
 								<EnhancedTableHead
-									numSelected={selected.length}
-									order={order}
-									orderBy={orderBy}
-									onSelectAllClick={this.handleSelectAllClick}
-									onRequestSort={this.handleRequestSort}
-									rowCount={data.length}
-									selectable={selectable}
 									columns={this.props.columns}
 									link={this.props.link}
 									loading={this.props.loading}
+									numSelected={numSelected}
+									order={order}
+									orderBy={orderBy}
+									onRequestSort={this.handleRequestSort}
+									onSelectAllClick={this.handleSelectAllClick}
+									radio={this.props.radio}
+									rowCount={data.length}
+									selectable={selectable}
 								/>
 								<TableBody className='enhanced-table__table-body'>
 									{this.props.loading ? (
@@ -323,7 +340,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 											return (
 												<TableRow
 													hover
-													onClick={(event: any) => this.handleClick(event, n.id)}
+													onClick={() => this.handleClick(n.id)}
 													role={selectable ? 'checkbox' : null}
 													aria-checked={isSelected}
 													tabIndex={-1}
@@ -332,7 +349,11 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 												>
 													{selectable && (
 														<TableCell padding={'checkbox'}>
-															<Checkbox checked={isSelected} color='primary'/>
+															{this.props.radio ? (
+																<Radio checked={isSelected} color='primary'/>
+															) : (
+																<Checkbox checked={isSelected} color='primary'/>
+															)}
 														</TableCell>
 													)}
 													{columns.map((column: ITableHeaderColumn, index: number) => {

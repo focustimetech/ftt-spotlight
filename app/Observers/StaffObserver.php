@@ -7,7 +7,7 @@ use App\User;
 
 class StaffObserver
 {
-    public function saved(Staff $staff) {
+    public function created(Staff $staff) {
         $user = new User;
 
         $user->account_type = 'staff';

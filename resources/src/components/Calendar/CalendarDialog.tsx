@@ -62,6 +62,7 @@ export const CalendarDialog = (props: IProps) => {
                                                         details={itemDetails}
                                                         actions={actions}
                                                         key={index}
+                                                        onCloseDialog={handleClose}
                                                     />
                                                     {calendarGroup.children && (
                                                         calendarGroup.children(data, props.blockDetails)
@@ -69,7 +70,7 @@ export const CalendarDialog = (props: IProps) => {
                                                 </>
                                             })
                                         ) : (
-                                            !calendarGroup.children && calendarGroup.emptyState
+                                            !calendarGroup.children && calendarGroup.emptyState(props.blockDetails)
                                         )
                                     ) : (
                                         <p className='empty_text'>No data available</p>

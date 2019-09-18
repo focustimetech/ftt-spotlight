@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Exceptions\UserNotFoundException;
 
 class User extends Authenticatable
 {
@@ -14,7 +15,11 @@ class User extends Authenticatable
 
     public static function findByUsername($username)
     {
-        return User::where('username', $username)->first();
+        $user = User::where('username', $username)->first();
+        if ($user)
+            return $user;
+        else
+           throw new UserNotFoundException('Could not find user having username '. $username);
     }
 
     public function findForPassport($username)
@@ -29,21 +34,21 @@ class User extends Authenticatable
 
     public function isStudent()
     {
-        return $this->account_tpype === 'student';
+        return $this->account_type === 'student';
     }
 
     public function staff()
     {
-        if ($this->account_type === 'staff')
-            return Staff::findOrFail($this->id);
+        if ($this->isStaff())
+            return Staff::findOrFail($this->user_id);
         else
             abort(403, 'User is not a staff member.');
     }
 
     public function student()
     {
-        if ($this->account_type === 'student')
-            return Student::findOrFail($this->id);
+        if ($this->isStudent())
+            return Student::findOrFail($this->user_id);
         else
             abort(403, 'User is not a student.');
         
@@ -58,6 +63,21 @@ class User extends Authenticatable
             return 'student';
         else
             return null;            
+    }
+
+    public function getDisplayRole()
+    {
+        $role = $this->getRole();
+        switch($role) {
+            case 'student':
+                return 'Student';
+            case 'teacher':
+                return 'Teacher';
+            case 'admin':
+                return 'Administrator';
+            default:
+                return 'User';
+        }
     }
 
     /**

@@ -8,7 +8,7 @@ class Block extends Model
 {
     public static function atTime($time)
     {
-        return BlockSchedule::atTime($time);
+        return BlockSchedule::atTime($time)->block()->first();
     }
 
     public static function flexBlocks()

@@ -64,7 +64,7 @@ export interface ICalendarItemDetails {
 
 export interface ICalendarItemAction {
     value: string
-    callback: (...params: any) => void
+    callback: (...params: any) => Promise<any>
 }
 
 

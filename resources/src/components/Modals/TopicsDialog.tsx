@@ -198,7 +198,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                                 variant: topic.color
                                             }}
                                             actions={this.props.mode === 'edit' ? [
-                                                { value: 'Delete Topic', callback: () => this.handleDeleteTopic(topic)}
+                                                { value: 'Delete Topic', callback: () => Promise.resolve(this.handleDeleteTopic(topic)) }
                                             ] : undefined}
                                         />
                                     ))

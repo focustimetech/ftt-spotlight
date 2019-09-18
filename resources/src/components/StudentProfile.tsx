@@ -347,12 +347,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 					) : undefined
 				},
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
-					return!isEmpty(appointment)
+					return !isEmpty(appointment)
 					&& this.props.currentUser.account_type === 'staff'
 					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
+						{ value: 'Cancel Appointment', callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment)) }
 					] : undefined
 				}
 			},

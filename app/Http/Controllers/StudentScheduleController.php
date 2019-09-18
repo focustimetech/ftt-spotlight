@@ -127,4 +127,19 @@ class StudentScheduleController extends Controller
             return $this->index($student->id, $datetime);
         }
     }
+
+    public function listStaff(Request $request)
+    {
+        $student = auth()->user()->student();
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        $block_id = $request->input('block_id');
+
+        $staff = Staff::all()->map(function($staff) use($date, $block_id) {
+            $topic_schedule = TopicSchedule::where('date', $date)->where('block_id', $block_id)->first();
+            $staff_resource = new StaffResource($staff);
+            if ($topic_schedule)
+                $staff_resource['topic'] = new TopicResource($topic_schedule->topic()->first());
+            return $staff_resource;
+        });
+    }
 }

@@ -411,7 +411,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					&& blockDetails.pending
 					&& isOwner ?				
 					[
-						{ value: 'Change Topic', callback: () => Promise.resolve(this.handleTopicsDialogOpen('select')) },
+						// { value: 'Change Topic', callback: () => Promise.resolve(this.handleTopicsDialogOpen('select')) },
 						{ value: 'Remove Topic', callback: () => this.onRemoveTopic(topicSchedule), closeOnCallback: true }
 					] : undefined
 				}

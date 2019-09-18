@@ -253,12 +253,11 @@ class StaffProfile extends React.Component<IProps, IState> {
 			})
 	}
 
-	handleRemoveTopic = () => {
-		
-	}
-
-	onRemoveTopic = (): Promise<any> => {
-		return null
+	onRemoveTopic = (topicSchedule: ITopicSchedule): Promise<any> => {
+		return this.props.deleteTopicSchedule(topicSchedule.id)
+			.then(() => {
+				this.props.fetchStaffSchedule(this.state.staffID, this.getURLDateTime())
+			})
 	}
 
 	componentWillMount() {
@@ -381,7 +380,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
+						{ value: 'Cancel Appointment', callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment)) }
 					] : undefined
 				}
 			},
@@ -412,8 +411,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 					&& blockDetails.pending
 					&& isOwner ?				
 					[
-						{ value: 'Change Topic', callback: () => this.handleTopicsDialogOpen('select') },
-						{ value: 'Remove Topic', callback: () => this.handleRemoveTopic() },
+						{ value: 'Change Topic', callback: () => Promise.resolve(this.handleTopicsDialogOpen('select')) },
+						{ value: 'Remove Topic', callback: () => this.onRemoveTopic(topicSchedule) },
 					] : undefined
 				}
 			},

@@ -11,7 +11,8 @@ import {
 	IconButton,
 	Menu,
 	MenuItem,
-	TextField
+	TextField,
+	Tooltip
 } from '@material-ui/core'
 
 import { isEmpty, makeArray } from '../utils/utils'
@@ -21,6 +22,7 @@ import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { Calendar } from './Calendar/Calendar'
 import { NewAppointment } from './Calendar/NewAppointment'
 import { CancelAppointment } from './Calendar/CancelAppointment'
+import { LoadingIconButton } from './Form/LoadingIconButton'
 import { TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
@@ -43,6 +45,7 @@ import {
 	deleteAppointment,
 	fetchStudentSchedule
 } from '../actions/studentScheduleActions'
+import { logout } from '../actions/authActions'
 
 interface IReduxProps {
 	currentUser: IUser
@@ -53,13 +56,17 @@ interface IReduxProps {
 	starItem: (item: StarredItem) => any
 	unstarItem: (item: StarredItem) => any
 	fetchStudentSchedule: (studentID: number, dateTime?: string) => any
+	logout: () => Promise<any>
 }
 
-interface IProps extends RouteComponentProps, IReduxProps {}
+interface IProps extends RouteComponentProps, IReduxProps {
+	onSignOut?: () => void
+}
 
 interface IState {
 	loadingProfile: boolean
 	loadingSchedule: boolean
+	loadingSignOut: boolean
 	editDialogOpen: boolean
 	calendarDialogOpen: boolean
 	studentID: number
@@ -74,6 +81,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 	state: IState = {
 		loadingProfile: false,
 		loadingSchedule: false,
+		loadingSignOut: false,
 		editDialogOpen: false,
 		calendarDialogOpen: false,
 		studentID: -1,
@@ -236,6 +244,18 @@ class StudentProfile extends React.Component<IProps, IState> {
 	isOwnProfile = (): boolean => {
 		return this.props.currentUser
 			&& this.props.currentUser.account_type === 'student'
+	}
+
+	handleSignOut = () => {
+		this.setState({ loadingSignOut: true })
+		this.props.logout()
+			.then(() => {
+				this.props.onSignOut()
+			})
+			.catch(() => {
+				this.props.onSignOut()
+			})
+		
 	}
 
 	render () {
@@ -435,9 +455,19 @@ class StudentProfile extends React.Component<IProps, IState> {
 							</div>
 						) : (
 							<ul className='right_col'>
-								<li>
-									<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
-								</li>
+								{this.isOwnProfile() ? (
+									<li>
+										<Tooltip title='Sign Out'>
+											<LoadingIconButton loading={this.state.loadingSignOut} onClick={() => this.handleSignOut()}>
+												<Icon>exit_to_app</Icon>
+											</LoadingIconButton>
+										</Tooltip>
+									</li>
+								) : (
+									<li>
+										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
+									</li>
+								)}
 							</ul>
 						)}
 					</TopNav>
@@ -475,7 +505,8 @@ const mapDispatchToProps = {
 	fetchStudentProfile,
 	fetchStudentSchedule,
 	starItem,
-	unstarItem
+	unstarItem,
+	logout
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentProfile)

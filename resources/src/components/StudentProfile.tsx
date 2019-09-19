@@ -258,7 +258,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 			.catch(() => {
 				this.props.onSignOut()
 			})
-		
+	}
+
+	onSetStudentPlan = (): Promise<any> => {
+		return this.props.fetchStudentSchedule(this.getStudentID(), this.getURLDateTime())
 	}
 
 	render () {
@@ -401,7 +404,11 @@ class StudentProfile extends React.Component<IProps, IState> {
 					<p className='empty_text'>Nothing scheduled</p>
 				),
 				child: (blockDetails: IBlockDetails) => (
-					<PlanDialog blockDetails={blockDetails} />
+					<PlanDialog
+						blockDetails={blockDetails}
+						studentID={this.getStudentID()}
+						onSubmit={this.onSetStudentPlan}
+					/>
 				)
 			}
 		]

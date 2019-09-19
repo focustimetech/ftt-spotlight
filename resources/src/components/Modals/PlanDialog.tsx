@@ -12,27 +12,38 @@ import {
 
 import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { fetchStaffList, IStaffTopic } from '../../actions/studentScheduleActions'
+import {
+    fetchStaffList,
+    setStudentPlan,
+    IStaffTopic,
+    ISchedulePlanRequest
+} from '../../actions/studentScheduleActions'
 import { IBlockDetails } from '../../types/calendar'
 
 interface ReduxProps {
     fetchStaffList: (blockID: number, dateTime: string) => Promise<any>
+    setStudentPlan: (schedulePlan: ISchedulePlanRequest) => Promise<any>
     staffList: IStaffTopic[]
 }
 
 interface IProps extends ReduxProps {
     blockDetails: IBlockDetails
+    studentID: number
+    //onClose: () => void  // check aroud where itemMap is done
+    onSubmit: () => Promise<any>
 }
 
 interface IState {
     loadingStaffList: boolean
     open: boolean
+    uploading: boolean
 }
 
 class PlanDialog extends React.Component<IProps, IState> {
     state: IState = {
         loadingStaffList: false,
         open: false,
+        uploading: false
     }
 
     handleOpen = () => {
@@ -43,9 +54,28 @@ class PlanDialog extends React.Component<IProps, IState> {
         this.setState({ open: false })
     }
 
-    handleSubmit = () => {
-        // this.props.setPlan(...).then(() => ...)
-        // this.props.onSubmit()
+    handleSubmit = (staffTopic: IStaffTopic) => {
+        this.setState({
+            open: false,
+            uploading: true
+        })
+        const schedulePlan: ISchedulePlanRequest = {
+            student_id: this.props.studentID,
+            staff_id: staffTopic.staff.id,
+            block_id: this.props.blockDetails.block_id,
+            date: this.props.blockDetails.date
+        }
+        this.props.setStudentPlan(schedulePlan)
+            .then(() => {
+                // Signal to refresh profile
+                return this.props.onSubmit()
+                    .then(() => {
+                        // this.props.onClose()
+                        this.setState({
+                            uploading: false
+                        })
+                    })
+            })        
     }
 
     componentDidMount() {
@@ -75,6 +105,7 @@ class PlanDialog extends React.Component<IProps, IState> {
                             this.props.staffList.map((staffTopic: IStaffTopic) => (
                                 <CalendarDialogItem
                                     onCloseDialog={this.handleClose}
+                                    onClick={() => this.handleSubmit(staffTopic)}
                                     details={{
                                         variant: staffTopic.topic ? staffTopic.topic.color : undefined,
                                         title: staffTopic.staff.name,
@@ -97,6 +128,6 @@ const mapStateToProps = (state: any) => ({
     staffList: state.staffTopics.items
 })
 
-const mapDispatchToProps = { fetchStaffList }
+const mapDispatchToProps = { fetchStaffList, setStudentPlan }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlanDialog)

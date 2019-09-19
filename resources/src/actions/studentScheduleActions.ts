@@ -16,6 +16,13 @@ export interface IStaffTopic {
     topic?: ITopic
 }
 
+export interface ISchedulePlanRequest {
+    student_id: number
+    staff_id: number
+    block_id: number
+    date: string
+}
+
 export const createAppointment = (appointment: IAppointmentRequest): Promise<any> => {
     return axios.post('/api/appointments/create', appointment)
         .then((res: any) => {
@@ -64,4 +71,11 @@ export const fetchStaffList = (blockID: number, dateTime: string) => {
                 })
             })
     }
+}
+
+export const setStudentPlan = (schedulePlan: ISchedulePlanRequest): Promise<any> => {
+    return axios.post('/api/students/schedule-plan', schedulePlan)
+        .then((res: any) => {
+            return res.data
+        })
 }

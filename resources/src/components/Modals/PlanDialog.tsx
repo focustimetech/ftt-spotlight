@@ -3,39 +3,54 @@ import { connect } from 'react-redux'
 
 import {
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText    
+    DialogContentText,    
 } from '@material-ui/core'
 
 import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { fetchStaffList, IStaffTopic } from '../../actions/studentScheduleActions'
+import { IBlockDetails } from '../../types/calendar'
 
 interface ReduxProps {
-    fetchStaffList: () => Promise<any>
+    fetchStaffList: (blockID: number, dateTime: string) => Promise<any>
     staffList: IStaffTopic[]
 }
 
 interface IProps extends ReduxProps {
-    open: boolean
-    onClose: () => void
-    onSubmit: () => void
+    blockDetails: IBlockDetails
 }
 
 interface IState {
     loadingStaffList: boolean
+    open: boolean
 }
 
 class PlanDialog extends React.Component<IProps, IState> {
     state: IState = {
-        loadingStaffList: false
+        loadingStaffList: false,
+        open: false,
+    }
+
+    handleOpen = () => {
+        this.setState({ open: true })
+    }
+
+    handleClose = () => {
+        this.setState({ open: false })
+    }
+
+    handleSubmit = () => {
+        // this.props.onSubmit()
     }
 
     componentDidMount() {
+        const { block_id, date } = this.props.blockDetails
         this.setState({ loadingStaffList: true })
-        this.props.fetchStaffList()
+        this.props.fetchStaffList(block_id, date)
             .then(() => {
                 this.setState({ loadingStaffList: false })
             })
@@ -44,12 +59,33 @@ class PlanDialog extends React.Component<IProps, IState> {
     render() {
         console.log('THIS.PROPS:', this.props)
         return (
-            <Dialog open={true}>
-                <EnhancedDialogTitle title='Plan Schedule' />
-                <DialogContent>
-                    <DialogContentText>Select a teacher from the list below.</DialogContentText>
-                </DialogContent>
-            </Dialog>
+            <>
+                <Button
+                    variant='text'
+                    color='primary'
+                    onClick={() => this.handleOpen()}
+                >Set Plan</Button>
+                <Dialog open={this.state.open}>
+                    <EnhancedDialogTitle title='Plan Schedule' />
+                    <DialogContent>
+                        <DialogContentText>Select a teacher from the list below.</DialogContentText>
+                        {this.state.loadingStaffList ? (
+                            <CircularProgress />
+                        ) : (
+                            this.props.staffList.map((staffTopic: IStaffTopic) => (
+                                <CalendarDialogItem
+                                    onCloseDialog={this.handleClose}
+                                    details={{
+                                        variant: staffTopic.topic ? staffTopic.topic.color : undefined,
+                                        title: staffTopic.staff.name,
+                                        memo: staffTopic.topic ? staffTopic.topic.memo : 'No Topic'
+                                    }}
+                                />
+                            ))
+                        )}
+                    </DialogContent>
+                </Dialog>
+            </>
         )
     }
 }

@@ -46,6 +46,7 @@ import {
 	fetchStudentSchedule
 } from '../actions/studentScheduleActions'
 import { logout } from '../actions/authActions'
+import PlanDialog from './Modals/PlanDialog'
 
 interface IReduxProps {
 	currentUser: IUser
@@ -89,7 +90,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 		blockDetails: null,
 		cancelAppointmentDialogOpen: false,
 		cancelAppointmentDialogItem: null,
-		cancelAppointment: null
+		cancelAppointment: null,
 	}
 
 	toggleStarred = (isStarred: boolean) => {
@@ -398,6 +399,9 @@ class StudentProfile extends React.Component<IProps, IState> {
 				}),
 				emptyState: () => (
 					<p className='empty_text'>Nothing scheduled</p>
+				),
+				child: (blockDetails: IBlockDetails) => (
+					<PlanDialog blockDetails={blockDetails} />
 				)
 			}
 		]

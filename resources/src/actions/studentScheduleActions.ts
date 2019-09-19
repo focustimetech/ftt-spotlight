@@ -55,7 +55,7 @@ export const fetchStaffList = (blockID: number, dateTime: string) => {
             block_id: blockID,
             date: dateTime
         }
-        return axios.post('/api/students/staff_list', data)
+        return axios.post('/api/students/staff-list', data)
             .then((res: any) => {
                 const staffTopics: IStaffTopic[] = res.data
                 dispatch({

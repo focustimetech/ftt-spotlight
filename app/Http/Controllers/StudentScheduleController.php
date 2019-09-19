@@ -11,12 +11,14 @@ use App\BlockSchedule;
 use App\Course;
 use App\Topic;
 use App\TopicSchedule;
+use App\SchedulePlan;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\BlockSchedule as BlockScheduleResource;
 use App\Http\Resources\Course as CourseResource;
 use App\Http\Resources\Topic as TopicResource;
+use App\Http\Resources\SchedulePlan as SchedulePlanResource;
 use App\Http\Utils;
 
 class StudentScheduleController extends Controller
@@ -147,5 +149,22 @@ class StudentScheduleController extends Controller
         });
 
         return $staff;
+    }
+
+    public function createPlan(Request $request)
+    {
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        $block_id = $request->input('block_id');
+        $staff_id = $request->input('staff_id');
+        $student_id = auth()->user()->student()->id;
+        
+        $plan = SchedulePlan::create([
+            'date' => $date,
+            'block_id' => $block_id,
+            'staff_id' => $staff_id,
+            'student_id' => $student_id
+        ]);
+
+        return new SchedulePlanResource($plan);
     }
 }

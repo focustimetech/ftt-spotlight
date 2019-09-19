@@ -39,7 +39,7 @@ Route::middleware('auth:api')->group(function() {
     Route::get('settings', 'SettingsController@index');
 
     // Student Schedule
-    Route::get('students/staff-list', 'StudentScheduleController@listStaff');
+    Route::post('students/staff-list', 'StudentScheduleController@listStaff');
 });
 
 // Student Routes

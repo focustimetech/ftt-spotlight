@@ -10,6 +10,7 @@ import {
     DialogContentText,    
 } from '@material-ui/core'
 
+import { LoadingButton } from '../Form/LoadingButton'
 import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import {
@@ -90,11 +91,12 @@ class PlanDialog extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-                <Button
+                <LoadingButton
+                    loading={this.state.uploading}
                     variant='text'
                     color='primary'
                     onClick={() => this.handleOpen()}
-                >Set Plan</Button>
+                >Set Plan</LoadingButton>
                 <Dialog open={this.state.open}>
                     <EnhancedDialogTitle title='Plan Schedule' onClose={this.handleClose}/>
                     <DialogContent>

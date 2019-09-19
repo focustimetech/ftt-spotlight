@@ -66,3 +66,6 @@ export const DELETE_TOPIC_SCHEDULE = 'DELETE_TOPIC_SCHEDULE'
 // Snackbar
 export const QUEUE_SNACKBAR = 'QUEUE_SNACKBAR'
 export const DEQUEUE_SNACKBAR = 'DEQUEUE_SNACKBAR'
+
+// Student Plan
+export const FETCH_STAFF_LIST = 'FETCH_STAFF_LIST'

@@ -44,6 +44,7 @@ class PlanDialog extends React.Component<IProps, IState> {
     }
 
     handleSubmit = () => {
+        // this.props.setPlan(...).then(() => ...)
         // this.props.onSubmit()
     }
 
@@ -57,7 +58,6 @@ class PlanDialog extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log('THIS.PROPS:', this.props)
         return (
             <>
                 <Button
@@ -66,7 +66,7 @@ class PlanDialog extends React.Component<IProps, IState> {
                     onClick={() => this.handleOpen()}
                 >Set Plan</Button>
                 <Dialog open={this.state.open}>
-                    <EnhancedDialogTitle title='Plan Schedule' />
+                    <EnhancedDialogTitle title='Plan Schedule' onClose={this.handleClose}/>
                     <DialogContent>
                         <DialogContentText>Select a teacher from the list below.</DialogContentText>
                         {this.state.loadingStaffList ? (
@@ -84,6 +84,9 @@ class PlanDialog extends React.Component<IProps, IState> {
                             ))
                         )}
                     </DialogContent>
+                    <DialogActions>
+                        <Button variant='text' onClick={() => this.handleClose()}>Cancel</Button>
+                    </DialogActions>
                 </Dialog>
             </>
         )

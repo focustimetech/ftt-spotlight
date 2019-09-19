@@ -29,7 +29,6 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps {
     blockDetails: IBlockDetails
-    studentID: number
     //onClose: () => void  // check aroud where itemMap is done
     onSubmit: () => Promise<any>
 }
@@ -61,7 +60,6 @@ class PlanDialog extends React.Component<IProps, IState> {
             uploading: true
         })
         const schedulePlan: ISchedulePlanRequest = {
-            student_id: this.props.studentID,
             staff_id: staffTopic.staff.id,
             block_id: this.props.blockDetails.block_id,
             date: this.props.blockDetails.date

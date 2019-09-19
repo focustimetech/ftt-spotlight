@@ -406,7 +406,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 				child: (blockDetails: IBlockDetails) => (
 					<PlanDialog
 						blockDetails={blockDetails}
-						studentID={this.getStudentID()}
 						onSubmit={this.onSetStudentPlan}
 					/>
 				)

@@ -17,7 +17,6 @@ export interface IStaffTopic {
 }
 
 export interface ISchedulePlanRequest {
-    student_id: number
     staff_id: number
     block_id: number
     date: string

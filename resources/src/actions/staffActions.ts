@@ -40,3 +40,7 @@ export const updateStaff = (staffData: StaffRequest) => (dispatch: any) => {
             payload: res.data
         }))
 }
+
+export const setCapacity = (capacity: number) => (dispatch: any) => {
+    return axios.post('/api/staff/capacity', { capacity })
+}

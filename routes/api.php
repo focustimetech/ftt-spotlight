@@ -104,6 +104,9 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
 
     // Power Scheduler
     Route::post('power-scheduler', 'PowerSchedulerController@schedule');
+
+    // Staff Capacity
+    Route::post('staff/capacity', 'StaffController@setCapacity');
 });
 
 // Administrator Routes

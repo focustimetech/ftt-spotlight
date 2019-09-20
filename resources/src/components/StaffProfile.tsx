@@ -32,7 +32,7 @@ import {
 } from '../types/calendar'
 import { LoadingButton } from './Form/LoadingButton'
 import CapacityWidget from './Modals/CapacityWidget'
-import { ChangePasswordDialog } from './Modals/ChangePasswordDialog'
+import ChangePasswordWidget from './Modals/ChangePasswordWidget'
 import { CancelAppointment } from './Calendar/CancelAppointment'
 import { Calendar } from './Calendar/Calendar'
 import { TopNav } from './TopNav'
@@ -75,7 +75,6 @@ interface IState {
 	cancelAppointment: IAppointment
 	topicsDialogOpen: boolean
 	topcisDialogMode: 'edit' | 'select'
-	passwordDialogOpen: boolean
 	onTopicSelect: (topic: ITopic) => void
 }
 
@@ -94,7 +93,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 		cancelAppointment: null,
 		topicsDialogOpen: false,
 		topcisDialogMode: 'edit',
-		passwordDialogOpen: false,
 		onTopicSelect: () => null
 	}
 
@@ -215,18 +213,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 	handleSetTopic = () => {
 		this.handleTopicsDialogOpen('select')
 		this.setState({ onTopicSelect: this.onTopicSet })
-	}
-
-	onPasswordChange = () => {
-		this.props.queueSnackbar({ message: 'Changed password successfully.' })
-	}
-
-	handlePasswordDialogClose = () => {
-		this.setState({ passwordDialogOpen: false })
-	}
-
-	handlePasswordDialogOpen = () => {
-		this.setState({ passwordDialogOpen: true })
 	}
 
 	onTopicSet = (topic: ITopic) => {
@@ -448,10 +434,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 					mode={this.state.topcisDialogMode}
 					onSelect={this.state.onTopicSelect}
 				/>
-				<ChangePasswordDialog
-					open={this.state.passwordDialogOpen}
-					onClose={this.handlePasswordDialogClose}
-					onSuccess={this.onPasswordChange}
 				/>
 				<div className='profile'>
 					<TopNav>
@@ -506,11 +488,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 											</Tooltip>
 										</li>
 										<li>
-											<Tooltip title='Change Password'>
-												<IconButton onClick={() => this.handlePasswordDialogOpen()}>
-													<Icon>lock</Icon>
-												</IconButton>
-											</Tooltip>
+											<ChangePasswordWidget />
 										</li>
 									</>
 								) : (

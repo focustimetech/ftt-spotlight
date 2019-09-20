@@ -30,6 +30,8 @@ import {
 	ITopicSchedule,
 	ICalendarBlockVariant,
 } from '../types/calendar'
+import { LoadingButton } from './Form/LoadingButton'
+import CapacityWidget from './Modals/CapacityWidget'
 import { ChangePasswordDialog } from './Modals/ChangePasswordDialog'
 import { CancelAppointment } from './Calendar/CancelAppointment'
 import { Calendar } from './Calendar/Calendar'
@@ -42,7 +44,6 @@ import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStaffProfile } from '../actions/staffProfileActions'
 import { fetchStaffSchedule } from '../actions/staffScheduleActions'
 import { createTopicSchedule, deleteTopicSchedule, ITopicScheduleRequest } from '../actions/topicActions'
-import { LoadingButton } from './Form/LoadingButton'
 
 interface IReduxProps {
 	currentUser: IUser
@@ -491,6 +492,12 @@ class StaffProfile extends React.Component<IProps, IState> {
 							<ul className='right_col'>
 								{isOwner ? (
 									<>
+										<li>
+											<Tooltip title='Set Capacity'>
+												<CapacityWidget
+													capacity={this.props.currentUser.account_type === 'staff' ? this.props.currentUser.details.capacity : -1}/>
+											</Tooltip>
+										</li>
 										<li>
 											<Tooltip title='Topics'>
 												<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>

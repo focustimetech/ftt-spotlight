@@ -84,7 +84,7 @@ class App extends React.Component<IProps, IState> {
 									schoolName={this.props.settings.values['school_name'].value || null}
 								/>
 								<Switch>
-									<Route path='/' exact render={(props: RouteComponentProps) => (
+									<Route path='/' exact render={() => (
 										<Redirect to='/students' />
 									)} />
 									<Route path='/clusters/:clusterID?' component={Clusters} />
@@ -103,12 +103,14 @@ class App extends React.Component<IProps, IState> {
 									<Route component={NotFound} />
 								</Switch>
 							</> : <>
-								<Route path='/' exact render={(props) => (
-									<Redirect to='/profile' />
-								)} />
-								<Route path='/profile' render={(props: RouteComponentProps) => (
-									<StudentProfile {...props} onSignOut={this.props.onSignOut} />
-								)} />
+								<Switch>
+									<Route path='/profile' render={(props: RouteComponentProps) => (
+										<StudentProfile {...props} onSignOut={this.props.onSignOut} />
+									)} />
+									<Route render={() => (
+										<Redirect to='/profile' />
+									)} />
+								</Switch>
 							</>
 						}
 					</div>

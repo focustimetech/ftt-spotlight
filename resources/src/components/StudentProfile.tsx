@@ -18,6 +18,7 @@ import {
 import { isEmpty, makeArray } from '../utils/utils'
 import { StarredItem } from '../reducers/starReducer'
 import { listToTruncatedString } from '../utils/utils'
+import ChangePasswordWidget from './Modals/ChangePasswordWidget'
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { Calendar } from './Calendar/Calendar'
 import { NewAppointment } from './Calendar/NewAppointment'
@@ -477,13 +478,18 @@ class StudentProfile extends React.Component<IProps, IState> {
 						) : (
 							<ul className='right_col'>
 								{this.isOwnProfile() ? (
-									<li>
-										<Tooltip title='Sign Out'>
-											<LoadingIconButton loading={this.state.loadingSignOut} onClick={() => this.handleSignOut()}>
-												<Icon>exit_to_app</Icon>
-											</LoadingIconButton>
-										</Tooltip>
-									</li>
+									<>
+										<li>
+											<ChangePasswordWidget />
+										</li>
+										<li>
+											<Tooltip title='Sign Out'>
+												<LoadingIconButton loading={this.state.loadingSignOut} onClick={() => this.handleSignOut()}>
+													<Icon>exit_to_app</Icon>
+												</LoadingIconButton>
+											</Tooltip>
+										</li>
+									</>
 								) : (
 									<li>
 										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />

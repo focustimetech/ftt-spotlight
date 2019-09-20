@@ -46,7 +46,7 @@ const initialState: IState = {
     errored: false,
     passwordTooShort: false,
     unmatchedPasswords: false,
-    open: true
+    open: false
 }
 
 class ChangePasswordWidget extends React.Component<IProps, IState> {

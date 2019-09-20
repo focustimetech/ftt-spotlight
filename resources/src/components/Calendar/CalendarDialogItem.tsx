@@ -15,6 +15,7 @@ import { ICalendarItemDetails, ICalendarItemAction } from '../../types/calendar'
 interface IProps {
     details: ICalendarItemDetails
     actions?: ICalendarItemAction[]
+    disabled?: boolean
     loading?: boolean
     onCloseDialog: () => void
     onClick?: () => void
@@ -53,7 +54,7 @@ export const CalendarDialogItem = (props: IProps) => {
         setLoadingActions(loadingActions.filter((loadingAction: number) => loadingAction !== index))
     }
 
-    const handleClick = (event: any) => {
+    const handleClickMenu = (event: any) => {
         setMenuRef(event.currentTarget)
     }
 
@@ -76,16 +77,23 @@ export const CalendarDialogItem = (props: IProps) => {
         setMenuRef(null)
     }
 
+    const handleClick = (onClick: () => void) => {
+        if (props.disabled)
+            return
+        onClick()
+    }
+
     return (
         <div
             className={classNames(
                 'calendar_item',
                 'calendar_item__container',
                 `--${variant}`,
-                {['--selectable']: clickable}
+                {['--selectable']: clickable},
+                {['--disabled']: props.disabled}
             )}
             key={id}
-            onClick={clickable ? () => props.onClick() : undefined}
+            onClick={clickable ? () => handleClick(props.onClick) : undefined}
         >
             <div>
                 <h6 className='calendar_item__title'>
@@ -101,7 +109,7 @@ export const CalendarDialogItem = (props: IProps) => {
             </div>
             {(props.actions && props.actions.length > 0) && (
                 <div className='calendar_item__actions'>
-                    <LoadingIconButton onClick={handleClick} loading={props.loading === true}>
+                    <LoadingIconButton onClick={handleClickMenu} loading={props.loading === true}>
                         <Icon>more_vert</Icon>
                     </LoadingIconButton>
                     <Menu

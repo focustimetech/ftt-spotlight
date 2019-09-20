@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 
 import {
     Button,
@@ -15,149 +16,192 @@ import {
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { LoadingButton } from '../Form/LoadingButton'
 import { changePassword } from '../../utils/http'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 
-interface IProps {
-    open: boolean
-    onClose: () => void
-    onSuccess: () => void
+interface ReduxProps {
+    queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-export const ChangePasswordDialog = (props: IProps) => {
-    const [oldPassword, setOldPassword] = React.useState('')
-    const [newPassword, setNewPassword] = React.useState('')
-    const [confirmPassword, setConfirmPassword] = React.useState('')
-    const [showPassword, setShowPassword] = React.useState(false)
-    const [loading, setLoading] = React.useState(false)
-    const [errored, setErrored] = React.useState(false)
-    const [passwordTooShort, setPasswordTooShort] = React.useState(false)
-    const [unmatchedPasswords, setUnmatchedPasswords] = React.useState(false)
+interface IProps extends ReduxProps {}
 
-    const handleSubmit = () => {
-        if (newPassword.length < 8) {
-            setPasswordTooShort(true)
+interface IState {
+    oldPassword: string
+    newPassword: string
+    confirmPassword: string
+    showPassword: boolean
+    loading: boolean
+    errored: boolean
+    passwordTooShort: boolean
+    unmatchedPasswords: boolean
+    open: boolean
+}
+
+const initialState: IState = {
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+    showPassword: false,
+    loading: false,
+    errored: false,
+    passwordTooShort: false,
+    unmatchedPasswords: false,
+    open: true
+}
+
+class ChangePasswordWidget extends React.Component<IProps, IState> {
+    state: IState = initialState
+
+    handleOpen = () => {
+        this.setState({ open: true })
+    }
+
+    handleClose = () => {
+        this.setState({ open: false })
+    }
+
+    handleSubmit = () => {
+        if (this.state.newPassword.length < 8) {
+            this.setState({ passwordTooShort: true })
             return
-        } else if (!showPassword && newPassword !== confirmPassword) {
-            setUnmatchedPasswords(true)
+        } else if (!this.state.showPassword && this.state.newPassword !== this.state.confirmPassword) {
+            this.setState({ unmatchedPasswords: true })
             return
         }
-        setLoading(true)
-        setErrored(false)
-        changePassword(oldPassword, newPassword)
+        this.setState({
+            loading: true,
+            errored: false
+        })
+
+        changePassword(this.state.oldPassword, this.state.newPassword)
             .then((res: any) => {
-                setNewPassword('')
-                setOldPassword('')
-                setConfirmPassword('')
-                setLoading(false)
-                props.onSuccess()
-                props.onClose()
+                this.setState(initialState)
+                this.props.queueSnackbar({ message: 'Changed passsword.' })
             })
             .catch((error: any) => {
-                setLoading(false)
-                setErrored(true)
+                this.setState({
+                    loading: false,
+                    errored: true
+                })
             })
     }
 
-    const handleChange = (event: any, field: 'old' | 'new' | 'confirm') => {
-        if (loading)
+    handleChange = (event: any, field: 'old' | 'new' | 'confirm') => {
+        if (this.state.loading)
             return
         const value: string = event.target.value
-        setErrored(false)
+        this.setState({ errored: false })
         switch (field) {
             case 'old':
-                setOldPassword(value)
+                // setOldPassword(value)
+                this.setState({ oldPassword: value })
                 return
             case 'new':
-                setPasswordTooShort(false)
-                setNewPassword(value)
+                //setPasswordTooShort(false)
+                //setNewPassword(value)
+                this.setState({
+                    passwordTooShort: false,
+                    newPassword: value
+                })
                 return
             case 'confirm':
-                setConfirmPassword(value)
-                setUnmatchedPasswords(false)
+                //setConfirmPassword(value)
+                //setUnmatchedPasswords(false)
+                this.setState({
+                    confirmPassword: value,
+                    unmatchedPasswords: false
+                })
                 return
         }
     }
 
-    const toggleShowPassword = () => {
-        if (loading)
+    toggleShowPassword = () => {
+        if (this.state.loading)
             return
-        if (showPassword) {
-            setShowPassword(false)
-            setConfirmPassword('')
+        if (this.state.showPassword) {
+            this.setState({
+                showPassword: false,
+                confirmPassword: ''
+            })
         } else {
-            setShowPassword(true)
+            this.setState({ showPassword: true })
         }
     }
 
-    return (
-        <Dialog open={props.open}>
-            <EnhancedDialogTitle title='Change Password' onClose={props.onClose} />
-            <DialogContent>
-                <DialogContentText>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</DialogContentText>
-                <TextField
-                    name='old_password'
-                    label='Old Password'
-                    variant='outlined'
-                    type='password'
-                    value={oldPassword}
-                    onChange={(event: any) => handleChange(event, 'old')}
-                    fullWidth
-                    autoFocus
-                    required
-                    error={errored}
-                    helperText={errored ? 'That didn\'t work. Please try again.' : undefined}
-                    margin='normal'
-                />
-                <TextField
-                    name='new_password'
-                    label='New Password'
-                    variant='outlined'
-                    type={showPassword && !loading ? 'text' : 'password'}
-                    value={newPassword}
-                    onChange={(event: any) => handleChange(event, 'new')}
-                    fullWidth
-                    required
-                    error={passwordTooShort}
-                    helperText={passwordTooShort ? 'Password must be at least 8 characters.' : undefined}
-                    margin='normal'
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    edge="end"
-                                    onClick={() => toggleShowPassword()}
-                                >
-                                    <Icon>{showPassword ? 'visibility_off' : 'visibility'}</Icon>
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                      }}
-                />
-                {!showPassword && (
+    render() {
+        return (
+            <Dialog open={this.state.open}>
+                <EnhancedDialogTitle title='Change Password' onClose={this.handleClose} />
+                <DialogContent>
+                    <DialogContentText>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</DialogContentText>
                     <TextField
-                        name='confirm_password'
-                        label='Confirm Password'
+                        name='old_password'
+                        label='Old Password'
                         variant='outlined'
                         type='password'
-                        value={confirmPassword}
-                        onChange={(event: any) => handleChange(event, 'confirm')}
+                        value={this.state.oldPassword}
+                        onChange={(event: any) => this.handleChange(event, 'old')}
                         fullWidth
-                        required={!showPassword}
-                        error={unmatchedPasswords}
-                        helperText={unmatchedPasswords ? 'Passwords don\'t match.' : undefined}
+                        autoFocus
+                        required
+                        error={this.state.errored}
+                        helperText={this.state.errored ? 'That didn\'t work. Please try again.' : undefined}
                         margin='normal'
                     />
-                )}
-            </DialogContent>
-            <DialogActions>
-                <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
-                <LoadingButton
-                    variant='contained'
-                    color='primary'
-                    onClick={() => handleSubmit()}
-                    loading={loading}
-                    disabled={oldPassword.length === 0 || newPassword.length === 0}
-                >Submit</LoadingButton>
-            </DialogActions>
-        </Dialog>
-    )
+                    <TextField
+                        name='new_password'
+                        label='New Password'
+                        variant='outlined'
+                        type={this.state.showPassword && !this.state.loading ? 'text' : 'password'}
+                        value={this.state.newPassword}
+                        onChange={(event: any) => this.handleChange(event, 'new')}
+                        fullWidth
+                        required
+                        error={this.state.passwordTooShort}
+                        helperText={this.state.passwordTooShort ? 'Password must be at least 8 characters.' : undefined}
+                        margin='normal'
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        edge="end"
+                                        onClick={() => this.toggleShowPassword()}
+                                    >
+                                        <Icon>{this.state.showPassword ? 'visibility_off' : 'visibility'}</Icon>
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    {!this.state.showPassword && (
+                        <TextField
+                            name='confirm_password'
+                            label='Confirm Password'
+                            variant='outlined'
+                            type='password'
+                            value={this.state.confirmPassword}
+                            onChange={(event: any) => this.handleChange(event, 'confirm')}
+                            fullWidth
+                            required={!this.state.showPassword}
+                            error={this.state.unmatchedPasswords}
+                            helperText={this.state.unmatchedPasswords ? 'Passwords don\'t match.' : undefined}
+                            margin='normal'
+                        />
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button variant='text' onClick={() => this.handleClose()}>Cancel</Button>
+                    <LoadingButton
+                        variant='contained'
+                        color='primary'
+                        onClick={() => this.handleSubmit()}
+                        loading={this.state.loading}
+                        disabled={this.state.oldPassword.length === 0 || this.state.newPassword.length === 0}
+                    >Submit</LoadingButton>
+                </DialogActions>
+            </Dialog>
+        )
+    }
 }
+
+const mapDispatchToProps = { queueSnackbar }
+export default connect(null, mapDispatchToProps)(ChangePasswordWidget)

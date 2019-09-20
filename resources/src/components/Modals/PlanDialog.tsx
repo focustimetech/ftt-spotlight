@@ -102,15 +102,18 @@ class PlanDialog extends React.Component<IProps, IState> {
                         {this.state.loadingStaffList ? (
                             <CircularProgress />
                         ) : (
-                            this.props.staffList.map((staffTopic: IStaffTopic) => (
+                            this.props.staffList.map((staffTopic: IStaffTopic, index: number) => (
                                 <CalendarDialogItem
                                     onCloseDialog={this.handleClose}
                                     onClick={() => this.handleSubmit(staffTopic)}
                                     details={{
                                         variant: staffTopic.topic ? staffTopic.topic.color : undefined,
                                         title: staffTopic.staff.name,
-                                        memo: staffTopic.topic ? staffTopic.topic.memo : 'No Topic'
+                                        memo: staffTopic.topic ? staffTopic.topic.memo : 'No Topic',
+                                        time: `${staffTopic.num_remaining} of ${staffTopic.staff.capacity} remaining`
                                     }}
+                                    disabled={staffTopic.num_remaining === 0}
+                                    key={index}
                                 />
                             ))
                         )}

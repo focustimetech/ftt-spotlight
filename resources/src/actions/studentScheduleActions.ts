@@ -14,6 +14,8 @@ export interface IAppointmentRequest {
 export interface IStaffTopic {
     staff: IStaff
     topic?: ITopic
+    num_scheduled: number
+    num_remaining: number
 }
 
 export interface ISchedulePlanRequest {

@@ -350,6 +350,12 @@
 		user-select: none;
 	}
 
+	&.--disabled {
+		color: #444;
+		background: #EEE;
+		cursor: default;
+	}
+
 	&.--success::after {
 		background: $success;
 	}

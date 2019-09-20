@@ -411,10 +411,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 					<p className='empty_text'>Nothing scheduled</p>
 				),
 				child: (blockDetails: IBlockDetails) => (
-					<PlanDialog
-						blockDetails={blockDetails}
-						onSubmit={this.onSetStudentPlan}
-					/>
+					blockDetails.pending ? (
+						<PlanDialog
+							blockDetails={blockDetails}
+							onSubmit={this.onSetStudentPlan}
+						/>
+					) : undefined
 				)
 			}
 		]

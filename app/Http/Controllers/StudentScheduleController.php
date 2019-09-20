@@ -145,6 +145,10 @@ class StudentScheduleController extends Controller
                 $topic_resource = new TopicResource($topic_schedule->topic()->first());
                 $resource['topic'] = $topic_resource;
             }
+            $num_scheduled = SchedulePlan::where('staff_id', $staff->id)
+                ->where('date', $date)->where('block_id', $block_id)->count();
+            $resource['num_scheduled'] = $num_scheduled;
+            $resource['num_remaining'] = $staff->capacity - $num_scheduled >= 0 ? $staff->capacity - $num_scheduled : 0;
             return $resource;
         });
 

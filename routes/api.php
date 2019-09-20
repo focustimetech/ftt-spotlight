@@ -37,6 +37,10 @@ Route::middleware('auth:api')->group(function() {
 
     // Settings
     Route::get('settings', 'SettingsController@index');
+
+    // Student Schedule
+    Route::post('students/staff-list', 'StudentScheduleController@listStaff');
+    Route::post('students/schedule-plan', 'StudentScheduleController@setPlan');
 });
 
 // Student Routes

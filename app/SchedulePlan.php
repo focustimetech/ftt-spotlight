@@ -8,6 +8,9 @@ class SchedulePlan extends Model
 {
     protected $table = 'plans';
     public $timestamps = false;
+    protected $fillable = [
+        'staff_id', 'student_id', 'date', 'block_id'
+    ];
 
     public function staff()
     {

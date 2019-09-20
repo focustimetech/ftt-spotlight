@@ -11,11 +11,14 @@ use App\BlockSchedule;
 use App\Course;
 use App\Topic;
 use App\TopicSchedule;
+use App\SchedulePlan;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\BlockSchedule as BlockScheduleResource;
 use App\Http\Resources\Course as CourseResource;
+use App\Http\Resources\Topic as TopicResource;
+use App\Http\Resources\SchedulePlan as SchedulePlanResource;
 use App\Http\Utils;
 
 class StudentScheduleController extends Controller
@@ -126,5 +129,45 @@ class StudentScheduleController extends Controller
         if ($student) {
             return $this->index($student->id, $datetime);
         }
+    }
+
+    public function listStaff(Request $request)
+    {
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        $block_id = $request->input('block_id');
+
+        $staff = Staff::all()->map(function($staff) use($date, $block_id) {
+            $topic_ids = $staff->getTopics()->pluck('id')->toArray();
+            $topic_schedule = TopicSchedule::whereIn('topic_id', $topic_ids)
+                ->get()->where('date', $date)->where('block_id', $block_id)->first();
+            $resource = [ 'staff' => new StaffResource($staff)];
+            if ($topic_schedule) {
+                $topic_resource = new TopicResource($topic_schedule->topic()->first());
+                $resource['topic'] = $topic_resource;
+            }
+            return $resource;
+        });
+
+        return $staff;
+    }
+
+    public function setPlan(Request $request)
+    {
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        $block_id = $request->input('block_id');
+        $staff_id = $request->input('staff_id');
+        $student_id = auth()->user()->student()->id;
+
+        SchedulePlan::where('student_id', $student_id)
+            ->where('date', $date)->where('block_id', $block_id)
+            ->delete();        
+        $plan = SchedulePlan::create([
+            'date' => $date,
+            'block_id' => $block_id,
+            'staff_id' => $staff_id,
+            'student_id' => $student_id
+        ]);
+
+        return new SchedulePlanResource($plan);
     }
 }

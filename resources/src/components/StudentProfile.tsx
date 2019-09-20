@@ -46,6 +46,8 @@ import {
 	fetchStudentSchedule
 } from '../actions/studentScheduleActions'
 import { logout } from '../actions/authActions'
+import PlanDialog from './Modals/PlanDialog'
+import { queueSnackbar, ISnackbar } from '../actions/snackbarActions'
 
 interface IReduxProps {
 	currentUser: IUser
@@ -57,6 +59,7 @@ interface IReduxProps {
 	unstarItem: (item: StarredItem) => any
 	fetchStudentSchedule: (studentID: number, dateTime?: string) => any
 	logout: () => Promise<any>
+	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends RouteComponentProps, IReduxProps {
@@ -89,10 +92,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 		blockDetails: null,
 		cancelAppointmentDialogOpen: false,
 		cancelAppointmentDialogItem: null,
-		cancelAppointment: null
+		cancelAppointment: null,
 	}
 
 	toggleStarred = (isStarred: boolean) => {
+		if (this.props.currentUser.account_type !== 'staff')
+			return
 		const starredItem: StarredItem = {
 			item_id: this.props.student.id,
 			item_type: 'student'
@@ -255,7 +260,15 @@ class StudentProfile extends React.Component<IProps, IState> {
 			.catch(() => {
 				this.props.onSignOut()
 			})
-		
+	}
+
+	onSetStudentPlan = (): Promise<any> => {
+		return this.props.fetchStudentSchedule(undefined, this.getURLDateTime())
+			.then(() => {
+				this.props.queueSnackbar({
+					message: 'Set Plan successfully.'
+				})
+			})
 	}
 
 	render () {
@@ -359,7 +372,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 					<p className='empty_text'>No appointments booked</p>
 				),
 				child: (blockDetails: IBlockDetails) => {
-					return blockDetails.pending ? (
+					return blockDetails.pending && this.props.currentUser.account_type === 'staff' ? (
 						<NewAppointment
 							onSubmit={this.handleCreateAppointment}
 							onClose={this.handleCalendarDialogClose}
@@ -396,6 +409,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 				}),
 				emptyState: () => (
 					<p className='empty_text'>Nothing scheduled</p>
+				),
+				child: (blockDetails: IBlockDetails) => (
+					<PlanDialog
+						blockDetails={blockDetails}
+						onSubmit={this.onSetStudentPlan}
+					/>
 				)
 			}
 		]
@@ -506,7 +525,8 @@ const mapDispatchToProps = {
 	fetchStudentSchedule,
 	starItem,
 	unstarItem,
-	logout
+	logout,
+	queueSnackbar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentProfile)

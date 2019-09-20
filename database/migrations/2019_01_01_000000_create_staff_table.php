@@ -29,6 +29,8 @@ class CreateStaffTable extends Migration
             $table->string('initials');
             $table->string('color')
                 ->default(Utils::userColor(0));
+            $table->unsignedInteger('capacity')
+                ->default(30);
             $table->timestamps();
         });
     }

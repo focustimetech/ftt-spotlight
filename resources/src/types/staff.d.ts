@@ -11,6 +11,7 @@ export interface IStaff {
     title: IStaffTitle
     initials: string
     color: TopicColor
+    capacity: number
 }
 
 export type IStaffTitle =

@@ -131,6 +131,12 @@ class Staff extends Model
 		return $notification;
 	}
 
+	public function setCapacity($capacity)
+	{
+		$this->attributes['capacity'] = $capacity;
+		$this->save();
+	}
+
 	public function markAllNotificationsRead()
 	{
 		$this->notifications()->get()->each(function($notification) {

@@ -151,13 +151,16 @@ class StudentScheduleController extends Controller
         return $staff;
     }
 
-    public function createPlan(Request $request)
+    public function setPlan(Request $request)
     {
         $date = date('Y-m-d', strtotime($request->input('date')));
         $block_id = $request->input('block_id');
         $staff_id = $request->input('staff_id');
         $student_id = auth()->user()->student()->id;
-        
+
+        SchedulePlan::where('student_id', $student_id)
+            ->where('date', $date)->where('block_id', $block_id)
+            ->delete();        
         $plan = SchedulePlan::create([
             'date' => $date,
             'block_id' => $block_id,

@@ -56,11 +56,11 @@ export const fetchStudentSchedule = (studentID?: number, dateTime?: string) => {
 }
 
 export const fetchStaffList = (blockID: number, dateTime: string) => {
+    const data: any = {
+        block_id: blockID,
+        date: dateTime
+    }
     return (dispatch: any) => {
-        const data: any = {
-            block_id: blockID,
-            date: dateTime
-        }
         return axios.post('/api/students/staff-list', data)
             .then((res: any) => {
                 const staffTopics: IStaffTopic[] = res.data
@@ -72,9 +72,11 @@ export const fetchStaffList = (blockID: number, dateTime: string) => {
     }
 }
 
-export const setStudentPlan = (schedulePlan: ISchedulePlanRequest): Promise<any> => {
-    return axios.post('/api/students/schedule-plan', schedulePlan)
-        .then((res: any) => {
-            return res.data
-        })
+export const setStudentPlan = (schedulePlan: ISchedulePlanRequest) => {
+    return (dispatch: any) => {
+        return axios.post('/api/students/schedule-plan', schedulePlan)
+            .then((res: any) => {
+                return res.data
+            })
+    }
 }

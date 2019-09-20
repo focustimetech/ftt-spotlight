@@ -47,6 +47,7 @@ import {
 } from '../actions/studentScheduleActions'
 import { logout } from '../actions/authActions'
 import PlanDialog from './Modals/PlanDialog'
+import { queueSnackbar, ISnackbar } from '../actions/snackbarActions'
 
 interface IReduxProps {
 	currentUser: IUser
@@ -58,6 +59,7 @@ interface IReduxProps {
 	unstarItem: (item: StarredItem) => any
 	fetchStudentSchedule: (studentID: number, dateTime?: string) => any
 	logout: () => Promise<any>
+	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends RouteComponentProps, IReduxProps {
@@ -261,7 +263,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 	}
 
 	onSetStudentPlan = (): Promise<any> => {
-		return this.props.fetchStudentSchedule(this.getStudentID(), this.getURLDateTime())
+		return this.props.fetchStudentSchedule(undefined, this.getURLDateTime())
+			.then(() => {
+				this.props.queueSnackbar({
+					message: 'Set Plan successfully.'
+				})
+			})
 	}
 
 	render () {
@@ -518,7 +525,8 @@ const mapDispatchToProps = {
 	fetchStudentSchedule,
 	starItem,
 	unstarItem,
-	logout
+	logout,
+	queueSnackbar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentProfile)

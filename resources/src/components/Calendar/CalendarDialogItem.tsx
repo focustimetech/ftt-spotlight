@@ -39,9 +39,12 @@ export const CalendarDialogItem = (props: IProps) => {
             methodIcon = 'wifi'
             methodTitle = 'Via Air Check-in'
             break
-        case 'role-call':
+        case 'roll-call':
             methodIcon = 'assignment'
             methodTitle = 'Via roll call'
+        case 'amendment':
+            methodIcon = 'assignment_turned_in',
+            methodTitle = 'Amended'
     }
 
     const clickable: boolean = Boolean(props.onClick)

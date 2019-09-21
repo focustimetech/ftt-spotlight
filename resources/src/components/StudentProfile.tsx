@@ -22,6 +22,7 @@ import ChangePasswordWidget from './Modals/ChangePasswordWidget'
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { Calendar } from './Calendar/Calendar'
 import { NewAppointment } from './Calendar/NewAppointment'
+import NewAmendment from './Calendar/NewAmendment'
 import { CancelAppointment } from './Calendar/CancelAppointment'
 import { LoadingIconButton } from './Form/LoadingIconButton'
 import { TopNav } from './TopNav'
@@ -278,6 +279,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 		) : this.props.student.starred
 
 		const avatarColor = this.props.student.color || 'red'
+		const studentID: number = this.getStudentID()
 
 		const { menuRef, editDialogOpen } = this.state
 		const menuOpen: boolean = Boolean(this.state.menuRef)
@@ -353,6 +355,9 @@ class StudentProfile extends React.Component<IProps, IState> {
 				}),
 				emptyState: () => (
 					<p className='empty_text'>No attendance recorded</p>
+				),
+				child: (blockDetails: IBlockDetails) => (
+					<NewAmendment blockDetails={blockDetails} studentID={studentID} />
 				)
 			},
 			{

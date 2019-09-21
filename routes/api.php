@@ -55,6 +55,9 @@ Route::middleware(['auth:api', 'scopes:student'])->group(function() {
 
 // Teacher and Administrator Routes
 Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
+    //Amendments
+    Route::post('amendment', 'AmendmentsController@create');
+
     // Appointments
     Route::get('appointments/{id}', 'AppointmentsController@find');
     Route::post('appointments/create', 'AppointmentsController@create');

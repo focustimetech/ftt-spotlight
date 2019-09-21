@@ -24,6 +24,8 @@ export interface ISchedulePlanRequest {
     date: string
 }
 
+export type IAmendmentRequest = IAppointmentRequest
+
 export const createAppointment = (appointment: IAppointmentRequest): Promise<any> => {
     return axios.post('/api/appointments/create', appointment)
         .then((res: any) => {
@@ -77,6 +79,15 @@ export const fetchStaffList = (blockID: number, dateTime: string) => {
 export const setStudentPlan = (schedulePlan: ISchedulePlanRequest) => {
     return (dispatch: any) => {
         return axios.post('/api/students/schedule-plan', schedulePlan)
+            .then((res: any) => {
+                return res.data
+            })
+    }
+}
+
+export const createAmendment = (amendment: IAmendmentRequest) => {
+    return (dispatch: any) => {
+        return axios.post('/api/amendment', amendment)
             .then((res: any) => {
                 return res.data
             })

@@ -20,6 +20,11 @@ class Staff extends Model
 		'password', 'remember_token'
 	];
 
+	public function amendments()
+	{
+		return $this->hasMany('App\Amendment');
+	}
+
 	public function appointments()
 	{
 		return $this->hasMany('App\Appointment');

@@ -7,7 +7,7 @@ export interface IStudent {
 	name?: string
 	initials: string
 	grade: number
-	student_number: number
+	student_number?: number
 	color: TopicColor
 }
 

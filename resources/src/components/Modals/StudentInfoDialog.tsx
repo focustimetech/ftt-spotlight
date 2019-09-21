@@ -100,18 +100,20 @@ export const StudentInfoDialog = (props: IProps) => {
                     type='text'
                     variant='outlined'
                 />
-                <TextField
-                    name='student_number'
-                    label='Student Number'
-                    value={details.student_number}
-                    onChange={handleInputChange}
-                    className='text-field'
-                    required
-                    margin='normal'
-                    fullWidth
-                    type='text'
-                    variant='outlined'
-                />
+                {details.student_number && (
+                    <TextField
+                        name='student_number'
+                        label='Student Number'
+                        value={details.student_number}
+                        onChange={handleInputChange}
+                        className='text-field'
+                        required
+                        margin='normal'
+                        fullWidth
+                        type='text'
+                        variant='outlined'
+                    />
+                )}
                 <FormControl>
                     <InputLabel shrink htmlFor='grade'>Grade</InputLabel>
                     <Select

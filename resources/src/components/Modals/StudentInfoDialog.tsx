@@ -27,7 +27,7 @@ interface IProps {
     onSubmit: () => void
 }
 
-const GRADES: number[] = [9, 10, 11, 12]
+const GRADES: number[] = [8, 9, 10, 11, 12]
 
 const emptyStudentDetails: IStudent = {
     id: 0,

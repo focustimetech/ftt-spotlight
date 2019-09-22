@@ -30,6 +30,7 @@ import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
 import { IStudent } from '../types/student';
 import {
+	IAmendment,
 	IAppointment,
 	ICalendarDay,
 	ICalendarBlock,
@@ -313,6 +314,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							block.pending ? 'pending' : 'missed'
 						)
 						const data: any = {
+							amendments: makeArray(block.amendments),
 							appointments: makeArray(block.appointments),
 							ledgerEntries: makeArray(block.logs),
 							scheduled: makeArray(block.scheduled)
@@ -359,6 +361,18 @@ class StudentProfile extends React.Component<IProps, IState> {
 				child: (blockDetails: IBlockDetails) => (
 					<NewAmendment blockDetails={blockDetails} studentID={studentID} />
 				)
+			},
+			{
+				name: 'Amendments',
+				key: 'amendments',
+				itemMap: (amendment: IAmendment) => ({
+					id: amendment.id,
+					time: 'Amended',
+					title: amendment.staff.name,
+					memo: amendment.memo,
+					method: 'amendment',
+					variant: 'default'
+				})
 			},
 			{
 				name: 'Appointments',

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Staff;
 use App\Student;
+use App\Amendment;
 use App\Block;
 use App\BlockSchedule;
 use App\Course;
@@ -13,6 +14,7 @@ use App\Topic;
 use App\TopicSchedule;
 use App\SchedulePlan;
 use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\Amendment as AmendmentResource;
 use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\BlockSchedule as BlockScheduleResource;
@@ -47,6 +49,7 @@ class StudentScheduleController extends Controller
         $courses = $student->courses($start_time, $end_time)->get();
         $blocks = $student->getBlocks($start_time, $end_time);
         $appointments = $student->appointments();
+        $amendments = $student->amendments();
         $ledger_entries = $student->ledgerEntries()->get();
         $plans = $student->plans();
 
@@ -80,7 +83,7 @@ class StudentScheduleController extends Controller
                     ],
                     'events' => []
                 ];
-                $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, &$schedule_day, $year_start, $year_end) {
+                $blocks_of_day->each(function($block_schedule) use ($amendments, $appointments, $blocks, $date, $ledger_entries, $plans, &$schedule_day, $year_start, $year_end) {
                     if (strtotime($date. ' '. $block_schedule->end) < $year_start || strtotime($date. ' '. $block_schedule->start) > $year_end) {
                         // Only include blocks within school year
                         return;
@@ -95,6 +98,7 @@ class StudentScheduleController extends Controller
                             'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
                             'pending' => strtotime($date. ' '. $block_schedule->end) > time()
                         ];
+                        $day_block['amendments'] = AmendmentResource::collection($amendments->get()->where('block_id', $block->id)->where('date', $date));
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
                         $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_id', $block->id));
                         if ($block->flex) {

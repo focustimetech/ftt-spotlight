@@ -24,35 +24,42 @@
 		}
 	}
 
-	&__container {
-		width: 450px;
+	&__panel {
+		
 		background: $primary;
-		padding: 128px 64px;
-		box-sizing: border-box;
 		height: 100vh;
 		position: relative;
+		min-width: 450px;
 
-		h2 {
-			margin: 0 0 8px 0;
-		}
-
-		.subtitle_link {
-			margin: 0 0 16px 0;
-			color: rgba(225,225,225,0.86);
-			font-weight: 700;
-
-			&:hover {
-				text-decoration: underline;
-			}
-		}
-
-		.login_form {
-			padding: 32px;
-			margin: 32px 0;
+		.login_container {
+			width: 320px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
 
 			h2 {
-				font-weight: 400;
-				text-align: center;
+				margin: 0 0 8px 0;
+			}
+	
+			.subtitle_link {
+				margin: 0 0 16px 0;
+				color: rgba(225,225,225,0.86);
+				font-weight: 700;
+	
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+	
+			.login_form {
+				padding: 32px;
+				margin: 32px 0 16px;
+	
+				h2 {
+					font-weight: 400;
+					text-align: center;
+				}
 			}
 		}
 

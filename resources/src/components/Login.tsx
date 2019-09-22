@@ -167,59 +167,61 @@ class Login extends React.Component<IProps, IState> {
 						ref={(image: any) => this.image = image}
 					/>
 				</div>
-				<div className='login__container'>
-					<h2>Smart attendance for the internet age.</h2>
-					<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
-					<Paper className='login_form'>
-						<form>
-							<h2>Sign in</h2>
-							<TextField
-								name='user'
-								type='text'
-								label='Email or Student Number'
-								error={this.state.error && this.state.error.type === 'username'}
-								helperText={
-									this.state.error && this.state.error.type === 'username'
-										? this.state.error.message
-										: undefined
-								}
-								value={this.state.user}
-								onChange={this.handleChange}
-								margin='normal'
-								variant='filled'
-								autoFocus={true}
-								fullWidth={true}
-							/>
-							<TextField
-								name='password'
-								type='password'
-								label='Password'
-								error={this.state.error && this.state.error.type === 'password'}
-								helperText={
-									this.state.error && this.state.error.type === 'password'
-										? this.state.error.message
-										: undefined
-								}
-								value={this.state.password}
-								onChange={this.handleChange}
-								margin='normal'
-								variant='filled'
-								fullWidth={true}
-							/>
-							<DialogActions>
-								<LoadingButton
-									type='submit'
-									onClick={this.handleLogin}
-									color='primary'
-									variant='contained'
-									loading={this.state.loading}
-								>Sign In</LoadingButton>
-							</DialogActions>
-						</form>
-					</Paper>
-					<ul className='links_list'>
-						<a href='https://focustime.ca'><li>Learn More</li></a>
-					</ul>
+				<div className='login__panel'>
+					<div className='login_container'>
+						<h2>Smart attendance for the internet age.</h2>
+						<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
+						<Paper className='login_form'>
+							<form>
+								<h2>Sign in</h2>
+								<TextField
+									name='user'
+									type='text'
+									label='Email or Student Number'
+									error={this.state.error && this.state.error.type === 'username'}
+									helperText={
+										this.state.error && this.state.error.type === 'username'
+											? this.state.error.message
+											: undefined
+									}
+									value={this.state.user}
+									onChange={this.handleChange}
+									margin='normal'
+									variant='filled'
+									autoFocus={true}
+									fullWidth={true}
+								/>
+								<TextField
+									name='password'
+									type='password'
+									label='Password'
+									error={this.state.error && this.state.error.type === 'password'}
+									helperText={
+										this.state.error && this.state.error.type === 'password'
+											? this.state.error.message
+											: undefined
+									}
+									value={this.state.password}
+									onChange={this.handleChange}
+									margin='normal'
+									variant='filled'
+									fullWidth={true}
+								/>
+								<DialogActions>
+									<LoadingButton
+										type='submit'
+										onClick={this.handleLogin}
+										color='primary'
+										variant='contained'
+										loading={this.state.loading}
+									>Sign In</LoadingButton>
+								</DialogActions>
+							</form>
+						</Paper>
+						<ul className='links_list'>
+							<a href='https://focustime.ca'><li>Learn More</li></a>
+						</ul>
+					</div>
 				</div>
 			</div>
 		)

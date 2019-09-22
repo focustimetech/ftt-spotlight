@@ -5,16 +5,15 @@ import ContentLoader from 'react-content-loader'
 
 import {
 	Badge,
-	Fade,
 	Grow,
 	Icon,
 	IconButton,
-	InputAdornment,
 	Menu,
 	MenuItem,
 	TextField,
 	Toolbar,
-	Tooltip
+	Tooltip,
+	Typography
 } from '@material-ui/core'
 
 import { EnhancedTableFilter} from './EnhancedTableFilter'
@@ -30,6 +29,7 @@ interface IProps {
 	selectable: boolean
 	tableQuery: string
 	filters: ITableFilter[]
+	filtersDisabled: boolean
 	filterOpen: boolean
 	columns: ITableHeaderColumn[]
 	actions?: ITableAction[]
@@ -38,7 +38,7 @@ interface IProps {
 	handleInvertSelection: () => void
 	handleFilterOpen: () => void
 	handleFilterClose: () => void
-	handleFilterChange: (filters: ITableFilter[]) => void
+	handleFilterChange: (filters: ITableFilter[], disabled: boolean) => void
 	handleTableQueryChange: (value: string) => void
 }
 
@@ -121,13 +121,14 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 			<Toolbar>
 				<div className='enhanced-table__toolbar'>
 					{headerString && (
-						<h3 className={classNames({
+						<Typography variant='h6' className={classNames({
 							'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
-						})}>{headerString}</h3>
+						})}>{headerString}</Typography>
 					)}
 					{filterOpen && (
 						<EnhancedTableFilter
 							filters={this.props.filters}
+							disabled={this.props.filtersDisabled}
 							open={filterOpen}
 							handleFilterChange={this.props.handleFilterChange}
 							columns={this.props.columns.filter((column: ITableHeaderColumn) => {
@@ -176,7 +177,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 								<Tooltip title='Filter'>
 									<IconButton onClick={this.props.handleFilterOpen}>
 									<Badge
-										invisible={this.props.filters.length === 0}
+										invisible={this.props.filters.length === 0 || this.props.filtersDisabled}
 										color='secondary'
 										variant='dot'
 									>
@@ -196,7 +197,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 										onClose={this.handleMenuClose}
 									>
 										<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
-										{this.props.numSelected > 0 && (
+										{(this.props.numSelected > 0 && this.props.actions && this.props.actions.length) && (
 											this.props.actions.map((action: ITableAction) => (
 												<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
 											))

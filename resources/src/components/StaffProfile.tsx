@@ -30,7 +30,9 @@ import {
 	ITopicSchedule,
 	ICalendarBlockVariant,
 } from '../types/calendar'
-import { ChangePasswordDialog } from './Modals/ChangePasswordDialog'
+import { LoadingButton } from './Form/LoadingButton'
+import CapacityWidget from './Modals/CapacityWidget'
+import ChangePasswordWidget from './Modals/ChangePasswordWidget'
 import { CancelAppointment } from './Calendar/CancelAppointment'
 import { Calendar } from './Calendar/Calendar'
 import { TopNav } from './TopNav'
@@ -42,7 +44,6 @@ import { starItem, unstarItem } from '../actions/starActions'
 import { fetchStaffProfile } from '../actions/staffProfileActions'
 import { fetchStaffSchedule } from '../actions/staffScheduleActions'
 import { createTopicSchedule, deleteTopicSchedule, ITopicScheduleRequest } from '../actions/topicActions'
-import { LoadingButton } from './Form/LoadingButton'
 
 interface IReduxProps {
 	currentUser: IUser
@@ -74,7 +75,6 @@ interface IState {
 	cancelAppointment: IAppointment
 	topicsDialogOpen: boolean
 	topcisDialogMode: 'edit' | 'select'
-	passwordDialogOpen: boolean
 	onTopicSelect: (topic: ITopic) => void
 }
 
@@ -93,7 +93,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 		cancelAppointment: null,
 		topicsDialogOpen: false,
 		topcisDialogMode: 'edit',
-		passwordDialogOpen: false,
 		onTopicSelect: () => null
 	}
 
@@ -216,18 +215,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 		this.setState({ onTopicSelect: this.onTopicSet })
 	}
 
-	onPasswordChange = () => {
-		this.props.queueSnackbar({ message: 'Changed password successfully.' })
-	}
-
-	handlePasswordDialogClose = () => {
-		this.setState({ passwordDialogOpen: false })
-	}
-
-	handlePasswordDialogOpen = () => {
-		this.setState({ passwordDialogOpen: true })
-	}
-
 	onTopicSet = (topic: ITopic) => {
 		this.setState({ loadingSetTopic: true })
 		const topicSchedule: ITopicScheduleRequest = {
@@ -253,12 +240,16 @@ class StaffProfile extends React.Component<IProps, IState> {
 			})
 	}
 
-	handleRemoveTopic = () => {
-		
-	}
-
-	onRemoveTopic = (): Promise<any> => {
-		return null
+	onRemoveTopic = (topicSchedule: ITopicSchedule): Promise<any> => {
+		return this.props.deleteTopicSchedule(topicSchedule.id)
+			.then(() => {
+				return this.props.fetchStaffSchedule(this.state.staffID, this.getURLDateTime())
+					.then(() => {
+						this.props.queueSnackbar({
+							message: 'Removed Topic successfully.'
+						})
+					})
+			})
 	}
 
 	componentWillMount() {
@@ -346,33 +337,37 @@ class StaffProfile extends React.Component<IProps, IState> {
 		const calendarDialogGroups: ICalendarDialogGroup[] = [
 			{
 				name: 'Logs',
-				key: 'ledgerEntries',
-				itemMap: (log: ILedgerEntry) => ({
-					id: log.id,
-					time: log.time,
-					title: log.student.name,
-					variant: 'success',
-					method: log.method
-				}),
-				emptyState: (
+				keys: ['ledgerEntries'],
+				itemMaps: [
+					(log: ILedgerEntry) => ({
+						id: log.id,
+						time: log.time,
+						title: log.student.name,
+						variant: 'success',
+						method: log.method
+					})
+				],
+				emptyState: () => (
 					<p className='empty_text'>No attendance recorded</p>
 				)
 			},
 			{
 				name: 'Appointments',
-				key: 'appointments',
-				itemMap: (appointment: IAppointment, blockDetails: IBlockDetails) => ({
-					id: appointment.id,
-					title: appointment.student.name,
-					memo: appointment.memo,
-					variant: blockDetails.pending ? 'pending' : (
-						blockDetails.data.ledgerEntries
-						&& blockDetails.data.ledgerEntries.some(((log: any) => (
-							log.staff.id === appointment.staff.id
-						))) ? 'success' : 'fail'
-					)
-				}),
-				emptyState: (
+				keys: ['appointments'],
+				itemMaps: [
+					(appointment: IAppointment, blockDetails: IBlockDetails) => ({
+						id: appointment.id,
+						title: appointment.student.name,
+						memo: appointment.memo,
+						variant: blockDetails.pending ? 'pending' : (
+							blockDetails.data.ledgerEntries
+							&& blockDetails.data.ledgerEntries.some(((log: any) => (
+								log.staff.id === appointment.staff.id
+							))) ? 'success' : 'fail'
+						)
+					})
+				],
+				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
@@ -381,45 +376,48 @@ class StaffProfile extends React.Component<IProps, IState> {
 					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
+						{ value: 'Cancel Appointment', callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment)) }
 					] : undefined
 				}
 			},
 			{
 				name: 'Topic',
-				key: 'topic',
-				emptyState: (
-					<>
-						<p className='empty_text'>Nothing scheduled</p>
-						<LoadingButton
-							loading={this.state.loadingSetTopic}
-							variant='text'
-							color='primary'
-							onClick={() => this.handleSetTopic()}
-						>Set Topic</LoadingButton>
-					</>
+				keys: ['topic'],
+				emptyState: (blockDetails: IBlockDetails) => (
+					blockDetails.flex && blockDetails.pending && isOwner ? (
+						<>
+							<p className='empty_text'>Nothing scheduled</p>
+							<LoadingButton
+								loading={this.state.loadingSetTopic}
+								variant='text'
+								color='primary'
+								onClick={() => this.handleSetTopic()}
+							>Set Topic</LoadingButton>
+						</>
+					) : undefined					
 				),
-				itemMap: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
-					id: topicSchedule.id,
-					title: topicSchedule.topic.memo,
-					variant: topicSchedule.topic.color
-				}),
+				itemMaps: [
+					(topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
+						id: topicSchedule.id,
+						title: topicSchedule.topic.memo,
+						variant: topicSchedule.topic.color
+					})
+				],
 				actions: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => {
 					return !isEmpty(topicSchedule)
 					&& blockDetails.flex
 					&& blockDetails.pending
-					&& this.props.currentUser.account_type === 'staff'
-					&& topicSchedule.topic.staff.id === this.props.currentUser.details.id ?					
+					&& isOwner ?				
 					[
-						{ value: 'Change Topic', callback: () => this.handleTopicsDialogOpen('select') },
-						{ value: 'Remove Topic', callback: () => this.handleRemoveTopic() },
+						// { value: 'Change Topic', callback: () => Promise.resolve(this.handleTopicsDialogOpen('select')) },
+						{ value: 'Remove Topic', callback: () => this.onRemoveTopic(topicSchedule), closeOnCallback: true }
 					] : undefined
 				}
 			},
 			{
 				name: 'Scheduled',
-				key: 'planned',
-				emptyState: (
+				keys: ['planned'],
+				emptyState: () => (
 					<p className='empty_text'>No students scheduled</p>
 				),
 				children: (student: IStudent) => ([
@@ -441,11 +439,6 @@ class StaffProfile extends React.Component<IProps, IState> {
 					onClose={this.handleTopicsDialogClose}
 					mode={this.state.topcisDialogMode}
 					onSelect={this.state.onTopicSelect}
-				/>
-				<ChangePasswordDialog
-					open={this.state.passwordDialogOpen}
-					onClose={this.handlePasswordDialogClose}
-					onSuccess={this.onPasswordChange}
 				/>
 				<div className='profile'>
 					<TopNav>
@@ -487,6 +480,12 @@ class StaffProfile extends React.Component<IProps, IState> {
 								{isOwner ? (
 									<>
 										<li>
+											<Tooltip title='Set Capacity'>
+												<CapacityWidget
+													capacity={this.props.currentUser.account_type === 'staff' ? this.props.currentUser.details.capacity : -1}/>
+											</Tooltip>
+										</li>
+										<li>
 											<Tooltip title='Topics'>
 												<IconButton onClick={() => this.handleTopicsDialogOpen('edit')}>
 													<Icon>school</Icon>
@@ -494,11 +493,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 											</Tooltip>
 										</li>
 										<li>
-											<Tooltip title='Change Password'>
-												<IconButton onClick={() => this.handlePasswordDialogOpen()}>
-													<Icon>lock</Icon>
-												</IconButton>
-											</Tooltip>
+											<ChangePasswordWidget />
 										</li>
 									</>
 								) : (

@@ -6,16 +6,21 @@ use Illuminate\Http\Request;
 
 use App\Staff;
 use App\Student;
+use App\Amendment;
 use App\Block;
 use App\BlockSchedule;
 use App\Course;
 use App\Topic;
 use App\TopicSchedule;
+use App\SchedulePlan;
 use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\Amendment as AmendmentResource;
 use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\BlockSchedule as BlockScheduleResource;
 use App\Http\Resources\Course as CourseResource;
+use App\Http\Resources\Topic as TopicResource;
+use App\Http\Resources\SchedulePlan as SchedulePlanResource;
 use App\Http\Utils;
 
 class StudentScheduleController extends Controller
@@ -44,6 +49,7 @@ class StudentScheduleController extends Controller
         $courses = $student->courses($start_time, $end_time)->get();
         $blocks = $student->getBlocks($start_time, $end_time);
         $appointments = $student->appointments();
+        $amendments = $student->amendments();
         $ledger_entries = $student->ledgerEntries()->get();
         $plans = $student->plans();
 
@@ -77,7 +83,7 @@ class StudentScheduleController extends Controller
                     ],
                     'events' => []
                 ];
-                $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, &$schedule_day, $year_start, $year_end) {
+                $blocks_of_day->each(function($block_schedule) use ($amendments, $appointments, $blocks, $date, $ledger_entries, $plans, &$schedule_day, $year_start, $year_end) {
                     if (strtotime($date. ' '. $block_schedule->end) < $year_start || strtotime($date. ' '. $block_schedule->start) > $year_end) {
                         // Only include blocks within school year
                         return;
@@ -92,6 +98,7 @@ class StudentScheduleController extends Controller
                             'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
                             'pending' => strtotime($date. ' '. $block_schedule->end) > time()
                         ];
+                        $day_block['amendments'] = AmendmentResource::collection($amendments->get()->where('block_id', $block->id)->where('date', $date));
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
                         $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_id', $block->id));
                         if ($block->flex) {
@@ -126,5 +133,49 @@ class StudentScheduleController extends Controller
         if ($student) {
             return $this->index($student->id, $datetime);
         }
+    }
+
+    public function listStaff(Request $request)
+    {
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        $block_id = $request->input('block_id');
+
+        $staff = Staff::all()->map(function($staff) use($date, $block_id) {
+            $topic_ids = $staff->getTopics()->pluck('id')->toArray();
+            $topic_schedule = TopicSchedule::whereIn('topic_id', $topic_ids)
+                ->get()->where('date', $date)->where('block_id', $block_id)->first();
+            $resource = [ 'staff' => new StaffResource($staff)];
+            if ($topic_schedule) {
+                $topic_resource = new TopicResource($topic_schedule->topic()->first());
+                $resource['topic'] = $topic_resource;
+            }
+            $num_scheduled = SchedulePlan::where('staff_id', $staff->id)
+                ->where('date', $date)->where('block_id', $block_id)->count();
+            $resource['num_scheduled'] = $num_scheduled;
+            $resource['num_remaining'] = $staff->capacity - $num_scheduled >= 0 ? $staff->capacity - $num_scheduled : 0;
+            return $resource;
+        });
+
+        return $staff;
+    }
+
+    public function setPlan(Request $request)
+    {
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        $block_id = $request->input('block_id');
+        $staff_id = $request->input('staff_id');
+        $student_id = auth()->user()->student()->id;
+
+        SchedulePlan::where('student_id', $student_id)
+            ->where('date', $date)->where('block_id', $block_id)
+            ->delete();        
+        $plan = SchedulePlan::create([
+            'date' => $date,
+            'block_id' => $block_id,
+            'staff_id' => $staff_id,
+            'student_id' => $student_id
+        ]);
+
+        return new SchedulePlanResource($plan);
     }
 }

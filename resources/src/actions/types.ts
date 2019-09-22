@@ -5,10 +5,10 @@ export const DELETE_STUDENT = 'DELETE_STUDENT'
 export const UPDATE_STUDENT = 'UPDATE_STUDENT'
 
 // Staff
-export const FETCH_STAFF = 'FETCH_STUDENTS'
-export const NEW_STAFF = 'NEW_STUDENT'
-export const DELETE_STAFF = 'DELETE_STUDENT'
-export const UPDATE_STAFF = 'UPDATE_STUDENT'
+export const FETCH_STAFF = 'FETCH_STAFF'
+export const NEW_STAFF = 'NEW_STAFF'
+export const DELETE_STAFF = 'DELETE_STAFF'
+export const UPDATE_STAFF = 'UPDATE_STAFF'
 
 // Clusters
 export const FETCH_CLUSTERS = 'FETCH_CLUSTERS'
@@ -66,3 +66,6 @@ export const DELETE_TOPIC_SCHEDULE = 'DELETE_TOPIC_SCHEDULE'
 // Snackbar
 export const QUEUE_SNACKBAR = 'QUEUE_SNACKBAR'
 export const DEQUEUE_SNACKBAR = 'DEQUEUE_SNACKBAR'
+
+// Student Plan
+export const FETCH_STAFF_LIST = 'FETCH_STAFF_LIST'

@@ -6,6 +6,11 @@ export interface ICredentials {
     password: string
 }
 
+export interface ILoginError {
+    type: 'username' | 'password'
+    message: string
+}
+
 interface IUserProperties {
     id: number
     username: string

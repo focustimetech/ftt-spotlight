@@ -38,7 +38,8 @@ const emptyStaffDetails: IStaff = {
     initials: '',
     account_type: 'teacher',
     color: 'blue',
-    administrator: false
+    administrator: false,
+    capacity: 30
 }
 
 const defaultListItems: IListItem[] = [

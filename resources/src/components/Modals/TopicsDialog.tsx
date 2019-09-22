@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core'
 
 import { ITopic } from '../../types/calendar'
-import { TopicColor } from '../../theme'
+import { TopicColor, getRandomColor } from '../../theme'
 import { ITopicRequest } from '../../actions/topicActions'
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { LoadingButton } from '../Form/LoadingButton';
@@ -26,14 +26,13 @@ import { createTopic, deleteTopic, fetchTopics} from '../../actions/topicActions
 import { isEmpty } from '../../utils/utils'
 import { ConfirmationDialog } from './ConfirmationDialog';
 
-const emptyTopic: ITopicRequest = {
+const emptyTopic = (): ITopicRequest => ({
     memo: '',
-    color: 'blue'
-}
+    color: getRandomColor().name
+})
 
 interface ReduxProps {
     topics: ITopic[]
-    newTopic: ITopic
     createTopic: (topic: ITopicRequest) => Promise<any>
     deleteTopic: (topicID: number) => Promise<any>
     fetchTopics: () => Promise<any>
@@ -66,7 +65,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
         newTopicErrored: false,
         newTopicOpen: false,
         colorDialogOpen: false,
-        newTopic: emptyTopic,
+        newTopic: emptyTopic(),
         deleteTopicDialogOpen: false,
         deleteTopic: { id: 0, color: null, deleted: false, memo: '', staff: null }
     }
@@ -89,7 +88,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
                 this.setState({
                     loadingNewTopic: false,
                     newTopicOpen: false,
-                    newTopic: emptyTopic
+                    newTopic: emptyTopic()
                 })
             })
             .catch((error: any) => {
@@ -163,12 +162,6 @@ class TopicsDialog extends React.Component<IProps, IState> {
             })
     }
 
-    componentWillReceiveProps(nextProps: IProps) {
-		if (nextProps.newTopic && !isEmpty(nextProps.newTopic)) {
-            this.props.topics.unshift(nextProps.newTopic)
-		}
-	}
-
     render() {
         return (
             <>
@@ -199,13 +192,14 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                     this.props.topics.map((topic: ITopic) => (
                                         <CalendarDialogItem
                                             onClick={this.props.mode === 'select' ? () => this.handleClick(topic) : undefined}
+                                            onCloseDialog={this.handleClose}
                                             details={{
                                                 id: topic.id,
                                                 title: topic.memo,
                                                 variant: topic.color
                                             }}
                                             actions={this.props.mode === 'edit' ? [
-                                                { value: 'Delete Topic', callback: () => this.handleDeleteTopic(topic)}
+                                                { value: 'Delete Topic', callback: () => Promise.resolve(this.handleDeleteTopic(topic)) }
                                             ] : undefined}
                                         />
                                     ))
@@ -274,8 +268,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
-    topics: state.topics.items,
-    newTopic: state.topics.item
+    topics: state.topics.items
 })
 
 const mapDispatchToProps = {

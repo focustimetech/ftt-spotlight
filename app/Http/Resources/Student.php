@@ -16,10 +16,10 @@ class Student extends JsonResource
     {
         return [
             'id' => $this->id,
-            'student_number' => $this->student_number,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'name' => $this->getName(),
+            'grade' => $this->grade,
             'initials' => $this->initials
         ];
     }

@@ -81,4 +81,12 @@ class StaffController extends Controller
 
         return new StaffProfileResource($staff);
     }
+
+    public function setCapacity(Request $request)
+    {
+        $capacity = $request->input('capacity');
+        $staff = auth()->user()->staff();
+        $staff->setCapacity($capacity);
+        return new StaffResource($staff);
+    }
 }

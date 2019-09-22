@@ -8,7 +8,7 @@ import {
 
 import { NavItem } from './NavItem'
 import FeedbackDialog from '../Modals/FeedbackDialog'
-import { AboutDialog } from '../Modals/AboutDialog'
+import { AboutSpotlight } from '../Modals/AboutSpotlight'
 
 export const HelpWidget = () => {
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
@@ -53,7 +53,7 @@ export const HelpWidget = () => {
                 <MenuItem onClick={handleAboutDialogOpen}>About Spotlight</MenuItem>
             </Menu>
             <FeedbackDialog open={feedbackDialogOpen} onClose={() => setFeedbackDialogOpen(false)}/>
-            <AboutDialog open={aboutDialogOpen} onClose={() => setAboutDialogOpen(false)} />
+            <AboutSpotlight open={aboutDialogOpen} onClose={() => setAboutDialogOpen(false)} />
         </>
     )
 }

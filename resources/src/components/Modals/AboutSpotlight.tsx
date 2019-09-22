@@ -13,7 +13,7 @@ interface IProps {
     onClose: () => void
 }
 
-export const AboutDialog = (props: IProps) => {
+export const AboutSpotlight = (props: IProps) => {
     return (
         <Dialog open={props.open}>
             <DialogContent>

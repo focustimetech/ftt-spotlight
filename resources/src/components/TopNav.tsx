@@ -22,8 +22,9 @@ export interface INavLink {
 }
 
 interface IProps {
-	breadcrumbs: INavLink[]
+	breadcrumbs?: INavLink[]
 	actions?: React.ReactNode
+	children?: any
 	className?: string
 	tabs?: INavTabs
 }
@@ -33,16 +34,19 @@ export const TopNav = (props: IProps) => {
 		<>
 			<div className={classNames('top-nav', props.className)}>
 				<div className='top-nav__inner'>
-					<Breadcrumbs>
-						{props.breadcrumbs.slice(0, props.breadcrumbs.length - 1)
-							.map((link: INavLink) => (
-								<Link to={link.to}>
-									<Typography variant='h6' color='inherit'>{link.value}</Typography>
-								</Link>
-							))
-						}
-						<Typography variant='h6' color='textPrimary'>{props.breadcrumbs[props.breadcrumbs.length - 1].value}</Typography>
-					</Breadcrumbs>
+					{(props.breadcrumbs && props.breadcrumbs.length) && (
+						<Breadcrumbs>
+							{props.breadcrumbs.slice(0, props.breadcrumbs.length - 1)
+								.map((link: INavLink) => (
+									<Link to={link.to}>
+										<Typography variant='h6' color='inherit'>{link.value}</Typography>
+									</Link>
+								))
+							}
+							<Typography variant='h6' color='textPrimary'>{props.breadcrumbs[props.breadcrumbs.length - 1].value}</Typography>
+						</Breadcrumbs>
+					)}
+					{props.children}
 					{props.actions && (
 						<div className='top-nav_actions'>{props.actions}</div>
 					)}

@@ -111,10 +111,12 @@ export interface IScheduled extends IStaff {
     topic?: ITopic
 }
 
+type ItemMap = (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
+
 export interface ICalendarDialogGroup {
     name: string
-    key: string
-    itemMap?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
+    keys: string[]
+    itemMaps?: ItemMap[]
     emptyState?: (blockDetails?: IBlockDetails) => any
     child?: (blockDetails?: IBlockDetails) => any
     children? (item?: any, blockDetails?: IBlockDetails): any

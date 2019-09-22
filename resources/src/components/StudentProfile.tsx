@@ -346,15 +346,17 @@ class StudentProfile extends React.Component<IProps, IState> {
 		const calendarDialogGroups: ICalendarDialogGroup[] = [
 			{
 				name: 'Logs',
-				key: 'ledgerEntries',
-				itemMap: (log: ILedgerEntry) => ({
-					id: log.id,
-					time: log.time,
-					title: log.staff.name,
-					memo: log.topic ? log.topic.memo : 'No Topic',
-					variant: 'success',
-					method: log.method
-				}),
+				keys: ['ledgerEntries'],
+				itemMaps: [
+					(log: ILedgerEntry) => ({
+						id: log.id,
+						time: log.time,
+						title: log.staff.name,
+						memo: log.topic ? log.topic.memo : 'No Topic',
+						variant: 'success',
+						method: log.method
+					})
+				],
 				emptyState: () => (
 					<p className='empty_text'>No attendance recorded</p>
 				),
@@ -364,30 +366,34 @@ class StudentProfile extends React.Component<IProps, IState> {
 			},
 			{
 				name: 'Amendments',
-				key: 'amendments',
-				itemMap: (amendment: IAmendment) => ({
-					id: amendment.id,
-					time: 'Amended',
-					title: amendment.staff.name,
-					memo: amendment.memo,
-					method: 'amendment',
-					variant: 'default'
-				})
+				keys: ['amendments'],
+				itemMaps: [
+					(amendment: IAmendment) => ({
+						id: amendment.id,
+						time: 'Amended',
+						title: amendment.staff.name,
+						memo: amendment.memo,
+						method: 'amendment',
+						variant: 'default'
+					})
+				]
 			},
 			{
 				name: 'Appointments',
-				key: 'appointments',
-				itemMap: (appointment: IAppointment, blockDetails: IBlockDetails) => ({
-					id: appointment.id,
-					title: appointment.staff.name,
-					memo: appointment.memo,
-					variant: blockDetails.pending ? 'pending' : (
-						blockDetails.data.ledgerEntries
-						&& blockDetails.data.ledgerEntries.some(((log: any) => (
-							log.staff.id === appointment.staff.id
-						))) ? 'success' : 'fail'
-					)
-				}),
+				keys: ['appointments'],
+				itemMaps: [
+					(appointment: IAppointment, blockDetails: IBlockDetails) => ({
+						id: appointment.id,
+						title: appointment.staff.name,
+						memo: appointment.memo,
+						variant: blockDetails.pending ? 'pending' : (
+							blockDetails.data.ledgerEntries
+							&& blockDetails.data.ledgerEntries.some(((log: any) => (
+								log.staff.id === appointment.staff.id
+							))) ? 'success' : 'fail'
+						)
+					})
+				],
 				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
@@ -411,22 +417,24 @@ class StudentProfile extends React.Component<IProps, IState> {
 			},
 			{
 				name: 'Scheduled',
-				key: 'scheduled',
-				itemMap: (scheduledItem: IScheduled, blockDetails: IBlockDetails) => ({
-					title: scheduledItem.name,
-					variant: blockDetails.pending ? null : (
-						blockDetails.flex === true ? (
-							blockDetails.data.ledgerEntries
-							&& blockDetails.data.ledgerEntries.some(((log: any) => (
-								log.staff.id === scheduledItem.id))
-							) ? 'success' : 'fail'
-						) : (
-							blockDetails.data && blockDetails.data.ledgerEntries
-							&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
-						)
-					),
-					memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
-				}),
+				keys: ['scheduled'],
+				itemMaps: [
+					(scheduledItem: IScheduled, blockDetails: IBlockDetails) => ({
+						title: scheduledItem.name,
+						variant: blockDetails.pending ? null : (
+							blockDetails.flex === true ? (
+								blockDetails.data.ledgerEntries
+								&& blockDetails.data.ledgerEntries.some(((log: any) => (
+									log.staff.id === scheduledItem.id))
+								) ? 'success' : 'fail'
+							) : (
+								blockDetails.data && blockDetails.data.ledgerEntries
+								&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
+							)
+						),
+						memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
+					})
+				],
 				emptyState: () => (
 					<p className='empty_text'>Nothing scheduled</p>
 				),

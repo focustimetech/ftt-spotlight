@@ -3,7 +3,7 @@
 	height: 100vh;
 	color: rgba(255, 255, 255, 0.87);
 	display: grid;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: 2fr 1fr;
 
 	&__image_container {
 		width: 100%;

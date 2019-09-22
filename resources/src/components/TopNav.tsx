@@ -18,7 +18,7 @@ export interface INavTabs {
 
 export interface INavLink {
 	value: string
-	to: string
+	to?: string
 }
 
 interface IProps {

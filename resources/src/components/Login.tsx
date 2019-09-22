@@ -14,13 +14,13 @@ import { login } from '../actions/authActions'
 
 const selectBackground = () => {
 	const imageList: string[] = [
-		'ali-yahya-782497-unsplash.jpg',
 		'brooke-cagle-609873-unsplash.jpg',
 		'helloquence-61189-unsplash.jpg',
 		'john-schnobrich-520023-unsplash.jpg',
-		'mimi-thian-737597-unsplash.jpg',
 		'mimi-thian-737711-unsplash.jpg',
-		'priscilla-du-preez-293218-unsplash.jpg'
+		'priscilla-du-preez-293218-unsplash.jpg',
+		'mika-korhonen-mKi1rfSQwVY-unsplash.jpg',
+		'neonbrand-zFSo6bnZJTw-unsplash.jpg'
 	]
 	const arrayIndex: number = Math.floor(Math.random() * imageList.length)
 	return `static/images/splash/${imageList[arrayIndex]}`

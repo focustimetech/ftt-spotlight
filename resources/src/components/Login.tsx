@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as classNames form 'classnames'
+import * as classNames from 'classnames'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -23,7 +23,7 @@ const selectBackground = () => {
 		'priscilla-du-preez-293218-unsplash.jpg'
 	]
 	const arrayIndex: number = Math.floor(Math.random() * imageList.length)
-	return `url('static/images/splash/${imageList[arrayIndex]}')`
+	return `static/images/splash/${imageList[arrayIndex]}`
 }
 
 interface ReduxProps {
@@ -40,6 +40,7 @@ interface IState {
 	error: ILoginError | null
 	redirectToReferrer: boolean
 	loading: boolean
+	imageURL: string
 	imageStatus: 'loading' | 'loaded'
 }
 
@@ -50,10 +51,9 @@ class Login extends React.Component<IProps, IState> {
 		error: null,
 		redirectToReferrer: false,
 		loading: false,
+		imageURL: selectBackground(),
 		imageStatus: 'loading'
 	}
-
-	backgroundImage: string
 
 	handleChange = (event: any) => {
 		event.preventDefault()
@@ -121,8 +121,11 @@ class Login extends React.Component<IProps, IState> {
 		return true
 	}
 
+	handleImageLoad = () => {
+		this.setState({ imageStatus: 'loaded' })
+	}
+
 	componentDidMount() {
-		this.backgroundImage = selectBackground()
 		document.title = 'Spotlight - Login'
 	}
 
@@ -135,7 +138,7 @@ class Login extends React.Component<IProps, IState> {
 		return (
 			<div className='login'>
 				<div className='login__image_container'>
-					<img className='login_image' src='static/images/splash/ali-yahya-782497-unsplash.jpg' />
+					<img className='login_image' src={this.state.imageURL} onLoad={this.handleImageLoad} />
 				</div>
 				<div className='login__container'>
 					<h2>Smart attendance for the internet age.</h2>
@@ -199,4 +202,4 @@ class Login extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({})
 const mapDispatchToProps = { login }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

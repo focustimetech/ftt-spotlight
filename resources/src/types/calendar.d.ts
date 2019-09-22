@@ -37,13 +37,13 @@ export type ICalendarBlockVariant = TopicColor
     | 'pending'
     | 'missed'
     | 'attended'
-    | 'disabled'
+    | 'void'
 
 export interface ICalendarBlock {
     badgeCount: number
     title: string
     details: IBlockDetails
-    disabled?: boolean
+    voided?: boolean
     memo?: string
     variant?: ICalendarBlockVariant
 }

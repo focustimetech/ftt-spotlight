@@ -15,14 +15,14 @@ interface IProps extends ICalendarBlock {
 }
 
 export const CalendarBlock = (props: IProps) => {
-    const { memo, title, variant, badgeCount } = props
+    const { memo, title, variant, badgeCount, voided } = props
     const { label } = props.details
 
     return (
         <Badge badgeContent={badgeCount} invisible={badgeCount === 0} color='secondary' max={9} className='block__badge'>
             <Card className='block'>
                 <CardActionArea
-                    className={classNames('block__inner', {[`--${variant}`]: variant}, {['--disabled']: props.disabled})}
+                    className={classNames('block__inner', {[`--${variant}`]: variant}, {['--void']: voided})}
                     onClick={() => props.onClick(props.details)}
                 >
                     <CardContent className='block__content'>

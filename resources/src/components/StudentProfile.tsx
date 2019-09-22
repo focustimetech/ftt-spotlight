@@ -327,7 +327,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						) : (
 							block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null
 						)
-						const variant: ICalendarBlockVariant = block.amendments && block.amendments.length ? 'disabled' : (
+						const variant: ICalendarBlockVariant = block.amendments && block.amendments.length ? 'void' : (
 							block.logs[0] ? 'attended' : (
 								block.pending ? 'pending' : 'missed'
 							)

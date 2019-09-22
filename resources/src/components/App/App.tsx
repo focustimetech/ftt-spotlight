@@ -14,9 +14,6 @@ import {
 import { getCurrentUser } from '../../actions/authActions'
 import { fetchSettings } from '../../actions/settingsActions'
 import { IUser } from '../../types/auth'
-import { ClassSchedule } from '../ClassSchedule'
-import { Clusters } from '../Clusters'
-import { Dashboard } from '../Dashboard'
 import { NotFound } from '../NotFound'
 import Settings from '../Settings'
 import Snackbar from '../Snackbar'
@@ -87,8 +84,6 @@ class App extends React.Component<IProps, IState> {
 									<Route path='/' exact render={() => (
 										<Redirect to='/students' />
 									)} />
-									<Route path='/clusters/:clusterID?' component={Clusters} />
-									<Route exact path='/dashboard' component={Dashboard} />
 									<Route path='/power-scheduler' component={PowerScheduler} />
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
@@ -99,7 +94,6 @@ class App extends React.Component<IProps, IState> {
 										<StudentProfile {...props} />
 									)}/>
 									<Route path='/students' component={Students} />
-									<Route path='/class-schedule' component={ClassSchedule} />
 									<Route component={NotFound} />
 								</Switch>
 							</> : <>

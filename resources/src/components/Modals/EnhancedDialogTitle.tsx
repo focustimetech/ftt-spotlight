@@ -10,11 +10,11 @@ import {
 	Typography
 } from '@material-ui/core'
 
-import { Tabs as ITabs } from '../TopNav'
+import { INavTabs } from '../TopNav'
 
 interface IProps {
 	children?: any | any[]
-	tabs?: ITabs
+	tabs?: INavTabs
 	className?: string
 	id?: string
 	title?: string

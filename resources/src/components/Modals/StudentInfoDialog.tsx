@@ -15,7 +15,7 @@ import {
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStudent } from '../../types/student';
-import { Tabs } from '../TopNav'
+import { INavTabs } from '../TopNav'
 import { UploadUserForm, IListItem } from './UploadUserForm'
 import { isEmpty } from '../../utils/utils'
 
@@ -67,7 +67,7 @@ export const StudentInfoDialog = (props: IProps) => {
         setTab(value)
     }
 
-    const navTabs: Tabs = {
+    const navTabs: INavTabs = {
         value: tab,
         onChange: handleTabChange,
         tabs: ['Single', 'File Upload']

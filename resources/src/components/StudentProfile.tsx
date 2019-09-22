@@ -30,6 +30,7 @@ import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
 import { IStudent } from '../types/student';
 import {
+	IAmendment,
 	IAppointment,
 	ICalendarDay,
 	ICalendarBlock,
@@ -220,28 +221,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 			})
 	}
 
-	componentWillMount() {
-		const params: any = this.props.match.params
-		const { studentID } = params
-		this.setState({ studentID })
-	}
-
-	componentDidMount() {
-		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
-		this.fetchSchedule()
-		this.setState({ loadingProfile: true })
-		this.props.fetchStudentSchedule(studentID).then(
-			(res: any) => {
-				this.setState({ loadingSchedule: false })
-			}
-		)
-		this.props.fetchStudentProfile(studentID).then(
-			(res: any) => {
-				this.setState({ loadingProfile: false })
-			}
-		)
-	}
-
 	getStudentID = (): number => {
 		return this.props.currentUser.account_type === 'student'
 			? this.props.currentUser.details.id
@@ -273,6 +252,36 @@ class StudentProfile extends React.Component<IProps, IState> {
 			})
 	}
 
+	handleCreateAmendment = (): Promise<any> => {
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
+		return this.props.fetchStudentSchedule(studentID, this.getURLDateTime())
+			.then(() => {
+				this.setState({ calendarDialogOpen: false })
+			})
+	}
+
+	componentWillMount() {
+		const params: any = this.props.match.params
+		const { studentID } = params
+		this.setState({ studentID })
+	}
+
+	componentDidMount() {
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
+		this.fetchSchedule()
+		this.setState({ loadingProfile: true })
+		this.props.fetchStudentSchedule(studentID).then(
+			(res: any) => {
+				this.setState({ loadingSchedule: false })
+			}
+		)
+		this.props.fetchStudentProfile(studentID).then(
+			(res: any) => {
+				this.setState({ loadingProfile: false })
+			}
+		)
+	}
+
 	render () {
 		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.student.id && this.props.newStarred.item_type === 'student' ? (
 			this.props.newStarred.isStarred !== false
@@ -300,19 +309,31 @@ class StudentProfile extends React.Component<IProps, IState> {
 					date: scheduleDay.date,
 					events: scheduleDay.events,
 					blocks: scheduleDay.blocks.map((block: any) => {
-						const title: string = block.flex ? (
-							block.logs[0] ? (
-								block.logs[0].staff.name 
-							) : (
-								block.scheduled ? block.scheduled.name : 'No Schedule'
-							)
+						const title: string = block.amendments && block.amendments.length > 0 ? (
+							'Block Amended'
 						) : (
-							block.scheduled.name
+							block.flex ? (
+								block.logs[0] ? (
+									block.logs[0].staff.name 
+								) : (
+									block.scheduled ? block.scheduled.name : 'No Schedule'
+								)
+							) : (
+								block.scheduled.name
+							)
 						)
-						const variant: ICalendarBlockVariant = block.logs[0] ? 'attended' : (
-							block.pending ? 'pending' : 'missed'
+						const memo = block.amendments && block.amendments.length > 0 ? (
+							null
+						) : (
+							block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null
+						)
+						const variant: ICalendarBlockVariant = block.amendments && block.amendments.length ? 'void' : (
+							block.logs[0] ? 'attended' : (
+								block.pending ? 'pending' : 'missed'
+							)
 						)
 						const data: any = {
+							amendments: makeArray(block.amendments),
 							appointments: makeArray(block.appointments),
 							ledgerEntries: makeArray(block.logs),
 							scheduled: makeArray(block.scheduled)
@@ -331,7 +352,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							memo: block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null,
+							memo,
 							details
 						}
 						return calendarBlock
@@ -344,36 +365,48 @@ class StudentProfile extends React.Component<IProps, IState> {
 		const calendarDialogGroups: ICalendarDialogGroup[] = [
 			{
 				name: 'Logs',
-				key: 'ledgerEntries',
-				itemMap: (log: ILedgerEntry) => ({
-					id: log.id,
-					time: log.time,
-					title: log.staff.name,
-					memo: log.topic ? log.topic.memo : 'No Topic',
-					variant: 'success',
-					method: log.method
-				}),
-				emptyState: () => (
-					<p className='empty_text'>No attendance recorded</p>
-				),
-				child: (blockDetails: IBlockDetails) => (
-					<NewAmendment blockDetails={blockDetails} studentID={studentID} />
+				keys: ['ledgerEntries', 'amendments'],
+				itemMaps: [
+					(log: ILedgerEntry) => ({
+						id: log.id,
+						time: log.time,
+						title: log.staff.name,
+						memo: log.topic ? log.topic.memo : 'No Topic',
+						variant: 'success',
+						method: log.method
+					}),
+					(amendment: IAmendment) => ({
+						id: amendment.id,
+						time: 'Amended',
+						title: amendment.staff.name,
+						memo: amendment.memo,
+						method: 'amendment',
+						variant: 'default'
+					})
+				],
+				emptyState: (blockDetails: IBlockDetails) => (
+					<>
+						<p className='empty_text'>No attendance recorded</p>
+						<NewAmendment blockDetails={blockDetails} studentID={studentID} onSubmit={this.handleCreateAmendment} />
+					</>
 				)
 			},
 			{
 				name: 'Appointments',
-				key: 'appointments',
-				itemMap: (appointment: IAppointment, blockDetails: IBlockDetails) => ({
-					id: appointment.id,
-					title: appointment.staff.name,
-					memo: appointment.memo,
-					variant: blockDetails.pending ? 'pending' : (
-						blockDetails.data.ledgerEntries
-						&& blockDetails.data.ledgerEntries.some(((log: any) => (
-							log.staff.id === appointment.staff.id
-						))) ? 'success' : 'fail'
-					)
-				}),
+				keys: ['appointments'],
+				itemMaps: [
+					(appointment: IAppointment, blockDetails: IBlockDetails) => ({
+						id: appointment.id,
+						title: appointment.staff.name,
+						memo: appointment.memo,
+						variant: blockDetails.pending ? 'pending' : (
+							blockDetails.data.ledgerEntries
+							&& blockDetails.data.ledgerEntries.some(((log: any) => (
+								log.staff.id === appointment.staff.id
+							))) ? 'success' : 'fail'
+						)
+					})
+				],
 				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
@@ -397,22 +430,24 @@ class StudentProfile extends React.Component<IProps, IState> {
 			},
 			{
 				name: 'Scheduled',
-				key: 'scheduled',
-				itemMap: (scheduledItem: IScheduled, blockDetails: IBlockDetails) => ({
-					title: scheduledItem.name,
-					variant: blockDetails.pending ? null : (
-						blockDetails.flex === true ? (
-							blockDetails.data.ledgerEntries
-							&& blockDetails.data.ledgerEntries.some(((log: any) => (
-								log.staff.id === scheduledItem.id))
-							) ? 'success' : 'fail'
-						) : (
-							blockDetails.data && blockDetails.data.ledgerEntries
-							&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
-						)
-					),
-					memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
-				}),
+				keys: ['scheduled'],
+				itemMaps: [
+					(scheduledItem: IScheduled, blockDetails: IBlockDetails) => ({
+						title: scheduledItem.name,
+						variant: blockDetails.pending ? null : (
+							blockDetails.flex === true ? (
+								blockDetails.data.ledgerEntries
+								&& blockDetails.data.ledgerEntries.some(((log: any) => (
+									log.staff.id === scheduledItem.id))
+								) ? 'success' : 'fail'
+							) : (
+								blockDetails.data && blockDetails.data.ledgerEntries
+								&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
+							)
+						),
+						memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
+					})
+				],
 				emptyState: () => (
 					<p className='empty_text'>Nothing scheduled</p>
 				),

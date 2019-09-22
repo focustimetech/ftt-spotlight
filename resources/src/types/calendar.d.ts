@@ -37,11 +37,13 @@ export type ICalendarBlockVariant = TopicColor
     | 'pending'
     | 'missed'
     | 'attended'
+    | 'void'
 
 export interface ICalendarBlock {
     badgeCount: number
     title: string
     details: IBlockDetails
+    voided?: boolean
     memo?: string
     variant?: ICalendarBlockVariant
 }
@@ -90,6 +92,8 @@ export interface IAppointment {
     student: IStudent
 }
 
+export type IAmendment = IAppointment
+
 export interface ITopic {
     id: number
     memo: string
@@ -109,11 +113,13 @@ export interface IScheduled extends IStaff {
     topic?: ITopic
 }
 
+type ItemMap = (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
+
 export interface ICalendarDialogGroup {
     name: string
-    key: string
-    itemMap?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
-    emptyState: (blockDetails?: IBlockDetails) => any
+    keys: string[]
+    itemMaps?: ItemMap[]
+    emptyState?: (blockDetails?: IBlockDetails) => any
     child?: (blockDetails?: IBlockDetails) => any
     children? (item?: any, blockDetails?: IBlockDetails): any
     actions?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemAction[]

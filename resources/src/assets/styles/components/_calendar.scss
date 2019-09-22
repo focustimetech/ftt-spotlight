@@ -218,11 +218,6 @@
 						color: rgba(255,255,255,0.87);
 					}
 		
-					&.--void {
-						background: #CCC;
-						color: rgba(75,75,75,0.87);
-					}
-		
 					&.--appointed {
 						background: $warning;
 						color: rgba(255,255,255,0.87);
@@ -231,6 +226,15 @@
 					&.--now {
 						border: 3px solid $primary-semi-light;
 						border-radius: 4px;
+					}
+
+					&.--void {
+						background: #CCC;
+						color: rgba(75,75,75,0.87);
+
+						.block__label {
+							text-decoration: line-through;
+						}
 					}
 				}
 			}

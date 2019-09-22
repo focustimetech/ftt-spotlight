@@ -337,32 +337,36 @@ class StaffProfile extends React.Component<IProps, IState> {
 		const calendarDialogGroups: ICalendarDialogGroup[] = [
 			{
 				name: 'Logs',
-				key: 'ledgerEntries',
-				itemMap: (log: ILedgerEntry) => ({
-					id: log.id,
-					time: log.time,
-					title: log.student.name,
-					variant: 'success',
-					method: log.method
-				}),
+				keys: ['ledgerEntries'],
+				itemMaps: [
+					(log: ILedgerEntry) => ({
+						id: log.id,
+						time: log.time,
+						title: log.student.name,
+						variant: 'success',
+						method: log.method
+					})
+				],
 				emptyState: () => (
 					<p className='empty_text'>No attendance recorded</p>
 				)
 			},
 			{
 				name: 'Appointments',
-				key: 'appointments',
-				itemMap: (appointment: IAppointment, blockDetails: IBlockDetails) => ({
-					id: appointment.id,
-					title: appointment.student.name,
-					memo: appointment.memo,
-					variant: blockDetails.pending ? 'pending' : (
-						blockDetails.data.ledgerEntries
-						&& blockDetails.data.ledgerEntries.some(((log: any) => (
-							log.staff.id === appointment.staff.id
-						))) ? 'success' : 'fail'
-					)
-				}),
+				keys: ['appointments'],
+				itemMaps: [
+					(appointment: IAppointment, blockDetails: IBlockDetails) => ({
+						id: appointment.id,
+						title: appointment.student.name,
+						memo: appointment.memo,
+						variant: blockDetails.pending ? 'pending' : (
+							blockDetails.data.ledgerEntries
+							&& blockDetails.data.ledgerEntries.some(((log: any) => (
+								log.staff.id === appointment.staff.id
+							))) ? 'success' : 'fail'
+						)
+					})
+				],
 				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
@@ -378,7 +382,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 			},
 			{
 				name: 'Topic',
-				key: 'topic',
+				keys: ['topic'],
 				emptyState: (blockDetails: IBlockDetails) => (
 					blockDetails.flex && blockDetails.pending && isOwner ? (
 						<>
@@ -392,11 +396,13 @@ class StaffProfile extends React.Component<IProps, IState> {
 						</>
 					) : undefined					
 				),
-				itemMap: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
-					id: topicSchedule.id,
-					title: topicSchedule.topic.memo,
-					variant: topicSchedule.topic.color
-				}),
+				itemMaps: [
+					(topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
+						id: topicSchedule.id,
+						title: topicSchedule.topic.memo,
+						variant: topicSchedule.topic.color
+					})
+				],
 				actions: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => {
 					return !isEmpty(topicSchedule)
 					&& blockDetails.flex
@@ -410,7 +416,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 			},
 			{
 				name: 'Scheduled',
-				key: 'planned',
+				keys: ['planned'],
 				emptyState: () => (
 					<p className='empty_text'>No students scheduled</p>
 				),

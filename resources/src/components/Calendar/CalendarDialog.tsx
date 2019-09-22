@@ -15,6 +15,7 @@ import {
     ILedgerEntry,
     IScheduled,
     ICalendarItemDetails,
+    ItemMap,
 } from '../../types/calendar'
 import { isEmpty } from '../../utils/utils'
 import { IStaff } from '../../types/staff'
@@ -43,32 +44,42 @@ export const CalendarDialog = (props: IProps) => {
             <DialogContent>
                 {props.calendarDialogGroups && props.calendarDialogGroups.length > 0 ? (
                     props.calendarDialogGroups.map((calendarGroup: ICalendarDialogGroup) => {
+                        const hasEmptyState: boolean = Boolean(calendarGroup.emptyState)
+                        const hasData: boolean = calendarGroup.keys.some((key: string) => {
+                            return props.blockDetails.data[key] && props.blockDetails.data[key].length > 0
+                        })
+                        if (!hasData && !hasEmptyState) {
+                            return null
+                        }
+
                         return (
-                            <div key={calendarGroup.key}>
+                            <div key={calendarGroup.name}>
                                 <h5 className='section-header'>{calendarGroup.name}</h5>
                                 <section className='section'>
                                     {!isEmpty(props.blockDetails.data) ? (
-                                        props.blockDetails.data[calendarGroup.key]
-                                        && props.blockDetails.data[calendarGroup.key].length > 0 ? (
-                                            props.blockDetails.data[calendarGroup.key].map((data: any, index: number) => {
-                                                if (!calendarGroup.itemMap)
-                                                    return
-                                                const itemDetails: ICalendarItemDetails = calendarGroup.itemMap(data, props.blockDetails)
-                                                const actions: ICalendarItemAction[] = calendarGroup.actions ? (
-                                                    calendarGroup.actions(data, props.blockDetails)
-                                                ) : undefined
-                                                return <>
-                                                    <CalendarDialogItem
-                                                        details={itemDetails}
-                                                        actions={actions}
-                                                        key={index}
-                                                        onCloseDialog={handleClose}
-                                                    />
-                                                    {calendarGroup.children && (
-                                                        calendarGroup.children(data, props.blockDetails)
-                                                    )}
-                                                </>
-                                            })
+                                        hasData ? (
+                                            calendarGroup.keys.map((groupKey: string, keyIndex: number) => (
+                                                props.blockDetails.data[groupKey].map((data: any, index: number) => {
+                                                    const itemMap: ItemMap = calendarGroup.itemMaps[keyIndex]
+                                                    if (!itemMap)
+                                                        return
+                                                    const itemDetails: ICalendarItemDetails = itemMap(data, props.blockDetails)
+                                                    const actions: ICalendarItemAction[] = calendarGroup.actions ? (
+                                                        calendarGroup.actions(data, props.blockDetails)
+                                                    ) : undefined
+                                                    return <>
+                                                        <CalendarDialogItem
+                                                            details={itemDetails}
+                                                            actions={actions}
+                                                            key={index}
+                                                            onCloseDialog={handleClose}
+                                                        />
+                                                        {calendarGroup.children && (
+                                                            calendarGroup.children(data, props.blockDetails)
+                                                        )}
+                                                    </>
+                                                })
+                                            ))
                                         ) : (
                                             !calendarGroup.children && calendarGroup.emptyState(props.blockDetails)
                                         )

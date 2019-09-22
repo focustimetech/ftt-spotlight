@@ -107,7 +107,9 @@ class NewAmendment extends React.Component<IProps, IState> {
                 </div>
             </div>
         ) : (
-            <Button variant='text' color='primary' onClick={() => this.handleOpen()}>Amend</Button>
+            <div className='calendar_item__container'>
+                <Button variant='text' color='primary' onClick={() => this.handleOpen()}>Amend</Button>
+            </div>
         )
     }
 }

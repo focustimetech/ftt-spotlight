@@ -346,7 +346,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 		const calendarDialogGroups: ICalendarDialogGroup[] = [
 			{
 				name: 'Logs',
-				keys: ['ledgerEntries'],
+				keys: ['ledgerEntries', 'amendments'],
 				itemMaps: [
 					(log: ILedgerEntry) => ({
 						id: log.id,
@@ -355,19 +355,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						memo: log.topic ? log.topic.memo : 'No Topic',
 						variant: 'success',
 						method: log.method
-					})
-				],
-				emptyState: () => (
-					<p className='empty_text'>No attendance recorded</p>
-				),
-				child: (blockDetails: IBlockDetails) => (
-					<NewAmendment blockDetails={blockDetails} studentID={studentID} />
-				)
-			},
-			{
-				name: 'Amendments',
-				keys: ['amendments'],
-				itemMaps: [
+					}),
 					(amendment: IAmendment) => ({
 						id: amendment.id,
 						time: 'Amended',
@@ -376,7 +364,13 @@ class StudentProfile extends React.Component<IProps, IState> {
 						method: 'amendment',
 						variant: 'default'
 					})
-				]
+				],
+				emptyState: (blockDetails: IBlockDetails) => (
+					<>
+						<p className='empty_text'>No attendance recorded</p>
+						<NewAmendment blockDetails={blockDetails} studentID={studentID} />
+					</>
+				)
 			},
 			{
 				name: 'Appointments',

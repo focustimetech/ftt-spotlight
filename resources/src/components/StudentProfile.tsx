@@ -309,17 +309,28 @@ class StudentProfile extends React.Component<IProps, IState> {
 					date: scheduleDay.date,
 					events: scheduleDay.events,
 					blocks: scheduleDay.blocks.map((block: any) => {
-						const title: string = block.flex ? (
-							block.logs[0] ? (
-								block.logs[0].staff.name 
-							) : (
-								block.scheduled ? block.scheduled.name : 'No Schedule'
-							)
+						const title: string = block.amendments && block.amendments.length > 0 ? (
+							'Block Amended'
 						) : (
-							block.scheduled.name
+							block.flex ? (
+								block.logs[0] ? (
+									block.logs[0].staff.name 
+								) : (
+									block.scheduled ? block.scheduled.name : 'No Schedule'
+								)
+							) : (
+								block.scheduled.name
+							)
 						)
-						const variant: ICalendarBlockVariant = block.logs[0] ? 'attended' : (
-							block.pending ? 'pending' : 'missed'
+						const memo = block.amendments && block.amendments.length > 0 ? (
+							null
+						) : (
+							block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null
+						)
+						const variant: ICalendarBlockVariant = block.amendments && block.amendments.length ? 'disabled' : (
+							block.logs[0] ? 'attended' : (
+								block.pending ? 'pending' : 'missed'
+							)
 						)
 						const data: any = {
 							amendments: makeArray(block.amendments),
@@ -341,7 +352,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							memo: block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null,
+							memo,
 							details
 						}
 						return calendarBlock

@@ -26,6 +26,11 @@ const selectBackground = () => {
 	return `static/images/splash/${imageList[arrayIndex]}`
 }
 
+interface Dimensions {
+	height: number,
+	width: number
+}
+
 interface ReduxProps {
 	login: (credentials: ICredentials) => Promise<any>
 }
@@ -42,9 +47,13 @@ interface IState {
 	loading: boolean
 	imageURL: string
 	imageStatus: 'loading' | 'loaded'
+	imageDimensions: Dimensions
+	boundingBoxDimension: Dimensions
 }
 
 class Login extends React.Component<IProps, IState> {
+	image: any
+	boundingBox: any
 	state: IState = {
 		user: '',
 		password: '',
@@ -52,7 +61,9 @@ class Login extends React.Component<IProps, IState> {
 		redirectToReferrer: false,
 		loading: false,
 		imageURL: selectBackground(),
-		imageStatus: 'loading'
+		imageStatus: 'loading',
+		imageDimensions: { height: 0, width: 0 },
+		boundingBoxDimension: { height: 0, width: 0 }
 	}
 
 	handleChange = (event: any) => {
@@ -122,7 +133,17 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	handleImageLoad = () => {
-		this.setState({ imageStatus: 'loaded' })
+		this.setState({
+			imageStatus: 'loaded',
+			imageDimensions: {
+				height: this.image.clientHeight,
+				width: this.image.clientWidth
+			},
+			boundingBoxDimension: {
+				height: this.boundingBox.clientHeight,
+				width: this.boundingBox.clientWidth
+			}
+		})
 	}
 
 	componentDidMount() {
@@ -134,11 +155,17 @@ class Login extends React.Component<IProps, IState> {
 		if (this.state.redirectToReferrer) {
 			return <Redirect to={from} />
 		}
+		const isVertical: boolean = this.state.imageDimensions.width < this.state.boundingBoxDimension.width
 
 		return (
 			<div className='login'>
-				<div className='login__image_container'>
-					<img className='login_image' src={this.state.imageURL} onLoad={this.handleImageLoad} />
+				<div className='login__image_container' ref={(boundingBox: any) => this.boundingBox = boundingBox}>
+					<img
+						className={classNames('login_image', {['--vertical']: isVertical})}
+						src={this.state.imageURL}
+						onLoad={this.handleImageLoad}
+						ref={(image: any) => this.image = image}
+					/>
 				</div>
 				<div className='login__container'>
 					<h2>Smart attendance for the internet age.</h2>

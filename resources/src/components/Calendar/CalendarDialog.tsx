@@ -43,13 +43,16 @@ export const CalendarDialog = (props: IProps) => {
             <DialogContent>
                 {props.calendarDialogGroups && props.calendarDialogGroups.length > 0 ? (
                     props.calendarDialogGroups.map((calendarGroup: ICalendarDialogGroup) => {
+                        if (!props.blockDetails.data[calendarGroup.key]
+                        || (props.blockDetails.data[calendarGroup.key].length === 0 && !calendarGroup.emptyState)) {
+                            return null
+                        }
                         return (
                             <div key={calendarGroup.key}>
                                 <h5 className='section-header'>{calendarGroup.name}</h5>
                                 <section className='section'>
                                     {!isEmpty(props.blockDetails.data) ? (
-                                        props.blockDetails.data[calendarGroup.key]
-                                        && props.blockDetails.data[calendarGroup.key].length > 0 ? (
+                                        props.blockDetails.data[calendarGroup.key].length > 0 ? (
                                             props.blockDetails.data[calendarGroup.key].map((data: any, index: number) => {
                                                 if (!calendarGroup.itemMap)
                                                     return

@@ -90,6 +90,8 @@ export interface IAppointment {
     student: IStudent
 }
 
+export type IAmendment = IAppointment
+
 export interface ITopic {
     id: number
     memo: string
@@ -113,7 +115,7 @@ export interface ICalendarDialogGroup {
     name: string
     key: string
     itemMap?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemDetails
-    emptyState: (blockDetails?: IBlockDetails) => any
+    emptyState?: (blockDetails?: IBlockDetails) => any
     child?: (blockDetails?: IBlockDetails) => any
     children? (item?: any, blockDetails?: IBlockDetails): any
     actions?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemAction[]

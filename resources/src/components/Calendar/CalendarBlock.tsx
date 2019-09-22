@@ -22,7 +22,7 @@ export const CalendarBlock = (props: IProps) => {
         <Badge badgeContent={badgeCount} invisible={badgeCount === 0} color='secondary' max={9} className='block__badge'>
             <Card className='block'>
                 <CardActionArea
-                    className={classNames('block__inner', {[`--${variant}`]: variant})}
+                    className={classNames('block__inner', {[`--${variant}`]: variant}, {['--disabled']: props.disabled})}
                     onClick={() => props.onClick(props.details)}
                 >
                     <CardContent className='block__content'>

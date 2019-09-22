@@ -1,8 +1,10 @@
 import * as React from 'react'
+import * as classNames form 'classnames'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
 	DialogActions,
+	Paper,
 	TextField,
 } from '@material-ui/core'
 
@@ -38,6 +40,7 @@ interface IState {
 	error: ILoginError | null
 	redirectToReferrer: boolean
 	loading: boolean
+	imageStatus: 'loading' | 'loaded'
 }
 
 class Login extends React.Component<IProps, IState> {
@@ -46,7 +49,8 @@ class Login extends React.Component<IProps, IState> {
 		password: '',
 		error: null,
 		redirectToReferrer: false,
-		loading: false
+		loading: false,
+		imageStatus: 'loading'
 	}
 
 	backgroundImage: string
@@ -129,64 +133,63 @@ class Login extends React.Component<IProps, IState> {
 		}
 
 		return (
-			<div className='login-wrap'>
-				<div className='login'>
-					<div className='login__about' style={{backgroundImage: this.backgroundImage}} >
-						<a href='https://focustime.ca' className='logo_container'>
-							<h1>Spotlight</h1>
-						</a>
-					</div>
-					<div className='login__credentials'>
-						<div className='login_container'>
-							<h2>Smart attendance for the internet age.</h2>
-							<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
-							<form className='login_form'>
-								<h2>Sign in</h2>
-								<TextField
-									name='user'
-									type='text'
-									label='Email or Student Number'
-									error={this.state.error && this.state.error.type === 'username'}
-									helperText={
-										this.state.error && this.state.error.type === 'username'
-											? this.state.error.message
-											: undefined
-									}
-									value={this.state.user}
-									onChange={this.handleChange}
-									margin='normal'
-									variant='filled'
-									autoFocus={true}
-									fullWidth={true}
-								/>
-								<TextField
-									name='password'
-									type='password'
-									label='Password'
-									error={this.state.error && this.state.error.type === 'password'}
-									helperText={
-										this.state.error && this.state.error.type === 'password'
-											? this.state.error.message
-											: undefined
-									}
-									value={this.state.password}
-									onChange={this.handleChange}
-									margin='normal'
-									variant='filled'
-									fullWidth={true}
-								/>
-								<DialogActions>
-									<LoadingButton
-										type='submit'
-										onClick={this.handleLogin}
-										color='primary'
-										variant='contained'
-										loading={this.state.loading}
-									>Sign In</LoadingButton>
-								</DialogActions>
-							</form>
-						</div>
-					</div>
+			<div className='login'>
+				<div className='login__image_container'>
+					<img className='login_image' src='static/images/splash/ali-yahya-782497-unsplash.jpg' />
+				</div>
+				<div className='login__container'>
+					<h2>Smart attendance for the internet age.</h2>
+					<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
+					<Paper className='login_form'>
+						<form>
+							<h2>Sign in</h2>
+							<TextField
+								name='user'
+								type='text'
+								label='Email or Student Number'
+								error={this.state.error && this.state.error.type === 'username'}
+								helperText={
+									this.state.error && this.state.error.type === 'username'
+										? this.state.error.message
+										: undefined
+								}
+								value={this.state.user}
+								onChange={this.handleChange}
+								margin='normal'
+								variant='filled'
+								autoFocus={true}
+								fullWidth={true}
+							/>
+							<TextField
+								name='password'
+								type='password'
+								label='Password'
+								error={this.state.error && this.state.error.type === 'password'}
+								helperText={
+									this.state.error && this.state.error.type === 'password'
+										? this.state.error.message
+										: undefined
+								}
+								value={this.state.password}
+								onChange={this.handleChange}
+								margin='normal'
+								variant='filled'
+								fullWidth={true}
+							/>
+							<DialogActions>
+								<LoadingButton
+									type='submit'
+									onClick={this.handleLogin}
+									color='primary'
+									variant='contained'
+									loading={this.state.loading}
+								>Sign In</LoadingButton>
+							</DialogActions>
+						</form>
+					</Paper>
+					<ul className='links_list'>
+						<a href='https://focustime.ca'><li>Learn More</li></a>
+					</ul>
 				</div>
 			</div>
 		)

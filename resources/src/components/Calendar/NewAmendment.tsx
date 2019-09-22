@@ -18,6 +18,7 @@ interface ReduxProps {
 interface IProps extends ReduxProps {
     studentID: number
     blockDetails: IBlockDetails
+    onSubmit: () => Promise<any>
 }
 
 interface IState {
@@ -69,9 +70,11 @@ class NewAmendment extends React.Component<IProps, IState> {
         }
         this.props.createAmendment(amendment)
             .then(() => {
-                this.setState({ uploading: false })
-                this.props.queueSnackbar({ message: 'Amended schedule.' })
-                this.handleClose()
+                this.props.onSubmit().then(() => {
+                    this.setState({ uploading: false })
+                    this.props.queueSnackbar({ message: 'Amended schedule.' })
+                    this.handleClose()
+                })
             })
             .catch(() => {
                 this.setState({

@@ -221,28 +221,6 @@ class StudentProfile extends React.Component<IProps, IState> {
 			})
 	}
 
-	componentWillMount() {
-		const params: any = this.props.match.params
-		const { studentID } = params
-		this.setState({ studentID })
-	}
-
-	componentDidMount() {
-		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
-		this.fetchSchedule()
-		this.setState({ loadingProfile: true })
-		this.props.fetchStudentSchedule(studentID).then(
-			(res: any) => {
-				this.setState({ loadingSchedule: false })
-			}
-		)
-		this.props.fetchStudentProfile(studentID).then(
-			(res: any) => {
-				this.setState({ loadingProfile: false })
-			}
-		)
-	}
-
 	getStudentID = (): number => {
 		return this.props.currentUser.account_type === 'student'
 			? this.props.currentUser.details.id
@@ -272,6 +250,36 @@ class StudentProfile extends React.Component<IProps, IState> {
 					message: 'Set Plan successfully.'
 				})
 			})
+	}
+
+	handleCreateAmendment = (): Promise<any> => {
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
+		return this.props.fetchStudentSchedule(studentID, this.getURLDateTime())
+			.then(() => {
+				this.setState({ calendarDialogOpen: false })
+			})
+	}
+
+	componentWillMount() {
+		const params: any = this.props.match.params
+		const { studentID } = params
+		this.setState({ studentID })
+	}
+
+	componentDidMount() {
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
+		this.fetchSchedule()
+		this.setState({ loadingProfile: true })
+		this.props.fetchStudentSchedule(studentID).then(
+			(res: any) => {
+				this.setState({ loadingSchedule: false })
+			}
+		)
+		this.props.fetchStudentProfile(studentID).then(
+			(res: any) => {
+				this.setState({ loadingProfile: false })
+			}
+		)
 	}
 
 	render () {
@@ -368,7 +376,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 				emptyState: (blockDetails: IBlockDetails) => (
 					<>
 						<p className='empty_text'>No attendance recorded</p>
-						<NewAmendment blockDetails={blockDetails} studentID={studentID} />
+						<NewAmendment blockDetails={blockDetails} studentID={studentID} onSubmit={this.handleCreateAmendment} />
 					</>
 				)
 			},

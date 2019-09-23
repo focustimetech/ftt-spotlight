@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import {
     Button,
@@ -8,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/styles';
 
-import { ISnackbar, ISnackbarButton, dequeueSnackbar } from '../actions/snackbarActions'
+import { ISnackbar, ISnackbarButton, dequeueSnackbar, ISnackbarLink } from '../actions/snackbarActions'
 
 interface ReduxProps {
     currentSnackbar: ISnackbar
@@ -74,6 +75,11 @@ class Snackbar extends React.Component<IProps, IState> {
                         }
                         return <Button key={index} color='secondary' onClick={onClick}>{button.text}</Button>
                     }),
+                    snackbar.links.map((link: ISnackbarLink, index: number) => (
+                        <Link to={link.to} key={index}>
+                            <Button color='secondary'>{link.value}</Button>
+                        </Link>
+                    )),
                     <IconButton onClick={() => this.handleClose()}><Icon>close</Icon></IconButton>
                 ]}
             />

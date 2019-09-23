@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -11,6 +11,7 @@ import {
 import { LoadingButton } from './Form/LoadingButton'
 import { ICredentials, ILoginError } from '../types/auth'
 import { login } from '../actions/authActions'
+import * as schoolData from '../assets/school.json'
 
 const selectBackground = () => {
 	const imageList: string[] = [
@@ -176,8 +177,8 @@ class Login extends React.Component<IProps, IState> {
 								<img className='ft-logo' src='/static/images/ft-logo.svg' />
 								<h2>Sign in to Spotlight</h2>
 								<div className='school_logo'>
-									<img src='/static/images/school.jpg' />
-									<h3>Oak Bay Secondary</h3>
+									<img src={`/static/images/${schoolData.school_logo}`} />
+									<h3>{schoolData.school_name}</h3>
 								</div>
 								<TextField
 									name='user'

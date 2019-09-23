@@ -1,7 +1,7 @@
 import '../../assets/styles/main.scss'
 
 import * as React from 'react'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 import {
 	BrowserRouter as Router,

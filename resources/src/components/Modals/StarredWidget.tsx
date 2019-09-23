@@ -2,7 +2,7 @@ import * as React from 'react'
 import ContentLoader from 'react-content-loader'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 
 import {
     Drawer,

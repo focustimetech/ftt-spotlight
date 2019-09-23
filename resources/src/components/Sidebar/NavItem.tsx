@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Link } from 'react-router-dom'
 
-import * as classnames from 'classnames'
+import classNames from 'classnames'
 
 import Badge from '@material-ui/core/Badge'
 import Icon from '@material-ui/core/Icon'
@@ -22,7 +22,7 @@ interface IProps {
 export const NavItem = (props: IProps) => {
     const content = props.icon ? <Icon>{props.icon}</Icon> : props.children
     const button = (
-        <IconButton className={classnames('nav_button', props.className)} onClick={props.onClick}>
+        <IconButton className={classNames('nav_button', props.className)} onClick={props.onClick}>
             {props.badgeCount
             ? <Badge
                 badgeContent={props.badgeCount || 0}

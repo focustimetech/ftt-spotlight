@@ -10,6 +10,10 @@ class Student extends Model
         'student_number', 'first_name', 'last_name', 'grade', 'initials'
     ];
 
+    protected $hidden = [
+        'student_number'
+    ];
+
     public static function findBySN($student_numbers)
     {
         if (is_array($student_numbers)) {

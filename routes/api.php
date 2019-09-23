@@ -16,14 +16,16 @@ use Illuminate\Http\Request;
 // Unauthenticates Routes
 Route::post('login', 'AuthController@login');
 
-// All Users
+// Authentication
 Route::middleware('auth:api')->group(function() {
-    // Auth
     Route::post('logout', 'AuthController@logout');
     Route::get('user', 'AuthController@user');
     Route::post('verify-user', 'AuthController@verify');
     Route::post('change-password', 'AuthController@changePassword');
+});
 
+// All Users
+Route::middleware(['auth:api', 'expired-password'])->group(function() {
     // Topics
     Route::get('topics', 'TopicsController@index');
 
@@ -44,7 +46,7 @@ Route::middleware('auth:api')->group(function() {
 });
 
 // Student Routes
-Route::middleware(['auth:api', 'scopes:student'])->group(function() {
+Route::middleware(['auth:api', 'expired-password', 'scopes:student'])->group(function() {
     // Schedule
     Route::get('students/self/schedule', 'StudentScheduleController@indexProfile');
     Route::get('students/self/schedule/{timestamp}', 'StudentScheduleController@indexProfile');
@@ -54,7 +56,7 @@ Route::middleware(['auth:api', 'scopes:student'])->group(function() {
 });
 
 // Teacher and Administrator Routes
-Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
+Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->group(function() {
     //Amendments
     Route::post('amendment', 'AmendmentsController@create');
 
@@ -113,7 +115,7 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
 });
 
 // Administrator Routes
-Route::middleware(['auth:api', 'scopes:admin'])->group(function() {
+Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(function() {
     // Students
     Route::post('students', 'StudentsController@create');
     Route::post('students/upload', 'StudentsController@upload');

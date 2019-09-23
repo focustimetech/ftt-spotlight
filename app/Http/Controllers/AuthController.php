@@ -31,6 +31,7 @@ class AuthController extends Controller
         $verify_response = $this->verify($request);
         if ($verify_response->status() === 200) {
             $user->password = bcrypt($new_password);
+            $user->expired_password = false;
             if ($user->save())
                 return response()->json('Changed password successfully', 200);
             else {

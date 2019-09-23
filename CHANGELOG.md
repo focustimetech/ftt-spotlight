@@ -7,11 +7,12 @@ All notable changes to Spotlight will be documented here.
  - Created the Power Scheduler (SPOT-28)
  - Error messaging for failed sign-ins (SPOT-10)
  - Staff and students are able to change their password (SPOT-30, SPOT-21)
- - Added school name to login page (SPOT-73)
+ - Added school name to login page (SPOT-73, SPOT-80)
  - Students able to schedule themselves for flex blocks (SPOT-13)
  - Staff able to set classroom capacity (SPOT-66)
  - Added schedule Amendments (SPOT-60, SPOT-75)
  - Added Grade 8 to the list of student grades (SPOT-72)
+ - Added site favicon (SPOT-79)
 
 ### Changes
  - Removed student numbers from API responses to increate user privacy (SPOT-74)

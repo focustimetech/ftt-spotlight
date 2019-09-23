@@ -24,6 +24,7 @@ All notable changes to Spotlight will be documented here.
  - Newly created Topics are shown only once (SPOT-33)
  - Fixed splash images loading on login page (SPOT-39)
  - Fixed various service outages (SPOT-58)
+ - Individual students can be added (SPOT-78)
 
 ### Security
  - Remove auth tokens on sign out (SPOT-8)

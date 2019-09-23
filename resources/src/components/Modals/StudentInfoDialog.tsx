@@ -7,7 +7,8 @@ import {
     DialogActions,
     DialogContent,
     MenuItem,
-    TextField
+    TextField,
+    Typography
 } from '@material-ui/core'
 
 import { LoadingButton } from '../Form/LoadingButton'
@@ -51,8 +52,13 @@ export const StudentInfoDialog = (props: IProps) => {
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
     const [uploading, setUploading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
         = React.useState(false)
+    const [errored, setErrored]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+        = React.useState(false)
+    const [userExists, setUserExists]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+        = React.useState(false)
 
     const handleInputChange = (event: any) => {
+        setErrored(false)
         const { name, value } = event.target
         if (name === 'initials') {
             if (value.length > 2)
@@ -63,6 +69,8 @@ export const StudentInfoDialog = (props: IProps) => {
             })
             return
         }
+        if (name === 'student_number')
+            setUserExists(false)
         const first_name: string = name === 'first_name' ? value : details.first_name
         const last_name: string = name === 'last_name' ? value : details.last_name
         let autoInitials: string = null
@@ -88,6 +96,18 @@ export const StudentInfoDialog = (props: IProps) => {
                 setUploading(false)
                 props.onClose()
             })
+            .catch((error: any) => {
+                setUploading(false)
+				const errorCode = error.response.status
+                switch(errorCode) {
+                    case 409:
+                        setUserExists(true)
+                        break
+                    default:
+                        setErrored(true)
+                        break
+                }
+			})
     }
 
     const navTabs: INavTabs = {
@@ -146,6 +166,8 @@ export const StudentInfoDialog = (props: IProps) => {
                             onChange={handleInputChange}
                             className='text-field'
                             required
+                            error={userExists}
+                            helperText={userExists ? 'A student with this student number already exists.' : undefined}
                             margin='normal'
                             fullWidth
                             type='text'
@@ -169,6 +191,9 @@ export const StudentInfoDialog = (props: IProps) => {
                         ))}
                     </TextField>
                 </div>
+                {errored && (
+                    <Typography variant='subtitle1' color='error'>Something went wrong. Please try again.</Typography>
+                )}
                 <DialogActions>
                     <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
                     <LoadingButton

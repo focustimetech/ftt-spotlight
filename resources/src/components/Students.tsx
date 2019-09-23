@@ -20,12 +20,10 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
+import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
 import { createStudent, fetchStudents } from '../actions/studentActions'
 import { EnhancedTable } from './Table/EnhancedTable'
-import { TopNav } from './TopNav'
 import { ITableAction, ITableHeaderColumn, ITableLink } from '../types/table'
-import { EnhancedDialogTitle } from './Modals/EnhancedDialogTitle';
-import { ClustersDialog } from './Modals/ClustersDialog';
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { isEmpty } from '../utils/utils'
 import { IStudent } from '../types/student'
@@ -52,9 +50,11 @@ interface IState {
 }
 
 interface ReduxProps {
-	students: any[]
+	students: IStudent[]
+	newStudent: IStudent
 	createStudent: (student: any) => any
 	fetchStudents: () => any
+	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends ReduxProps {}
@@ -98,8 +98,11 @@ class Students extends React.Component<IProps, IState> {
 	handleAddStudentSubmit = (event: any, studentDetails: IStudent): Promise<any> => {
 		event.preventDefault()
 		return this.props.createStudent(studentDetails)
-			.then(() => {
-				console.log('Create student')
+			.then((res: any) => {
+				this.props.queueSnackbar({
+					message: 'Student created.',
+					links: [{ value: 'See Profile', to: `/students/${this.props.newStudent.id}` }]
+				})
 			})
 	}
 
@@ -169,7 +172,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = {
 	createStudent,
-	fetchStudents
+	fetchStudents,
+	queueSnackbar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Students)

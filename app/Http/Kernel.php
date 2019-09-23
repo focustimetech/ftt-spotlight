@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         // 'cors' => \App\Http\Middleware\Cors::class,
+        'expired-password' => \App\Http\Middleware\ExpiredPassword::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,

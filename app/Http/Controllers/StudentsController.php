@@ -23,36 +23,21 @@ class StudentsController extends Controller
         return StudentResource::collection($students);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        $student = $request->isMethod('put') ? Student::findOrFail($request->student_id) : new Student;
-        $user = $request->isMethod('put') ? $student->user() : new User;
+        $student_number = $request->input('student_number');
+        if (User::userExists($student_number))
+            abort(409, 'A student by that student number already exists.');
+        
+        $student = Student::create([
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'initials' => $request->input('initials'),
+            'grade' => $request->input('grade'),
+            'student_number' => $student_number
+        ]);
 
-        $student->student_number = $request->input('student_number');
-        $student->first_name = $request->input('first_name');
-        $student->last_name = $request->input('last_name');
-        $student->grade = $request->input('grade');
-        $student->initials = $request->input('initials');
-
-        if ($student->save()) {
-            $user->account_type = 'student';
-            $user->username = $request->input('student_number');
-            $user->user_id = $student->id;
-
-            if ($request->isMethod('post')) {
-                $user->password = bcrypt($request->input('student_number'));
-            }
-
-            if ($user->save()) {
-                return new StudentResource($student);
-            }
-        }
+        return new StudentResource($student);        
     }
 
     public function upload(Request $request)

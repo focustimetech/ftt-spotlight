@@ -115,9 +115,9 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
 // Administrator Routes
 Route::middleware(['auth:api', 'scopes:admin'])->group(function() {
     // Students
-    Route::post('students', 'StudentsController@store');
+    Route::post('students', 'StudentsController@create');
     Route::post('students/upload', 'StudentsController@upload');
-    Route::put('students', 'StudentsController@store');
+    Route::put('students', 'StudentsController@update');
     Route::delete('students/{id}', 'StudentsController@destroy');
 
     // Staff

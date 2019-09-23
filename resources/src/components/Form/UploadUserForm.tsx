@@ -21,7 +21,7 @@ import { CSSProperties } from '@material-ui/styles';
 
 import { LoadingButton } from '../Form/LoadingButton'
 import { uploadCSV, UserType } from '../../utils/storage'
-import { ConfirmPasswordDialog } from './ConfirmPasswordDialog';
+import { ConfirmPasswordDialog } from '../Modals/ConfirmPasswordDialog';
 
 type ActualFileObject = FilePondFile['file']
 

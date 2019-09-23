@@ -13,6 +13,15 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
     public static function findByUsername($username)
     {
         $user = User::where('username', $username)->first();
@@ -80,12 +89,13 @@ class User extends Authenticatable
         }
     }
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    public static function userExists($username)
+    {
+        try {
+            $user = self::findByUsername($username);
+        } catch (UserNotFoundException $e) {
+            return false;
+        }
+        return (bool) $user;
+    }
 }

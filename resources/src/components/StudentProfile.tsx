@@ -473,7 +473,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 				<StudentInfoDialog
 					open={editDialogOpen}
 					onClose={this.handleCloseEditDialog}
-					onSubmit={() => {}}
+					onSubmit={null}
 					edit={true}
 					studentDetails={studentDetails}
 				/>

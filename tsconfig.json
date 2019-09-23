@@ -6,7 +6,9 @@
         "module": "commonjs",
         "lib": ["es6", "dom", "es2017"],
         "target": "es5",
-        "jsx": "react"
+        "jsx": "react",
+        "resolveJsonModule": true,
+        "esModuleInterop": true
     },
     "include": [
         "./resources/**/*"

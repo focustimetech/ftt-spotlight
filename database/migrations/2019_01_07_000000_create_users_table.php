@@ -17,6 +17,8 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('username')->unique();
             $table->string('password');
+            $table->boolean('password_expired')
+                ->default(true);
             $table->enum('account_type', ['staff', 'student']);
             $table->unsignedInteger('user_id');
             $table->timestamps();

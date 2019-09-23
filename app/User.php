@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'password_expired'
     ];
 
     public static function findByUsername($username)
@@ -87,6 +87,11 @@ class User extends Authenticatable
             default:
                 return 'User';
         }
+    }
+
+    public function passwordExpired()
+    {
+        return $this->password_expired;
     }
 
     public static function userExists($username)

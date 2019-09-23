@@ -91,7 +91,7 @@ class User extends Authenticatable
 
     public function passwordExpired()
     {
-        return $this->expired_password;
+        return $this->password_expired;
     }
 
     public static function userExists($username)

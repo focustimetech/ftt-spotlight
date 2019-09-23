@@ -73,7 +73,7 @@ class Snackbar extends React.Component<IProps, IState> {
                             this.handleClose()
                             button.callback()
                         }
-                        return <Button key={index} color='secondary' onClick={onClick}>{button.text}</Button>
+                        return <Button key={index} color='secondary' onClick={onClick}>{button.value}</Button>
                     }),
                     snackbar.links.map((link: ISnackbarLink, index: number) => (
                         <Link to={link.to} key={index}>

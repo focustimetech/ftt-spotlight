@@ -142,7 +142,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         this.props.queueSnackbar({
             message: 'Archived 1 message.',
             buttons: [
-                { text: 'Undo', callback: () => this.handleUnarchive(notification)}
+                { value: 'Undo', callback: () => this.handleUnarchive(notification)}
             ]
         })
     }
@@ -224,7 +224,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         }
 
         const showNotificationButton = (id?: number): ISnackbarButton => ({
-            text: 'Read More',
+            value: 'Read More',
             callback: () => {
                 this.handleClickOpen()
                 if (id) {

@@ -7,7 +7,7 @@ export interface ISnackbarLink {
 }
 
 export interface ISnackbarButton {
-    text: string
+    value: string
     callback: () => any
 }
 

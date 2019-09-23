@@ -94,19 +94,13 @@ class Students extends React.Component<IProps, IState> {
 		this.setState({ addDialogOpen: false })
 	}
 
-	// needs (e: any) param
-	handleAddStudentSubmit = () => {
-		// e.preventDefault()
-		/*
-		this.props.createStudent({
-			first_name: this.state.newStudent.first_name,
-			last_name: this.state.newStudent.last_name,
-			student_number: this.state.newStudent.student_number,
-			grade: this.state.newStudent.grade,
-			initials: 'CU'
-		})
-		*/
-		this.onAddDialogClose()
+
+	handleAddStudentSubmit = (event: any, studentDetails: IStudent): Promise<any> => {
+		event.preventDefault()
+		return this.props.createStudent(studentDetails)
+			.then(() => {
+				console.log('Create student')
+			})
 	}
 
 	render() {

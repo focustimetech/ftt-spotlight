@@ -8,7 +8,7 @@ export interface IStudent {
 	initials: string
 	grade: number
 	student_number?: number
-	color: TopicColor
+	color?: TopicColor
 }
 
 export interface IFlexBlock {

@@ -23,7 +23,9 @@ interface ReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {}
+interface IProps extends ReduxProps {
+    disallowed?: string[]
+}
 
 interface IState {
     oldPassword: string
@@ -34,6 +36,7 @@ interface IState {
     errored: boolean
     passwordTooShort: boolean
     unmatchedPasswords: boolean
+    disallowedPassword: boolean
     open: boolean
 }
 
@@ -46,6 +49,7 @@ const initialState: IState = {
     errored: false,
     passwordTooShort: false,
     unmatchedPasswords: false,
+    disallowedPassword: false,
     open: false
 }
 
@@ -66,6 +70,9 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
             return
         } else if (!this.state.showPassword && this.state.newPassword !== this.state.confirmPassword) {
             this.setState({ unmatchedPasswords: true })
+            return
+        } else if (this.props.disallowed && this.props.disallowed.some((password: string) => password === this.state.newPassword)) {
+            this.setState({ disallowedPassword: true })
             return
         }
         this.setState({
@@ -145,8 +152,12 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
                             fullWidth
                             autoFocus
                             required
-                            error={this.state.errored}
-                            helperText={this.state.errored ? 'That didn\'t work. Please try again.' : undefined}
+                            error={this.state.errored || this.state.disallowedPassword}
+                            helperText={
+                                this.state.errored
+                                    ? 'That didn\'t work. Please try again.'
+                                    : (this.state.disallowedPassword ? 'You cannot use that password.' : undefined)
+                            }
                             margin='normal'
                         />
                         <TextField

@@ -3,10 +3,11 @@
 
     &__logo {
         width: 450px;
-        height: 72px;
-        background-image: url("/static/images/logo.svg");
+        height: 64px;
+        background-image: url("/static/images/ft-logo.svg");
         background-repeat: no-repeat;
         background-position: center;
+        margin-bottom: 16px;
     }
 
     &__name {

@@ -14,7 +14,7 @@ import {
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStaff, IStaffTitle } from '../../types/staff';
-import { Tabs } from '../TopNav'
+import { INavTabs } from '../TopNav'
 import { UploadUserForm, IListItem } from '../Form/UploadUserForm'
 import { isEmpty } from '../../utils/utils'
 
@@ -38,7 +38,8 @@ const emptyStaffDetails: IStaff = {
     initials: '',
     account_type: 'teacher',
     color: 'blue',
-    administrator: false
+    administrator: false,
+    capacity: 30
 }
 
 const defaultListItems: IListItem[] = [
@@ -68,7 +69,7 @@ export const StaffInfoDialog = (props: IProps) => {
         setTab(value)
     }
 
-    const navTabs: Tabs = {
+    const navTabs: INavTabs = {
         value: tab,
         onChange: handleTabChange,
         tabs: ['Single', 'File Upload']

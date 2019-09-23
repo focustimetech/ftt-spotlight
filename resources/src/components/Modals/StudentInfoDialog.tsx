@@ -15,7 +15,7 @@ import {
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStudent } from '../../types/student';
-import { Tabs } from '../TopNav'
+import { INavTabs } from '../TopNav'
 import { UploadUserForm, IListItem } from '../Form/UploadUserForm'
 import { isEmpty } from '../../utils/utils'
 
@@ -27,7 +27,7 @@ interface IProps {
     onSubmit: () => void
 }
 
-const GRADES: number[] = [9, 10, 11, 12]
+const GRADES: number[] = [8, 9, 10, 11, 12]
 
 const emptyStudentDetails: IStudent = {
     id: 0,
@@ -67,7 +67,7 @@ export const StudentInfoDialog = (props: IProps) => {
         setTab(value)
     }
 
-    const navTabs: Tabs = {
+    const navTabs: INavTabs = {
         value: tab,
         onChange: handleTabChange,
         tabs: ['Single', 'File Upload']
@@ -100,18 +100,20 @@ export const StudentInfoDialog = (props: IProps) => {
                     type='text'
                     variant='outlined'
                 />
-                <TextField
-                    name='student_number'
-                    label='Student Number'
-                    value={details.student_number}
-                    onChange={handleInputChange}
-                    className='text-field'
-                    required
-                    margin='normal'
-                    fullWidth
-                    type='text'
-                    variant='outlined'
-                />
+                {details.student_number && (
+                    <TextField
+                        name='student_number'
+                        label='Student Number'
+                        value={details.student_number}
+                        onChange={handleInputChange}
+                        className='text-field'
+                        required
+                        margin='normal'
+                        fullWidth
+                        type='text'
+                        variant='outlined'
+                    />
+                )}
                 <FormControl>
                     <InputLabel shrink htmlFor='grade'>Grade</InputLabel>
                     <Select

@@ -23,6 +23,12 @@ class Student extends Model
     {
         return $this->hasMany('App\AirRequest');
     }
+
+    public function amendments()
+	{
+		return $this->hasMany('App\Amendment');
+	}
+
     public function appointments()
     {
         return $this->hasMany('App\Appointment', 'student_id');

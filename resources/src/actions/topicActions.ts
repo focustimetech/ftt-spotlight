@@ -68,7 +68,7 @@ export const createTopicSchedule = (topicSchedule: ITopicScheduleRequest) => {
     }
 }
 
-export const deleteTopicSchedule = (topicScheduleID: number)=> {
+export const deleteTopicSchedule = (topicScheduleID: number) => {
     return (dispatch: (action: ReduxAction<ITopicSchedule>) => void): Promise<any> => {
         return axios.delete(`/api/topics/schedule/${topicScheduleID}`)
             .then(res => {

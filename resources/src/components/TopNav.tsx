@@ -1,32 +1,56 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import * as classNames from 'classnames'
 
 import {
+	Breadcrumbs,
 	Tab,
-	Tabs
+	Tabs,
+	FormControlLabel,
+	Typography
 } from '@material-ui/core'
 
-export interface Tabs {
+export interface INavTabs {
 	value: number
 	onChange: (event: any, value: any) => void,
 	tabs: string[]
 }
 
-interface IProps {
-	children?: any
-	className?: string
-	tabs?: Tabs
+export interface INavLink {
+	value: string
+	to?: string
 }
 
-/**
- * TopNav for the main app view. `props.children` Takes *only* one or two `<ul>` elements.
- */
+interface IProps {
+	breadcrumbs?: INavLink[]
+	actions?: React.ReactNode
+	children?: any
+	className?: string
+	tabs?: INavTabs
+}
+
 export const TopNav = (props: IProps) => {
 	return (
 		<>
 			<div className={classNames('top-nav', props.className)}>
-				{ /* <IconButton className='top-nav_menu' onClick={props.onMenuClick}><Icon>menu</Icon></IconButton> */}
-				<div className='top-nav__inner'>{props.children}</div>
+				<div className='top-nav__inner'>
+					{(props.breadcrumbs && props.breadcrumbs.length) && (
+						<Breadcrumbs>
+							{props.breadcrumbs.slice(0, props.breadcrumbs.length - 1)
+								.map((link: INavLink) => (
+									<Link to={link.to}>
+										<Typography variant='h6' color='inherit'>{link.value}</Typography>
+									</Link>
+								))
+							}
+							<Typography variant='h6' color='textPrimary'>{props.breadcrumbs[props.breadcrumbs.length - 1].value}</Typography>
+						</Breadcrumbs>
+					)}
+					{props.children}
+					{props.actions && (
+						<div className='top-nav_actions'>{props.actions}</div>
+					)}
+				</div>
 				{props.tabs && (
 					<Tabs
 						className='top-nav__tabs'

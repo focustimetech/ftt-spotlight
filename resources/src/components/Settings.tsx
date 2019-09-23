@@ -50,9 +50,7 @@ class Settings extends React.Component<IProps, IState> {
         console.log(settingsGroups)
         return (
             <div className='content' id='content'>
-                <TopNav>
-                    <ul><h3>Settings</h3></ul>
-                </TopNav>
+                <TopNav breadcrumbs={[{ value: 'Settings', to: '/settings' }]} />
                 {settingsGroups.length && (
                     <div className='settings'>
                         {settingsGroups.map((settingsGroup: ISettingsGroup, index: number) => {

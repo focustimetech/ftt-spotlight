@@ -37,6 +37,10 @@ Route::middleware('auth:api')->group(function() {
 
     // Settings
     Route::get('settings', 'SettingsController@index');
+
+    // Student Schedule
+    Route::post('students/staff-list', 'StudentScheduleController@listStaff');
+    Route::post('students/schedule-plan', 'StudentScheduleController@setPlan');
 });
 
 // Student Routes
@@ -51,6 +55,9 @@ Route::middleware(['auth:api', 'scopes:student'])->group(function() {
 
 // Teacher and Administrator Routes
 Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
+    //Amendments
+    Route::post('amendment', 'AmendmentsController@create');
+
     // Appointments
     Route::get('appointments/{id}', 'AppointmentsController@find');
     Route::post('appointments/create', 'AppointmentsController@create');
@@ -100,6 +107,9 @@ Route::middleware(['auth:api', 'scope:teacher,admin'])->group(function() {
 
     // Power Scheduler
     Route::post('power-scheduler', 'PowerSchedulerController@schedule');
+
+    // Staff Capacity
+    Route::post('staff/capacity', 'StaffController@setCapacity');
 });
 
 // Administrator Routes

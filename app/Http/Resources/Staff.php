@@ -26,7 +26,8 @@ class Staff extends JsonResource
             'title' => $this->title,
             'initials' => $this->initials,
             'color' => $this->color,
-            'email' => $this->email
+            'email' => $this->email,
+            'capacity' => $this->capacity
         ];
     }
 }

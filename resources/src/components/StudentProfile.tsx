@@ -11,21 +11,26 @@ import {
 	IconButton,
 	Menu,
 	MenuItem,
-	TextField
+	TextField,
+	Tooltip
 } from '@material-ui/core'
 
 import { isEmpty, makeArray } from '../utils/utils'
 import { StarredItem } from '../reducers/starReducer'
 import { listToTruncatedString } from '../utils/utils'
+import ChangePasswordWidget from './Modals/ChangePasswordWidget'
 import { StudentInfoDialog } from './Modals/StudentInfoDialog'
 import { Calendar } from './Calendar/Calendar'
 import { NewAppointment } from './Calendar/NewAppointment'
+import NewAmendment from './Calendar/NewAmendment'
 import { CancelAppointment } from './Calendar/CancelAppointment'
+import { LoadingIconButton } from './Form/LoadingIconButton'
 import { TopNav } from './TopNav'
 import { StarButton } from './StarButton'
 import { IUser } from '../types/auth'
 import { IStudent } from '../types/student';
 import {
+	IAmendment,
 	IAppointment,
 	ICalendarDay,
 	ICalendarBlock,
@@ -43,6 +48,9 @@ import {
 	deleteAppointment,
 	fetchStudentSchedule
 } from '../actions/studentScheduleActions'
+import { logout } from '../actions/authActions'
+import PlanDialog from './Modals/PlanDialog'
+import { queueSnackbar, ISnackbar } from '../actions/snackbarActions'
 
 interface IReduxProps {
 	currentUser: IUser
@@ -53,13 +61,18 @@ interface IReduxProps {
 	starItem: (item: StarredItem) => any
 	unstarItem: (item: StarredItem) => any
 	fetchStudentSchedule: (studentID: number, dateTime?: string) => any
+	logout: () => Promise<any>
+	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends RouteComponentProps, IReduxProps {}
+interface IProps extends RouteComponentProps, IReduxProps {
+	onSignOut?: () => void
+}
 
 interface IState {
 	loadingProfile: boolean
 	loadingSchedule: boolean
+	loadingSignOut: boolean
 	editDialogOpen: boolean
 	calendarDialogOpen: boolean
 	studentID: number
@@ -74,6 +87,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 	state: IState = {
 		loadingProfile: false,
 		loadingSchedule: false,
+		loadingSignOut: false,
 		editDialogOpen: false,
 		calendarDialogOpen: false,
 		studentID: -1,
@@ -81,10 +95,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 		blockDetails: null,
 		cancelAppointmentDialogOpen: false,
 		cancelAppointmentDialogItem: null,
-		cancelAppointment: null
+		cancelAppointment: null,
 	}
 
 	toggleStarred = (isStarred: boolean) => {
+		if (this.props.currentUser.account_type !== 'staff')
+			return
 		const starredItem: StarredItem = {
 			item_id: this.props.student.id,
 			item_type: 'student'
@@ -205,6 +221,45 @@ class StudentProfile extends React.Component<IProps, IState> {
 			})
 	}
 
+	getStudentID = (): number => {
+		return this.props.currentUser.account_type === 'student'
+			? this.props.currentUser.details.id
+			: this.state.studentID
+	}
+
+	isOwnProfile = (): boolean => {
+		return this.props.currentUser
+			&& this.props.currentUser.account_type === 'student'
+	}
+
+	handleSignOut = () => {
+		this.setState({ loadingSignOut: true })
+		this.props.logout()
+			.then(() => {
+				this.props.onSignOut()
+			})
+			.catch(() => {
+				this.props.onSignOut()
+			})
+	}
+
+	onSetStudentPlan = (): Promise<any> => {
+		return this.props.fetchStudentSchedule(undefined, this.getURLDateTime())
+			.then(() => {
+				this.props.queueSnackbar({
+					message: 'Set Plan successfully.'
+				})
+			})
+	}
+
+	handleCreateAmendment = (): Promise<any> => {
+		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
+		return this.props.fetchStudentSchedule(studentID, this.getURLDateTime())
+			.then(() => {
+				this.setState({ calendarDialogOpen: false })
+			})
+	}
+
 	componentWillMount() {
 		const params: any = this.props.match.params
 		const { studentID } = params
@@ -227,23 +282,13 @@ class StudentProfile extends React.Component<IProps, IState> {
 		)
 	}
 
-	getStudentID = (): number => {
-		return this.props.currentUser.account_type === 'student'
-			? this.props.currentUser.details.id
-			: this.state.studentID
-	}
-
-	isOwnProfile = (): boolean => {
-		return this.props.currentUser
-			&& this.props.currentUser.account_type === 'student'
-	}
-
 	render () {
 		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.student.id && this.props.newStarred.item_type === 'student' ? (
 			this.props.newStarred.isStarred !== false
 		) : this.props.student.starred
 
 		const avatarColor = this.props.student.color || 'red'
+		const studentID: number = this.getStudentID()
 
 		const { menuRef, editDialogOpen } = this.state
 		const menuOpen: boolean = Boolean(this.state.menuRef)
@@ -252,7 +297,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 			first_name: this.props.student.first_name,
 			last_name: this.props.student.last_name,
 			grade: this.props.student.grade,
-			student_number: this.props.student.student_number,
+			student_number: this.props.student.student_number || undefined,
 			initials: this.props.student.initials,
 			color: this.props.student.color
 		}
@@ -264,19 +309,31 @@ class StudentProfile extends React.Component<IProps, IState> {
 					date: scheduleDay.date,
 					events: scheduleDay.events,
 					blocks: scheduleDay.blocks.map((block: any) => {
-						const title: string = block.flex ? (
-							block.logs[0] ? (
-								block.logs[0].staff.name 
-							) : (
-								block.scheduled ? block.scheduled.name : 'No Schedule'
-							)
+						const title: string = block.amendments && block.amendments.length > 0 ? (
+							'Block Amended'
 						) : (
-							block.scheduled.name
+							block.flex ? (
+								block.logs[0] ? (
+									block.logs[0].staff.name 
+								) : (
+									block.scheduled ? block.scheduled.name : 'No Schedule'
+								)
+							) : (
+								block.scheduled.name
+							)
 						)
-						const variant: ICalendarBlockVariant = block.logs[0] ? 'attended' : (
-							block.pending ? 'pending' : 'missed'
+						const memo = block.amendments && block.amendments.length > 0 ? (
+							null
+						) : (
+							block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null
+						)
+						const variant: ICalendarBlockVariant = block.amendments && block.amendments.length ? 'void' : (
+							block.logs[0] ? 'attended' : (
+								block.pending ? 'pending' : 'missed'
+							)
 						)
 						const data: any = {
+							amendments: makeArray(block.amendments),
 							appointments: makeArray(block.appointments),
 							ledgerEntries: makeArray(block.logs),
 							scheduled: makeArray(block.scheduled)
@@ -295,7 +352,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 							title,
 							variant,
 							badgeCount: block.appointments.length || 0,
-							memo: block.logs[0] && block.flex && block.logs[0].topic ? block.logs[0].topic.memo : null,
+							memo,
 							details
 						}
 						return calendarBlock
@@ -308,38 +365,53 @@ class StudentProfile extends React.Component<IProps, IState> {
 		const calendarDialogGroups: ICalendarDialogGroup[] = [
 			{
 				name: 'Logs',
-				key: 'ledgerEntries',
-				itemMap: (log: ILedgerEntry) => ({
-					id: log.id,
-					time: log.time,
-					title: log.staff.name,
-					memo: log.topic ? log.topic.memo : 'No Topic',
-					variant: 'success',
-					method: log.method
-				}),
-				emptyState: (
-					<p className='empty_text'>No attendance recorded</p>
+				keys: ['ledgerEntries', 'amendments'],
+				itemMaps: [
+					(log: ILedgerEntry) => ({
+						id: log.id,
+						time: log.time,
+						title: log.staff.name,
+						memo: log.topic ? log.topic.memo : 'No Topic',
+						variant: 'success',
+						method: log.method
+					}),
+					(amendment: IAmendment) => ({
+						id: amendment.id,
+						time: 'Amended',
+						title: amendment.staff.name,
+						memo: amendment.memo,
+						method: 'amendment',
+						variant: 'default'
+					})
+				],
+				emptyState: (blockDetails: IBlockDetails) => (
+					<>
+						<p className='empty_text'>No attendance recorded</p>
+						<NewAmendment blockDetails={blockDetails} studentID={studentID} onSubmit={this.handleCreateAmendment} />
+					</>
 				)
 			},
 			{
 				name: 'Appointments',
-				key: 'appointments',
-				itemMap: (appointment: IAppointment, blockDetails: IBlockDetails) => ({
-					id: appointment.id,
-					title: appointment.staff.name,
-					memo: appointment.memo,
-					variant: blockDetails.pending ? 'pending' : (
-						blockDetails.data.ledgerEntries
-						&& blockDetails.data.ledgerEntries.some(((log: any) => (
-							log.staff.id === appointment.staff.id
-						))) ? 'success' : 'fail'
-					)
-				}),
-				emptyState: (
+				keys: ['appointments'],
+				itemMaps: [
+					(appointment: IAppointment, blockDetails: IBlockDetails) => ({
+						id: appointment.id,
+						title: appointment.staff.name,
+						memo: appointment.memo,
+						variant: blockDetails.pending ? 'pending' : (
+							blockDetails.data.ledgerEntries
+							&& blockDetails.data.ledgerEntries.some(((log: any) => (
+								log.staff.id === appointment.staff.id
+							))) ? 'success' : 'fail'
+						)
+					})
+				],
+				emptyState: () => (
 					<p className='empty_text'>No appointments booked</p>
 				),
 				child: (blockDetails: IBlockDetails) => {
-					return blockDetails.pending ? (
+					return blockDetails.pending && this.props.currentUser.account_type === 'staff' ? (
 						<NewAppointment
 							onSubmit={this.handleCreateAppointment}
 							onClose={this.handleCalendarDialogClose}
@@ -347,35 +419,45 @@ class StudentProfile extends React.Component<IProps, IState> {
 					) : undefined
 				},
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
-					return!isEmpty(appointment)
+					return !isEmpty(appointment)
 					&& this.props.currentUser.account_type === 'staff'
 					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
 					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => this.handleCancelAppointmentDialogOpen(appointment) }
+						{ value: 'Cancel Appointment', callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment)) }
 					] : undefined
 				}
 			},
 			{
 				name: 'Scheduled',
-				key: 'scheduled',
-				itemMap: (scheduledItem: IScheduled, blockDetails: IBlockDetails) => ({
-					title: scheduledItem.name,
-					variant: blockDetails.pending ? null : (
-						blockDetails.flex === true ? (
-							blockDetails.data.ledgerEntries
-							&& blockDetails.data.ledgerEntries.some(((log: any) => (
-								log.staff.id === scheduledItem.id))
-							) ? 'success' : 'fail'
-						) : (
-							blockDetails.data && blockDetails.data.ledgerEntries
-							&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
-						)
-					),
-					memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
-				}),
-				emptyState: (
+				keys: ['scheduled'],
+				itemMaps: [
+					(scheduledItem: IScheduled, blockDetails: IBlockDetails) => ({
+						title: scheduledItem.name,
+						variant: blockDetails.pending ? null : (
+							blockDetails.flex === true ? (
+								blockDetails.data.ledgerEntries
+								&& blockDetails.data.ledgerEntries.some(((log: any) => (
+									log.staff.id === scheduledItem.id))
+								) ? 'success' : 'fail'
+							) : (
+								blockDetails.data && blockDetails.data.ledgerEntries
+								&& blockDetails.data.ledgerEntries.length > 0 ? 'success' : 'fail'
+							)
+						),
+						memo: scheduledItem.topic ? scheduledItem.topic.memo : undefined
+					})
+				],
+				emptyState: () => (
 					<p className='empty_text'>Nothing scheduled</p>
+				),
+				child: (blockDetails: IBlockDetails) => (
+					blockDetails.pending ? (
+						<PlanDialog
+							blockDetails={blockDetails}
+							onSubmit={this.onSetStudentPlan}
+						/>
+					) : undefined
 				)
 			}
 		]
@@ -435,9 +517,24 @@ class StudentProfile extends React.Component<IProps, IState> {
 							</div>
 						) : (
 							<ul className='right_col'>
-								<li>
-									<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
-								</li>
+								{this.isOwnProfile() ? (
+									<>
+										<li>
+											<ChangePasswordWidget />
+										</li>
+										<li>
+											<Tooltip title='Sign Out'>
+												<LoadingIconButton loading={this.state.loadingSignOut} onClick={() => this.handleSignOut()}>
+													<Icon>exit_to_app</Icon>
+												</LoadingIconButton>
+											</Tooltip>
+										</li>
+									</>
+								) : (
+									<li>
+										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
+									</li>
+								)}
 							</ul>
 						)}
 					</TopNav>
@@ -475,7 +572,9 @@ const mapDispatchToProps = {
 	fetchStudentProfile,
 	fetchStudentSchedule,
 	starItem,
-	unstarItem
+	unstarItem,
+	logout,
+	queueSnackbar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentProfile)

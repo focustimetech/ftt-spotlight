@@ -1,8 +1,10 @@
 import * as React from 'react'
+import * as classNames from 'classnames'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
 	DialogActions,
+	Paper,
 	TextField,
 } from '@material-ui/core'
 
@@ -12,16 +14,21 @@ import { login } from '../actions/authActions'
 
 const selectBackground = () => {
 	const imageList: string[] = [
-		'ali-yahya-782497-unsplash.jpg',
 		'brooke-cagle-609873-unsplash.jpg',
 		'helloquence-61189-unsplash.jpg',
 		'john-schnobrich-520023-unsplash.jpg',
-		'mimi-thian-737597-unsplash.jpg',
 		'mimi-thian-737711-unsplash.jpg',
-		'priscilla-du-preez-293218-unsplash.jpg'
+		'priscilla-du-preez-293218-unsplash.jpg',
+		'mika-korhonen-mKi1rfSQwVY-unsplash.jpg',
+		'neonbrand-zFSo6bnZJTw-unsplash.jpg'
 	]
 	const arrayIndex: number = Math.floor(Math.random() * imageList.length)
-	return `url('static/images/splash/${imageList[arrayIndex]}')`
+	return `static/images/splash/${imageList[arrayIndex]}`
+}
+
+interface Dimensions {
+	height: number,
+	width: number
 }
 
 interface ReduxProps {
@@ -38,18 +45,26 @@ interface IState {
 	error: ILoginError | null
 	redirectToReferrer: boolean
 	loading: boolean
+	imageURL: string
+	imageStatus: 'loading' | 'loaded'
+	imageDimensions: Dimensions
+	boundingBoxDimension: Dimensions
 }
 
 class Login extends React.Component<IProps, IState> {
+	image: any
+	boundingBox: any
 	state: IState = {
 		user: '',
 		password: '',
 		error: null,
 		redirectToReferrer: false,
-		loading: false
+		loading: false,
+		imageURL: selectBackground(),
+		imageStatus: 'loading',
+		imageDimensions: { height: 0, width: 0 },
+		boundingBoxDimension: { height: 0, width: 0 }
 	}
-
-	backgroundImage: string
 
 	handleChange = (event: any) => {
 		event.preventDefault()
@@ -117,8 +132,21 @@ class Login extends React.Component<IProps, IState> {
 		return true
 	}
 
+	handleImageLoad = () => {
+		this.setState({
+			imageStatus: 'loaded',
+			imageDimensions: {
+				height: this.image.clientHeight,
+				width: this.image.clientWidth
+			},
+			boundingBoxDimension: {
+				height: this.boundingBox.clientHeight,
+				width: this.boundingBox.clientWidth
+			}
+		})
+	}
+
 	componentDidMount() {
-		this.backgroundImage = selectBackground()
 		document.title = 'Spotlight - Login'
 	}
 
@@ -127,21 +155,30 @@ class Login extends React.Component<IProps, IState> {
 		if (this.state.redirectToReferrer) {
 			return <Redirect to={from} />
 		}
+		const isVertical: boolean = this.state.imageDimensions.width < this.state.boundingBoxDimension.width
 
 		return (
-			<div className='login-wrap'>
-				<div className='login'>
-					<div className='login__about' style={{backgroundImage: this.backgroundImage}} >
-						<a href='https://focustime.ca' className='logo_container'>
-							<h1>Spotlight</h1>
-						</a>
-					</div>
-					<div className='login__credentials'>
-						<div className='login_container'>
-							<h2>Smart attendance for the internet age.</h2>
-							<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
-							<form className='login_form'>
-								<h2>Sign in</h2>
+			<div className='login'>
+				<div className='login__image_container' ref={(boundingBox: any) => this.boundingBox = boundingBox}>
+					<img
+						className={classNames('login_image', {['--vertical']: isVertical})}
+						src={this.state.imageURL}
+						onLoad={this.handleImageLoad}
+						ref={(image: any) => this.image = image}
+					/>
+				</div>
+				<div className='login__panel'>
+					<div className='login_container'>
+						<h2>Smart attendance for the internet age.</h2>
+						<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
+						<Paper className='login_form'>
+							<form>
+								<img className='ft-logo' src='/static/images/ft-logo.svg' />
+								<h2>Sign in to Spotlight</h2>
+								<div className='school_logo'>
+									<img src='/static/images/school.jpg' />
+									<h3>Oak Bay Secondary</h3>
+								</div>
 								<TextField
 									name='user'
 									type='text'
@@ -185,7 +222,10 @@ class Login extends React.Component<IProps, IState> {
 									>Sign In</LoadingButton>
 								</DialogActions>
 							</form>
-						</div>
+						</Paper>
+						<ul className='links_list'>
+							<a href='https://focustime.ca'><li>Learn More</li></a>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -196,4 +236,4 @@ class Login extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({})
 const mapDispatchToProps = { login }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

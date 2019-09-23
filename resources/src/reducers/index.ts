@@ -13,6 +13,7 @@ import { studentScheduleReducer } from './studentScheduleReducer'
 import { notificationReducer } from './notificationReducer'
 import { topicReducer } from './topicReducer'
 import { snackbarReducer } from './snackbarReducer';
+import { staffTopicsReducer } from './staffTopicsReducer'
 
 export const rootReducer = combineReducers({
     auth: authReducer,
@@ -28,4 +29,5 @@ export const rootReducer = combineReducers({
     notifications: notificationReducer,
     checkin: checkinReducer,
     topics: topicReducer,
+    staffTopics: staffTopicsReducer
 })

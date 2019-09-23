@@ -253,7 +253,7 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
         return (
             <>
                 <div className='content' id='content'>
-                    <TopNav><h3>Power Scheduler</h3></TopNav>
+                    <TopNav breadcrumbs={[{value: 'Power Scheduler'}]} />
                     <Stepper activeStep={this.state.step} orientation='vertical'>
                         <Step key={0}>
                             <StepLabel>Select Students</StepLabel>

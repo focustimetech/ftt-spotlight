@@ -58,7 +58,7 @@ export const NewAppointment = (props: IProps) => {
     }
     
     return (
-        <div className='calendar_appointment_widget'>
+        <div className='calendar_widget'>
             {open ? <>
                 <TextField
                     value={inputValue}
@@ -73,8 +73,10 @@ export const NewAppointment = (props: IProps) => {
                     fullWidth
                     multiline
                 />
-                <LoadingButton loading={loading} onClick={() => handleSubmit()} variant='text' color='primary'>Submit</LoadingButton>
-                <Button onClick={() => handleClose()} variant='text'>Cancel</Button>
+                <div className='calendar_widget__actions'>
+                    <LoadingButton loading={loading} onClick={() => handleSubmit()} variant='text' color='primary'>Submit</LoadingButton>
+                    <Button onClick={() => handleClose()} variant='text'>Cancel</Button>
+                </div>
             </> : (
                 <div className='calendar_item__container'>
                     <Button variant='text' color='primary' onClick={handleOpen}>Make Appointment</Button>

@@ -143,12 +143,10 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
             <>
                 <EnhancedDialogTitle title='Change Password' onClose={this.handleClose} />
                 <DialogContent>
-                    <DialogContentText>
-                        {this.props.isRequiredChange && (
-                            <Typography variant='body1' color='error'>Your old password has expired and must be changed.</Typography>
-                        )}
-                        <Typography variant='body1'>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</Typography>
-                    </DialogContentText>
+                    {this.props.isRequiredChange && (
+                        <DialogContentText color='error'>Your old password has expired and must be changed.</DialogContentText>
+                    )}
+                    <DialogContentText>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</DialogContentText>
                     <TextField
                         name='old_password'
                         label='Old Password'

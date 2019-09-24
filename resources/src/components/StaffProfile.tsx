@@ -28,6 +28,7 @@ import {
 	ILedgerEntry,
 	ITopic,
 	ITopicSchedule,
+	ISchedulePlan,
 	ICalendarBlockVariant,
 } from '../types/calendar'
 import { LoadingButton } from './Form/LoadingButton'
@@ -298,6 +299,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 						const appointments: IAppointment[] = makeArray(block.appointments)
 						const ledgerEntries: ILedgerEntry[] = makeArray(block.logs)
 						const topic: ITopicSchedule[] = block.flex && block.scheduled ? makeArray(block.scheduled) : undefined
+						const planned: ISchedulePlan[] = makeArray(block.planned)
 						const missedAppointment: boolean = !block.pending && appointments.some((appointment: IAppointment) => {
 							return ledgerEntries.every((ledgerEntry: ILedgerEntry) => {
 								return appointment.staff.id !== ledgerEntry.staff.id
@@ -309,7 +311,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 						const data: any = {
 							appointments,
 							ledgerEntries,
-							topic
+							topic,
+							planned
 						}
 						const details: IBlockDetails = {
 							block_id: block.id,
@@ -423,7 +426,19 @@ class StaffProfile extends React.Component<IProps, IState> {
 				),
 				children: (student: IStudent) => ([
 					<h3>{student.name}</h3>
-				])
+				]),
+				itemMaps: [
+					(schedulePlan: ISchedulePlan, blockDetails: IBlockDetails) => ({
+						id: schedulePlan.id,
+						title: schedulePlan.student.name,
+						variant: blockDetails.pending ? 'pending' : (
+							blockDetails.data.ledgerEntries
+							&& blockDetails.data.ledgerEntries.some(((log: ILedgerEntry) => (
+								log.student.id === schedulePlan.student.id
+							))) ? 'success' : 'fail'
+						)
+					})
+				],
 			}
 		]
 

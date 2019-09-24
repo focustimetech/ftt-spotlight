@@ -16,12 +16,16 @@ use Illuminate\Http\Request;
 // Unauthenticates Routes
 Route::post('login', 'AuthController@login');
 
-// Authentication
+// App Start-up
 Route::middleware('auth:api')->group(function() {
+    // Authentication
     Route::post('logout', 'AuthController@logout');
     Route::get('user', 'AuthController@user');
     Route::post('verify-user', 'AuthController@verify');
     Route::post('change-password', 'AuthController@changePassword');
+
+    // Settings
+    Route::get('settings', 'SettingsController@index');
 });
 
 // All Users
@@ -36,9 +40,6 @@ Route::middleware(['auth:api', 'expired-password'])->group(function() {
 
     // Search
     Route::get('search', 'SearchController@search');
-
-    // Settings
-    Route::get('settings', 'SettingsController@index');
 
     // Student Schedule
     Route::post('students/staff-list', 'StudentScheduleController@listStaff');

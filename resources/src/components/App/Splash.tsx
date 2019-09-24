@@ -1,12 +1,33 @@
 import * as React from 'react'
 import { CircularProgress } from '@material-ui/core';
 
-export const Splash = () => {
+import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
+
+interface IProps {
+    passwordExpired: boolean
+    username?: string
+    onChangePassword: () => void
+    onSignOut: () => void
+}
+
+export const Splash = (props: IProps) => {
     return (
         <div className='splash' id='splash'>
             <div className='splash__content'>
-                <CircularProgress disableShrink />
-                <h3>Loading Spotlight...</h3>
+                {props.passwordExpired ? (
+                    <ChangePasswordWidget
+                        isRequiredChange
+                        disallowed={[props.username]}
+                        variant='persistant'
+                        onClose={props.onSignOut}
+                        onChangePassword={props.onChangePassword}
+                    />
+                ) : (
+                    <>
+                        <CircularProgress disableShrink />
+                        <h3>Loading Spotlight...</h3>
+                    </>
+                )}
             </div>
         </div>
     )

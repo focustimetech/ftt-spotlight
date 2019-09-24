@@ -75,7 +75,7 @@ class Snackbar extends React.Component<IProps, IState> {
                         }
                         return <Button key={index} color='secondary' onClick={onClick}>{button.value}</Button>
                     }),
-                    snackbar.links.map((link: ISnackbarLink, index: number) => (
+                    snackbar.links && snackbar.links.map((link: ISnackbarLink, index: number) => (
                         <Link to={link.to} key={index}>
                             <Button color='secondary'>{link.value}</Button>
                         </Link>

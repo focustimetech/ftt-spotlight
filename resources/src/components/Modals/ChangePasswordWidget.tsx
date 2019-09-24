@@ -29,6 +29,7 @@ interface IProps extends ReduxProps {
     disallowed?: string[]
     isRequiredChange?: boolean
     variant?: 'dialog' | 'persistant'
+    onChangePassword?: () => void
     onClose?: () => void
 }
 
@@ -88,11 +89,14 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
         })
 
         changePassword(this.state.oldPassword, this.state.newPassword)
-            .then((res: any) => {
+            .then(() => {
                 this.setState(initialState)
-                this.props.queueSnackbar({ message: 'Changed passsword.' })
+                if (this.props.onChangePassword)
+                    this.props.onChangePassword()
+                else
+                    this.props.queueSnackbar({ message: 'Changed passsword.' })
             })
-            .catch((error: any) => {
+            .catch(() => {
                 this.setState({
                     loading: false,
                     errored: true

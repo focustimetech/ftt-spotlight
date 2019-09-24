@@ -1,6 +1,19 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+
+## Version 1.1.1 (2019-09-24)
+
+### Added
+ - Staff can book themselves as Unavilable when creating new Topics (SPOT-2)
+
+### Fixed
+ - Staff can view which students are booked into their block (SPOT-91)
+ - Fixed stability issues (SPOT-88)
+
+### Security
+ - Added ability to force user password changes (SPOT-68)
+
 ## Version 1.1.0 (2019-09-23)
 
 ### Added

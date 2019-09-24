@@ -110,6 +110,13 @@ export interface ITopicSchedule {
     topic: ITopic
 }
 
+export interface ISchedulePlan {
+    id: number
+    student: IStudent
+    staff: IStaff
+    block: IBlock
+    date: string
+}
 export interface IScheduled extends IStaff {
     topic?: ITopic
 }

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import {
     Button,
+    Card,
     Dialog,
     DialogActions,
     DialogContent,
@@ -25,8 +26,10 @@ interface ReduxProps {
 }
 
 interface IProps extends ReduxProps {
-    isRequiredChange?: boolean
     disallowed?: string[]
+    isRequiredChange?: boolean
+    variant?: 'dialog' | 'persistant'
+    onClose?: () => void
 }
 
 interface IState {
@@ -64,6 +67,8 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
 
     handleClose = () => {
         this.setState({ open: false })
+        if (this.props.onClose)
+            this.props.onClose()
     }
 
     handleSubmit = () => {
@@ -134,93 +139,101 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
     }
 
     render() {
-        return (
+        const passwordForm = (
             <>
-                <Tooltip title='Change Password'>
-                    <IconButton onClick={() => this.handleOpen()}>
-                        <Icon>lock</Icon>
-                    </IconButton>
-                </Tooltip>
-                <Dialog open={this.state.open}>
-                    <EnhancedDialogTitle title='Change Password' onClose={this.handleClose} />
-                    <DialogContent>
-                        <DialogContentText>
-                            {this.props.isRequiredChange && (
-                                <Typography variant='body1' color='error'>Your old password has expired and must be changed.</Typography>
-                            )}
-                            <Typography variant='body1'>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</Typography>
-                        </DialogContentText>
+                <EnhancedDialogTitle title='Change Password' onClose={this.handleClose} />
+                <DialogContent>
+                    <DialogContentText>
+                        {this.props.isRequiredChange && (
+                            <Typography variant='body1' color='error'>Your old password has expired and must be changed.</Typography>
+                        )}
+                        <Typography variant='body1'>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</Typography>
+                    </DialogContentText>
+                    <TextField
+                        name='old_password'
+                        label='Old Password'
+                        variant='outlined'
+                        type='password'
+                        value={this.state.oldPassword}
+                        onChange={(event: any) => this.handleChange(event, 'old')}
+                        fullWidth
+                        autoFocus
+                        required
+                        error={this.state.errored}
+                        helperText={this.state.errored ? 'That didn\'t work. Please try again.' : undefined}
+                        margin='normal'
+                    />
+                    <TextField
+                        name='new_password'
+                        label='New Password'
+                        variant='outlined'
+                        type={this.state.showPassword && !this.state.loading ? 'text' : 'password'}
+                        value={this.state.newPassword}
+                        onChange={(event: any) => this.handleChange(event, 'new')}
+                        fullWidth
+                        required
+                        error={this.state.passwordTooShort || this.state.disallowedPassword}
+                        helperText={
+                            this.state.passwordTooShort
+                                ? 'Password must be at least 8 characters.'
+                                : (this.state.disallowedPassword ? 'You cannot use that password.' : undefined)
+                        }
+                        margin='normal'
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        edge="end"
+                                        onClick={() => this.toggleShowPassword()}
+                                    >
+                                        <Icon>{this.state.showPassword ? 'visibility_off' : 'visibility'}</Icon>
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    {!this.state.showPassword && (
                         <TextField
-                            name='old_password'
-                            label='Old Password'
+                            name='confirm_password'
+                            label='Confirm Password'
                             variant='outlined'
                             type='password'
-                            value={this.state.oldPassword}
-                            onChange={(event: any) => this.handleChange(event, 'old')}
+                            value={this.state.confirmPassword}
+                            onChange={(event: any) => this.handleChange(event, 'confirm')}
                             fullWidth
-                            autoFocus
-                            required
-                            error={this.state.errored}
-                            helperText={this.state.errored ? 'That didn\'t work. Please try again.' : undefined}
+                            required={!this.state.showPassword}
+                            error={this.state.unmatchedPasswords}
+                            helperText={this.state.unmatchedPasswords ? 'Passwords don\'t match.' : undefined}
                             margin='normal'
                         />
-                        <TextField
-                            name='new_password'
-                            label='New Password'
-                            variant='outlined'
-                            type={this.state.showPassword && !this.state.loading ? 'text' : 'password'}
-                            value={this.state.newPassword}
-                            onChange={(event: any) => this.handleChange(event, 'new')}
-                            fullWidth
-                            required
-                            error={this.state.passwordTooShort || this.state.disallowedPassword}
-                            helperText={
-                                this.state.passwordTooShort
-                                    ? 'Password must be at least 8 characters.'
-                                    : (this.state.disallowedPassword ? 'You cannot use that password.' : undefined)
-                            }
-                            margin='normal'
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            edge="end"
-                                            onClick={() => this.toggleShowPassword()}
-                                        >
-                                            <Icon>{this.state.showPassword ? 'visibility_off' : 'visibility'}</Icon>
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        {!this.state.showPassword && (
-                            <TextField
-                                name='confirm_password'
-                                label='Confirm Password'
-                                variant='outlined'
-                                type='password'
-                                value={this.state.confirmPassword}
-                                onChange={(event: any) => this.handleChange(event, 'confirm')}
-                                fullWidth
-                                required={!this.state.showPassword}
-                                error={this.state.unmatchedPasswords}
-                                helperText={this.state.unmatchedPasswords ? 'Passwords don\'t match.' : undefined}
-                                margin='normal'
-                            />
-                        )}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button variant='text' onClick={() => this.handleClose()}>Cancel</Button>
-                        <LoadingButton
-                            variant='contained'
-                            color='primary'
-                            onClick={() => this.handleSubmit()}
-                            loading={this.state.loading}
-                            disabled={this.state.oldPassword.length === 0 || this.state.newPassword.length === 0}
-                        >Submit</LoadingButton>
-                    </DialogActions>
-                </Dialog>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button variant='text' onClick={() => this.handleClose()}>Cancel</Button>
+                    <LoadingButton
+                        variant='contained'
+                        color='primary'
+                        onClick={() => this.handleSubmit()}
+                        loading={this.state.loading}
+                        disabled={this.state.oldPassword.length === 0 || this.state.newPassword.length === 0}
+                    >Submit</LoadingButton>
+                </DialogActions>
             </>
+        )
+
+        return (
+            this.props.variant === 'persistant' ? (
+                <Card className='change_password_card'>{passwordForm}</Card>
+            ) : (
+                <>
+                    <Tooltip title='Change Password'>
+                        <IconButton onClick={() => this.handleOpen()}>
+                            <Icon>lock</Icon>
+                        </IconButton>
+                    </Tooltip>
+                    <Dialog open={this.state.open}>{passwordForm}</Dialog>
+                </>
+            )
         )
     }
 }

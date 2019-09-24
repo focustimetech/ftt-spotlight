@@ -30,7 +30,7 @@ class Student extends Model
 
     public function amendments()
 	{
-		return $this->hasMany('App\Amendment');
+		return $this->hasMany('App\Amendment')->where('student_id', $this->id)->orWhere('student_id', null);
 	}
 
     public function appointments()

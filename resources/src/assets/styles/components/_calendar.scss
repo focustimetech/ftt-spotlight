@@ -334,6 +334,9 @@
 
 		p {
 			margin: 0;
+		}
+
+		& > * + p {
 			margin-left: 8px;
 		}
 	}

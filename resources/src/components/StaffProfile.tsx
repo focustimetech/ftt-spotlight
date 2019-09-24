@@ -400,7 +400,8 @@ class StaffProfile extends React.Component<IProps, IState> {
 					(topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
 						id: topicSchedule.id,
 						title: topicSchedule.topic.memo,
-						variant: topicSchedule.topic.color
+						variant: topicSchedule.topic.color,
+						memo: topicSchedule.topic.unavailable ? 'Unavailable' : undefined
 					})
 				],
 				actions: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => {

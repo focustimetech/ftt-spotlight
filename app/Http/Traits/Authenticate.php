@@ -55,8 +55,12 @@ trait Authenticate
     public function verify(Request $request)
     {
         $username = auth()->user()->username;
-        $password = $request->password;
+        return $this->verifyWithUsername($username, $request);
+    }
 
+    public function verifyWithUsername($username, $request)
+    {
+        $password = $request->password;
         $request->replace([
             'username' => $username,
             'password' => $password
@@ -68,5 +72,24 @@ trait Authenticate
         } else {
             return $response;
         }
+    }
+
+    public function enforcePasswordPolicy()
+    {
+        $users = User::all();
+        $total = $users->count();
+        $flagged = 0;
+        $users->each(function($user) use (&$flagged) {
+            $username = $user->username;
+            $response = $this->verifyWithUsername($username, new Request);
+
+            if (false /* Response is 200 */) {
+                $user->password_expired = true;
+                $user->save();
+                $flagged ++;
+            }
+        });
+
+        echo "Flagged $flagged out of $total users.\n";
     }
 }

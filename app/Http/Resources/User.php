@@ -36,7 +36,8 @@ class User extends JsonResource
             'display_name' => $details->getDisplayName(),
             'display_role' => $this->getDisplayRole(),
             'initials' => $details['initials'],
-            'color' => $details['color']
+            'color' => $details['color'],
+            'password_expired' => $this->password_expired
         ];
     }
 }

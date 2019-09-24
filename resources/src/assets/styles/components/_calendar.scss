@@ -328,7 +328,14 @@
 	}
 
 	&__memo {
-		margin: 0;
+		display: flex;
+		flex-flow: row wrap;
+		align-items: center;
+
+		p {
+			margin: 0;
+			margin-left: 8px;
+		}
 	}
 
 	&__actions {

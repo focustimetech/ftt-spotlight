@@ -113,6 +113,7 @@ class PlanDialog extends React.Component<IProps, IState> {
                                         time: `${staffTopic.num_remaining} of ${staffTopic.staff.capacity} remaining`
                                     }}
                                     disabled={staffTopic.num_remaining === 0}
+                                    unavailable={staffTopic.topic && staffTopic.topic.unavailable}
                                     key={index}
                                 />
                             ))

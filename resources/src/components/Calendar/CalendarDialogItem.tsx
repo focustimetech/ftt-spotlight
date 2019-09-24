@@ -3,9 +3,8 @@ import classNames from 'classnames'
 
 import {
     Icon,
-    Tooltip,
     Menu,
-    MenuItem
+    Tooltip
 } from '@material-ui/core'
 
 import { LoadingIconButton } from '../Form/LoadingIconButton'
@@ -17,6 +16,7 @@ interface IProps {
     actions?: ICalendarItemAction[]
     disabled?: boolean
     loading?: boolean
+    unavailable?: boolean
     onCloseDialog: () => void
     onClick?: () => void
 }
@@ -81,7 +81,7 @@ export const CalendarDialogItem = (props: IProps) => {
     }
 
     const handleClick = (onClick: () => void) => {
-        if (props.disabled)
+        if (props.disabled || props.unavailable)
             return
         onClick()
     }
@@ -93,7 +93,7 @@ export const CalendarDialogItem = (props: IProps) => {
                 'calendar_item__container',
                 `--${variant}`,
                 {['--selectable']: clickable},
-                {['--disabled']: props.disabled}
+                {['--disabled']: props.disabled || props.unavailable}
             )}
             key={id}
             onClick={clickable ? () => handleClick(props.onClick) : undefined}
@@ -108,7 +108,12 @@ export const CalendarDialogItem = (props: IProps) => {
                         </span>
                     )}
                 </h6>
-                {memo && <p className='calendar__memo'>{memo}</p>}
+                {memo && (
+                    <div className='calendar_item__memo'>
+                        {props.unavailable && (<Tooltip title='Teacher is Unavailable'><Icon>block</Icon></Tooltip>)}
+                        <p>{memo}</p>
+                    </div>
+                )}
             </div>
             {(props.actions && props.actions.length > 0) && (
                 <div className='calendar_item__actions'>

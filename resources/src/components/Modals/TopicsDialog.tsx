@@ -4,15 +4,18 @@ import { connect } from 'react-redux'
 
 import {
     Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
+    FormControlLabel,
     Icon,
     IconButton,
     TextField,
-    Tooltip
+    Tooltip,
+    Typography
 } from '@material-ui/core'
 
 import { ITopic } from '../../types/calendar'
@@ -28,7 +31,8 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 
 const emptyTopic = (): ITopicRequest => ({
     memo: '',
-    color: getRandomColor().name
+    color: getRandomColor().name,
+    unavailable: false
 })
 
 interface ReduxProps {
@@ -67,7 +71,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
         colorDialogOpen: false,
         newTopic: emptyTopic(),
         deleteTopicDialogOpen: false,
-        deleteTopic: { id: 0, color: null, deleted: false, memo: '', staff: null }
+        deleteTopic: { id: 0, color: null, deleted: false, memo: '', staff: null, unavailable: false }
     }
 
     handleNewTopicOpen = () => {
@@ -117,6 +121,15 @@ class TopicsDialog extends React.Component<IProps, IState> {
                 newTopic: { ...state.newTopic, color }
             }
         })
+    }
+
+    handleNewTopicUnavailablityToggle = () => {
+        this.setState((state: IState) => ({
+            newTopic: {
+                ...state.newTopic,
+                unavailable: !state.newTopic.unavailable
+            }
+        }))
     }
 
     handleColorDialogOpen = () => {
@@ -196,7 +209,8 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                             details={{
                                                 id: topic.id,
                                                 title: topic.memo,
-                                                variant: topic.color
+                                                variant: topic.color,
+                                                memo: topic.unavailable ? 'Unavailable' : undefined
                                             }}
                                             actions={this.props.mode === 'edit' ? [
                                                 { value: 'Delete Topic', callback: () => Promise.resolve(this.handleDeleteTopic(topic)) }
@@ -207,24 +221,41 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                 {this.state.newTopicOpen && (
                                     <>
                                         <div className='topics_dialog__new'>
-                                            <div className={classNames('color_swatch', `--${this.state.newTopic.color}`)}>
-                                                <Tooltip title='Change Color' placement='top'>
-                                                    <IconButton onClick={() => this.handleColorDialogOpen()}>
-                                                        <Icon>palette</Icon>
-                                                    </IconButton>
-                                                </Tooltip>
+                                            <div className='topic_name'>
+                                                <div className={classNames('color_swatch', `--${this.state.newTopic.color}`)}>
+                                                    <Tooltip title='Change Color' placement='top'>
+                                                        <IconButton onClick={() => this.handleColorDialogOpen()}>
+                                                            <Icon>palette</Icon>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </div>
+                                                <TextField
+                                                    value={this.state.newTopic.memo}
+                                                    onChange={this.handleNewTopicChange}
+                                                    variant='filled'
+                                                    label='New Topic'
+                                                    placeholder='What will you be offering?'
+                                                    margin='none'
+                                                    helperText={this.state.newTopicErrored ? 'Please try that again.' : undefined}
+                                                    error={this.state.errored}
+                                                    autoFocus
+                                                    fullWidth
+                                                />
                                             </div>
-                                            <TextField
-                                                value={this.state.newTopic.memo}
-                                                onChange={this.handleNewTopicChange}
-                                                variant='filled'
-                                                label='New Topic'
-                                                placeholder='What will you be offering?'
-                                                margin='none'
-                                                helperText={this.state.newTopicErrored ? 'Please try that again.' : undefined}
-                                                error={this.state.errored}
-                                                autoFocus
-                                                fullWidth
+                                            <FormControlLabel
+                                                label={
+                                                    <div className='topic_unavailable_label'>
+                                                        <Typography>Unavailable</Typography>
+                                                        <Tooltip title='Student will not be able to join Unavailable blocks.'><Icon>help</Icon></Tooltip>
+                                                    </div>
+                                                }
+                                                control={
+                                                    <Checkbox
+                                                        checked={this.state.newTopic.unavailable}
+                                                        onChange={this.handleNewTopicUnavailablityToggle}
+                                                        color='primary'
+                                                    />
+                                                }
                                             />
                                         </div>
                                         <LoadingButton

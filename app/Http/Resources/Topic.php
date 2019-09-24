@@ -22,7 +22,8 @@ class Topic extends JsonResource
             'memo' => $this->memo,
             'color' => $this->color,
             'deleted' => $this->deleted == true,
-            'staff' => new StaffResource(Staff::find($this->staff_id))
+            'staff' => new StaffResource(Staff::find($this->staff_id)),
+            'unavailable' => $this->unavailable == true
         ];
     }
 }

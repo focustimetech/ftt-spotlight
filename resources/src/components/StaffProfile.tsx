@@ -384,23 +384,24 @@ class StaffProfile extends React.Component<IProps, IState> {
 				name: 'Topic',
 				keys: ['topic'],
 				emptyState: (blockDetails: IBlockDetails) => (
-					blockDetails.flex && blockDetails.pending && isOwner ? (
-						<>
-							<p className='empty_text'>Nothing scheduled</p>
+					<>
+						<p className='empty_text'>Nothing scheduled</p>
+						{(blockDetails.flex && blockDetails.pending && isOwner) && (
 							<LoadingButton
 								loading={this.state.loadingSetTopic}
 								variant='text'
 								color='primary'
 								onClick={() => this.handleSetTopic()}
 							>Set Topic</LoadingButton>
-						</>
-					) : undefined					
+						)}
+					</>					
 				),
 				itemMaps: [
 					(topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
 						id: topicSchedule.id,
 						title: topicSchedule.topic.memo,
-						variant: topicSchedule.topic.color
+						variant: topicSchedule.topic.color,
+						memo: topicSchedule.topic.unavailable ? 'Unavailable' : undefined
 					})
 				],
 				actions: (topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => {

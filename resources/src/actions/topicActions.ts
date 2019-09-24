@@ -8,6 +8,7 @@ import { ReduxAction } from '../types/app'
 export interface ITopicRequest {
     memo: string
     color: TopicColor
+    unavailable: boolean
 }
 
 export interface ITopicScheduleRequest {

@@ -22,6 +22,8 @@ class CreateTopicsTable extends Migration
                 ->default(Utils::topicColor(0));
             $table->boolean('deleted')
                 ->default(false);
+            $table->boolean('unavailable')
+                ->default(false);
             $table->unsignedInteger('staff_id')
                 ->nullable();
             $table->timestamps();

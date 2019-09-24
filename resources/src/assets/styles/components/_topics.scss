@@ -1,16 +1,28 @@
 .topics_dialog {
     &__new {
-        display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
-        margin: 16px 0;
+        .topic_name {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            margin: 16px 0 8px;
 
-        .color_swatch {
-            margin-right: 8px;
-            border-radius: 50%;
-            
-            & * {
-                color: rgba(255,255,255,0.87);
+            .color_swatch {
+                margin-right: 8px;
+                border-radius: 50%;
+                
+                & * {
+                    color: rgba(255,255,255,0.87);
+                }
+            }
+        }
+
+        .topic_unavailable_label {
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+
+            & > * + * {
+                margin: 0 8px;
             }
         }
     }

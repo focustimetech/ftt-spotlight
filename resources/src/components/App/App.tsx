@@ -35,6 +35,7 @@ interface ReduxProps {
 interface IState {
 	loadingUser: boolean
 	loadingSettings: boolean
+	passwordState: 'loading' | 'expired' | 'valid'
 }
 
 interface IProps extends ReduxProps {
@@ -44,13 +45,21 @@ interface IProps extends ReduxProps {
 class App extends React.Component<IProps, IState> {
 	state: IState = {
 		loadingUser: true,
-		loadingSettings: true
+		loadingSettings: true,
+		passwordState: 'loading'
+	}
+
+	handlePasswordChange = () => {
+		this.setState({ passwordState: 'valid' })
 	}
 
 	componentDidMount() {
 		this.props.getCurrentUser().then(
 			() => {
-				this.setState({ loadingUser: false })
+				this.setState({
+					loadingUser: false,
+					passwordState: this.props.currentUser.password_expired ? 'expired' : 'valid'
+				})
 			},
 			() => {
 				this.props.onSignOut()
@@ -67,8 +76,14 @@ class App extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		return this.state.loadingUser || this.state.loadingSettings ? (
-			<Splash />
+		const passwordExpired: boolean = this.state.passwordState === 'expired'
+		return this.state.loadingUser || this.state.loadingSettings || passwordExpired ? (
+			<Splash
+				passwordExpired={passwordExpired}
+				username={this.props.currentUser ? this.props.currentUser.username : undefined}
+				onSignOut={this.props.onSignOut}
+				onChangePassword={this.handlePasswordChange}
+			/>
 		) : (
 			<>
 				<Router>

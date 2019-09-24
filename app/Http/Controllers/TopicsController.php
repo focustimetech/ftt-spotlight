@@ -24,6 +24,7 @@ class TopicsController extends Controller
 
         $topic->memo = $request->input('memo');
         $topic->color = $request->input('color');
+        $topic->unavailable = $request->input('unavailable');
         $topic->staff_id = auth()->user()->staff()->id;
 
         if ($topic->save()) {

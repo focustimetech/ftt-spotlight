@@ -100,6 +100,7 @@ export interface ITopic {
     color: string
     deleted: boolean
     staff: IStaff
+    unavailable: boolean
 }
 
 export interface ITopicSchedule {

@@ -11,7 +11,8 @@ import {
     IconButton,
     InputAdornment,
     TextField,
-    Tooltip
+    Tooltip,
+    Typography
 } from '@material-ui/core'
 
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
@@ -24,6 +25,7 @@ interface ReduxProps {
 }
 
 interface IProps extends ReduxProps {
+    isRequiredChange?: boolean
     disallowed?: string[]
 }
 
@@ -105,6 +107,7 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
             case 'new':
                 this.setState({
                     passwordTooShort: false,
+                    disallowedPassword: false,
                     newPassword: value
                 })
                 return
@@ -141,7 +144,12 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
                 <Dialog open={this.state.open}>
                     <EnhancedDialogTitle title='Change Password' onClose={this.handleClose} />
                     <DialogContent>
-                        <DialogContentText>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</DialogContentText>
+                        <DialogContentText>
+                            {this.props.isRequiredChange && (
+                                <Typography variant='body1' color='error'>Your old password has expired and must be changed.</Typography>
+                            )}
+                            <Typography variant='body1'>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</Typography>
+                        </DialogContentText>
                         <TextField
                             name='old_password'
                             label='Old Password'
@@ -152,12 +160,8 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
                             fullWidth
                             autoFocus
                             required
-                            error={this.state.errored || this.state.disallowedPassword}
-                            helperText={
-                                this.state.errored
-                                    ? 'That didn\'t work. Please try again.'
-                                    : (this.state.disallowedPassword ? 'You cannot use that password.' : undefined)
-                            }
+                            error={this.state.errored}
+                            helperText={this.state.errored ? 'That didn\'t work. Please try again.' : undefined}
                             margin='normal'
                         />
                         <TextField
@@ -169,8 +173,12 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
                             onChange={(event: any) => this.handleChange(event, 'new')}
                             fullWidth
                             required
-                            error={this.state.passwordTooShort}
-                            helperText={this.state.passwordTooShort ? 'Password must be at least 8 characters.' : undefined}
+                            error={this.state.passwordTooShort || this.state.disallowedPassword}
+                            helperText={
+                                this.state.passwordTooShort
+                                    ? 'Password must be at least 8 characters.'
+                                    : (this.state.disallowedPassword ? 'You cannot use that password.' : undefined)
+                            }
                             margin='normal'
                             InputProps={{
                                 endAdornment: (

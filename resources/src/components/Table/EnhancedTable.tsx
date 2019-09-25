@@ -122,7 +122,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		return this.props.data.filter((row: any) => {
 			const matchSearch: boolean = tableQuery.length ? (
 				properties.some((property) => {
-					return new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
+					return row[property] && new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
 				})
 			) : true
 

@@ -16,6 +16,7 @@ class CreatePowerScheduleTable extends Migration
         Schema::create('power_schedule', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('staff_id');
+            $table->enum('type', ['amendment', 'appointment']);
             $table->timestamps();
 
             // Foreign keys

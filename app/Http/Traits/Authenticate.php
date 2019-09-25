@@ -4,6 +4,7 @@ namespace App\Http\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\Exceptions\UserNotFoundException;
 
@@ -55,11 +56,6 @@ trait Authenticate
     public function verify(Request $request)
     {
         $username = auth()->user()->username;
-        return $this->verifyWithUsername($username, $request);
-    }
-
-    public function verifyWithUsername($username, $request)
-    {
         $password = $request->password;
         $request->replace([
             'username' => $username,
@@ -78,12 +74,10 @@ trait Authenticate
     {
         $users = User::all();
         $total = $users->count();
+        echo "Flagging users with default passwords ($total total) ...\n";
         $flagged = 0;
         $users->each(function($user) use (&$flagged) {
-            $username = $user->username;
-            $response = $this->verifyWithUsername($username, new Request);
-
-            if (false /* Response is 200 */) {
+            if (Hash::check($user->username, $user->password)) {
                 $user->password_expired = true;
                 $user->save();
                 $flagged ++;

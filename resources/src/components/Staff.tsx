@@ -66,7 +66,7 @@ class Staff extends React.Component<IProps, IState> {
 				id: index,
 				last_name: staff.last_name,
 				first_name: staff.first_name,
-				title: staff.title,
+				email: staff.email,
 				profile: staff.id
 			}
 		})
@@ -82,7 +82,7 @@ class Staff extends React.Component<IProps, IState> {
 				visible: true
 			},
 			{ id: 'first_name', label: 'First Name', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
-			{ id: 'title', label: 'Title', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
+			{ id: 'email', label: 'Email', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
 		]
 
 		const tableLink: ITableLink = {label: 'Profile', key: 'profile', path: 'staff'}

@@ -138,7 +138,6 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                 })
             })
             .catch((err: any) => {
-                console.log('Caught error')
                 this.setState({ uploading: false })
             })
     }
@@ -161,30 +160,24 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
     render() {
         const studentTableColumns: ITableHeaderColumn[] = [
             {
-                id: 'name',
-                label: 'Name',
-                th: true,
-                isNumeric: false,
-                disablePadding: true,
-                searchable: false,
-                filterable: false,
-                visible: true
-            },
-            {
                 id: 'last_name',
                 label: 'Last Name',
+                th: true,
+                disablePadding: true,
                 isNumeric: false,
                 searchable: true,
                 filterable: true,
-                visible: false
+                visible: true
             },
             {
                 id: 'first_name',
                 label: 'First Name',
                 isNumeric: false,
+                th: true,
+                disablePadding: true,
                 searchable: true,
                 filterable: true,
-                visible: false
+                visible: true
             },
             {
                 id: 'grade',
@@ -200,30 +193,34 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
 
         const staffTableColumns: ITableHeaderColumn[] = [
             {
-                id: 'name',
-                label: 'Name',
-                th: true,
-                isNumeric: false,
-                disablePadding: true,
-                searchable: false,
-                filterable: false,
-                visible: true
-            },
-            {
                 id: 'last_name',
                 label: 'Last Name',
+                th: true,
+                disablePadding: true,
                 isNumeric: false,
                 searchable: true,
                 filterable: true,
-                visible: false
+                visible: true
             },
             {
                 id: 'first_name',
                 label: 'First Name',
+                th: true,
+                disablePadding: true,
                 isNumeric: false,
                 searchable: true,
                 filterable: true,
-                visible: false
+                visible: true
+            },
+            {
+                id: 'email',
+                label: 'Email',
+                isNumeric: false,
+                th: true,
+                disablePadding: true,
+                searchable: true,
+                filterable: true,
+                visible: true
             }
         ]
 
@@ -231,7 +228,6 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
             this.props.students.map((student: IStudent) => {
                 return {
                     id: student.id,
-                    name: student.name,
                     last_name: student.last_name,
                     first_name: student.first_name,
                     grade: student.grade
@@ -243,9 +239,9 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
             this.props.staff.map((staff: IStaff) => {
                 return {
                     id: staff.id,
-                    name: staff.name,
                     last_name: staff.last_name,
-                    first_name: staff.first_name
+                    first_name: staff.first_name,
+                    email: staff.email
                 }
             })
         ) : []

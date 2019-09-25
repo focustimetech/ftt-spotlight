@@ -20,6 +20,7 @@ import { IUser } from '../types/auth'
 import { IStudent } from '../types/student'
 import { ConfirmationDialog } from './Modals/ConfirmationDialog'
 import {
+	IAmendment,
 	IAppointment,
 	ICalendarDay,
 	ICalendarBlock,
@@ -296,6 +297,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 						const title: string = block.flex ? (
 							block.scheduled ? block.scheduled.topic.memo : 'No Schedule'
 						) : block.scheduled.name
+						const amendments: IAmendment[] = makeArray(block.amendments)
 						const appointments: IAppointment[] = makeArray(block.appointments)
 						const ledgerEntries: ILedgerEntry[] = makeArray(block.logs)
 						const topic: ITopicSchedule[] = block.flex && block.scheduled ? makeArray(block.scheduled) : undefined
@@ -309,6 +311,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 							block.flex && block.scheduled ? block.scheduled.topic.color : 'pending'
 						)
 						const data: any = {
+							amendments,
 							appointments,
 							ledgerEntries,
 							topic,
@@ -338,6 +341,20 @@ class StaffProfile extends React.Component<IProps, IState> {
 		}
 
 		const calendarDialogGroups: ICalendarDialogGroup[] = [
+			{
+				name: 'Amendments',
+				keys: ['amendments'],
+				itemMaps: [
+					(amendment: IAmendment) => ({
+						id: amendment.id,
+						time: 'Amended',
+						title: amendment.staff.name,
+						memo: amendment.memo,
+						method: 'amendment',
+						variant: 'default'
+					})
+				]
+			},
 			{
 				name: 'Logs',
 				keys: ['ledgerEntries'],

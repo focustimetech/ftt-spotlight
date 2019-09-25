@@ -12,6 +12,7 @@ use App\Course;
 use App\Topic;
 use App\TopicSchedule;
 use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\Amendment as AmendmentResource;
 use App\Http\Resources\Appointment as AppointmentResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use App\Http\Resources\BlockSchedule as BlockScheduleResource;
@@ -46,6 +47,7 @@ class StaffScheduleController extends Controller
         $blocks = $staff->getBlocks();
         $staff_block_schedule = $staff->getBlockSchedule();
         $appointments = $staff->appointments();
+        $amendments = $staff->amendments();
         $ledger_entries = $staff->ledgerEntries();
         $plans = $staff->plans();
         $topic_schedules = TopicSchedule::whereIn('topic_id', $staff->getTopics()->pluck('id')->toArray());
@@ -81,7 +83,7 @@ class StaffScheduleController extends Controller
                     ],
                     'events' => []
                 ];
-                $blocks_of_day->each(function($block_schedule) use ($appointments, $blocks, $date, $ledger_entries, $plans, $topic_schedules, &$schedule_day, $year_start, $year_end) {
+                $blocks_of_day->each(function($block_schedule) use ($amendments, $appointments, $blocks, $date, $ledger_entries, $plans, $topic_schedules, &$schedule_day, $year_start, $year_end) {
                     if (strtotime($date. ' '. $block_schedule->end) < $year_start || strtotime("$date $block_schedule->start") > $year_end) {
                         // Only include blocks within school year
                         return;
@@ -96,6 +98,7 @@ class StaffScheduleController extends Controller
                             'end' => date('g:i A', strtotime($date. ' '. $block_schedule->end)),
                             'pending' => strtotime($date. ' '. $block_schedule->end) > time()
                         ];
+                        $day_block['amendments'] = AmendmentResource::collection($amendments->get()->where('block_id', $block->id)->where('date', $date));
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
                         $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->get()->where('date', $date)->where('block_id', $block->id));
                         $day_block['planned'] = SchedulePlanResource::collection($plans->get()->where('date', $date)->where('block_id', $block->id));

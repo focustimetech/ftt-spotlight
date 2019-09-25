@@ -4,6 +4,7 @@ namespace App\Http\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\Exceptions\UserNotFoundException;
 
@@ -56,7 +57,6 @@ trait Authenticate
     {
         $username = auth()->user()->username;
         $password = $request->password;
-
         $request->replace([
             'username' => $username,
             'password' => $password
@@ -68,5 +68,22 @@ trait Authenticate
         } else {
             return $response;
         }
+    }
+
+    public function enforcePasswordPolicy()
+    {
+        $users = User::all();
+        $total = $users->count();
+        echo "Flagging users with default passwords ($total total) ...\n";
+        $flagged = 0;
+        $users->each(function($user) use (&$flagged) {
+            if (Hash::check($user->username, $user->password)) {
+                $user->password_expired = true;
+                $user->save();
+                $flagged ++;
+            }
+        });
+
+        echo "Flagged $flagged out of $total users.\n";
     }
 }

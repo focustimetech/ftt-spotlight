@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use Illuminate\Support\Facades\Hash;
 use App\Student;
 use App\User;
 
@@ -13,7 +14,7 @@ class StudentsObserver
         $user->account_type = 'student';
         $user->username = $student->student_number;
         $user->user_id = $student->id;
-        $user->password = bcrypt($student->student_number);
+        $user->password = Hash::make($student->student_number);
 
         $user->save();
     }

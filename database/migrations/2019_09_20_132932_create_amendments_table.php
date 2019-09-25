@@ -18,7 +18,6 @@ class CreateAmendmentsTable extends Migration
             $table->unsignedInteger('student_id')
                 ->nullable();
             $table->unsignedInteger('staff_id')
-                ->nullable();
             $table->unsignedInteger('block_id')
                 ->nullable();
             $table->date('date');

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use Illuminate\Support\Facades\Hash;
 use App\Staff;
 use App\User;
 
@@ -13,7 +14,7 @@ class StaffObserver
         $user->account_type = 'staff';
         $user->username = $staff->email;
         $user->user_id = $staff->id;
-        $user->password = bcrypt($staff->email);
+        $user->password = Hash::make($staff->email);
 
         $user->save();
     }

@@ -54,6 +54,7 @@ class CheckIn extends React.Component<IProps, IState> {
     
     fetchPrevious = () => {}
     fetchNext = () => {}
+    fetchToday = () => {}
 
     componentDidMount() {
 
@@ -92,6 +93,14 @@ class CheckIn extends React.Component<IProps, IState> {
                                 <Icon>chevron_right</Icon>
                             </IconButton>
                         </Tooltip>
+                    </li>
+                    <li>
+                        <Button
+                            variant='text'
+                            color='primary'
+                            onClick={() => this.fetchToday()}
+                            disabled={this.props.checkInStatus.date.is_today}
+                        >Today</Button>
                     </li>
                 </ul>
             </div>

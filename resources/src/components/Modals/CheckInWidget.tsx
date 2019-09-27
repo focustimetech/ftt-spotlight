@@ -1,37 +1,21 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import classNames from 'classnames'
 
 import {
-    Avatar,
-    Checkbox,
     CircularProgress,
     Dialog,
-    Fade,
-    Grow,
     Icon,
     IconButton,
     InputAdornment,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemSecondaryAction,
-    Switch,
-    TextField,
-    Tooltip
+    TextField
 } from '@material-ui/core'
 
 import { NavItem } from '../Sidebar/NavItem'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { fetchCheckInStatus, enableAir, disableAir, checkIn } from '../../actions/checkinActions'
-import { ICheckInStatus } from '../../types/checkin'
+import { checkIn } from '../../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 
 interface ReduxProps {
-    checkInStatus: ICheckInStatus
-    fetchCheckInStatus: () => any
-    enableAir: () => any
-    disableAir: () => any
     checkIn: (input: string) => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
@@ -74,18 +58,6 @@ class CheckInWidget extends React.Component<IProps, IState> {
         })
     }
 
-    toggleAirCheckIn = () => {
-        this.setState((state: IState) => {
-            if (state.airCheckInEnabled) {
-                this.props.disableAir()
-                return { airCheckInEnabled: false }
-            } else {
-                this.props.enableAir()
-                return { airCheckInEnabled: true }
-            }
-        })
-    }
-
     handleSubmit = (event: any) => {
         event.preventDefault()
         this.setState({ loadingCheckIn: true })
@@ -103,10 +75,6 @@ class CheckInWidget extends React.Component<IProps, IState> {
                     loadingCheckIn: false
                 })
             })
-    }
-
-    componentDidMount() {
-        this.props.fetchCheckInStatus()
     }
 
     render() {
@@ -165,16 +133,9 @@ class CheckInWidget extends React.Component<IProps, IState> {
     }
 }
 
-const mapStateToProps = (state: any) => ({
-    checkInStatus: state.checkin.status
-})
-
 const mapDispatchToProps = {
-    fetchCheckInStatus,
-    enableAir,
-    disableAir,
     checkIn,
     queueSnackbar
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CheckInWidget)
+export default connect(null, mapDispatchToProps)(CheckInWidget)

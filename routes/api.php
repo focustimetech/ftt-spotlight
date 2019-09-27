@@ -81,6 +81,10 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::get('students', 'StudentsController@index');
     Route::get('students/{id}', 'StudentsController@show');
     Route::get('students/profile/{id}', 'StudentsController@profile');
+    Route::post('students', 'StudentsController@create');
+    Route::post('students/upload', 'StudentsController@upload');
+    Route::put('students', 'StudentsController@update');
+    Route::delete('students/{id}', 'StudentsController@destroy');
 
     // Notifications
     Route::get('notifications', 'NotificationsController@index');
@@ -117,12 +121,6 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
 
 // Administrator Routes
 Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(function() {
-    // Students
-    Route::post('students', 'StudentsController@create');
-    Route::post('students/upload', 'StudentsController@upload');
-    Route::put('students', 'StudentsController@update');
-    Route::delete('students/{id}', 'StudentsController@destroy');
-
     // Staff
     Route::post('staff', 'StaffController@store');
     Route::put('staff', 'StaffController@store');

@@ -117,6 +117,7 @@ export interface ISchedulePlan {
     block: IBlock
     date: string
 }
+
 export interface IScheduled extends IStaff {
     topic?: ITopic
 }
@@ -131,4 +132,11 @@ export interface ICalendarDialogGroup {
     child?: (blockDetails?: IBlockDetails) => any
     children? (item?: any, blockDetails?: IBlockDetails): any
     actions?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemAction[]
+}
+
+interface IFullDate {
+    full_date: string
+    date: number
+    day: string
+    is_today: boolean
 }

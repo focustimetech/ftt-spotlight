@@ -11,10 +11,14 @@ import {
 } from '@material-ui/core'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
+import { fetchCheckInStatus } from '../../actions/checkinActions'
+import { LoadingButton } from '../Form/LoadingButton'
 import { TopNav } from '../TopNav'
+import { CheckInStatus } from '../../types/checkin'
 
 interface ReduxProps {
-
+    checkInStatus: CheckInStatus
+    fetchCheckInStatus: (dateTime?: string) => Promise<any>
 }
 
 interface IProps extends ReduxProps {}
@@ -45,7 +49,7 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     fetchStatus = () => {
-        // this.props.fetchStatus(this.state.date)
+        this.props.fetchCheckInStatus(this.state.date.toISOString())
     }
     
     fetchPrevious = () => {}
@@ -96,8 +100,8 @@ class CheckIn extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
-
+    checkInStatus: state.checkin.status
 })
-const mapDispatchToProps = {}
+const mapDispatchToProps = { fetchCheckInStatus }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckIn)

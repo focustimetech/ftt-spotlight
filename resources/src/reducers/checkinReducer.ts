@@ -1,30 +1,24 @@
-import { FETCH_CHECKIN_STATUS, ENABLE_AIR, DISABLE_AIR, CHECK_IN } from '../actions/types'
-import { ICheckInStatus } from '../types/checkin'
+import { FETCH_CHECKIN_STATUS, CHECK_IN } from '../actions/types'
+import { CheckInStatus } from '../types/checkin'
 
 interface IState {
-    status: ICheckInStatus
+    status: CheckInStatus
 }
 
 const initialState: IState = {
     status: {
-        block: {},
-        air_enabled: false,
-        air_requests: [],
-        scheduled: [],
-        checked_in: []
+        date: null,
+        blocks: []
     }
 }
 
 interface IAction {
     type: string,
-    payload: ICheckInStatus
+    payload: any
 }
 
 export const checkinReducer = (state = initialState, action: IAction) => {
     switch (action.type) {
-        case ENABLE_AIR:
-        case DISABLE_AIR:
-        case CHECK_IN:
         case FETCH_CHECKIN_STATUS:
             return {
                 status: action.payload

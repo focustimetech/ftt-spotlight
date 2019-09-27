@@ -14,16 +14,16 @@ import {
 import { getCurrentUser } from '../../actions/authActions'
 import { fetchSettings } from '../../actions/settingsActions'
 import { IUser } from '../../types/auth'
-import { NotFound } from '../NotFound'
-import Settings from '../Settings'
+import { NotFound } from '../Views/NotFound'
+import Settings from '../Views/Settings'
 import Snackbar from '../Snackbar'
-import StudentProfile from '../StudentProfile'
-import Students from '../Students'
+import StudentProfile from '../Views/StudentProfile'
+import Students from '../Views/Students'
 import Sidebar from '../Sidebar/Sidebar'
-import Staff from '../Staff'
-import StaffProfile from '../StaffProfile'
+import Staff from '../Views/Staff'
+import StaffProfile from '../Views/StaffProfile'
 import { Splash } from './Splash'
-import PowerScheduler from '../PowerScheduler'
+import PowerScheduler from '../Views/PowerScheduler'
 
 interface ReduxProps {
 	getCurrentUser: () => any

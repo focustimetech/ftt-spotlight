@@ -3,7 +3,7 @@ import { Link, RouteComponentProps } from 'react-router-dom'
 
 import { Button } from '@material-ui/core'
 
-import { EmptyStateIcon } from './EmptyStateIcon'
+import { EmptyStateIcon } from '../EmptyStateIcon'
 
 interface IProps extends RouteComponentProps {
     path?: string

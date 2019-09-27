@@ -8,10 +8,10 @@ import {
 	TextField,
 } from '@material-ui/core'
 
-import { LoadingButton } from './Form/LoadingButton'
-import { ICredentials, ILoginError } from '../types/auth'
-import { login } from '../actions/authActions'
-import * as schoolData from '../assets/school.json'
+import { LoadingButton } from '../Form/LoadingButton'
+import { ICredentials, ILoginError } from '../../types/auth'
+import { login } from '../../actions/authActions'
+import * as schoolData from '../../assets/school.json'
 
 const selectBackground = () => {
 	const imageList: string[] = [

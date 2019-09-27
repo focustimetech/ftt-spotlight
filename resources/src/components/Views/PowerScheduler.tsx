@@ -18,16 +18,16 @@ import {
 } from '@material-ui/core'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
-import { TopNav } from './TopNav'
-import { EnhancedTable } from './Table/EnhancedTable'
-import { LoadingButton } from './Form/LoadingButton'
-import { fetchStaff } from '../actions/staffActions'
-import { fetchStudents } from '../actions/studentActions'
-import { queueSnackbar, ISnackbar } from '../actions/snackbarActions'
-import { IStaff } from '../types/staff'
-import { IStudent } from '../types/student'
-import { ITableHeaderColumn } from '../types/table'
-import { IBlock } from '../types/calendar'
+import { TopNav } from '../TopNav'
+import { EnhancedTable } from '../Table/EnhancedTable'
+import { LoadingButton } from '../Form/LoadingButton'
+import { fetchStaff } from '../../actions/staffActions'
+import { fetchStudents } from '../../actions/studentActions'
+import { queueSnackbar, ISnackbar } from '../../actions/snackbarActions'
+import { IStaff } from '../../types/staff'
+import { IStudent } from '../../types/student'
+import { ITableHeaderColumn } from '../../types/table'
+import { IBlock } from '../../types/calendar'
 
 interface IDateRange {
     start: Date

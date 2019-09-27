@@ -7,15 +7,18 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Log;
 use DB;
 
+use App\Http\Resources\Block as BlockResource;
 use App\Http\Resources\LedgerEntry as LedgerResource;
 use App\Http\Resources\SchedulePlan as SchedulePlanResource;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Student as StudentResource;
 use App\LedgerEntry;
 use App\Block;
+use App\BlockSchedule;
 use App\Student;
 use App\Staff;
 use App\SchedulePlan;
+use App\Http\Utils;
 
 class LedgerController extends Controller
 {
@@ -82,30 +85,36 @@ class LedgerController extends Controller
     /**
      * Determine the current checkin status of the user
      */
-    public function status()
+    public function status($datetime = null)
     {
         $staff = auth()->user()->staff();
-        $now = time();
-        $date = date('Y-m-d', $now);
-        $time_string = date('M d', $now);
-        $block = Block::atTime($now, -1);
-        $ledger_entries = LedgerEntry::where('staff_id', $staff->id)
-            ->where('date', $date)
-            ->where('block_id', $block->id)
-            ->get();
-        $ledger_student_ids = $ledger_entries->pluck('student_id')->toArray();
-        $schedule_plans = SchedulePlan::whereNotIn('student_id', $ledger_student_ids)
-            ->where('staff_id', $staff->id)
-            ->where('date', $date)
-            ->where('block_id', 9)
-            ->get();
+        $time = $datetime ? strtotime($datetime) : time();
+        $full_date = Utils::getFullDate($time);
+        $date = date('Y-m-d', $time);
+        $day_of_week = date('w', $time) + 1;
+        $blocks_of_day = BlockSchedule::flexBlocks()->where('day_of_week', $day_of_week);
+
+        $status_blocks = $blocks_of_day->map(function ($block_schedule) use ($date, $staff) {
+            $ledger_entries = LedgerEntry::where('staff_id', $staff->id)
+                ->where('date', $date)
+                ->where('block_id', $block_schedule->block_id)
+                ->get();
+            $ledger_student_ids = $ledger_entries->pluck('student_id')->toArray();
+            $schedule_plans = SchedulePlan::whereNotIn('student_id', $ledger_student_ids)
+                ->where('staff_id', $staff->id)
+                ->where('date', $date)
+                ->where('block_id', $block_schedule->block_id)
+                ->get();
+            return [
+                'block' => new BlockResource($block_schedule->block()->first()),
+                'ledger_entries' => LedgerResource::collection($ledger_entries),
+                'planned' => SchedulePlanResource::collection($schedule_plans)
+            ];
+        });
 
         return [
-            'block' => $block,
-            'air_enabled' => $staff->airUser() != null,
-            'air_requests' => $staff->airRequests()->get(),
-            'scheduled' => SchedulePlanResource::collection($schedule_plans),
-            'checked_in' => LedgerResource::collection($ledger_entries)
+            'date' => $full_date,
+            'blocks' => $status_blocks
         ];
     }
 

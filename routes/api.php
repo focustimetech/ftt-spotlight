@@ -97,7 +97,8 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
 
     // Ledger
     Route::post('check-in', 'LedgerController@store');
-    Route::get('check-in/status/self', 'LedgerController@status');
+    Route::get('check-in/status', 'LedgerController@status');
+    Route::get('check-in/status/{datetime}', 'LedgerController@status');
     Route::post('check-in/air/enable', 'LedgerController@enableAir');
     Route::post('check-in/air/disable', 'LedgerController@disableAir');
 

@@ -86,7 +86,7 @@ class CheckIn extends React.Component<IProps, IState> {
         const actions: ISelectableListAction[] = [
             { icon: 'alarm', title: 'Alarm', callback: this.itemCallback }
         ]
-        console.log(this.props)
+
         return (
             <div className='content' id='content'>
                 <TopNav breadcrumbs={[{ value: 'Check-in' }]} />

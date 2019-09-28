@@ -2,9 +2,9 @@ import axios from 'axios'
 
 import { FETCH_CHECKIN_STATUS, CHECK_IN } from './types'
 
-export const fetchCheckInStatus = () => {
+export const fetchCheckInStatus = (dateTime?: string) => {
     return (dispatch: any) => {
-        return axios.get('/api/check-in/status/self')
+        return axios.get(dateTime ? `/api/check-in/status/${dateTime}` : '/api/check-in/status')
             .then((res: any) => {
                 const status = res.data
                 dispatch({

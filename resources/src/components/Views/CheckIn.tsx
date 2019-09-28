@@ -180,8 +180,12 @@ class CheckIn extends React.Component<IProps, IState> {
                                 >Today</Button>
                             </li>
                         </ul>
-                        <CheckInForm />
-                        <ModalSection icon='alarm' title='Scheduled'>
+                        <CheckInForm dateTime={this.props.checkInStatus.date.full_date} />
+                        <ModalSection
+                            icon='alarm'
+                            title='Scheduled'
+                            emptyState={<Typography variant='h6'>No students scheduled.</Typography>}
+                        >
                             <SelectableList
                                 title='Some Students'
                                 selected={[1, 2, 3, 4]}

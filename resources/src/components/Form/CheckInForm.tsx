@@ -15,11 +15,13 @@ import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { ModalSection } from '../ModalSection'
 
 interface ReduxProps {
-    checkIn: (input: string) => Promise<any>
+    checkIn: (input: string, dateTime?: string) => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {}
+interface IProps extends ReduxProps {
+    dateTime?: string
+}
 
 interface IState {
     errored: boolean
@@ -46,7 +48,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     handleSubmit = (event: any) => {
         event.preventDefault()
         this.setState({ loadingCheckIn: true })
-        this.props.checkIn(this.state.inputValue)
+        this.props.checkIn(this.state.inputValue, this.props.dateTime)
             .then((res: any) => {
                 this.setState({
                     loadingCheckIn: false,

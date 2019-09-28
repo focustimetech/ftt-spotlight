@@ -15,9 +15,10 @@ export const fetchCheckInStatus = (dateTime?: string) => {
     }
 }
 
-export const checkIn = (input: string) => {
+export const checkIn = (input: string, dateTime?: string) => {
     const data: any = {
-        student_numbers: input.split(',')
+        student_numbers: input.split(','),
+        date_time: dateTime
     }
     return (dispatch: any) => {
         return axios.post('/api/check-in', data)

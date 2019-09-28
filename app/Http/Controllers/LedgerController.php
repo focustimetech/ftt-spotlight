@@ -42,11 +42,10 @@ class LedgerController extends Controller
      */
     public function checkIn(Request $request)
     {
-        $now = time();
+        $time = $request->input('date_time') ? strtotime($request->input('date_time')) : time();
         $staff = auth()->user()->staff();
-        $time = date("H:i:s", $now);
-        $week_day = date('w', $now) + 1;
-        $block = Block::atTime($now);
+        $week_day = date('w', $time) + 1;
+        $block = Block::atTime($time);
 
         $student_numbers = $request->input('student_numbers');
         $student_ids = [];
@@ -63,12 +62,12 @@ class LedgerController extends Controller
         foreach ($student_ids as $student_id) {
             $entry = new LedgerEntry;
 
-            $entry->date = date('Y-m-d', $now);
-            $entry->time = $time;
+            $entry->date = date('Y-m-d', $time);
+            $entry->time = date("H:i:s", $time);
             $entry->block_id = $block->id;
             $entry->staff_id = $staff->id;
             $entry->student_id = $student_id;
-            // Log::debug($entry);
+
             if ($entry->save())
                 $ledger_entries->push($entry);
             else

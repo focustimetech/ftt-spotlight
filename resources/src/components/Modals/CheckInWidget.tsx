@@ -34,7 +34,9 @@ export const CheckInWidget = () => {
                 scroll='paper'
             >
                 <EnhancedDialogTitle title='Student Check-in' onClose={handleClose} />
-                <CheckInForm />
+                <div className='check-in_modal__content'>
+                    <CheckInForm />
+                </div>
             </Dialog>
         </>
     )

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import ContentLoader from 'react-content-loader'
 import DateFnsUtils from '@date-io/date-fns'
 
 import {
@@ -87,11 +88,44 @@ class CheckIn extends React.Component<IProps, IState> {
             { icon: 'alarm', title: 'Alarm', callback: this.itemCallback }
         ]
 
+        const CheckInLoader = () => (
+            <>
+                <div style={{width: 476, height: 558}}>
+                    <ContentLoader width={476} height={558}>
+                        <rect x={0} y={14} rx={4} ry={4} width={120} height={24} />
+                        <rect x={136} y={8} rx={36} ry={36} width={36} height={36} />
+                        <rect x={180} y={8} rx={36} ry={36} width={36} height={36} />
+                        <rect x={232} y={14} rx={4} ry={4} width={72} height={24} />
+                        <rect x={0} y={64} rx={4} ry={4} width={108} height={24} />
+                        <rect x={24} y={112} rx={16} ry={16} width={450} height={32} />
+                        <rect x={0} y={172} rx={4} ry={4} width={132} height={24} />
+                        <rect x={24} y={212} rx={4} ry={4} width={24} height={24} />
+                        <rect x={64} y={216} rx={4} ry={4} width={96} height={16} />
+                        <rect x={24} y={260} rx={4} ry={4} width={24} height={24} />
+                        <rect x={64} y={264} rx={4} ry={4} width={108} height={16} />
+                        <rect x={24} y={292} rx={4} ry={4} width={24} height={24} />
+                        <rect x={64} y={296} rx={4} ry={4} width={124} height={16} />
+                        <rect x={24} y={324} rx={4} ry={4} width={24} height={24} />
+                        <rect x={64} y={328} rx={4} ry={4} width={64} height={16} />
+                        <rect x={0} y={376} rx={4} ry={4} width={92} height={24} />
+                        <rect x={24} y={416} rx={4} ry={4} width={24} height={24} />
+                        <rect x={64} y={420} rx={4} ry={4} width={120} height={16} />
+                        <rect x={24} y={464} rx={4} ry={4} width={24} height={24} />
+                        <rect x={64} y={468} rx={4} ry={4} width={136} height={16} />
+                        <rect x={24} y={496} rx={4} ry={4} width={24} height={24} />
+                        <rect x={64} y={500} rx={4} ry={4} width={64} height={16} />
+                        <rect x={24} y={538} rx={4} ry={4} width={24} height={24} />
+                        <rect x={64} y={542} rx={4} ry={4} width={108} height={16} />
+                    </ContentLoader>
+                </div>
+            </>
+        )
+
         return (
             <div className='content' id='content'>
                 <TopNav breadcrumbs={[{ value: 'Check-in' }]} />
-                {this.state.loadingStatus && this.props.checkInStatus ? (
-                    <h2>Loading</h2>
+                {(this.state.loadingStatus && this.props.checkInStatus) ? (
+                    <CheckInLoader />
                 ) : (
                     <>
                         <ul className='calendar_header'>

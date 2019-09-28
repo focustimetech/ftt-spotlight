@@ -12,6 +12,7 @@ import {
 
 import { checkIn } from '../../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { ModalSection } from '../ModalSection'
 
 interface ReduxProps {
     checkIn: (input: string) => Promise<any>
@@ -65,11 +66,10 @@ class CheckInForm extends React.Component<IProps, IState> {
         return (
             
             <div className='check-in_modal__content'>
-                <div className='check-in_heading'>
-                    <Icon>keyboard</Icon>
-                    <h4 className='heading_type'>Scan or Enter</h4>
-                </div>
-                <div className='check-in_data'>
+                <ModalSection
+                    icon='keyboard'
+                    title='Scan or Enter'
+                >
                     <form className='check-in-input' onSubmit={this.handleSubmit}>
                         <TextField
                             name='check-in'
@@ -96,7 +96,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                             }}
                         />
                     </form>
-                </div>
+                </ModalSection>
             </div>
         )
     }

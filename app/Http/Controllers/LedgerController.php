@@ -40,10 +40,9 @@ class LedgerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function checkIn(Request $request)
     {
         $now = time();
-        // Log::debug('Checkin in student');
         $staff = auth()->user()->staff();
         $time = date("H:i:s", $now);
         $week_day = date('w', $now) + 1;

@@ -13,6 +13,7 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { fetchCheckInStatus } from '../../actions/checkinActions'
 import { LoadingButton } from '../Form/LoadingButton'
+import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
 import CheckInForm from '../Form/CheckInForm'
 import { TopNav } from '../TopNav'
 import { CheckInStatus } from '../../types/checkin'
@@ -59,6 +60,12 @@ class CheckIn extends React.Component<IProps, IState> {
     fetchNext = () => {}
     fetchToday = () => {}
 
+    itemCallback = (selected: (string | number)[]): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            resolve()
+        })
+    }
+
     componentDidMount() {
         this.setState({ loadingStatus: true })
         this.props.fetchCheckInStatus()
@@ -68,6 +75,17 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     render() {
+        const data: ISelectableListItem[] = [
+            { id: 1, label: 'Curtis Upshall' },
+            { id: 2, label: 'Vlad Lyesin' },
+            { id: 3, label: 'Sam Warren' },
+            { id: 4, label: 'Ben Austin' },
+        ]
+        
+        const actions: ISelectableListAction[] = [
+            { icon: 'alarm', title: 'Alarm', callback: this.itemCallback }
+        ]
+                
         return (
             <div className='content' id='content'>
                 <TopNav breadcrumbs={[{ value: 'Check-in' }]} />
@@ -115,6 +133,25 @@ class CheckIn extends React.Component<IProps, IState> {
                             </li>
                         </ul>
                         <CheckInForm />
+                        <div className='check-in_modal'>
+                            <div className='check-in_modal__content'>
+                                <div className='check-in_heading'>
+                                    <Icon>alarm</Icon>
+                                    <h4 className='heading_type'>Scheduled</h4>
+                                </div>
+                                <div className='check-in_data'>
+                                    <SelectableList
+                                        title='Some Students'
+                                        selected={[1, 2, 3, 4]}
+                                        items={data}
+                                        actions={actions}
+                                        onSelectAll={() => null}
+                                        sortable={true}
+                                        sortLabel='Name'
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </>
                 )}
             </div>

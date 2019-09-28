@@ -1,6 +1,11 @@
 import * as React from 'react'
 
-import { Button, Icon, Typography } from '@material-ui/core'
+import {
+    Button,
+    Collapse,
+    Icon,
+    Typography
+} from '@material-ui/core'
 import { SetState } from '../types/app'
 
 interface IProps {
@@ -43,9 +48,9 @@ export const ModalSection = (props: IProps) => {
                 </Button>
                 {props.labelAdornment}
             </div>
-            <div className='modal-section__content'>
+            <Collapse className='modal-section__content' in={isOpen}>
                 {props.children}
-            </div>
+            </Collapse>
         </div>
     )
 }

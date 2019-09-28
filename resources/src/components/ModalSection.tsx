@@ -13,7 +13,8 @@ interface IProps {
     icon: string
     title: string
     collapsible?: boolean
-    count?: boolean
+    count?: number
+    emptyState?: any
     labelAdornment?: any
     open?: boolean
     onOpen?: () => void
@@ -45,11 +46,18 @@ export const ModalSection = (props: IProps) => {
                 >
                     <Icon>{props.icon}</Icon>
                     <Typography className='button_text'>{props.title}</Typography>
+                    {props.collapsible !== false && (
+                        <Icon>{isOpen ? 'expand_more' : 'expand_less'}</Icon>
+                    )}
                 </Button>
                 {props.labelAdornment}
             </div>
             <Collapse className='modal-section__content' in={isOpen}>
-                {props.children}
+                {props.count === 0 ? (
+                    props.emptyState
+                ) : (
+                    props.children
+                )}
             </Collapse>
         </div>
     )

@@ -113,8 +113,11 @@ class LedgerController extends Controller
         });
 
         return [
+            'blocks' => $status_blocks,
             'date' => $full_date,
-            'blocks' => $status_blocks
+            'next' => date('Y-m-d\TH:i:s', strtotime('+1 day', $time)),
+            'previous' => date('Y-m-d\TH:i:s', strtotime('-1 day', $time)),
+            'today' => date('Y-m-d\TH:i:s')
         ];
     }
 

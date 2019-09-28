@@ -5,10 +5,10 @@ import DateFnsUtils from '@date-io/date-fns'
 
 import {
     Button,
-    Checkbox,
     Icon,
     IconButton,
-    Tooltip
+    Tooltip,
+    Typography
 } from '@material-ui/core'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
@@ -52,15 +52,28 @@ class CheckIn extends React.Component<IProps, IState> {
         this.setState({ date }, () => {
             this.fetchStatus()
         })
+        this.fetchStatus(date.toISOString())
     }
 
-    fetchStatus = () => {
-        this.props.fetchCheckInStatus(this.state.date.toISOString())
+    fetchStatus = (dateTime?: string) => {
+        this.setState({ loadingStatus: true })
+        this.props.fetchCheckInStatus(dateTime)
+            .then(() => {
+                this.setState({ loadingStatus: false })
+            })
     }
     
-    fetchPrevious = () => {}
-    fetchNext = () => {}
-    fetchToday = () => {}
+    fetchPrevious = () => {
+        this.fetchStatus(this.props.checkInStatus.previous)
+    }
+
+    fetchNext = () => {
+        this.fetchStatus(this.props.checkInStatus.next)
+    }
+
+    fetchToday = () => {
+        this.fetchStatus(this.props.checkInStatus.today)
+    }
 
     itemCallback = (selected: (string | number)[]): Promise<any> => {
         return new Promise((resolve, reject) => {
@@ -69,11 +82,7 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.setState({ loadingStatus: true })
-        this.props.fetchCheckInStatus()
-            .then(() => {
-                this.setState({ loadingStatus: false })
-            })
+        this.fetchStatus()
     }
 
     render() {
@@ -141,7 +150,11 @@ class CheckIn extends React.Component<IProps, IState> {
                                     />
                                 </MuiPickersUtilsProvider>
                                 <Button onClick={() => this.handleDatePickerOpen()}>
-                                    {this.props.checkInStatus.date ? this.props.checkInStatus.date.full_date : 'Select Date'}
+                                    <Typography variant='button' color={this.props.checkInStatus.date.is_today ? 'inherit' : 'error'}>
+                                        {this.props.checkInStatus.date ? (
+                                            `${this.props.checkInStatus.date.day} ${this.props.checkInStatus.date.full_date}`
+                                        ) : 'Select Date'}
+                                    </Typography>
                                 </Button>
                             </li>
                             <li>

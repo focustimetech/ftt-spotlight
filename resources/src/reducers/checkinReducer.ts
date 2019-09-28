@@ -7,8 +7,11 @@ interface IState {
 
 const initialState: IState = {
     status: {
-        date: null,
-        blocks: []
+        date: { day: '', full_date: '', date: 0, is_today: false },
+        blocks: [],
+        next: '',
+        previous: '',
+        today: ''
     }
 }
 

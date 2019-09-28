@@ -7,6 +7,9 @@ export interface CheckInStatusBlock {
 }
 
 export interface CheckInStatus {
-    date: IFullDate
     blocks: CheckInStatusBlock[]
+    date: IFullDate
+    next: string
+    previous: string
+    today: string
 }

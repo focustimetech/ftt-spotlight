@@ -1,0 +1,24 @@
+.selectable-list {
+    max-width: 600px;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px;
+
+        .selectable-list__title,
+        .selectable-list__actions {
+            display: flex;
+            align-items: center;
+
+            & > * + * {
+                margin-left: 8px;
+            }
+        }
+    }
+
+    &__list {
+        padding: 0 !important;
+    }
+}

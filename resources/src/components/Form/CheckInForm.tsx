@@ -64,40 +64,38 @@ class CheckInForm extends React.Component<IProps, IState> {
 
     render() {
         return (
-            
-            <div className='check-in_modal__content'>
-                <ModalSection
-                    icon='keyboard'
-                    title='Scan or Enter'
-                >
-                    <form className='check-in-input' onSubmit={this.handleSubmit}>
-                        <TextField
-                            name='check-in'
-                            type='text'
-                            placeholder='Enter Student Numbers'
-                            variant='outlined'
-                            value={this.state.inputValue}
-                            onChange={this.handleChange}
-                            margin='normal'
-                            autoFocus
-                            fullWidth
-                            helperText={this.state.errored ? 'Please try again' : 'Single entry or comma-separated list'}
-                            error={this.state.errored}
-                            InputProps={{
-                                endAdornment: this.state.loadingCheckIn ? (
-                                    <div><CircularProgress size={24} /></div>
-                                ) : (
-                                    <InputAdornment position='end'>
-                                        <IconButton disabled={this.state.inputValue.length === 0} onClick={this.handleSubmit}>
-                                            <Icon>keyboard_return</Icon>
-                                        </IconButton>
-                                    </InputAdornment>
-                                )
-                            }}
-                        />
-                    </form>
-                </ModalSection>
-            </div>
+
+            <ModalSection
+                icon='keyboard'
+                title='Scan or Enter'
+            >
+                <form className='check-in-input' onSubmit={this.handleSubmit}>
+                    <TextField
+                        name='check-in'
+                        type='text'
+                        placeholder='Enter Student Numbers'
+                        variant='outlined'
+                        value={this.state.inputValue}
+                        onChange={this.handleChange}
+                        margin='normal'
+                        autoFocus
+                        fullWidth
+                        helperText={this.state.errored ? 'Please try again' : 'Single entry or comma-separated list'}
+                        error={this.state.errored}
+                        InputProps={{
+                            endAdornment: this.state.loadingCheckIn ? (
+                                <div><CircularProgress size={24} /></div>
+                            ) : (
+                                <InputAdornment position='end'>
+                                    <IconButton disabled={this.state.inputValue.length === 0} onClick={this.handleSubmit}>
+                                        <Icon>keyboard_return</Icon>
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                </form>
+            </ModalSection>
         )
     }
 }

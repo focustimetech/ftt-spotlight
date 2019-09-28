@@ -17,6 +17,7 @@ import { ISelectableListItem, ISelectableListAction, SelectableList } from '../S
 import CheckInForm from '../Form/CheckInForm'
 import { TopNav } from '../TopNav'
 import { CheckInStatus } from '../../types/checkin'
+import { ModalSection } from '../ModalSection'
 
 interface ReduxProps {
     checkInStatus: CheckInStatus
@@ -85,7 +86,7 @@ class CheckIn extends React.Component<IProps, IState> {
         const actions: ISelectableListAction[] = [
             { icon: 'alarm', title: 'Alarm', callback: this.itemCallback }
         ]
-                
+        console.log(this.props)
         return (
             <div className='content' id='content'>
                 <TopNav breadcrumbs={[{ value: 'Check-in' }]} />
@@ -106,7 +107,7 @@ class CheckIn extends React.Component<IProps, IState> {
                                     />
                                 </MuiPickersUtilsProvider>
                                 <Button onClick={() => this.handleDatePickerOpen()}>
-                                    {'Select Date'}
+                                    {this.props.checkInStatus.date ? this.props.checkInStatus.date.full_date : 'Select Date'}
                                 </Button>
                             </li>
                             <li>
@@ -128,30 +129,22 @@ class CheckIn extends React.Component<IProps, IState> {
                                     variant='text'
                                     color='primary'
                                     onClick={() => this.fetchToday()}
-                                    disabled={false /*this.props.checkInStatus.date.is_today*/}
+                                    disabled={this.props.checkInStatus.date && this.props.checkInStatus.date.is_today}
                                 >Today</Button>
                             </li>
                         </ul>
                         <CheckInForm />
-                        <div className='check-in_modal'>
-                            <div className='check-in_modal__content'>
-                                <div className='check-in_heading'>
-                                    <Icon>alarm</Icon>
-                                    <h4 className='heading_type'>Scheduled</h4>
-                                </div>
-                                <div className='check-in_data'>
-                                    <SelectableList
-                                        title='Some Students'
-                                        selected={[1, 2, 3, 4]}
-                                        items={data}
-                                        actions={actions}
-                                        onSelectAll={() => null}
-                                        sortable={true}
-                                        sortLabel='Name'
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        <ModalSection icon='alarm' title='Scheduled'>
+                            <SelectableList
+                                title='Some Students'
+                                selected={[1, 2, 3, 4]}
+                                items={data}
+                                actions={actions}
+                                onSelectAll={() => null}
+                                sortable={true}
+                                sortLabel='Name'
+                            />
+                        </ModalSection>
                     </>
                 )}
             </div>

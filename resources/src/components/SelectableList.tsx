@@ -4,7 +4,7 @@ import {
     Checkbox,
     Divider,
     Icon,
-    IconButton,
+    LinearProgress,
     List,
     ListItem,
     ListItemText,
@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core'
 
 import { SortOrder } from '../types/table'
-import { SetState } from '../types/app'
 import { LoadingIconButton } from './Form/LoadingIconButton'
 
 export interface ISelectableListItem {
@@ -87,12 +86,26 @@ export class SelectableList extends React.Component<IProps, IState> {
     }
 
     handleClick = (item: ISelectableListItem, selected: boolean) => {
+        if (this.isLoading())
+            return
         this.props.onToggleSelected(item.id, !selected)
+    }
+
+    handleSelectAll = () => {
+        if (this.isLoading())
+            return
+        this.props.onSelectAll()
+    }
+
+    isLoading = (): boolean => {
+        return this.state.loadingActions.length > 0
     }
 
     render() {
         const { actions, items, selected, sortable, sortLabel, title } = this.props
         const allSelected: boolean = items.length === selected.length
+        const isLoading: boolean = this.isLoading()
+
         return (
             <div className='selectable-list'>
                 <div className='selectable-list__header'>
@@ -100,7 +113,7 @@ export class SelectableList extends React.Component<IProps, IState> {
                         <Checkbox
                             indeterminate={selected.length > 0 && !allSelected}
                             checked={allSelected}
-                            onChange={this.props.onSelectAll}
+                            onChange={() => this.handleSelectAll()}
                             color='primary'
                         />
                         {sortable ? (
@@ -132,12 +145,13 @@ export class SelectableList extends React.Component<IProps, IState> {
                         </div>
                     )}
                 </div>
-                <Divider />
+                {isLoading ? <LinearProgress /> : <Divider />}
                 <List className='selectable-list__list'>
                     {items.map((item: ISelectableListItem) => {
                         const selected: boolean = this.props.selected.indexOf(item.id) !== -1
                         return (
                             <ListItem
+                                disabled={isLoading}
                                 dense
                                 button
                                 disableRipple

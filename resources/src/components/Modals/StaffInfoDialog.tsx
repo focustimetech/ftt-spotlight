@@ -86,6 +86,13 @@ export const StaffInfoDialog = (props: IProps) => {
         })
     }
 
+    const toggleAdministrator = () => {
+        setDetails({
+            ...details,
+            administrator: !details.administrator
+        })
+    }
+
     const handleTabChange = (event: any, value: number) => {
         setTab(value)
     }
@@ -198,7 +205,7 @@ export const StaffInfoDialog = (props: IProps) => {
                             value={details.administrator}
                             name='administrator'
                             checked={details.administrator}
-                            onChange={handleInputChange}
+                            onChange={() => toggleAdministrator()}
                             color='primary'
                         />
                     }

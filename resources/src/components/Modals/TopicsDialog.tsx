@@ -215,6 +215,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                             actions={this.props.mode === 'edit' ? [
                                                 { value: 'Delete Topic', callback: () => Promise.resolve(this.handleDeleteTopic(topic)) }
                                             ] : undefined}
+                                            key={topic.id}
                                         />
                                     ))
                                 )}

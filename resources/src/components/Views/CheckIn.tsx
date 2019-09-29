@@ -63,9 +63,9 @@ class CheckIn extends React.Component<IProps, IState> {
         this.fetchStatus(date.toISOString())
     }
 
-    fetchStatus = (dateTime?: string) => {
+    fetchStatus = (dateTime?: string): Promise<any> => {
         this.setState({ loadingStatus: true })
-        this.props.fetchCheckInStatus(dateTime)
+        return this.props.fetchCheckInStatus(dateTime)
             .then(() => {
                 this.setState({ loadingStatus: false })
             })
@@ -88,7 +88,10 @@ class CheckIn extends React.Component<IProps, IState> {
             student_ids: this.state.scheduledSelected,
             date_time: this.props.checkInStatus.date.full_date
         }
-        return this.props.checkIn(request)
+        return this.props.checkIn(request) 
+            .then(() => {
+                return this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date)
+            })
     }
 
     handleSelectAllScheduled = () => {
@@ -117,6 +120,7 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     render() {
+        console.log(this.props.checkInStatus)
         const scheduled: ISelectableListItem[] = this.props.checkInStatus.blocks.length > 0 ? (
             this.props.checkInStatus.blocks[0].planned.map((plan: ISchedulePlan) => {
                 return { id: plan.student.id, label: plan.student.name }
@@ -214,7 +218,9 @@ class CheckIn extends React.Component<IProps, IState> {
                                 >Today</Button>
                             </li>
                         </ul>
-                        <CheckInForm dateTime={this.props.checkInStatus.date.full_date} />
+                        <CheckInForm
+                            dateTime={this.props.checkInStatus.date.full_date}
+                            didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }/>
                         <ModalSection
                             icon='event'
                             title='Scheduled'

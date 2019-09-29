@@ -22,6 +22,7 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps {
     dateTime?: string
+    didCheckIn?: () => Promise<any>
 }
 
 interface IState {
@@ -55,11 +56,21 @@ class CheckInForm extends React.Component<IProps, IState> {
         }
         this.props.checkIn(request)
             .then((res: any) => {
-                this.setState({
-                    loadingCheckIn: false,
-                    inputValue: ''
-                })
-                this.props.queueSnackbar({ message: 'Checked in students successfully.' })
+                if (this.props.didCheckIn) {
+                    this.props.didCheckIn().then(() => {
+                        this.props.queueSnackbar({ message: 'Checked in students successfully.' })
+                        this.setState({
+                            loadingCheckIn: false,
+                            inputValue: ''
+                        })
+                    })
+                } else {
+                    this.props.queueSnackbar({ message: 'Checked in students successfully.' })
+                    this.setState({
+                        loadingCheckIn: false,
+                        inputValue: ''
+                    })
+                }
             })
             .catch((error: any) => {
                 this.setState({
@@ -71,7 +82,6 @@ class CheckInForm extends React.Component<IProps, IState> {
 
     render() {
         return (
-
             <ModalSection
                 icon='keyboard'
                 title='Scan or Enter'

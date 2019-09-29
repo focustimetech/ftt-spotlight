@@ -106,8 +106,8 @@ class LedgerController extends Controller
         $date = date('Y-m-d', $time);
         $day_of_week = date('w', $time) + 1;
         $blocks_of_day = BlockSchedule::flexBlocks()->where('day_of_week', $day_of_week);
-
-        $status_blocks = $blocks_of_day->map(function ($block_schedule) use ($date, $staff) {
+        $status_blocks = [];
+        $blocks_of_day->each(function ($block_schedule) use ($date, &$status_blocks, $staff) {
             $ledger_entries = LedgerEntry::where('staff_id', $staff->id)
                 ->where('date', $date)
                 ->where('block_id', $block_schedule->block_id)
@@ -118,11 +118,11 @@ class LedgerController extends Controller
                 ->where('date', $date)
                 ->where('block_id', $block_schedule->block_id)
                 ->get();
-            return [
+            array_push($status_blocks, [
                 'block' => new BlockResource($block_schedule->block()->first()),
                 'ledger_entries' => LedgerResource::collection($ledger_entries),
                 'planned' => SchedulePlanResource::collection($schedule_plans)
-            ];
+            ]);
         });
 
         return [

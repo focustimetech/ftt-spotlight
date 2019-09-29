@@ -17,6 +17,7 @@ import { isEmpty } from '../../utils/utils'
 import { SetState } from '../../types/app'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import { IStaff, IStaffTitle } from '../../types/staff';
+import { LoadingButton } from '../Form/LoadingButton'
 import { INavTabs } from '../TopNav'
 import { UploadUserForm, IListItem } from '../Form/UploadUserForm'
 import { IStaffRequest } from '../../actions/staffActions'
@@ -208,7 +209,14 @@ export const StaffInfoDialog = (props: IProps) => {
                 )}
                 <DialogActions>
                     <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
-                    <Button variant='contained' color='primary' type='submit'>{edit ? 'Update' : 'Add Staff'}</Button>
+                    <LoadingButton
+                        loading={uploading}
+                        variant='contained'
+                        color='primary'
+                        type='submit'
+                    >
+                        {edit ? 'Update' : 'Add Staff'}
+                    </LoadingButton>
                 </DialogActions>
             </form>
         </DialogContent>

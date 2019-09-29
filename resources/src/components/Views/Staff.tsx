@@ -8,7 +8,8 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { createStaff, fetchStaff } from '../../actions/staffActions'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { createStaff, fetchStaff, IStaffRequest } from '../../actions/staffActions'
 import { EnhancedTable } from '../Table/EnhancedTable'
 import { ITableHeaderColumn, ITableLink } from '../../types/table'
 import { StaffInfoDialog } from '../Modals/StaffInfoDialog'
@@ -22,9 +23,11 @@ interface IState {
 }
 
 interface ReduxProps {
-	staff: any[]
-	createStaff: (staff: any) => any
-	fetchStaff: () => any
+	staff: IStaff[]
+	newStaff: IStaff
+	createStaff: (staff: IStaffRequest) => Promise<any>
+	fetchStaff: () => Promise<any>
+	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends ReduxProps {}
@@ -47,7 +50,7 @@ class Staff extends React.Component<IProps, IState> {
 	}
 
 	componentWillReceiveProps(nextProps: any) {
-		if (nextProps.newStudent && !isEmpty(nextProps.newStaff)) {
+		if (nextProps.newStaff && !isEmpty(nextProps.newStaff)) {
 			this.props.staff.unshift(nextProps.newStaff)
 		}
 	}
@@ -58,6 +61,17 @@ class Staff extends React.Component<IProps, IState> {
 
 	onAddDialogClose = () => {
 		this.setState({ addDialogOpen: false })
+	}
+
+	handleAddStaffSubmit = (event: any, staffDetails: IStaffRequest): Promise<any> => {
+		event.preventDefault()
+		return this.props.createStaff(staffDetails)
+			.then(() => {
+				this.props.queueSnackbar({
+					message: 'Staff created.',
+					links: [{ value: 'See Profile', to: `/staff/${this.props.newStaff.id}` }]
+				})
+			})
 	}
 
 	render() {
@@ -89,7 +103,7 @@ class Staff extends React.Component<IProps, IState> {
 
 		return (
 			<div className='content --content-inner' id='content'>
-				<StaffInfoDialog open={this.state.addDialogOpen} onClose={this.onAddDialogClose} onSubmit={() => {} } />
+				<StaffInfoDialog open={this.state.addDialogOpen} onClose={this.onAddDialogClose} onSubmit={this.handleAddStaffSubmit} />
 				<EnhancedTable
 					showEmptyTable={false}
 					title='Staff'
@@ -118,7 +132,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = {
 	createStaff,
-	fetchStaff
+	fetchStaff,
+	queueSnackbar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Staff)

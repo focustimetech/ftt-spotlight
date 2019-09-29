@@ -42,6 +42,8 @@ class StaffController extends Controller
             'administrator' => $request->input('administrator'),
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
+            'initials' => $request->input('initials'),
+            'administrator' => $request->input('administrator'),
             'email' => $email
         ]);
 

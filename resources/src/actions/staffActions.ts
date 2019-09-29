@@ -1,12 +1,15 @@
 import axios from 'axios'
 
 import { FETCH_STAFF, NEW_STAFF, DELETE_STAFF, UPDATE_STAFF } from './types'
+import { IStaff, IStaffTitle } from '../types/staff'
 
-export interface StaffRequest {
-    id?: number
+export interface IStaffRequest {
     first_name: string
     last_name: string
-    title: string
+    initials: string
+    email: string
+    title: IStaffTitle
+    administrator: boolean
 }
 
 export const fetchStaff = () => (dispatch: any) => {
@@ -17,8 +20,9 @@ export const fetchStaff = () => (dispatch: any) => {
         }))
 }
 
-export const createStaff = (staffData: StaffRequest) => (dispatch: any) => {
-    return axios.post('/api/staffs', staffData)
+export const createStaff = (staffData: IStaffRequest) => (dispatch: any) => {
+    console.log(staffData)
+    return axios.post('/api/staff', staffData)
         .then((res: any) => dispatch({
             type: NEW_STAFF,
             payload: res.data
@@ -33,7 +37,7 @@ export const deleteStaff = (staffID: number) => (dispatch: any) => {
         }))
 }
 
-export const updateStaff = (staffData: StaffRequest) => (dispatch: any) => {
+export const updateStaff = (staffData: IStaff) => (dispatch: any) => {
     return axios.put('/api/staffs', staffData)
         .then((res: any) => dispatch({
             type: UPDATE_STAFF,

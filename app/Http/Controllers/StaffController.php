@@ -31,23 +31,21 @@ class StaffController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        $staff = $request->isMethod('put') ? Staff::findOrFail($request->staff_id) : new Staff;
+        $email = $request->input('email');
+        if (User::userExists($email))
+            abort(409, 'A staff by that email address already exists');
 
-        $staff_params = [
+        $staff = Staff::create([
             'staff_type' => $request->input('staff_type'),
             'administrator' => $request->input('administrator'),
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
-            'email' => $request->input('email')
-        ];
+            'email' => $email
+        ]);
 
-        $result = $request->isMethod('put') ? $staff->update($staff_params) : $staff->create($staff_params);
-
-        if ($result) {
-            return new StaffResource($result);
-        }
+        return new StaffResource($staff);
     }
 
     /**

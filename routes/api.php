@@ -123,8 +123,7 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
 // Administrator Routes
 Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(function() {
     // Staff
-    Route::post('staff', 'StaffController@store');
-    Route::put('staff', 'StaffController@store');
+    Route::post('staff', 'StaffController@create');
     Route::delete('staff/{id}', 'StaffController@destroy');
 
     // Settings

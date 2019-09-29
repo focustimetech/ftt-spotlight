@@ -60,9 +60,7 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     handleDatePickerSelect = (date: Date) => {
-        this.setState({ date }, () => {
-            this.fetchStatus()
-        })
+        this.setState({ date })
         this.fetchStatus(date.toISOString())
     }
 

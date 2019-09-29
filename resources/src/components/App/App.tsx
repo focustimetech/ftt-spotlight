@@ -98,7 +98,7 @@ class App extends React.Component<IProps, IState> {
 								/>
 								<Switch>
 									<Route path='/' exact render={() => (
-										<Redirect to='/students' />
+										<Redirect to='/check-in' />
 									)} />
 									<Route path='/check-in' component={CheckIn} />
 									<Route path='/power-scheduler' component={PowerScheduler} />

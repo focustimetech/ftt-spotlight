@@ -19,6 +19,7 @@ import {
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { checkIn, fetchCheckInStatus } from '../../actions/checkinActions'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { getMethodDetailsFromName } from '../../utils/utils'
 import { ICheckInMethodDetails } from '../../types/calendar'
 import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
@@ -32,6 +33,7 @@ interface ReduxProps {
     checkInStatus: CheckInStatus
     checkIn: (request: ICheckInRequest) => Promise<any>
     fetchCheckInStatus: (dateTime?: string) => Promise<any>
+    queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends ReduxProps {}
@@ -92,6 +94,9 @@ class CheckIn extends React.Component<IProps, IState> {
         return this.props.checkIn(request) 
             .then(() => {
                 return this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date)
+                    .then(() => {
+                        this.props.queueSnackbar({ message: 'Checked in students successfully. '})
+                    })
             })
     }
 
@@ -279,6 +284,6 @@ class CheckIn extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({
     checkInStatus: state.checkin.status
 })
-const mapDispatchToProps = { checkIn, fetchCheckInStatus }
+const mapDispatchToProps = { checkIn, fetchCheckInStatus, queueSnackbar }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckIn)

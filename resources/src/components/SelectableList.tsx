@@ -3,6 +3,7 @@ import * as React from 'react'
 import {
     Checkbox,
     Divider,
+    Fade,
     Icon,
     LinearProgress,
     List,
@@ -116,7 +117,7 @@ export class SelectableList extends React.Component<IProps, IState> {
                             onChange={() => this.handleSelectAll()}
                             color='primary'
                         />
-                        {sortable ? (
+                        {/*sortable ? (
                             <Tooltip title={`Sort by ${sortLabel}`}>
                                 <TableSortLabel
                                     active={this.state.sortingActive}
@@ -128,9 +129,10 @@ export class SelectableList extends React.Component<IProps, IState> {
                             </Tooltip>
                         ) : (
                             <Typography variant='h6'>{title}</Typography>
-                        )}
+                        )*/}
+                        <Typography variant='h6'>{title}</Typography>
                     </div>
-                    {selected.length > 0 && (
+                    <Fade in={selected.length > 0}>
                         <div className='selectable-list__actions'>
                             {actions.map((action: ISelectableListAction, index: number) => (
                                 <Tooltip title={action.title}>
@@ -143,7 +145,7 @@ export class SelectableList extends React.Component<IProps, IState> {
                                 </Tooltip>
                             ))}
                         </div>
-                    )}
+                    </Fade>
                 </div>
                 {isLoading ? <LinearProgress /> : <Divider />}
                 <List className='selectable-list__list'>

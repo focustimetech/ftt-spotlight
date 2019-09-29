@@ -14,11 +14,11 @@ import {
 	Tooltip,
 } from '@material-ui/core'
 
-import { isEmpty, makeArray } from '../utils/utils'
-import { StarredItem } from '../reducers/starReducer'
-import { IUser } from '../types/auth'
-import { IStudent } from '../types/student'
-import { ConfirmationDialog } from './Modals/ConfirmationDialog'
+import { isEmpty, makeArray } from '../../utils/utils'
+import { StarredItem } from '../../reducers/starReducer'
+import { IUser } from '../../types/auth'
+import { IStudent } from '../../types/student'
+import { ConfirmationDialog } from '../Modals/ConfirmationDialog'
 import {
 	IAppointment,
 	ICalendarDay,
@@ -30,21 +30,21 @@ import {
 	ITopicSchedule,
 	ISchedulePlan,
 	ICalendarBlockVariant,
-} from '../types/calendar'
-import { LoadingButton } from './Form/LoadingButton'
-import CapacityWidget from './Modals/CapacityWidget'
-import ChangePasswordWidget from './Modals/ChangePasswordWidget'
-import { CancelAppointment } from './Calendar/CancelAppointment'
-import { Calendar } from './Calendar/Calendar'
-import { TopNav } from './TopNav'
-import { StarButton } from './StarButton'
-import TopicsDialog from './Modals/TopicsDialog'
-import { queueSnackbar, ISnackbar } from '../actions/snackbarActions'
-import { deleteAppointment } from '../actions/studentScheduleActions'
-import { starItem, unstarItem } from '../actions/starActions'
-import { fetchStaffProfile } from '../actions/staffProfileActions'
-import { fetchStaffSchedule } from '../actions/staffScheduleActions'
-import { createTopicSchedule, deleteTopicSchedule, ITopicScheduleRequest } from '../actions/topicActions'
+} from '../../types/calendar'
+import { LoadingButton } from '../Form/LoadingButton'
+import CapacityWidget from '../Modals/CapacityWidget'
+import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
+import { CancelAppointment } from '../Calendar/CancelAppointment'
+import { Calendar } from '../Calendar/Calendar'
+import { TopNav } from '../TopNav'
+import { StarButton } from '../StarButton'
+import TopicsDialog from '../Modals/TopicsDialog'
+import { queueSnackbar, ISnackbar } from '../../actions/snackbarActions'
+import { deleteAppointment } from '../../actions/studentScheduleActions'
+import { starItem, unstarItem } from '../../actions/starActions'
+import { fetchStaffProfile } from '../../actions/staffProfileActions'
+import { fetchStaffSchedule } from '../../actions/staffScheduleActions'
+import { createTopicSchedule, deleteTopicSchedule, ITopicScheduleRequest } from '../../actions/topicActions'
 
 interface IReduxProps {
 	currentUser: IUser

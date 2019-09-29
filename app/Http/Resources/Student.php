@@ -20,7 +20,8 @@ class Student extends JsonResource
             'last_name' => $this->last_name,
             'name' => $this->getName(),
             'grade' => $this->grade,
-            'initials' => $this->initials
+            'initials' => $this->initials,
+            'color' => $this->color
         ];
     }
 }

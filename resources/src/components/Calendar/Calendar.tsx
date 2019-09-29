@@ -64,7 +64,7 @@ export const Calendar = (props: IProps) => {
 		<>
 			<div style={{width: 216, height: 64}}>
 				<ContentLoader width={216} height={64}>
-					<rect x={0} y={16} rx={4} ry={4} width={120} height={24} />
+					<rect x={0} y={14} rx={4} ry={4} width={120} height={24} />
 					<rect x={136} y={8} rx={36} ry={36} width={36} height={36} />
 					<rect x={180} y={8} rx={36} ry={36} width={36} height={36} />
 				</ContentLoader>

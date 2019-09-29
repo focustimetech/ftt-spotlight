@@ -117,4 +117,18 @@ class Utils {
         $end_year = date('Y', $end);
         return "$start_month $start_date". ($start_year ? ", $start_year" : ""). " - ". ($end_month ? "$end_month " : ""). "$end_date, $end_year";
     }
+
+    /**
+     * Returns an associative array containing different representations fo
+     * the given timestamp.
+     */
+    public static function getFullDate($time)
+    {
+        return [
+            'full_date' => date('M j, Y', $time),
+            'date' => date('j', $time),
+            'day' => date('D', $time),
+            'is_today' => date('Y-m-d', $time) === date('Y-m-d')
+        ];
+    }
 }

@@ -1,13 +1,13 @@
-.calendar_container {
-	.calendar_header {
-		display: flex;
-		align-items: center;
+.calendar_header {
+	display: flex;
+	align-items: center;
 
-		li {
-			margin-right: 8px;
-		}
+	li {
+		margin-right: 8px;
 	}
+}
 
+.calendar_container {
 	.calendar {
 		width: 100%;
 		padding: 16px 0 0 0;

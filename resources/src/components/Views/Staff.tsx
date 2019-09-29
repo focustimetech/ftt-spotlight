@@ -8,12 +8,12 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { createStaff, fetchStaff } from '../actions/staffActions'
-import { EnhancedTable } from './Table/EnhancedTable'
-import { ITableHeaderColumn, ITableLink } from '../types/table'
-import { StaffInfoDialog } from './Modals/StaffInfoDialog'
-import { isEmpty } from '../utils/utils'
-import { IStaff } from '../types/staff'
+import { createStaff, fetchStaff } from '../../actions/staffActions'
+import { EnhancedTable } from '../Table/EnhancedTable'
+import { ITableHeaderColumn, ITableLink } from '../../types/table'
+import { StaffInfoDialog } from '../Modals/StaffInfoDialog'
+import { isEmpty } from '../../utils/utils'
+import { IStaff } from '../../types/staff'
 
 interface IState {
 	addDialogOpen: boolean

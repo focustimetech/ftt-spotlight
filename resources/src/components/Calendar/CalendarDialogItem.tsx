@@ -9,7 +9,8 @@ import {
 
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { LoadingMenuItem } from '../Form/LoadingMenuItem'
-import { ICalendarItemDetails, ICalendarItemAction } from '../../types/calendar'
+import { ICalendarItemDetails, ICalendarItemAction, ICheckInMethodDetails } from '../../types/calendar'
+import { getMethodDetailsFromName } from '../../utils/utils'
 
 interface IProps {
     details: ICalendarItemDetails
@@ -23,31 +24,14 @@ interface IProps {
 
 export const CalendarDialogItem = (props: IProps) => {
     const { id, variant, time, title, memo, method } = props.details
+    const methodDetails: ICheckInMethodDetails = getMethodDetailsFromName(method)
+    const clickable: boolean = Boolean(props.onClick)
+
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
         = React.useState(null)
     const [loadingActions, setLoadingActions]: [number[], React.Dispatch<React.SetStateAction<number[]>>]
         = React.useState([])
-
-    let methodIcon = ''
-    let methodTitle = ''
-    switch (method) {
-        case 'manual':
-            methodIcon = 'keyboard'
-            methodTitle = 'Via manual check-in'
-            break
-        case 'air':
-            methodIcon = 'wifi'
-            methodTitle = 'Via Air Check-in'
-            break
-        case 'roll-call':
-            methodIcon = 'assignment'
-            methodTitle = 'Via roll call'
-        case 'amendment':
-            methodIcon = 'assignment_turned_in',
-            methodTitle = 'Amended'
-    }
-
-    const clickable: boolean = Boolean(props.onClick)
+    
 
     const setLoading = (index: number) => {
         setLoadingActions([...loadingActions, index])
@@ -104,7 +88,9 @@ export const CalendarDialogItem = (props: IProps) => {
                     {time && (
                         <span className='calendar_item__time'>
                             {time}
-                            <Tooltip className='icon' title={methodTitle}><Icon>{methodIcon}</Icon></Tooltip>
+                            <Tooltip className='icon' title={methodDetails.title}>
+                                <Icon>{methodDetails.title}</Icon>
+                            </Tooltip>
                         </span>
                     )}
                 </h6>

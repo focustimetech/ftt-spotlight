@@ -66,3 +66,5 @@ export interface ITableLink {
 	key: string
 	path: string
 }
+
+export type SortOrder = 'asc' | 'desc'

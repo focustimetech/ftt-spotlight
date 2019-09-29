@@ -7,16 +7,18 @@ interface IProps extends IconButtonProps {
     children: any
 }
 
-export const LoadingIconButton: React.FunctionComponent<IProps> = (props) => {
-    const { disabled, loading, children, ...rest } = props
-    return (
-        <div className='button-container'>
-            <IconButton {...rest} disabled={disabled || loading}>
-                {children}
-            </IconButton>
-            {loading && (
-                <CircularProgress size={24} className='button-progress' />
-            )}
-        </div>
-    )
+export class LoadingIconButton extends React.Component<IProps> {
+    render() {
+        const { disabled, loading, children, ...rest } = this.props
+        return (
+            <div className='button-container'>
+                <IconButton {...rest} disabled={disabled || loading}>
+                    {children}
+                </IconButton>
+                {loading && (
+                    <CircularProgress size={24} className='button-progress' />
+                )}
+            </div>
+        )
+    }
 }

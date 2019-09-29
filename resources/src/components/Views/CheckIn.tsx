@@ -1,14 +1,17 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 import ContentLoader from 'react-content-loader'
 import DateFnsUtils from '@date-io/date-fns'
 
 import {
+    Avatar,
     Button,
     Icon,
     IconButton,
     List,
     ListItem,
+    ListItemAvatar,
     Tooltip,
     Typography
 } from '@material-ui/core'
@@ -237,7 +240,14 @@ class CheckIn extends React.Component<IProps, IState> {
                         >
                             <List>
                                 {checkedIn.map((ledgerEntry: ILedgerEntry) => (
-                                    <ListItem>{ledgerEntry.student.name}</ListItem>
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar className={classNames('student_avatar', `--${ledgerEntry.student.color}`)}>
+                                                {ledgerEntry.student.initials}
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        {ledgerEntry.student.name}
+                                    </ListItem>
                                 ))}
                             </List>
                         </ModalSection>

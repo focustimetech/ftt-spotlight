@@ -13,12 +13,12 @@ import {
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { fetchCheckInStatus } from '../../actions/checkinActions'
-import { LoadingButton } from '../Form/LoadingButton'
 import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
 import CheckInForm from '../Form/CheckInForm'
 import { TopNav } from '../TopNav'
 import { CheckInStatus } from '../../types/checkin'
 import { ModalSection } from '../ModalSection'
+import { ISchedulePlan } from '../../types/calendar'
 
 interface ReduxProps {
     checkInStatus: CheckInStatus
@@ -31,13 +31,15 @@ interface IState {
     date: Date
     datePickerOpen: boolean
     loadingStatus: boolean
+    scheduledSelected: (string | number)[]
 }
 
 class CheckIn extends React.Component<IProps, IState> {
     state: IState = {
         date: new Date(),
         datePickerOpen: false,
-        loadingStatus: false
+        loadingStatus: false,
+        scheduledSelected: []
     }
 
     handleDatePickerOpen = () => {
@@ -81,11 +83,38 @@ class CheckIn extends React.Component<IProps, IState> {
         })
     }
 
+    handleSelectAllScheduled = () => {
+        if (!this.props.checkInStatus.blocks || !this.props.checkInStatus.blocks[0].planned)
+            return
+        const allSelected: boolean = this.state.scheduledSelected.length === this.props.checkInStatus.blocks[0].planned.length
+        this.setState({
+            scheduledSelected: allSelected
+                ? []
+                : this.props.checkInStatus.blocks[0].planned.map((plan: ISchedulePlan) => plan.student.id)
+        })
+    }
+
+    handleSelectScheduled = (id: string | number, selected: boolean) => {
+        this.setState((state: IState) => ({
+            scheduledSelected: selected ? (
+                [...state.scheduledSelected, id]
+            ) : (
+                state.scheduledSelected.filter((selected: string | number) => selected !== id)
+            )
+        }))
+    }
+
     componentDidMount() {
         this.fetchStatus()
     }
 
     render() {
+        const scheduled: ISelectableListItem[] = this.props.checkInStatus.blocks.length > 0 ? (
+            this.props.checkInStatus.blocks[0].planned.map((plan: ISchedulePlan) => {
+                return { id: plan.student.id, label: plan.student.name }
+            })
+        ) : []
+
         const data: ISelectableListItem[] = [
             { id: 1, label: 'Curtis Upshall' },
             { id: 2, label: 'Vlad Lyesin' },
@@ -184,16 +213,18 @@ class CheckIn extends React.Component<IProps, IState> {
                         <ModalSection
                             icon='alarm'
                             title='Scheduled'
+                            count={scheduled.length}
                             emptyState={<Typography variant='h6'>No students scheduled.</Typography>}
                         >
                             <SelectableList
                                 title='Some Students'
-                                selected={[1, 2, 3, 4]}
-                                items={data}
+                                selected={this.state.scheduledSelected}
+                                items={scheduled}
                                 actions={actions}
-                                onSelectAll={() => null}
                                 sortable={true}
                                 sortLabel='Name'
+                                onSelectAll={this.handleSelectAllScheduled}
+                                onToggleSelected={this.handleSelectScheduled}
                             />
                         </ModalSection>
                     </>

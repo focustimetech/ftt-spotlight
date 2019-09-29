@@ -142,6 +142,7 @@ export class SelectableList extends React.Component<IProps, IState> {
                                 button
                                 disableRipple
                                 onClick={() => this.handleClick(item, selected)}
+                                key={item.id}
                             >
                                 <ListItemIcon>
                                     <Checkbox

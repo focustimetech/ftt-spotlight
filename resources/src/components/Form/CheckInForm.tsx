@@ -11,11 +11,12 @@ import {
 } from '@material-ui/core'
 
 import { checkIn } from '../../actions/checkinActions'
+import { ICheckInRequest } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { ModalSection } from '../ModalSection'
 
 interface ReduxProps {
-    checkIn: (input: string, dateTime?: string) => Promise<any>
+    checkIn: (request: ICheckInRequest) => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
@@ -48,7 +49,11 @@ class CheckInForm extends React.Component<IProps, IState> {
     handleSubmit = (event: any) => {
         event.preventDefault()
         this.setState({ loadingCheckIn: true })
-        this.props.checkIn(this.state.inputValue, this.props.dateTime)
+        const request: ICheckInRequest = {
+            student_numbers: this.state.inputValue.split(','),
+            date_time: this.props.dateTime
+        }
+        this.props.checkIn(request)
             .then((res: any) => {
                 this.setState({
                     loadingCheckIn: false,

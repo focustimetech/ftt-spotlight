@@ -13,3 +13,9 @@ export interface CheckInStatus {
     previous: string
     today: string
 }
+
+export interface ICheckInRequest {
+    student_numbers?: string[]
+    student_ids?: number[]
+    date_time?: string    
+}

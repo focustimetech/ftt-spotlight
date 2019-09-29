@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { FETCH_CHECKIN_STATUS, CHECK_IN } from './types'
+import { ICheckInRequest } from '../types/checkin'
 
 export const fetchCheckInStatus = (dateTime?: string) => {
     return (dispatch: any) => {
@@ -15,13 +16,9 @@ export const fetchCheckInStatus = (dateTime?: string) => {
     }
 }
 
-export const checkIn = (input: string, dateTime?: string) => {
-    const data: any = {
-        student_numbers: input.split(','),
-        date_time: dateTime
-    }
+export const checkIn = (request: ICheckInRequest) => {
     return (dispatch: any) => {
-        return axios.post('/api/check-in', data)
+        return axios.post('/api/check-in', request)
             .then((res: any) => {
                 const checkIn: any = res.data
                 dispatch({

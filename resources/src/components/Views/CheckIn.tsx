@@ -7,6 +7,8 @@ import {
     Button,
     Icon,
     IconButton,
+    List,
+    ListItem,
     Tooltip,
     Typography
 } from '@material-ui/core'
@@ -18,7 +20,7 @@ import CheckInForm from '../Form/CheckInForm'
 import { TopNav } from '../TopNav'
 import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
 import { ModalSection } from '../ModalSection'
-import { ISchedulePlan } from '../../types/calendar'
+import { ISchedulePlan, ILedgerEntry } from '../../types/calendar'
 
 interface ReduxProps {
     checkInStatus: CheckInStatus
@@ -118,12 +120,9 @@ class CheckIn extends React.Component<IProps, IState> {
             })
         ) : []
 
-        const data: ISelectableListItem[] = [
-            { id: 1, label: 'Curtis Upshall' },
-            { id: 2, label: 'Vlad Lyesin' },
-            { id: 3, label: 'Sam Warren' },
-            { id: 4, label: 'Ben Austin' },
-        ]
+        const checkedIn: ILedgerEntry[] = this.props.checkInStatus.blocks.length > 0 ? (
+            this.props.checkInStatus.blocks[0].ledger_entries
+        ) : []
         
         const actions: ISelectableListAction[] = [
             { icon: 'check', title: 'Check In', callback: this.handleScheduledCheckIn }
@@ -214,13 +213,13 @@ class CheckIn extends React.Component<IProps, IState> {
                         </ul>
                         <CheckInForm dateTime={this.props.checkInStatus.date.full_date} />
                         <ModalSection
-                            icon='alarm'
+                            icon='event'
                             title='Scheduled'
                             count={scheduled.length}
-                            emptyState={<Typography variant='h6'>No students scheduled.</Typography>}
+                            emptyState={<Typography>No students scheduled.</Typography>}
                         >
                             <SelectableList
-                                title='Some Students'
+                                title='Scheduled Students'
                                 selected={this.state.scheduledSelected}
                                 items={scheduled}
                                 actions={actions}
@@ -230,6 +229,19 @@ class CheckIn extends React.Component<IProps, IState> {
                                 onToggleSelected={this.handleSelectScheduled}
                             />
                         </ModalSection>
+                        <ModalSection
+                            icon='how_to_reg'
+                            title='Checked In'
+                            count={checkedIn.length}
+                            emptyState={<Typography>No students checked in.</Typography>}
+                        >
+                            <List>
+                                {checkedIn.map((ledgerEntry: ILedgerEntry) => (
+                                    <ListItem>{ledgerEntry.student.name}</ListItem>
+                                ))}
+                            </List>
+                        </ModalSection>
+
                     </>
                 )}
             </div>

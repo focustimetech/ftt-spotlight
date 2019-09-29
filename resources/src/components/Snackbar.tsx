@@ -79,8 +79,7 @@ class Snackbar extends React.Component<IProps, IState> {
                         <Link to={link.to} key={index}>
                             <Button color='secondary'>{link.value}</Button>
                         </Link>
-                    )),
-                    <IconButton onClick={() => this.handleClose()}><Icon>close</Icon></IconButton>
+                    ))
                 ]}
             />
         )

@@ -61,7 +61,7 @@ export interface ICalendarItemDetails {
     title: string
     time?: string
     memo?: string
-    method?: string
+    method?: ICheckInMethod
 }
 
 export interface ICalendarItemAction {
@@ -71,7 +71,12 @@ export interface ICalendarItemAction {
 }
 
 
-export type ICheckInMethod = 'air' | 'manual'
+export type ICheckInMethod = 'air' | 'manual' | 'roll-call' | 'amendment'
+
+export interface ICheckInMethodDetails {
+    title: string
+    icon: string
+}
 
 export interface ILedgerEntry {
     id: number

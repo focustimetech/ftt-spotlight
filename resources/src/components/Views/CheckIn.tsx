@@ -12,12 +12,15 @@ import {
     List,
     ListItem,
     ListItemAvatar,
+    ListItemText,
     Tooltip,
     Typography
 } from '@material-ui/core'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { checkIn, fetchCheckInStatus } from '../../actions/checkinActions'
+import { getMethodDetailsFromName } from '../../utils/utils'
+import { ICheckInMethodDetails } from '../../types/calendar'
 import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
 import CheckInForm from '../Form/CheckInForm'
 import { TopNav } from '../TopNav'
@@ -244,17 +247,28 @@ class CheckIn extends React.Component<IProps, IState> {
                             count={checkedIn.length}
                             emptyState={<Typography>No students checked in.</Typography>}
                         >
-                            <List>
-                                {checkedIn.map((ledgerEntry: ILedgerEntry) => (
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Avatar className={classNames('student_avatar', `--${ledgerEntry.student.color}`)}>
-                                                {ledgerEntry.student.initials}
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        {ledgerEntry.student.name}
-                                    </ListItem>
-                                ))}
+                            <List dense>
+                                {checkedIn.map((ledgerEntry: ILedgerEntry) => {
+                                    const methodDetails: ICheckInMethodDetails = getMethodDetailsFromName(ledgerEntry.method)
+                                    return (
+                                        <ListItem>
+                                            <ListItemAvatar>
+                                                <Avatar className={classNames('student_avatar', `--${ledgerEntry.student.color}`)}>
+                                                    {ledgerEntry.student.initials}
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary={ledgerEntry.student.name}
+                                                secondary={
+                                                    <div className='--flex-row'>
+                                                        <div>{ledgerEntry.time}</div>
+                                                        <Tooltip title={methodDetails.title}><Icon>{methodDetails.icon}</Icon></Tooltip>
+                                                    </div>
+                                                }
+                                            />
+                                        </ListItem>
+                                    )
+                                })}
                             </List>
                         </ModalSection>
 

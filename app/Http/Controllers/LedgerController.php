@@ -42,31 +42,46 @@ class LedgerController extends Controller
      */
     public function checkIn(Request $request)
     {
-        $time = $request->input('date_time') ? strtotime($request->input('date_time')) : time();
         $staff = auth()->user()->staff();
+        $time = $request->input('date_time') ? strtotime($request->input('date_time')) : time();
         $week_day = date('w', $time) + 1;
         $block = Block::atTime($time);
+        $date = date('Y-m-d', $time);
+        $check_in_time = date('H:i:s');
 
-        $student_numbers = $request->input('student_numbers');
+        $student_numbers = $request->input('student_numbers') ?? [];
+        $student_ids = $request->input('student_ids') ?? [];
+        foreach ($student_ids as $student_id) {
+            LedgerEntry::create([
+                'date' => $date,
+                'time' => $check_in_time,
+                'block_id' => $block->id,
+                'staff_id' => $staff->id,
+                'student_id' => $student_id,
+                'method' => 2
+            ]);
+        }
         $student_ids = [];
         $error = [];
-        foreach ($student_numbers as $student_number) {
-            $student = Student::findBySN($student_number);
-            if ($student) {
-                array_push($student_ids, $student->id);
-            } else {
-                array_push($error, $student_number);
+        if (count($student_numbers) > 0) {
+            foreach ($student_numbers as $student_number) {
+                $student = Student::findBySN($student_number);
+                if ($student) {
+                    array_push($student_ids, $student->id);
+                } else {
+                    array_push($error, $student_number);
+                }
             }
         }
         $ledger_entries = collect();
         foreach ($student_ids as $student_id) {
             $entry = new LedgerEntry;
-
-            $entry->date = date('Y-m-d', $time);
-            $entry->time = date("H:i:s", $time);
+            $entry->date = $date;
+            $entry->time = $check_in_time;
             $entry->block_id = $block->id;
             $entry->staff_id = $staff->id;
             $entry->student_id = $student_id;
+            $entry->method = 0;
 
             if ($entry->save())
                 $ledger_entries->push($entry);

@@ -12,16 +12,17 @@ import {
 } from '@material-ui/core'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
-import { fetchCheckInStatus } from '../../actions/checkinActions'
+import { checkIn, fetchCheckInStatus } from '../../actions/checkinActions'
 import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
 import CheckInForm from '../Form/CheckInForm'
 import { TopNav } from '../TopNav'
-import { CheckInStatus } from '../../types/checkin'
+import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
 import { ModalSection } from '../ModalSection'
 import { ISchedulePlan } from '../../types/calendar'
 
 interface ReduxProps {
     checkInStatus: CheckInStatus
+    checkIn: (request: ICheckInRequest) => Promise<any>
     fetchCheckInStatus: (dateTime?: string) => Promise<any>
 }
 
@@ -31,7 +32,7 @@ interface IState {
     date: Date
     datePickerOpen: boolean
     loadingStatus: boolean
-    scheduledSelected: (string | number)[]
+    scheduledSelected: number[]
 }
 
 class CheckIn extends React.Component<IProps, IState> {
@@ -77,10 +78,12 @@ class CheckIn extends React.Component<IProps, IState> {
         this.fetchStatus(this.props.checkInStatus.today)
     }
 
-    itemCallback = (selected: (string | number)[]): Promise<any> => {
-        return new Promise((resolve, reject) => {
-            resolve()
-        })
+    handleScheduledCheckIn = (selected: (string | number)[]): Promise<any> => {
+        const request: ICheckInRequest = {
+            student_ids: this.state.scheduledSelected,
+            date_time: this.props.checkInStatus.date.full_date
+        }
+        return this.props.checkIn(request)
     }
 
     handleSelectAllScheduled = () => {
@@ -94,12 +97,12 @@ class CheckIn extends React.Component<IProps, IState> {
         })
     }
 
-    handleSelectScheduled = (id: string | number, selected: boolean) => {
+    handleSelectScheduled = (id: number, selected: boolean) => {
         this.setState((state: IState) => ({
             scheduledSelected: selected ? (
                 [...state.scheduledSelected, id]
             ) : (
-                state.scheduledSelected.filter((selected: string | number) => selected !== id)
+                state.scheduledSelected.filter((selected: number) => selected !== id)
             )
         }))
     }
@@ -123,7 +126,7 @@ class CheckIn extends React.Component<IProps, IState> {
         ]
         
         const actions: ISelectableListAction[] = [
-            { icon: 'alarm', title: 'Alarm', callback: this.itemCallback }
+            { icon: 'check', title: 'Check In', callback: this.handleScheduledCheckIn }
         ]
 
         const CheckInLoader = () => (
@@ -237,6 +240,6 @@ class CheckIn extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({
     checkInStatus: state.checkin.status
 })
-const mapDispatchToProps = { fetchCheckInStatus }
+const mapDispatchToProps = { checkIn, fetchCheckInStatus }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckIn)

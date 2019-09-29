@@ -42,9 +42,11 @@ export const CalendarDialogItem = (props: IProps) => {
         case 'roll-call':
             methodIcon = 'assignment'
             methodTitle = 'Via roll call'
+            break
         case 'amendment':
             methodIcon = 'assignment_turned_in',
             methodTitle = 'Amended'
+            break
     }
 
     const clickable: boolean = Boolean(props.onClick)

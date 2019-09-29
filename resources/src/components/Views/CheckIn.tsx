@@ -121,7 +121,6 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log(this.props.checkInStatus)
         const scheduled: ISelectableListItem[] = this.props.checkInStatus.blocks.length > 0 ? (
             this.props.checkInStatus.blocks[0].planned.map((plan: ISchedulePlan) => {
                 return { id: plan.student.id, label: plan.student.name }
@@ -249,7 +248,7 @@ class CheckIn extends React.Component<IProps, IState> {
                                 {checkedIn.map((ledgerEntry: ILedgerEntry) => {
                                     const methodDetails: ICheckInMethodDetails = getMethodDetailsFromName(ledgerEntry.method)
                                     return (
-                                        <ListItem>
+                                        <ListItem key={ledgerEntry.id}>
                                             <ListItemAvatar>
                                                 <Avatar className={classNames('student_avatar', `--${ledgerEntry.student.color}`)}>
                                                     {ledgerEntry.student.initials}
@@ -258,10 +257,10 @@ class CheckIn extends React.Component<IProps, IState> {
                                             <ListItemText
                                                 primary={ledgerEntry.student.name}
                                                 secondary={
-                                                    <div className='--flex-row'>
-                                                        <div>{ledgerEntry.time}</div>
+                                                    <span className='--flex-row'>
+                                                        <Typography variant='overline'>{ledgerEntry.time}</Typography>
                                                         <Tooltip title={methodDetails.title}><Icon>{methodDetails.icon}</Icon></Tooltip>
-                                                    </div>
+                                                    </span>
                                                 }
                                             />
                                         </ListItem>

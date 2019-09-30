@@ -13,7 +13,7 @@ class Staff extends Model
 	use HasApiTokens, Notifiable;
 
 	protected $fillable = [
-		'staff_type', 'administrator', 'first_name', 'last_name', 'title', 'email', 'initials'
+		'staff_type', 'administrator', 'first_name', 'last_name', 'title', 'email', 'initials', 'color'
 	];
 
 	protected $hidden = [

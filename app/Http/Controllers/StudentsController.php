@@ -9,6 +9,7 @@ use App\User;
 use App\Http\Resources\Student as StudentResource;
 use App\Http\Resources\StudentProfile as StudentProfileResource;
 use App\Http\Traits\Authenticate;
+use App\Http\Utils;
 
 class StudentsController extends Controller
 {
@@ -34,7 +35,8 @@ class StudentsController extends Controller
             'last_name' => $request->input('last_name'),
             'initials' => $request->input('initials'),
             'grade' => $request->input('grade'),
-            'student_number' => $student_number
+            'student_number' => $student_number,
+            'color' => Utils::topicColor()
         ]);
 
         return new StudentResource($student);        

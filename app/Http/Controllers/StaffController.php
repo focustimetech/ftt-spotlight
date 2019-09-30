@@ -8,6 +8,7 @@ use App\Staff;
 use App\User;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\StaffProfile as StaffProfileResource;
+use App\Http\Utils;
 
 class StaffController extends Controller
 {
@@ -45,7 +46,8 @@ class StaffController extends Controller
             'initials' => $request->input('initials'),
             'staff_type' => 'teacher',
             'administrator' => $request->input('administrator'),
-            'email' => $email
+            'email' => $email,
+            'color' => Utils::topicColor()
         ]);
 
         return new StaffResource($staff);

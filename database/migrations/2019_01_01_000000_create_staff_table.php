@@ -27,8 +27,7 @@ class CreateStaffTable extends Migration
             $table->string('last_name');
             $table->string('email');
             $table->string('initials');
-            $table->string('color')
-                ->default(Utils::userColor(0));
+            $table->string('color');
             $table->unsignedInteger('capacity')
                 ->default(30);
             $table->timestamps();

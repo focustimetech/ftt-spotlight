@@ -1,7 +1,7 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
-## Version 1.2.0 (2019-10-01)
+## Version 1.2.0 (2019-09-30)
 
 ### Added
  - Staff and students have colored avatars (SPOT-46)

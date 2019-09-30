@@ -15,9 +15,11 @@ class CreateAmendmentsTable extends Migration
     {
         Schema::create('amendments', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('student_id');
-            $table->unsignedInteger('staff_id');
-            $table->unsignedInteger('block_id');
+            $table->unsignedInteger('student_id')
+                ->nullable();
+            $table->unsignedInteger('staff_id')
+            $table->unsignedInteger('block_id')
+                ->nullable();
             $table->date('date');
             $table->string('memo');
             $table->unsignedInteger('power_schedule_id')

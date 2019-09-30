@@ -89,7 +89,7 @@ export const CalendarDialogItem = (props: IProps) => {
                         <span className='calendar_item__time'>
                             {time}
                             <Tooltip className='icon' title={methodDetails.title}>
-                                <Icon>{methodDetails.title}</Icon>
+                                <Icon>{methodDetails.icon}</Icon>
                             </Tooltip>
                         </span>
                     )}

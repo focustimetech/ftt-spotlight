@@ -15,6 +15,6 @@ $factory->define(App\Student::class, function (Faker $faker) {
         'initials' => $initials,
         'grade' => $faker->numberBetween(9, 12),
         'disabled' => false,
-        'color' => Utils::userColor()
+        'color' => Utils::topicColor()
     ];
 });

@@ -24,8 +24,7 @@ class CreateStudentsTable extends Migration
             $table->string('initials');
             $table->boolean('disabled')
                 ->default(false);
-            $table->string('color')
-                ->default(Utils::userColor(0));
+            $table->string('color');
             $table->timestamps();
         });
     }

@@ -17,6 +17,6 @@ $factory->define(App\Staff::class, function (Faker $faker) {
         'last_name' => $last_name,
         'initials' => $initials,
         'email' => $faker->email(),
-        'color' => Utils::userColor()
+        'color' => Utils::topicColor()
     ];
 });

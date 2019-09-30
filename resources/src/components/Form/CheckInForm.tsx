@@ -58,14 +58,14 @@ class CheckInForm extends React.Component<IProps, IState> {
             .then((res: any) => {
                 if (this.props.didCheckIn) {
                     this.props.didCheckIn().then(() => {
-                        this.props.queueSnackbar({ message: 'Checked in students successfully.' })
+                        this.props.queueSnackbar({ message: 'Checked in students successfully.', key: 'CHECKED_IN_SUCCESSFULLY' })
                         this.setState({
                             loadingCheckIn: false,
                             inputValue: ''
                         })
                     })
                 } else {
-                    this.props.queueSnackbar({ message: 'Checked in students successfully.' })
+                    this.props.queueSnackbar({ message: 'Checked in students successfully.', key: 'CHECKED_IN_SUCCESSFULLY' })
                     this.setState({
                         loadingCheckIn: false,
                         inputValue: ''

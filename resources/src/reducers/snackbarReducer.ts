@@ -19,6 +19,13 @@ export interface IAction {
 export const snackbarReducer = (state = initialState, action: IAction) => {
     switch (action.type) {
         case QUEUE_SNACKBAR:
+            const keyExists: boolean = action.payload && (state.items.some((snackbar: ISnackbar) => {
+                return snackbar.key && action.payload.key && snackbar.key === action.payload.key
+            }) || (state.item && state.item.key === action.payload.key))
+
+            if (keyExists)
+                return state
+
             return {
                 ...state,
                 items: [action.payload, ...state.items]

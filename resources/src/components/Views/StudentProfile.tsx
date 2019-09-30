@@ -387,7 +387,9 @@ class StudentProfile extends React.Component<IProps, IState> {
 				emptyState: (blockDetails: IBlockDetails) => (
 					<>
 						<p className='empty_text'>No attendance recorded</p>
-						<NewAmendment blockDetails={blockDetails} studentID={studentID} onSubmit={this.handleCreateAmendment} />
+						{this.props.currentUser.account_type === 'staff' && (
+							<NewAmendment blockDetails={blockDetails} studentID={studentID} onSubmit={this.handleCreateAmendment} />
+						)}
 					</>
 				)
 			},

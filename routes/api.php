@@ -66,6 +66,9 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::post('appointments/create', 'AppointmentsController@create');
     Route::delete('appointments/{id}', 'AppointmentsController@delete');
  
+    // Staff
+    Route::post('staff', 'StaffController@create');
+
     // Starred
     Route::get('starred', 'StarController@index');
     Route::post('star', 'StarController@star');
@@ -123,7 +126,6 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
 // Administrator Routes
 Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(function() {
     // Staff
-    Route::post('staff', 'StaffController@create');
     Route::delete('staff/{id}', 'StaffController@destroy');
 
     // Settings

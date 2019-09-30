@@ -311,8 +311,8 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                                 <FormControl component='fieldset'>
                                     <FormLabel component='legend'>Student group</FormLabel>
                                     <RadioGroup onChange={this.handleStudentTypeChange}>
-                                        <FormControlLabel value='all' label='All Students' control={<Radio color='primary'/>} />
-                                        <FormControlLabel value='some' label='Some Students' control={<Radio color='primary'/>} />
+                                        <FormControlLabel value='all' label='All Students' control={<Radio color='primary' checked={this.state.studentType === 'all'} />} />
+                                        <FormControlLabel value='some' label='Some Students' control={<Radio color='primary' checked={this.state.studentType === 'some'}/>} />
                                     </RadioGroup>
                                 </FormControl>
                                 <Collapse in={this.state.studentType === 'some'}>
@@ -371,8 +371,8 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                                 <FormControl component='fieldset'>
                                     <FormLabel component='legend'>Schedule classification</FormLabel>
                                     <RadioGroup onChange={this.handleScheduleTypeChange}>
-                                        <FormControlLabel value='appointment' label='Appointment' control={<Radio color='primary'/>} />
-                                        <FormControlLabel value='amendment' label='Amendment' control={<Radio color='primary'/>} />
+                                        <FormControlLabel value='appointment' label='Appointment' control={<Radio color='primary' checked={this.state.scheduleType === 'appointment'} />} />
+                                        <FormControlLabel value='amendment' label='Amendment' control={<Radio color='primary' checked={this.state.scheduleType === 'amendment'} />} />
                                     </RadioGroup>
                                 </FormControl>
                                 <Collapse in={Boolean(this.state.scheduleType)}>

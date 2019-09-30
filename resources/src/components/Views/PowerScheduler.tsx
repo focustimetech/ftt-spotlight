@@ -63,6 +63,7 @@ interface IState {
     blockRange: IBlockRange
     date: Date
     datePickerOpen: 'start' | 'end' | null
+    error: boolean
     dateRange: IDateRange
     loadingStaff: boolean
     loadingStudents: boolean
@@ -82,6 +83,7 @@ const initialState: IState = {
     date: new Date(),
     datePickerOpen: null,
     dateRange: { start: new Date(), end: new Date()},
+    error: false,
     selectedStaff: [],
     selectedStudents: [],
     loadingStaff: false,
@@ -100,6 +102,7 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
 
     handleNextStep = () => {
         this.setState((state: IState) => ({
+            error: false,
             step: state.step + 1
         }))
     }
@@ -110,18 +113,21 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
 
     handlePreviousStep = () => {
         this.setState((state: IState) => ({
+            error: false,
             step: state.step > 0 ? state.step - 1 : 0
         }))
     }
 
     handleNextSubStep = () => {
         this.setState((state: IState) => ({
+            error: false,
             subStep: state.subStep + 1
         }))
     }
 
     handlePreviousSubStep = () => {
         this.setState((state: IState) => ({
+            error: false,
             subStep: state.subStep > 0 ? state.subStep - 1 : 0
         }))
     }
@@ -159,20 +165,25 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
     handleSubmit = () => {
         this.setState({ loadingSubmit: true })
         const data: any = {
+            student_type: this.state.studentType,
+            schedule_type: this.state.scheduleType,
             student_ids: this.state.selectedStudents,
             staff_id: this.state.selectedStaff[0],
             memo: this.state.memo,
             date_time: this.state.dateRange.start.toISOString()
         }
+        console.log('DATA:', data)
         axios.post('/api/power-scheduler', data)
             .then((res: AxiosResponse<any>) => {
                 this.setState({
                     uploading: false,
                     step: 3
                 })
-            })
-            .catch((err: any) => {
-                this.setState({ uploading: false })
+            }, () => {
+                this.setState({
+                    error: true,
+                    uploading: false
+                })
             })
     }
 

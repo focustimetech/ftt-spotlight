@@ -20,13 +20,13 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
-import { createStudent, fetchStudents } from '../actions/studentActions'
-import { EnhancedTable } from './Table/EnhancedTable'
-import { ITableAction, ITableHeaderColumn, ITableLink } from '../types/table'
-import { StudentInfoDialog } from './Modals/StudentInfoDialog'
-import { isEmpty } from '../utils/utils'
-import { IStudent } from '../types/student'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { createStudent, fetchStudents } from '../../actions/studentActions'
+import { EnhancedTable } from '../Table/EnhancedTable'
+import { ITableAction, ITableHeaderColumn, ITableLink } from '../../types/table'
+import { StudentInfoDialog } from '../Modals/StudentInfoDialog'
+import { isEmpty } from '../../utils/utils'
+import { IStudent } from '../../types/student'
 
 interface NewStudent {
 	first_name: string,

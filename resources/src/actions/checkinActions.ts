@@ -1,10 +1,11 @@
 import axios from 'axios'
 
-import { FETCH_CHECKIN_STATUS, ENABLE_AIR, DISABLE_AIR, CHECK_IN } from './types'
+import { FETCH_CHECKIN_STATUS, CHECK_IN } from './types'
+import { ICheckInRequest } from '../types/checkin'
 
-export const fetchCheckInStatus = () => {
+export const fetchCheckInStatus = (dateTime?: string) => {
     return (dispatch: any) => {
-        return axios.get('/api/check-in/status/self')
+        return axios.get(dateTime ? `/api/check-in/status/${dateTime}` : '/api/check-in/status')
             .then((res: any) => {
                 const status = res.data
                 dispatch({
@@ -15,41 +16,15 @@ export const fetchCheckInStatus = () => {
     }
 }
 
-export const enableAir = () => {
+export const checkIn = (request: ICheckInRequest) => {
     return (dispatch: any) => {
-        return axios.post('/api/check-in/air/enable')
+        return axios.post('/api/check-in', request)
             .then((res: any) => {
-                const status = res.data
+                const checkIn: any = res.data
                 dispatch({
-                    type: ENABLE_AIR,
-                    payload: status
+                    type: CHECK_IN,
+                    payload: checkIn
                 })
-            })
-    }
-}
-
-export const disableAir = () => {
-    return (dispatch: any) => {
-        return axios.post('/api/check-in/air/disable')
-            .then((res: any) => {
-                const status = res.data
-                dispatch({
-                    type: DISABLE_AIR,
-                    payload: status
-                })
-            })
-    }
-}
-
-export const checkIn = (input: string) => {
-    const data: any = {
-        student_numbers: input.split(',')
-    }
-    return (dispatch: any) => {
-        //console.log('DATA:', data)
-        return axios.post('/api/check-in', data)
-            .then((res: any) => {
-                const status = res.data
             })
     }
 }

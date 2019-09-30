@@ -1,7 +1,21 @@
-export interface ICheckInStatus {
-    block: any
-    air_enabled: boolean
-    air_requests: any[]
-    scheduled: any[]
-    checked_in: any[]
+import { IFullDate, IBlock, ILedgerEntry, ISchedulePlan } from './calendar'
+
+export interface CheckInStatusBlock {
+    block: IBlock
+    ledger_entries: ILedgerEntry[]
+    planned: ISchedulePlan[]
+}
+
+export interface CheckInStatus {
+    blocks: CheckInStatusBlock[]
+    date: IFullDate
+    next: string
+    previous: string
+    today: string
+}
+
+export interface ICheckInRequest {
+    student_numbers?: string[]
+    student_ids?: number[]
+    date_time?: string    
 }

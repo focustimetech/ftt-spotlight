@@ -8,7 +8,7 @@ import AccountWidget from './AccountWidget'
 import { MenuItem } from './MenuItem'
 import { NavItem } from './NavItem'
 import NotificationsWidget from '../Modals/NotificationsWidget'
-import CheckInWidget from '../Modals/CheckInWidget'
+import { CheckInWidget } from '../Modals/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
 import { HelpWidget } from './HelpWidget'
@@ -100,6 +100,7 @@ class Sidebar extends React.Component<IProps> {
 								</div>
 							)}
 							<ul className='menu_list'>
+								<MenuItem to='/check-in' icon='how_to_vote' label='Check-in' />
 								<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
 								<MenuItem to='/students' icon='face' label='Students' />
 								<MenuItem to='/power-scheduler' icon='offline_bolt' label='Power Scheduler' />

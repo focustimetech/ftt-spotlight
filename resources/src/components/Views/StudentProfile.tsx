@@ -15,20 +15,20 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { isEmpty, makeArray } from '../utils/utils'
-import { StarredItem } from '../reducers/starReducer'
-import { listToTruncatedString } from '../utils/utils'
-import ChangePasswordWidget from './Modals/ChangePasswordWidget'
-import { StudentInfoDialog } from './Modals/StudentInfoDialog'
-import { Calendar } from './Calendar/Calendar'
-import { NewAppointment } from './Calendar/NewAppointment'
-import NewAmendment from './Calendar/NewAmendment'
-import { CancelAppointment } from './Calendar/CancelAppointment'
-import { LoadingIconButton } from './Form/LoadingIconButton'
-import { TopNav } from './TopNav'
-import { StarButton } from './StarButton'
-import { IUser } from '../types/auth'
-import { IStudent } from '../types/student';
+import { isEmpty, makeArray } from '../../utils/utils'
+import { StarredItem } from '../../reducers/starReducer'
+import { listToTruncatedString } from '../../utils/utils'
+import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
+import { StudentInfoDialog } from '../Modals/StudentInfoDialog'
+import { Calendar } from '../Calendar/Calendar'
+import { NewAppointment } from '../Calendar/NewAppointment'
+import NewAmendment from '../Calendar/NewAmendment'
+import { CancelAppointment } from '../Calendar/CancelAppointment'
+import { LoadingIconButton } from '../Form/LoadingIconButton'
+import { TopNav } from '../TopNav'
+import { StarButton } from '../StarButton'
+import { IUser } from '../../types/auth'
+import { IStudent } from '../../types/student';
 import {
 	IAmendment,
 	IAppointment,
@@ -39,18 +39,18 @@ import {
 	ILedgerEntry,
 	IScheduled,
 	ICalendarBlockVariant
-} from '../types/calendar'
-import { starItem, unstarItem } from '../actions/starActions'
-import { fetchStudentProfile } from '../actions/studentProfileActions'
+} from '../../types/calendar'
+import { starItem, unstarItem } from '../../actions/starActions'
+import { fetchStudentProfile } from '../../actions/studentProfileActions'
 import {
 	IAppointmentRequest,
 	createAppointment,
 	deleteAppointment,
 	fetchStudentSchedule
-} from '../actions/studentScheduleActions'
-import { logout } from '../actions/authActions'
-import PlanDialog from './Modals/PlanDialog'
-import { queueSnackbar, ISnackbar } from '../actions/snackbarActions'
+} from '../../actions/studentScheduleActions'
+import { logout } from '../../actions/authActions'
+import PlanDialog from '../Modals/PlanDialog'
+import { queueSnackbar, ISnackbar } from '../../actions/snackbarActions'
 
 interface IReduxProps {
 	currentUser: IUser

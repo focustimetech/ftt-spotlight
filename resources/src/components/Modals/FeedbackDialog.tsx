@@ -105,7 +105,7 @@ class FeedbackDialog extends React.Component<IProps, IState> {
                 <DialogContent>
                     <DialogContentText>We take feedback seriously to ensure Spotlight meets your school's needs.</DialogContentText>
                     <div className='chips_container'>
-                        {chips.map((chip: IChip) => {
+                        {chips.map((chip: IChip, index: number) => {
                             const selected: boolean = this.state.selectedChips.includes(chip.value)
                             return (
                                 <Chip
@@ -114,6 +114,7 @@ class FeedbackDialog extends React.Component<IProps, IState> {
                                     onDelete={selected ? () => null : undefined}
                                     deleteIcon={selected ? <Icon>done</Icon> : undefined}
                                     label={chip.label}
+                                    key={index}
                                 />
                             )
                         })}

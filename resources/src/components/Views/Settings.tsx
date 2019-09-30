@@ -13,9 +13,9 @@ import {
     TextField
 } from '@material-ui/core';
 
-import { ISettingsGroup, ISetting } from '../types/appSettings'
-import { fetchSettings } from '../actions/settingsActions'
-import { TopNav } from './TopNav'
+import { ISettingsGroup, ISetting } from '../../types/appSettings'
+import { fetchSettings } from '../../actions/settingsActions'
+import { TopNav } from '../TopNav'
 
 interface ReduxProps {
     settingsGroups: ISettingsGroup[]

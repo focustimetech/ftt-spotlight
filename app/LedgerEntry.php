@@ -8,6 +8,9 @@ class LedgerEntry extends Model
 {
     protected $table = "ledger";
     public $timestamps = false;
+    protected $fillable = [
+        'date', 'time', 'block_id', 'staff_id', 'student_id', 'method'
+    ];
 
     public function block()
     {

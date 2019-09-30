@@ -4,7 +4,14 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Student extends JsonResource
+use App\Staff;
+use App\Student;
+use App\Block;
+use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\Block as BlockResource;
+use App\Http\Resources\Student as StudentResource;
+
+class PowerSchedule extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +23,8 @@ class Student extends JsonResource
     {
         return [
             'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'name' => $this->getName(),
-            'grade' => $this->grade,
-            'initials' => $this->initials,
-            'color' => $this->color
+            'staff' => new StaffResource(Staff::find($this->staff_id)),
+            'type' => $this->type
         ];
     }
 }

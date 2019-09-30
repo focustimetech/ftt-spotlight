@@ -18,7 +18,13 @@ import {
 import { EnhancedTableHead } from './EnhancedTableHead'
 import { EnhancedTableToolbar } from './EnhancedTableToolbar'
 import { EmptyStateIcon } from '../EmptyStateIcon'
-import { ITableAction, ITableFilter, ITableHeaderColumn, ITableLink } from '../../types/table';
+import {
+	ITableAction,
+	ITableFilter,
+	ITableHeaderColumn,
+	ITableLink,
+	SortOrder
+} from '../../types/table';
 
 const desc = (a: any, b: any, orderBy: any) => {
 	if (b[orderBy] < a[orderBy]) {
@@ -42,15 +48,13 @@ const stableSort = (array: any[], cmp: any) => {
 	return stabilizedThis.map(item => item[0])
 }
 
-const getSorting = (order: 'desc' | 'asc', orderBy: any) => {
+const getSorting = (order: SortOrder, orderBy: any) => {
 	return order === 'desc' ? (
 		(a: any, b: any) => desc(a, b, orderBy)
 	) : (
 		(a: any, b: any) => -desc(a, b, orderBy)
 	)
 }
-
-type SortOrder = 'asc' | 'desc'
 
 interface IProps {
 	columns: ITableHeaderColumn[]
@@ -122,7 +126,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		return this.props.data.filter((row: any) => {
 			const matchSearch: boolean = tableQuery.length ? (
 				properties.some((property) => {
-					return new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
+					return row[property] && new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
 				})
 			) : true
 

@@ -61,7 +61,7 @@ export interface ICalendarItemDetails {
     title: string
     time?: string
     memo?: string
-    method?: string
+    method?: ICheckInMethod
 }
 
 export interface ICalendarItemAction {
@@ -71,7 +71,12 @@ export interface ICalendarItemAction {
 }
 
 
-export type ICheckInMethod = 'air' | 'manual'
+export type ICheckInMethod = 'air' | 'manual' | 'roll-call' | 'amendment'
+
+export interface ICheckInMethodDetails {
+    title: string
+    icon: string
+}
 
 export interface ILedgerEntry {
     id: number
@@ -117,6 +122,7 @@ export interface ISchedulePlan {
     block: IBlock
     date: string
 }
+
 export interface IScheduled extends IStaff {
     topic?: ITopic
 }
@@ -131,4 +137,11 @@ export interface ICalendarDialogGroup {
     child?: (blockDetails?: IBlockDetails) => any
     children? (item?: any, blockDetails?: IBlockDetails): any
     actions?: (item?: any, blockDetails?: IBlockDetails) => ICalendarItemAction[]
+}
+
+interface IFullDate {
+    full_date: string
+    date: number
+    day: string
+    is_today: boolean
 }

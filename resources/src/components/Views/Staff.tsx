@@ -8,12 +8,13 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { createStaff, fetchStaff } from '../actions/staffActions'
-import { EnhancedTable } from './Table/EnhancedTable'
-import { ITableHeaderColumn, ITableLink } from '../types/table'
-import { StaffInfoDialog } from './Modals/StaffInfoDialog'
-import { isEmpty } from '../utils/utils'
-import { IStaff } from '../types/staff'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { createStaff, fetchStaff, IStaffRequest } from '../../actions/staffActions'
+import { EnhancedTable } from '../Table/EnhancedTable'
+import { ITableHeaderColumn, ITableLink } from '../../types/table'
+import { StaffInfoDialog } from '../Modals/StaffInfoDialog'
+import { isEmpty } from '../../utils/utils'
+import { IStaff } from '../../types/staff'
 
 interface IState {
 	addDialogOpen: boolean
@@ -22,9 +23,11 @@ interface IState {
 }
 
 interface ReduxProps {
-	staff: any[]
-	createStaff: (staff: any) => any
-	fetchStaff: () => any
+	staff: IStaff[]
+	newStaff: IStaff
+	createStaff: (staff: IStaffRequest) => Promise<any>
+	fetchStaff: () => Promise<any>
+	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IProps extends ReduxProps {}
@@ -47,7 +50,7 @@ class Staff extends React.Component<IProps, IState> {
 	}
 
 	componentWillReceiveProps(nextProps: any) {
-		if (nextProps.newStudent && !isEmpty(nextProps.newStaff)) {
+		if (nextProps.newStaff && !isEmpty(nextProps.newStaff)) {
 			this.props.staff.unshift(nextProps.newStaff)
 		}
 	}
@@ -60,13 +63,24 @@ class Staff extends React.Component<IProps, IState> {
 		this.setState({ addDialogOpen: false })
 	}
 
+	handleAddStaffSubmit = (event: any, staffDetails: IStaffRequest): Promise<any> => {
+		event.preventDefault()
+		return this.props.createStaff(staffDetails)
+			.then(() => {
+				this.props.queueSnackbar({
+					message: 'Staff created.',
+					links: [{ value: 'See Profile', to: `/staff/${this.props.newStaff.id}` }]
+				})
+			})
+	}
+
 	render() {
 		const staff = this.props.staff.map((staff: any, index: number) => {
 			return {
 				id: index,
 				last_name: staff.last_name,
 				first_name: staff.first_name,
-				title: staff.title,
+				email: staff.email,
 				profile: staff.id
 			}
 		})
@@ -82,14 +96,14 @@ class Staff extends React.Component<IProps, IState> {
 				visible: true
 			},
 			{ id: 'first_name', label: 'First Name', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
-			{ id: 'title', label: 'Title', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
+			{ id: 'email', label: 'Email', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
 		]
 
 		const tableLink: ITableLink = {label: 'Profile', key: 'profile', path: 'staff'}
 
 		return (
 			<div className='content --content-inner' id='content'>
-				<StaffInfoDialog open={this.state.addDialogOpen} onClose={this.onAddDialogClose} onSubmit={() => {} } />
+				<StaffInfoDialog open={this.state.addDialogOpen} onClose={this.onAddDialogClose} onSubmit={this.handleAddStaffSubmit} />
 				<EnhancedTable
 					showEmptyTable={false}
 					title='Staff'
@@ -118,7 +132,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = {
 	createStaff,
-	fetchStaff
+	fetchStaff,
+	queueSnackbar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Staff)

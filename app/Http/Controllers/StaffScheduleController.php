@@ -75,12 +75,7 @@ class StaffScheduleController extends Controller
 
                 $schedule_day = [
                     'blocks' => [],
-                    'date' => [
-                        'full_date' => date('M j, Y', strtotime($date)),
-                        'date' => date('j', $time),
-                        'day' => date('D', $time),
-                        'is_today' => date('Y-m-d', $time) === date('Y-m-d')
-                    ],
+                    'date' => Utils::getFullDate($time),
                     'events' => []
                 ];
                 $blocks_of_day->each(function($block_schedule) use ($amendments, $appointments, $blocks, $date, $ledger_entries, $plans, $topic_schedules, &$schedule_day, $year_start, $year_end) {

@@ -20,13 +20,13 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
-import { createStudent, fetchStudents } from '../actions/studentActions'
-import { EnhancedTable } from './Table/EnhancedTable'
-import { ITableAction, ITableHeaderColumn, ITableLink } from '../types/table'
-import { StudentInfoDialog } from './Modals/StudentInfoDialog'
-import { isEmpty } from '../utils/utils'
-import { IStudent } from '../types/student'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { createStudent, fetchStudents } from '../../actions/studentActions'
+import { EnhancedTable } from '../Table/EnhancedTable'
+import { ITableAction, ITableHeaderColumn, ITableLink } from '../../types/table'
+import { StudentInfoDialog } from '../Modals/StudentInfoDialog'
+import { isEmpty } from '../../utils/utils'
+import { IStudent } from '../../types/student'
 
 interface NewStudent {
 	first_name: string,
@@ -112,7 +112,7 @@ class Students extends React.Component<IProps, IState> {
 				id: index,
 				last_name: student.last_name,
 				first_name: student.first_name,
-				attendance: student.id,
+				grade: student.grade,
 				profile: student.id
 			}
 		})
@@ -129,7 +129,7 @@ class Students extends React.Component<IProps, IState> {
 				visible: true
 			},
 			{ id: 'first_name', label: 'First Name', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
-			{ id: 'attendance', label: 'Attendance', isNumeric: true, visible: true, filterable: true }
+			{ id: 'grade', label: 'Grade', isNumeric: true, visible: true, filterable: true }
 		]
 
 		const actions: ITableAction[] = [

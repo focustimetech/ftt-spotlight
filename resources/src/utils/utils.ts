@@ -1,3 +1,5 @@
+import { ICheckInMethod, ICheckInMethodDetails } from "../types/calendar"
+
 /**
  * 
  * @param list A list of string items to truncate
@@ -53,4 +55,32 @@ export const makeArray = (object: any): any[] => {
         return []
     else
         return isArray(object) ? object : [object]
+}
+
+/**
+ * 
+ */
+export const getMethodDetailsFromName = (method: ICheckInMethod): ICheckInMethodDetails => {
+    switch (method) {
+        case 'manual':
+            return {
+                icon: 'keyboard',
+                title: 'Via manual check-in'
+            }
+        case 'air':
+            return {
+                icon: 'wifi',
+                title: 'Via Air Check-in'
+            }
+        case 'roll-call':
+            return {
+                icon: 'assignment',
+                title: 'Via roll call'
+            }
+        case 'amendment':
+            return {
+                icon: 'assignment_turned_in',
+                title: 'Amended'
+            }
+    }
 }

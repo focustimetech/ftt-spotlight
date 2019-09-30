@@ -9,7 +9,7 @@ import {
 
 import { setAuthorizationToken } from '../../utils/setAuthorizationToken'
 import App from './App'
-import Login from '../Login'
+import Login from '../Views/Login'
 
 export default class AppWithAuth extends React.Component {
 	isAuthenticated = () => {

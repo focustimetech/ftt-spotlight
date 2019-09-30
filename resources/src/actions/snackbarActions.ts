@@ -13,6 +13,7 @@ export interface ISnackbarButton {
 
 export interface ISnackbar {
     message: string
+    key?: string
     buttons?: ISnackbarButton[]
     links?: ISnackbarLink[]
 }

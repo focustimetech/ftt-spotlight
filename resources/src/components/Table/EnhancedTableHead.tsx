@@ -10,12 +10,12 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { ITableHeaderColumn, ITableLink } from '../../types/table'
+import { ITableHeaderColumn, ITableLink, SortOrder } from '../../types/table'
 
 interface IProps {
 	columns: ITableHeaderColumn[]
 	numSelected: number
-	order: 'asc' |'desc'
+	order: SortOrder
 	orderBy: string
 	loading: boolean
 	rowCount: number

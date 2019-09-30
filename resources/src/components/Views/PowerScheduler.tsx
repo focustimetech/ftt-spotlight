@@ -5,17 +5,21 @@ import DateFnsUtils from '@date-io/date-fns'
 
 import {
     Button,
+    Collapse,
+    Icon,
+    FormControl,
+    FormControlLabel,
+    FormLabel,
     Step,
     StepContent,
     StepLabel,
     Stepper,
     Typography,
-    FormControlLabel,
-    Checkbox,
     Radio,
+    RadioGroup,
     TextField
-
 } from '@material-ui/core'
+import StepIcon, { StepIconProps } from '@material-ui/core/StepIcon'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 
 import { TopNav } from '../TopNav'
@@ -41,6 +45,10 @@ interface IBlockRange {
     [key: string]: any
 }
 
+interface FinalStepContentProps {
+    onPrevious: () => void
+}
+
 interface ReduxProps {
     staff: IStaff[]
     students: IStudent[]
@@ -55,14 +63,18 @@ interface IState {
     blockRange: IBlockRange
     date: Date
     datePickerOpen: 'start' | 'end' | null
+    error: boolean
     dateRange: IDateRange
     loadingStaff: boolean
     loadingStudents: boolean
     loadingSubmit: boolean
     memo: string
+    scheduleType: 'appointment' | 'amendment'
     selectedStaff: number[]
     selectedStudents: number[]
     step: number
+    studentType: 'all' | 'some'
+    subStep: number
     uploading: boolean
 }
 
@@ -71,13 +83,17 @@ const initialState: IState = {
     date: new Date(),
     datePickerOpen: null,
     dateRange: { start: new Date(), end: new Date()},
+    error: false,
     selectedStaff: [],
     selectedStudents: [],
     loadingStaff: false,
     loadingStudents: false,
     loadingSubmit: false,
     memo: '',
+    scheduleType: null,
     step: 0,
+    studentType: null,
+    subStep: 0,
     uploading: false,
 }
 
@@ -86,6 +102,7 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
 
     handleNextStep = () => {
         this.setState((state: IState) => ({
+            error: false,
             step: state.step + 1
         }))
     }
@@ -96,7 +113,22 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
 
     handlePreviousStep = () => {
         this.setState((state: IState) => ({
+            error: false,
             step: state.step > 0 ? state.step - 1 : 0
+        }))
+    }
+
+    handleNextSubStep = () => {
+        this.setState((state: IState) => ({
+            error: false,
+            subStep: state.subStep + 1
+        }))
+    }
+
+    handlePreviousSubStep = () => {
+        this.setState((state: IState) => ({
+            error: false,
+            subStep: state.subStep > 0 ? state.subStep - 1 : 0
         }))
     }
 
@@ -122,23 +154,36 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
         this.setState({ memo: event.target.value })
     }
 
+    handleScheduleTypeChange = (event: any) => {
+        this.setState({ scheduleType: event.target.value })
+    }
+
+    handleStudentTypeChange = (event: any) => {
+        this.setState({ studentType: event.target.value })
+    }
+
     handleSubmit = () => {
         this.setState({ loadingSubmit: true })
         const data: any = {
+            student_type: this.state.studentType,
+            schedule_type: this.state.scheduleType,
             student_ids: this.state.selectedStudents,
             staff_id: this.state.selectedStaff[0],
             memo: this.state.memo,
             date_time: this.state.dateRange.start.toISOString()
         }
+        console.log('DATA:', data)
         axios.post('/api/power-scheduler', data)
             .then((res: AxiosResponse<any>) => {
                 this.setState({
                     uploading: false,
                     step: 3
                 })
-            })
-            .catch((err: any) => {
-                this.setState({ uploading: false })
+            }, () => {
+                this.setState({
+                    error: true,
+                    uploading: false
+                })
             })
     }
 
@@ -246,6 +291,26 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
             })
         ) : []
 
+        const SubStepIcon = (letter: string) => {
+            return (props: StepIconProps) => {
+                const { icon, ...rest} = props
+                return <StepIcon icon={letter} {...rest}></StepIcon>
+            }
+        }
+
+        const FinalStepContent = (props: FinalStepContentProps) => (
+            <div className='stepper-actions'>
+                <Button variant='text' onClick={() => props.onPrevious()}>Back</Button>
+                <LoadingButton
+                    variant='contained'
+                    color='primary'
+                    loading={this.state.loadingSubmit}
+                    disabled={this.state.memo.length === 0 || this.state.selectedStaff.length === 0}
+                    onClick={() => this.handleSubmit()}
+                >Submit</LoadingButton>
+            </div>
+        )
+
         return (
             <>
                 <div className='content' id='content'>
@@ -254,19 +319,31 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                         <Step key={0}>
                             <StepLabel>Select Students</StepLabel>
                             <StepContent>
-                                <p>Select students from the table below.</p>
-                                <EnhancedTable
-                                    title='Students'
-                                    loading={this.state.loadingStudents}
-                                    columns={studentTableColumns}
-                                    data={students}
-                                    onSelect={this.handleSetStudentSelected}
-                                    selected={this.state.selectedStudents}
-                                    searchable
-                                />
+                                <FormControl component='fieldset'>
+                                    <FormLabel component='legend'>Student group</FormLabel>
+                                    <RadioGroup onChange={this.handleStudentTypeChange}>
+                                        <FormControlLabel value='all' label='All Students' control={<Radio color='primary' checked={this.state.studentType === 'all'} />} />
+                                        <FormControlLabel value='some' label='Some Students' control={<Radio color='primary' checked={this.state.studentType === 'some'}/>} />
+                                    </RadioGroup>
+                                </FormControl>
+                                <Collapse in={this.state.studentType === 'some'}>
+                                    <p>Select students from the table below.</p>
+                                    <EnhancedTable
+                                        title='Students'
+                                        loading={this.state.loadingStudents}
+                                        columns={studentTableColumns}
+                                        data={students}
+                                        onSelect={this.handleSetStudentSelected}
+                                        selected={this.state.selectedStudents}
+                                        searchable
+                                    />
+                                    {(this.state.selectedStudents.length === students.length && students.length > 0) && (
+                                        <Typography color='error'><Icon>warning</Icon> Are you sure you don't mean to select All Students? Selecting All Students ensures that students added in the future are also affected.</Typography>
+                                    )}
+                                </Collapse>
                                 <div className='stepper-actions'>
                                     <Button
-                                        disabled={this.state.selectedStudents.length === 0}
+                                        disabled={!this.state.studentType || (this.state.studentType === 'some' && this.state.selectedStudents.length === 0)}
                                         variant='contained'
                                         color='primary'
                                         onClick={() => this.handleNextStep()}
@@ -302,38 +379,63 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                         <Step key={2}>
                             <StepLabel>Select scheduling type</StepLabel>
                             <StepContent>
-                                <FormControlLabel
-                                    label='Appointment'
-                                    control={<Radio checked={true} color='primary'/>}
-                                />
-                                <TextField
-                                    variant='filled'
-                                    label='Memo'
-                                    placeholder='Schedule change purpose'
-                                    value={this.state.memo}
-                                    onChange={this.handleMemoChange}
-                                />
-                                <p>Select the staff member for the Appointment.</p>
-                                <EnhancedTable
-                                    title='Staff'
-                                    loading={this.state.loadingStaff}
-                                    columns={staffTableColumns}
-                                    data={staff}
-                                    onSelect={this.handleSetStaffSelected}
-                                    selected={this.state.selectedStaff}
-                                    searchable
-                                    radio
-                                />
-                                <div className='stepper-actions'>
-                                    <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
-                                    <LoadingButton
-                                        variant='contained'
-                                        color='primary'
-                                        loading={this.state.loadingSubmit}
-                                        disabled={this.state.memo.length === 0 || this.state.selectedStaff.length === 0}
-                                        onClick={() => this.handleSubmit()}
-                                    >Submit</LoadingButton>
-                                </div>
+                                <FormControl component='fieldset'>
+                                    <FormLabel component='legend'>Schedule classification</FormLabel>
+                                    <RadioGroup onChange={this.handleScheduleTypeChange}>
+                                        <FormControlLabel value='appointment' label='Appointment' control={<Radio color='primary' checked={this.state.scheduleType === 'appointment'} />} />
+                                        <FormControlLabel value='amendment' label='Amendment' control={<Radio color='primary' checked={this.state.scheduleType === 'amendment'} />} />
+                                    </RadioGroup>
+                                </FormControl>
+                                <Collapse in={Boolean(this.state.scheduleType)}>
+                                    <Stepper activeStep={this.state.subStep} orientation='vertical'>
+                                        <Step key={0}>
+                                            <StepLabel StepIconComponent={SubStepIcon('A')}>Select Staff</StepLabel>
+                                            <StepContent>
+                                            <p>{`Select the staff member for the ${this.state.scheduleType === 'amendment' ? 'Amendment' : 'Appointment'}.`}</p>
+                                                <EnhancedTable
+                                                    title='Staff'
+                                                    loading={this.state.loadingStaff}
+                                                    columns={staffTableColumns}
+                                                    data={staff}
+                                                    onSelect={this.handleSetStaffSelected}
+                                                    selected={this.state.selectedStaff}
+                                                    searchable
+                                                    radio
+                                                />
+                                                <div className='stepper-actions'>
+                                                    <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
+                                                    <Button
+                                                        disabled={this.state.selectedStaff.length === 0}
+                                                        variant='contained'
+                                                        color='primary'
+                                                        onClick={() => this.handleNextSubStep()}
+                                                    >Next</Button>
+                                                </div>
+                                            </StepContent>
+                                        </Step>
+                                        <Step key={1}>
+                                            <StepLabel StepIconComponent={SubStepIcon('B')}>Schedule Memo</StepLabel>
+                                            <StepContent>
+                                                <TextField
+                                                    variant='filled'
+                                                    label='Memo'
+                                                    placeholder='Schedule change purpose'
+                                                    margin='normal'
+                                                    fullWidth
+                                                    multiline
+                                                    value={this.state.memo}
+                                                    onChange={this.handleMemoChange}
+                                                />
+                                                <FinalStepContent onPrevious={() => this.handlePreviousSubStep()} />
+                                            </StepContent>
+                                        </Step>
+                                    </Stepper>
+                                </Collapse>
+                                <Collapse in={!Boolean(this.state.scheduleType)}>
+                                    <div className='stepper-actions'>
+                                        <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
+                                    </div>
+                                </Collapse>
                             </StepContent>
                         </Step>
                         <Step key={3} completed={this.state.step >= 3}>

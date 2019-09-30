@@ -24,7 +24,7 @@ interface IProps {
 
 export const CalendarDialogItem = (props: IProps) => {
     const { id, variant, time, title, memo, method } = props.details
-    const methodDetails: ICheckInMethodDetails = getMethodDetailsFromName(method)
+    const methodDetails: ICheckInMethodDetails = method ? getMethodDetailsFromName(method) : null
     const clickable: boolean = Boolean(props.onClick)
 
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
@@ -88,9 +88,11 @@ export const CalendarDialogItem = (props: IProps) => {
                     {time && (
                         <span className='calendar_item__time'>
                             {time}
-                            <Tooltip className='icon' title={methodDetails.title}>
-                                <Icon>{methodDetails.icon}</Icon>
-                            </Tooltip>
+                            {methodDetails && (
+                                <Tooltip className='icon' title={methodDetails.title}>
+                                    <Icon>{methodDetails.icon}</Icon>
+                                </Tooltip>
+                            )}
                         </span>
                     )}
                 </h6>

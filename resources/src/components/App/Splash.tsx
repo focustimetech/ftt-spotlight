@@ -2,6 +2,7 @@ import * as React from 'react'
 import { CircularProgress } from '@material-ui/core';
 
 import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
+import LoadingBadge from './LoadingBadge'
 
 interface IProps {
     passwordExpired: boolean
@@ -24,6 +25,7 @@ export const Splash = (props: IProps) => {
                     />
                 ) : (
                     <>
+                        <LoadingBadge />
                         <CircularProgress disableShrink />
                         <h3>Loading Spotlight...</h3>
                     </>

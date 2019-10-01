@@ -21,6 +21,8 @@ class CreateSettingsTable extends Migration
             $table->integer('min')->default(0);
             $table->integer('max')->default(255);
             $table->string('value');
+            $table->boolean('authenticated')
+                ->default(true);
             $table->unsignedInteger('group_id');
             // Foreign keys
             $table->foreign('group_id')->references('id')->on('settings_groups');

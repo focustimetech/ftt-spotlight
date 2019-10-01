@@ -65,7 +65,6 @@ class AppWithAuth extends React.Component<ReduxProps> {
 
 	componentDidMount() {
 		if (this.isAuthenticated()) {
-			console.log('AppWithAuth.isAuthenticated() = true')
 			this.setState({ loadingUser: true })
 			this.props.getCurrentUser()
 				.then(() => {

@@ -25,7 +25,7 @@ interface StyleProps {
 
 interface IProps extends ReduxProps, StyleProps {
 	onSignOut: () => void
-	loading: boolean
+	loading?: boolean
 	schoolName?: string
 }
 

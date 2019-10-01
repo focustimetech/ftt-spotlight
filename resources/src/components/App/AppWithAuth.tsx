@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { CSSTransition } from 'react-transition-group'
 
 import {
 	BrowserRouter as Router, 
@@ -94,38 +95,44 @@ class AppWithAuth extends React.Component<ReduxProps> {
 
 	render() {
 		const passwordExpired: boolean = this.state.passwordState === 'expired'
-		return this.state.loadingUser || this.state.loadingSettings || passwordExpired ? (
-			<Splash
-				passwordExpired={passwordExpired}
-				username={this.props.currentUser ? this.props.currentUser.username : undefined}
-				onSignOut={this.handleSignOut}
-				onChangePassword={this.handlePasswordChange}
-			/>
-		) : (
-			<Router>
-				<Switch>
-					<Route
-						path='/login'
-						render={(props: RouteComponentProps) => <Login {...props} onSignIn={this.onSignIn} /> }
-					/>
-					<Route path='/' render={(props) => {
-						return this.isAuthenticated() ? (
-							<App
-								onSignOut={this.handleSignOut}
-								currentUser={this.props.currentUser}
-								settings={this.props.settings}
+		const isLoading: boolean = this.state.loadingUser || this.state.loadingSettings || passwordExpired
+		return (
+			<>
+				<CSSTransition in={isLoading} timeout={600} appear={true}>
+					<Splash
+					passwordExpired={passwordExpired}
+					username={this.props.currentUser ? this.props.currentUser.username : undefined}
+					onSignOut={this.handleSignOut}
+					onChangePassword={this.handlePasswordChange}
+				/>
+				</CSSTransition>
+				<CSSTransition in={!isLoading} timeout={600} appear={!isLoading}>
+					<Router>
+						<Switch>
+							<Route
+								path='/login'
+								render={(props: RouteComponentProps) => <Login {...props} onSignIn={this.onSignIn} /> }
 							/>
-						) : (
-							<Redirect
-								to={{
-									pathname: '/login',
-									state: { from: props.location }
-								}}
-							/>
-						)
-					}} />
-				</Switch>
-			</Router>
+							<Route path='/' render={(props) => {
+								return this.isAuthenticated() ? (
+									<App
+										onSignOut={this.handleSignOut}
+										currentUser={this.props.currentUser}
+										settings={this.props.settings}
+									/>
+								) : (
+									<Redirect
+										to={{
+											pathname: '/login',
+											state: { from: props.location }
+										}}
+									/>
+								)
+							}} />
+						</Switch>
+					</Router>
+				</CSSTransition>
+			</>
 		)
 	}
 }

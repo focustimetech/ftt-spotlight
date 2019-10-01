@@ -1,0 +1,21 @@
+.loading_badge {
+    .left {
+        opacity: 0.5;
+    }
+
+    .right {
+        opacity: 0.5;
+    }
+}
+
+@keyframes gradientRight {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}

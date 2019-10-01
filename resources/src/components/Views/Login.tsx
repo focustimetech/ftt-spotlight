@@ -11,7 +11,6 @@ import {
 import { LoadingButton } from '../Form/LoadingButton'
 import { ICredentials, ILoginError } from '../../types/auth'
 import { login } from '../../actions/authActions'
-import * as schoolData from '../../assets/school.json'
 
 const selectBackground = () => {
 	const imageList: string[] = [
@@ -37,7 +36,7 @@ interface ReduxProps {
 }
 
 interface IProps extends ReduxProps, RouteComponentProps {
-	onSignIn: () => void
+	onSignIn: () => Promise<any>
 }
 
 interface IState {
@@ -87,7 +86,10 @@ class Login extends React.Component<IProps, IState> {
 		this.props.login(credentials)
 			.then(() => {
 				this.props.onSignIn()
-				this.setState({ redirectToReferrer: true })
+					.then(() => {
+						this.props.onSignIn()
+						this.setState({ redirectToReferrer: true })
+					})
 			}, (error: any) => {
 				let loginError: ILoginError = null
 				switch (error.response.status) {
@@ -177,8 +179,8 @@ class Login extends React.Component<IProps, IState> {
 								<img className='ft-logo' src='/static/images/ft-logo.svg' />
 								<h2>Sign in to Spotlight</h2>
 								<div className='school_logo'>
-									<img src={`/static/images/${schoolData.school_logo}`} />
-									<h3>{schoolData.school_name}</h3>
+									<img src={`/static/images/${'image.jpg'}`} />
+									<h3>{'school name'}</h3>
 								</div>
 								<TextField
 									name='user'

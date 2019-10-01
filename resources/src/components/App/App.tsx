@@ -11,8 +11,6 @@ import {
 	Switch
 } from 'react-router-dom'
 
-import { getCurrentUser } from '../../actions/authActions'
-import { fetchSettings } from '../../actions/settingsActions'
 import { IUser } from '../../types/auth'
 import CheckIn from '../Views/CheckIn'
 import { NotFound } from '../Views/NotFound'
@@ -23,69 +21,17 @@ import Students from '../Views/Students'
 import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Views/Staff'
 import StaffProfile from '../Views/StaffProfile'
-import { Splash } from './Splash'
 import PowerScheduler from '../Views/PowerScheduler'
 
-interface ReduxProps {
-	getCurrentUser: () => any
-	fetchSettings: () => any
-	settings: any
-	currentUser: IUser
-}
-
-interface IState {
-	loadingUser: boolean
-	loadingSettings: boolean
-	passwordState: 'loading' | 'expired' | 'valid'
-}
-
-interface IProps extends ReduxProps {
+interface IProps {
 	onSignOut: () => void
+	currentUser: IUser
+	settings: any
 }
 
-class App extends React.Component<IProps, IState> {
-	state: IState = {
-		loadingUser: true,
-		loadingSettings: true,
-		passwordState: 'loading'
-	}
-
-	handlePasswordChange = () => {
-		this.setState({ passwordState: 'valid' })
-	}
-
-	componentDidMount() {
-		this.props.getCurrentUser().then(
-			() => {
-				this.setState({
-					loadingUser: false,
-					passwordState: this.props.currentUser.password_expired ? 'expired' : 'valid'
-				})
-			},
-			() => {
-				this.props.onSignOut()
-			}
-		)
-		this.props.fetchSettings().then(
-			() => {
-				this.setState({ loadingSettings: false })
-			},
-			() => {
-				this.props.onSignOut()
-			}
-		)
-	}
-
+export default class App extends React.Component<IProps> {
 	render() {
-		const passwordExpired: boolean = this.state.passwordState === 'expired'
-		return this.state.loadingUser || this.state.loadingSettings || passwordExpired ? (
-			<Splash
-				passwordExpired={passwordExpired}
-				username={this.props.currentUser ? this.props.currentUser.username : undefined}
-				onSignOut={this.props.onSignOut}
-				onChangePassword={this.handlePasswordChange}
-			/>
-		) : (
+		return (
 			<>
 				<Router>
 					<div className={classNames('site-wrap', '--menu_open')}>
@@ -93,7 +39,6 @@ class App extends React.Component<IProps, IState> {
 							this.props.currentUser.account_type === 'staff' ? <>
 								<Sidebar
 									onSignOut={this.props.onSignOut}
-									loading={this.state.loadingUser || this.state.loadingSettings}
 									schoolName={this.props.settings.values['school_name'].value || null}
 								/>
 								<Switch>
@@ -131,15 +76,3 @@ class App extends React.Component<IProps, IState> {
 		)
 	}
 }
-
-const mapDispatchToProps = {
-	getCurrentUser,
-	fetchSettings
-}
-
-const mapStateToProps = (state: any) => ({
-	currentUser: state.auth.user,
-	settings: state.settings.items
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)

@@ -37,6 +37,7 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps, RouteComponentProps {
 	onSignIn: () => Promise<any>
+	settings: any
 }
 
 interface IState {
@@ -154,6 +155,7 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	render() {
+		console.log(this.props)
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
 		if (this.state.redirectToReferrer) {
 			return <Redirect to={from} />
@@ -179,8 +181,8 @@ class Login extends React.Component<IProps, IState> {
 								<img className='ft-logo' src='/static/images/ft-logo.svg' />
 								<h2>Sign in to Spotlight</h2>
 								<div className='school_logo'>
-									<img src={`/static/images/${'image.jpg'}`} />
-									<h3>{'school name'}</h3>
+									<img src={`/static/images/${this.props.settings.values['school_logo'].value}`} />
+									<h3>{this.props.settings.values['school_name'].value}</h3>
 								</div>
 								<TextField
 									name='user'
@@ -236,7 +238,9 @@ class Login extends React.Component<IProps, IState> {
 	}
 }
 
-const mapStateToProps = (state: any) => ({})
+const mapStateToProps = (state: any) => ({
+	settings: state.settings.items
+})
 const mapDispatchToProps = { login }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

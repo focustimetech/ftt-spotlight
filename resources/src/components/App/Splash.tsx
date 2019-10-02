@@ -26,8 +26,6 @@ export const Splash = (props: IProps) => {
                 ) : (
                     <>
                         <LoadingBadge />
-                        <CircularProgress disableShrink />
-                        <h3>Loading Spotlight...</h3>
                     </>
                 )}
             </div>

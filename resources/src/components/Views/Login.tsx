@@ -181,7 +181,7 @@ class Login extends React.Component<IProps, IState> {
 								<img className='ft-logo' src='/static/images/ft-logo.svg' />
 								<h2>Sign in to Spotlight</h2>
 								<div className='school_logo'>
-									<img src={`/static/images/${this.props.settings.values['school_logo'].value}`} />
+									<img src={`/static/images/logos/${this.props.settings.values['school_logo'].value}`} />
 									<h3>{this.props.settings.values['school_name'].value}</h3>
 								</div>
 								<TextField

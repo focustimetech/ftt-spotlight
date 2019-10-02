@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { CSSTransition } from 'react-transition-group'
-
+// import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import {
-	BrowserRouter as Router, 
+	BrowserRouter as Router,
 	Redirect,
 	Route,
 	Switch,
 	RouteComponentProps
 } from 'react-router-dom'
+import { Fade } from '@material-ui/core'
 
 import { setAuthorizationToken } from '../../utils/setAuthorizationToken'
 import { getCurrentUser } from '../../actions/authActions'
@@ -29,6 +29,7 @@ interface ReduxProps {
 interface IState {
 	loadingUser: boolean
 	loadingSettings: boolean
+	loaded: boolean
 	passwordState: 'loading' | 'expired' | 'valid'
 }
 
@@ -36,6 +37,7 @@ class AppWithAuth extends React.Component<ReduxProps> {
 	state: IState = {
 		loadingUser: true,
 		loadingSettings: true,
+		loaded: false,
 		passwordState: 'loading'
 	}
 
@@ -62,6 +64,10 @@ class AppWithAuth extends React.Component<ReduxProps> {
 		return this.props.fetchSettings().then(() => {
 			return this.props.getCurrentUser()
 		})
+	}
+
+	onLoaded = () => {
+		this.setState({ loaded: true })
 	}
 
 	componentDidMount() {
@@ -96,17 +102,20 @@ class AppWithAuth extends React.Component<ReduxProps> {
 	render() {
 		const passwordExpired: boolean = this.state.passwordState === 'expired'
 		const isLoading: boolean = this.state.loadingUser || this.state.loadingSettings || passwordExpired
+		console.log('isLoading:', isLoading)
 		return (
 			<>
-				<CSSTransition in={isLoading} timeout={600} appear={true}>
-					<Splash
-					passwordExpired={passwordExpired}
-					username={this.props.currentUser ? this.props.currentUser.username : undefined}
-					onSignOut={this.handleSignOut}
-					onChangePassword={this.handlePasswordChange}
-				/>
-				</CSSTransition>
-				<CSSTransition in={!isLoading} timeout={600} appear={!isLoading}>
+				<Fade in={isLoading} timeout={{enter: 0, exit: 500 }} >
+					<div>
+						<Splash
+							passwordExpired={passwordExpired}
+							username={this.props.currentUser ? this.props.currentUser.username : undefined}
+							onSignOut={this.handleSignOut}
+							onChangePassword={this.handlePasswordChange}
+						/>
+					</div>
+				</Fade>
+				{!isLoading && (
 					<Router>
 						<Switch>
 							<Route
@@ -131,7 +140,7 @@ class AppWithAuth extends React.Component<ReduxProps> {
 							}} />
 						</Switch>
 					</Router>
-				</CSSTransition>
+				)}
 			</>
 		)
 	}

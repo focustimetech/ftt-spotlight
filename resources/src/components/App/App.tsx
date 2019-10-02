@@ -39,7 +39,8 @@ export default class App extends React.Component<IProps> {
 							this.props.currentUser.account_type === 'staff' ? <>
 								<Sidebar
 									onSignOut={this.props.onSignOut}
-									schoolName={this.props.settings.values['school_name'].value || null}
+									schoolName={this.props.settings.values['school_name'].value || undefined}
+									schoolLogo={this.props.settings.values['school_logo'].value || undefined}
 								/>
 								<Switch>
 									<Route path='/' exact render={() => (

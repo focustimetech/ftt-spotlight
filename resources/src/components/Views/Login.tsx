@@ -6,6 +6,7 @@ import {
 	DialogActions,
 	Paper,
 	TextField,
+	Typography,
 } from '@material-ui/core'
 
 import { BannerContentProps } from '../Banner/BannerContent'
@@ -40,6 +41,7 @@ interface ReduxProps {
 
 interface IProps extends ReduxProps, RouteComponentProps {
 	authState: AuthState
+	failedSettings: boolean
 	onSignIn: () => Promise<any>
 }
 
@@ -88,7 +90,10 @@ class Login extends React.Component<IProps, IState> {
 		event.preventDefault()
 		if (!this.validateForm())
 			return
-		this.setState({ loading: true })
+		this.setState({
+			loading: true,
+			bannerOpen: false
+		})
 		const credentials: ICredentials = {
 			username: this.state.user,
 			password: this.state.password
@@ -209,10 +214,14 @@ class Login extends React.Component<IProps, IState> {
 								<form>
 									<img className='ft-logo' src='/static/images/ft-logo.svg' />
 									<h2>Sign in to Spotlight</h2>
-									<div className='school_logo'>
-										<img src={`/static/images/logos/${this.props.settings.values['school_logo'].value}`} />
-										<h3>{this.props.settings.values['school_name'].value}</h3>
-									</div>
+									{this.props.failedSettings ? (
+										<Typography color='error'>Failed settings.</Typography>
+									) : (
+										<div className='school_logo'>
+											<img src={`/static/images/logos/${this.props.settings.values['school_logo'].value}`} />
+											<h3>{this.props.settings.values['school_name'].value}</h3>
+										</div>
+									)}
 									<TextField
 										name='user'
 										type='text'

@@ -28,6 +28,7 @@ interface ReduxProps {
 
 interface IState {
 	authState: AuthState
+	failedSettings: boolean
 	loadingUser: boolean
 	loadingSettings: boolean
 	loadingUnauthenticatedSettings: boolean
@@ -35,9 +36,10 @@ interface IState {
 	passwordState: 'loading' | 'expired' | 'valid'
 }
 
-class AppWithAuth extends React.Component<ReduxProps> {
+class AppWithAuth extends React.Component<ReduxProps, IState> {
 	state: IState = {
 		authState: 'sign-in',
+		failedSettings: false,
 		loadingUser: true,
 		loadingSettings: true,
 		loadingUnauthenticatedSettings: false,
@@ -59,15 +61,22 @@ class AppWithAuth extends React.Component<ReduxProps> {
 	}
 
 	handleSignOut = (authState?: AuthState) => {
-		this.setState({ authState: authState || 'sign-in' })
+		this.setState((state: IState) => {
+			if (state.authState !== 'sign-in' || state.authState === authState || !authState)
+				return
+			return { authState }
+		})
 		setAuthorizationToken(null)
 		this.forceUpdate()
 	}
 
 	onSignIn = (): Promise<any> => {
-		return this.props.fetchSettings().then(() => {
-			return this.props.getCurrentUser()
-		})
+		return this.props.fetchSettings()
+			.then(() => {
+				return this.props.getCurrentUser()
+			}, () => {
+				this.handleSignOut('failed-settings')
+			})
 	}
 
 	onLoaded = () => {
@@ -82,18 +91,16 @@ class AppWithAuth extends React.Component<ReduxProps> {
 						loadingUser: false,
 						passwordState: this.props.currentUser.password_expired ? 'expired' : 'valid'
 					})
-					this.props.fetchSettings()
-						.then(() => {
-							this.setState({ loadingSettings: false })
-						},
-						() => {
-							this.setState({ loadingSettings: false })
-							this.handleSignOut('failed-settings')
-						})
 				}, () => {
-					this.setState({ loadingUser: false, loadingSettings: false, loadingUnauthenticatedSettings: true })
 					this.fetchUnauthenticatedSettings() // Fall back on unauthenticated settings	
 					this.handleSignOut('unauthenticated')
+				})
+			this.props.fetchSettings()
+				.then(() => {
+					this.setState({ loadingSettings: false })
+				}, () => {
+					this.fetchUnauthenticatedSettings()
+					this.handleSignOut('failed-settings')
 				})
 		} else {
 			this.setState({ loadingUser: false, loadingSettings: false, loadingUnauthenticatedSettings: true })
@@ -103,10 +110,12 @@ class AppWithAuth extends React.Component<ReduxProps> {
 
 	fetchUnauthenticatedSettings = (): Promise<any> => {
 		if (!this.state.loadingUnauthenticatedSettings)
-			this.setState({ loadingUnauthenticatedSettings: true })
+			this.setState({ loadingUser: false, loadingSettings: false, loadingUnauthenticatedSettings: true })
 		return this.props.fetchUnauthenticatedSettings()
 			.then(() => {
 				this.setState({ loadingUnauthenticatedSettings: false })
+			}, () => {
+				this.setState({ failedSettings: true })
 			})
 	}
 
@@ -130,7 +139,14 @@ class AppWithAuth extends React.Component<ReduxProps> {
 						<Switch>
 							<Route
 								path='/login'
-								render={(props: RouteComponentProps) => <Login {...props} onSignIn={this.onSignIn} authState={this.state.authState} /> }
+								render={(props: RouteComponentProps) => (
+									<Login
+										{...props}
+										onSignIn={this.onSignIn}
+										authState={this.state.authState}
+										failedSettings={this.state.failedSettings}
+									/>
+								)}
 							/>
 							<Route path='/' render={(props) => {
 								return this.isAuthenticated() ? (

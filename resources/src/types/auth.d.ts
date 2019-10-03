@@ -1,6 +1,13 @@
 import { IStaff } from "./staff";
 import { IStudent } from './student'
 
+export type AuthState = 
+    | 'sign-in'
+    | 'signed-in'
+    | 'signed-out'
+    | 'unauthenticated'
+    | 'failed-settings'
+
 export interface ICredentials {
     username: string
     password: string

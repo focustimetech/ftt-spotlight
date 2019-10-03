@@ -4,6 +4,10 @@
 
     &.--dynamic {
         position: fixed;
+
+        .banner__content {
+            width: 100vw;
+        }
     }
 
     &.--icon {

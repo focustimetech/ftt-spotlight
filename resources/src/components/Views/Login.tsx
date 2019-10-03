@@ -8,8 +8,10 @@ import {
 	TextField,
 } from '@material-ui/core'
 
+import { BannerContentProps } from '../Banner/BannerContent'
+import { Banner } from '../Banner/Banner'
 import { LoadingButton } from '../Form/LoadingButton'
-import { ICredentials, ILoginError } from '../../types/auth'
+import { AuthState, ICredentials, ILoginError } from '../../types/auth'
 import { login } from '../../actions/authActions'
 
 const selectBackground = () => {
@@ -32,12 +34,13 @@ interface Dimensions {
 }
 
 interface ReduxProps {
+	settings: any
 	login: (credentials: ICredentials) => Promise<any>
 }
 
 interface IProps extends ReduxProps, RouteComponentProps {
+	authState: AuthState
 	onSignIn: () => Promise<any>
-	settings: any
 }
 
 interface IState {
@@ -50,6 +53,7 @@ interface IState {
 	imageStatus: 'loading' | 'loaded'
 	imageDimensions: Dimensions
 	boundingBoxDimension: Dimensions
+	bannerOpen: boolean
 }
 
 class Login extends React.Component<IProps, IState> {
@@ -64,7 +68,12 @@ class Login extends React.Component<IProps, IState> {
 		imageURL: selectBackground(),
 		imageStatus: 'loading',
 		imageDimensions: { height: 0, width: 0 },
-		boundingBoxDimension: { height: 0, width: 0 }
+		boundingBoxDimension: { height: 0, width: 0 },
+		bannerOpen: true
+	}
+
+	handleBannerClose = () => {
+		this.setState({ bannerOpen: false })
 	}
 
 	handleChange = (event: any) => {
@@ -155,85 +164,106 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		console.log(this.props)
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
-		if (this.state.redirectToReferrer) {
+		if (this.state.redirectToReferrer)
 			return <Redirect to={from} />
-		}
+		
 		const isVertical: boolean = this.state.imageDimensions.width < this.state.boundingBoxDimension.width
+		let bannerProps: BannerContentProps = null
+		if (this.props.authState === 'failed-settings') {
+			bannerProps = {
+				'icon': 'warning',
+				'message': 'The server encountered an error while signing in. Please try again.'
+			}
+		} else if (this.props.authState === 'unauthenticated') {
+			bannerProps = {
+				'icon': 'lock',
+				'message': 'Your session has expired. Please sign back in to continue.'
+			}
+		}
 
 		return (
-			<div className='login'>
-				<div className='login__image_container' ref={(boundingBox: any) => this.boundingBox = boundingBox}>
-					<img
-						className={classNames('login_image', {['--vertical']: isVertical})}
-						src={this.state.imageURL}
-						onLoad={this.handleImageLoad}
-						ref={(image: any) => this.image = image}
+			<>
+				{bannerProps && (
+					<Banner
+						{...bannerProps}
+						variant='dynamic'
+						open={this.state.bannerOpen}
+						onClose={this.handleBannerClose}
 					/>
-				</div>
-				<div className='login__panel'>
-					<div className='login_container'>
-						<h2>Smart attendance for the internet age.</h2>
-						<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
-						<Paper className='login_form'>
-							<form>
-								<img className='ft-logo' src='/static/images/ft-logo.svg' />
-								<h2>Sign in to Spotlight</h2>
-								<div className='school_logo'>
-									<img src={`/static/images/logos/${this.props.settings.values['school_logo'].value}`} />
-									<h3>{this.props.settings.values['school_name'].value}</h3>
-								</div>
-								<TextField
-									name='user'
-									type='text'
-									label='Email or Student Number'
-									error={this.state.error && this.state.error.type === 'username'}
-									helperText={
-										this.state.error && this.state.error.type === 'username'
-											? this.state.error.message
-											: undefined
-									}
-									value={this.state.user}
-									onChange={this.handleChange}
-									margin='normal'
-									variant='filled'
-									autoFocus={true}
-									fullWidth={true}
-								/>
-								<TextField
-									name='password'
-									type='password'
-									label='Password'
-									error={this.state.error && this.state.error.type === 'password'}
-									helperText={
-										this.state.error && this.state.error.type === 'password'
-											? this.state.error.message
-											: undefined
-									}
-									value={this.state.password}
-									onChange={this.handleChange}
-									margin='normal'
-									variant='filled'
-									fullWidth={true}
-								/>
-								<DialogActions>
-									<LoadingButton
-										type='submit'
-										onClick={this.handleLogin}
-										color='primary'
-										variant='contained'
-										loading={this.state.loading}
-									>Sign In</LoadingButton>
-								</DialogActions>
-							</form>
-						</Paper>
-						<ul className='links_list'>
-							<a href='https://focustime.ca'><li>Learn More</li></a>
-						</ul>
+				)}
+				<div className='login'>
+					<div className='login__image_container' ref={(boundingBox: any) => this.boundingBox = boundingBox}>
+						<img
+							className={classNames('login_image', {['--vertical']: isVertical})}
+							src={this.state.imageURL}
+							onLoad={this.handleImageLoad}
+							ref={(image: any) => this.image = image}
+						/>
+					</div>
+					<div className='login__panel'>
+						<div className='login_container'>
+							<h2>Smart attendance for the internet age.</h2>
+							<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
+							<Paper className='login_form'>
+								<form>
+									<img className='ft-logo' src='/static/images/ft-logo.svg' />
+									<h2>Sign in to Spotlight</h2>
+									<div className='school_logo'>
+										<img src={`/static/images/logos/${this.props.settings.values['school_logo'].value}`} />
+										<h3>{this.props.settings.values['school_name'].value}</h3>
+									</div>
+									<TextField
+										name='user'
+										type='text'
+										label='Email or Student Number'
+										error={this.state.error && this.state.error.type === 'username'}
+										helperText={
+											this.state.error && this.state.error.type === 'username'
+												? this.state.error.message
+												: undefined
+										}
+										value={this.state.user}
+										onChange={this.handleChange}
+										margin='normal'
+										variant='filled'
+										autoFocus={true}
+										fullWidth={true}
+									/>
+									<TextField
+										name='password'
+										type='password'
+										label='Password'
+										error={this.state.error && this.state.error.type === 'password'}
+										helperText={
+											this.state.error && this.state.error.type === 'password'
+												? this.state.error.message
+												: undefined
+										}
+										value={this.state.password}
+										onChange={this.handleChange}
+										margin='normal'
+										variant='filled'
+										fullWidth={true}
+									/>
+									<DialogActions>
+										<LoadingButton
+											type='submit'
+											onClick={this.handleLogin}
+											color='primary'
+											variant='contained'
+											loading={this.state.loading}
+										>Sign In</LoadingButton>
+									</DialogActions>
+								</form>
+							</Paper>
+							<ul className='links_list'>
+								<a href='https://focustime.ca'><li>Learn More</li></a>
+							</ul>
+						</div>
 					</div>
 				</div>
-			</div>
+			</>
 		)
 	}
 }

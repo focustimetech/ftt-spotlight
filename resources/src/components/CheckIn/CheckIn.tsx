@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { RouteComponentProps } from 'react-router-dom'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import ContentLoader from 'react-content-loader'
@@ -23,7 +24,8 @@ import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { getMethodDetailsFromName } from '../../utils/utils'
 import { ICheckInMethodDetails } from '../../types/calendar'
 import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
-import CheckInForm from '../Form/CheckInForm'
+import CheckInForm from './CheckInForm'
+import ErrorsDialog from './ErrorsDialog'
 import { TopNav } from '../TopNav'
 import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
 import { ModalSection } from '../ModalSection'
@@ -36,11 +38,12 @@ interface ReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {}
+interface IProps extends ReduxProps, RouteComponentProps {}
 
 interface IState {
     date: Date
     datePickerOpen: boolean
+    errorsDialogOpen: boolean
     loadingStatus: boolean
     scheduledSelected: number[]
 }
@@ -49,6 +52,7 @@ class CheckIn extends React.Component<IProps, IState> {
     state: IState = {
         date: new Date(),
         datePickerOpen: false,
+        errorsDialogOpen: false,
         loadingStatus: false,
         scheduledSelected: []
     }
@@ -121,11 +125,22 @@ class CheckIn extends React.Component<IProps, IState> {
         }))
     }
 
+    handleOpenErrorsDialog = () => {
+        this.setState({ errorsDialogOpen: true })
+    }
+
+    handleCloseErrorsDialog = () => {
+        this.setState({ errorsDialogOpen: false })
+    }
+
     componentDidMount() {
+        if (this.props.location.hash === '#errors')
+            this.setState({ errorsDialogOpen: true })
         this.fetchStatus()
     }
 
     render() {
+        console.log(this.state)
         const scheduled: ISelectableListItem[] = this.props.checkInStatus.blocks.length > 0 ? (
             this.props.checkInStatus.blocks[0].planned.map((plan: ISchedulePlan) => {
                 return { id: plan.student.id, label: plan.student.name }
@@ -175,7 +190,15 @@ class CheckIn extends React.Component<IProps, IState> {
 
         return (
             <div className='content' id='content'>
-                <TopNav breadcrumbs={[{ value: 'Check-in' }]} />
+                <ErrorsDialog open={this.state.errorsDialogOpen} onClose={this.handleCloseErrorsDialog} />
+                <TopNav
+                    breadcrumbs={[{ value: 'Check-in' }]}
+                    actions={(
+                        <Tooltip title='List Errors'>
+                            <IconButton onClick={() => this.handleOpenErrorsDialog()}><Icon>warning</Icon></IconButton>
+                        </Tooltip>
+                    )}
+                />
                 {(this.state.loadingStatus && this.props.checkInStatus) ? (
                     <CheckInLoader />
                 ) : (
@@ -225,7 +248,9 @@ class CheckIn extends React.Component<IProps, IState> {
                         </ul>
                         <CheckInForm
                             dateTime={this.props.checkInStatus.date.full_date}
-                            didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }/>
+                            didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
+                            handleOpenErrorsDialog={this.handleOpenErrorsDialog}
+                        />
                         <ModalSection
                             icon='event'
                             title='Scheduled'

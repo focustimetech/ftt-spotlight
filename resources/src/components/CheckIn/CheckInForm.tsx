@@ -18,7 +18,7 @@ import { checkIn } from '../../actions/checkinActions'
 import { ILedgerEntry } from '../../types/calendar'
 import { ICheckInRequest, CheckInChip, ICheckInResponse } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { LoadingIconButton } from './LoadingIconButton'
+import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
 
 interface ReduxProps {
@@ -30,6 +30,7 @@ interface ReduxProps {
 interface IProps extends ReduxProps {
     dateTime?: string
     didCheckIn?: () => Promise<any>
+    handleOpenErrorsDialog?: () => void
 }
 
 interface IState {
@@ -154,10 +155,6 @@ class CheckInForm extends React.Component<IProps, IState> {
             })
     }
 
-    handleOpenErrorsDialog = () => {
-        console.log('Opened errors dialog.')
-    }
-
     handleSubmit = () => {
         this.setState({ uploading: true }, () => {
             if (this.state.inputValue.length > 0)
@@ -190,7 +187,12 @@ class CheckInForm extends React.Component<IProps, IState> {
                             : 'No students could be checked in.'
                         this.props.queueSnackbar({
                             message,
-                            buttons: errors && errors.length > 0 ? [{ value: 'Show Errors', callback: () => this.handleOpenErrorsDialog() }] : undefined,
+                            buttons: errors && errors.length > 0 && this.props.handleOpenErrorsDialog ? [{
+                                value: 'Show Errors', callback: () => this.props.handleOpenErrorsDialog()
+                            }] : undefined,
+                            links: !this.props.handleOpenErrorsDialog ? [{
+                                value: 'Show Errors', to: '/check-in/#errors'
+                            }] : undefined,
                             key: 'CHECKED_IN_SUCCESSFULLY'
                         })
                         this.setState({

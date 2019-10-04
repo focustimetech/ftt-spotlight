@@ -88,7 +88,7 @@ class CheckIn extends React.Component<IProps, IState> {
 
     handleScheduledCheckIn = (selected: (string | number)[]): Promise<any> => {
         const request: ICheckInRequest = {
-            student_ids: this.state.scheduledSelected,
+            scheduled_ids: this.state.scheduledSelected,
             date_time: this.props.checkInStatus.date.full_date
         }
         return this.props.checkIn(request) 
@@ -282,7 +282,8 @@ class CheckIn extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
-    checkInStatus: state.checkin.status
+    checkInStatus: state.checkin.status,
+    checkInResponse: state.checkin.response
 })
 const mapDispatchToProps = { checkIn, fetchCheckInStatus, queueSnackbar }
 

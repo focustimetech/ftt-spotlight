@@ -18,7 +18,14 @@ export interface CheckInStatus {
 export interface ICheckInRequest {
     student_numbers?: string[]
     student_ids?: number[]
+    scheduled_ids?: number[]
     date_time?: string    
+}
+
+export interface ICheckInResponse {
+    success: ILedgerEntry[]
+    timestamp_string: string
+    error?: string[]
 }
 
 interface StudentNumberChip {

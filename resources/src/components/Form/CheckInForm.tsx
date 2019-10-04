@@ -1,4 +1,5 @@
 import * as React from 'react'
+import axios from 'axios'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 
@@ -85,7 +86,9 @@ class CheckInForm extends React.Component<IProps, IState> {
                 chips: [...state.chips, newChip],
                 duplicateIndex: -1,
                 inputValue: ''
-            }))
+            }), () => {
+                this.fetchStudent(newChip)
+            })
         } else {
             this.setState({ duplicateIndex: index })
             return false
@@ -112,6 +115,36 @@ class CheckInForm extends React.Component<IProps, IState> {
             }
         }
         return -1
+    }
+
+    replaceChip = (newChip: CheckInChip, index: number) => {
+        console.log(`replaceChip (newChip, ${index})`)
+        const newChips: CheckInChip[] = this.state.chips.reduce((acc: CheckInChip[], chip: CheckInChip, idx: number) => {
+            if (index === idx)
+                acc.push(newChip)
+            else
+                acc.push(chip)
+            return acc
+        }, [])
+        this.setState({ chips: newChips })
+    }
+
+    fetchStudent = (chip: CheckInChip) => {
+        console.log('fetchStudent()')
+        if (chip.type !== 'student_number') {
+            console.log('RETE')
+            return
+        }
+        console.log('searching; this.state.chips:', this.state.chips)
+        const index: number = this.findChip(chip)
+        let replacementChip: CheckInChip = { ...chip, loading: false }
+        axios.get(`http://localhost:8000/api/students/student-number/${chip.value}`)
+            .then((res: any) => {
+                replacementChip = { type: 'id', value: res.data, loading: false }
+                this.replaceChip(replacementChip, index)
+            }, () => {
+                this.replaceChip(replacementChip, index)
+            })
     }
 
     handleSubmit = () => {

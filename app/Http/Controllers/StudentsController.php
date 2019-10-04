@@ -64,6 +64,16 @@ class StudentsController extends Controller
         return new StudentResource($student);
     }
 
+    public function getByStudentNumber($student_number)
+    {
+        $student = Student::findBySN($student_number);
+
+        if ($student)
+            return new StudentResource($student);
+        else
+            return response()->json('Student couldn\'t be found', 404);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

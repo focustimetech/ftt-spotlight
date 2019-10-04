@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 
 import {
@@ -13,8 +14,9 @@ import {
 } from '@material-ui/core'
 
 import { checkIn } from '../../actions/checkinActions'
-import { ICheckInRequest } from '../../types/checkin'
+import { ICheckInRequest, CheckInChip } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { LoadingIconButton } from './LoadingIconButton'
 import { ModalSection } from '../ModalSection'
 
 interface ReduxProps {
@@ -28,8 +30,8 @@ interface IProps extends ReduxProps {
 }
 
 interface IState {
-    chips: string[]
-    containsDuplicate: boolean
+    chips: CheckInChip[]
+    duplicateIndex: number
     errored: boolean
     uploading: boolean
     inputValue: string
@@ -37,11 +39,11 @@ interface IState {
 
 class CheckInForm extends React.Component<IProps, IState> {
     state: IState = {
-        chips: ['47182', '485734', '5847484', '44734734', '484734', '4740248', '4717', '096438', '184849'],
-        containsDuplicate: false,
+        chips: [],
+        duplicateIndex: -1,
         errored: false,
         uploading: false,
-        inputValue: 'test'
+        inputValue: ''
     }
 
     handleChange = (event: any) => {
@@ -50,7 +52,7 @@ class CheckInForm extends React.Component<IProps, IState> {
         this.setState({
             inputValue: event.target.value,
             errored: false,
-            containsDuplicate: false
+            duplicateIndex: -1
         })
     }
 
@@ -66,38 +68,53 @@ class CheckInForm extends React.Component<IProps, IState> {
         } else if ([188, 13, 32].includes(event.keyCode)) {
             event.preventDefault()
             if (this.state.inputValue.length > 0) {
-                if (this.handleCreateChip(this.state.inputValue)) {
-                    this.setState({
-                        containsDuplicate: false,
-                        inputValue: ''
-                    })
-                }
+                this.handleCreateChip()
             }
         }
     }
 
-    handleCreateChip = (chip: string): boolean => {
-        if (this.state.chips.every((existingChip: string) => existingChip !== chip)) {
+    handleCreateChip = (): boolean => {
+        const newChip: CheckInChip = {
+            type: 'student_number',
+            value: this.state.inputValue,
+            loading: true
+        }
+        const index = this.findChip(newChip)
+        if (index === -1) {
             this.setState((state: IState) => ({
-                chips: [...state.chips, chip],
-                containsDuplicate: false
+                chips: [...state.chips, newChip],
+                duplicateIndex: -1,
+                inputValue: ''
             }))
-            return true
         } else {
-            this.setState({ containsDuplicate: true })
+            this.setState({ duplicateIndex: index })
             return false
         }
     }
 
-    handleRemoveChip = (chip: string) => {
+    handleRemoveChip = (chip: CheckInChip) => {
+        const removeIndex: number = this.findChip(chip)
         this.setState((state: IState) => ({
-            chips: state.chips.filter((existingChip: string) => existingChip !== chip),
-            containsDuplicate: false
+            chips: state.chips.filter((existingChip: CheckInChip, index: number) => index !== removeIndex),
+            duplicateIndex: -1
         }))
     }
 
-    handleSubmit = (event: any) => {
-        event.preventDefault()
+    findChip = (chip: CheckInChip): number => {
+        for (let i = 0; i < this.state.chips.length; i ++) {
+            const pivot: CheckInChip = this.state.chips[i]
+            if (chip.type === 'id' && pivot.type === 'id') {
+                if (chip.value.id === pivot.value.id)
+                    return i
+            } else if (chip.type === 'student_number' && this.state.chips[i].type === 'student_number') {
+                if (chip.value === pivot.value)
+                    return i
+            }
+        }
+        return -1
+    }
+
+    handleSubmit = () => {
         this.setState({ uploading: true })
         const request: ICheckInRequest = {
             student_numbers: this.state.inputValue.split(','),
@@ -137,22 +154,48 @@ class CheckInForm extends React.Component<IProps, IState> {
             >
                 <Paper>
                     <div className='chip-textfield'>
-                        {this.state.chips.map((chip: string) => (
-                            <Chip label={chip} onDelete={() => this.handleRemoveChip(chip)} />
-                        ))}
+                        {this.state.chips.map((chip: CheckInChip, index: number) => {
+                            const isDuplicate: boolean = this.state.duplicateIndex === index
+                            let label: string = ''
+                            let avatar: any = undefined
+                            if (chip.type === 'student_number') {
+                                label = chip.value
+                                avatar = chip.loading ? <Avatar><CircularProgress size={24} /></Avatar> : undefined
+                            } else {
+                                label = chip.value.name
+                                avatar = <Avatar className={classNames('chip_avatar', `--${chip.value.color}`)}>{chip.value.initials}</Avatar> 
+                            }
+                            return (
+                                <Chip
+                                    key={index}
+                                    avatar={avatar}
+                                    label={label}
+                                    onDelete={() => this.handleRemoveChip(chip)}
+                                />
+                            )
+                        })}
                         <div className='chip-textfield__actions'>
                             <InputBase
                                 className='chip-textfield__input'
                                 value={this.state.inputValue}
                                 onChange={this.handleChange}
                                 placeholder='Enter Student Numbers'
-                                //onKeyPress={this.onKeyPress}
+                                disabled={this.state.uploading}
                                 onKeyDown={this.onKeyDown}
-                                //onKeyUp={this.onKeyUp}
+                                autoFocus
                             />
-                            <IconButton><Icon>keyboard_return</Icon></IconButton>
+                            <IconButton disabled={this.state.uploading} onClick={() => this.handleCreateChip()}>
+                                <Icon>keyboard_return</Icon>
+                            </IconButton>
                             <Divider className='chip-textfield__divider' orientation='vertical' />
-                            <IconButton color='primary'><Icon>cloud_upload</Icon></IconButton>
+                            <LoadingIconButton
+                                color='primary'
+                                loading={this.state.uploading}
+                                onClick={() => this.handleSubmit()}
+                                disabled={this.state.chips.length === 0}
+                            >
+                                <Icon>cloud_upload</Icon>
+                            </LoadingIconButton>
                         </div>
                     </div>
                 </Paper>

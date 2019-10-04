@@ -57,7 +57,6 @@ class CheckInForm extends React.Component<IProps, IState> {
         })
     }
 
-
     onKeyDown = (event: any) => {
         if (this.state.uploading)
             return
@@ -74,25 +73,34 @@ class CheckInForm extends React.Component<IProps, IState> {
         }
     }
 
-    handleCreateChip = (): boolean => {
-        const newChip: CheckInChip = {
-            type: 'student_number',
-            value: this.state.inputValue,
-            loading: true
-        }
-        const index = this.findChip(newChip)
-        if (index === -1) {
-            this.setState((state: IState) => ({
-                chips: [...state.chips, newChip],
-                duplicateIndex: -1,
-                inputValue: ''
-            }), () => {
-                this.fetchStudent(newChip)
-            })
-        } else {
-            this.setState({ duplicateIndex: index })
-            return false
-        }
+    onPaste = (event: any) => {
+        const clipboard: string = event.clipboardData.getData('Text')
+        this.handleCreateChip(clipboard)
+        event.preventDefault()
+        this.setState({ inputValue: '' })
+    }
+
+    handleCreateChip = (value?: string) => {
+        const chipValues: string[] = value ? value.split(/[\s,]+/) : [this.state.inputValue]
+        chipValues.forEach((chipValue: string) => {
+            const newChip: CheckInChip = {
+                type: 'student_number',
+                value: chipValue,
+                loading: true
+            }
+            const index = this.findChip(newChip)
+            if (index === -1) {
+                this.setState((state: IState) => ({
+                    chips: [...state.chips, newChip],
+                    duplicateIndex: -1,
+                    inputValue: ''
+                }), () => {
+                    this.fetchStudent(newChip)
+                })
+            } else {
+                this.setState({ duplicateIndex: index })
+            }
+        })
     }
 
     handleRemoveChip = (chip: CheckInChip) => {
@@ -211,6 +219,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                 placeholder='Enter Student Numbers'
                                 disabled={this.state.uploading}
                                 onKeyDown={this.onKeyDown}
+                                onPaste={this.onPaste}
                                 autoFocus
                             />
                             <IconButton disabled={this.state.uploading} onClick={() => this.handleCreateChip()}>

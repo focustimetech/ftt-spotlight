@@ -118,7 +118,6 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     replaceChip = (newChip: CheckInChip, index: number) => {
-        console.log(`replaceChip (newChip, ${index})`)
         const newChips: CheckInChip[] = this.state.chips.reduce((acc: CheckInChip[], chip: CheckInChip, idx: number) => {
             if (index === idx)
                 acc.push(newChip)
@@ -130,12 +129,9 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     fetchStudent = (chip: CheckInChip) => {
-        console.log('fetchStudent()')
-        if (chip.type !== 'student_number') {
-            console.log('RETE')
+        if (chip.type !== 'student_number')
             return
-        }
-        console.log('searching; this.state.chips:', this.state.chips)
+
         const index: number = this.findChip(chip)
         let replacementChip: CheckInChip = { ...chip, loading: false }
         axios.get(`http://localhost:8000/api/students/student-number/${chip.value}`)

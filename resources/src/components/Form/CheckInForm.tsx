@@ -15,12 +15,14 @@ import {
 } from '@material-ui/core'
 
 import { checkIn } from '../../actions/checkinActions'
-import { ICheckInRequest, CheckInChip } from '../../types/checkin'
+import { ILedgerEntry } from '../../types/calendar'
+import { ICheckInRequest, CheckInChip, ICheckInResponse } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { LoadingIconButton } from './LoadingIconButton'
 import { ModalSection } from '../ModalSection'
 
 interface ReduxProps {
+    checkInResponse: ICheckInResponse
     checkIn: (request: ICheckInRequest) => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
@@ -152,15 +154,21 @@ class CheckInForm extends React.Component<IProps, IState> {
             })
     }
 
+    handleOpenErrorsDialog = () => {
+        console.log('Opened errors dialog.')
+    }
+
     handleSubmit = () => {
         this.setState({ uploading: true }, () => {
-            this.handleCreateChip()
+            if (this.state.inputValue.length > 0)
+                this.handleCreateChip()
         })
         let request: ICheckInRequest = {
             student_numbers: [],
             student_ids: [],
             date_time: this.props.dateTime
         }
+        console.log('REQ:', request)
         this.state.chips.forEach((chip: CheckInChip) => {
             if (chip.type === 'student_number')
                 request.student_numbers.push(chip.value)
@@ -171,7 +179,20 @@ class CheckInForm extends React.Component<IProps, IState> {
             .then((res: any) => {
                 if (this.props.didCheckIn) {
                     this.props.didCheckIn().then(() => {
-                        this.props.queueSnackbar({ message: 'Checked in students successfully.', key: 'CHECKED_IN_SUCCESSFULLY' })
+                        console.log('RESP:', this.props.checkInResponse)
+                        const success: ILedgerEntry[] = this.props.checkInResponse.success
+                        const errors: string[] = this.props.checkInResponse.errors
+                        //console.log('const error: string[] = ', error)
+                        const message: string = success.length > 0
+                            ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0
+                                ? `, but ${errors.length} ${errors.length === 1 ? 'entry' : 'entries'} could not be resolved` : ''
+                            }.`
+                            : 'No students could be checked in.'
+                        this.props.queueSnackbar({
+                            message,
+                            buttons: errors && errors.length > 0 ? [{ value: 'Show Errors', callback: () => this.handleOpenErrorsDialog() }] : undefined,
+                            key: 'CHECKED_IN_SUCCESSFULLY'
+                        })
                         this.setState({
                             uploading: false,
                             chips: [],
@@ -251,9 +272,12 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 }
 
+const mapStateToProps = (state: any) => ({
+    checkInResponse: state.checkin.response
+})
 const mapDispatchToProps = {
     checkIn,
     queueSnackbar
 }
 
-export default connect(null, mapDispatchToProps)(CheckInForm)
+export default connect(mapStateToProps, mapDispatchToProps)(CheckInForm)

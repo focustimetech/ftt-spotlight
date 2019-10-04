@@ -25,7 +25,7 @@ export interface ICheckInRequest {
 export interface ICheckInResponse {
     success: ILedgerEntry[]
     timestamp_string: string
-    error?: string[]
+    errors?: string[]
 }
 
 interface StudentNumberChip {

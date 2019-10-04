@@ -71,6 +71,7 @@ class LedgerController extends Controller
                 } else {
                     array_push($error, $student_number);
                 }
+                // dd($error);
             }
         }
 
@@ -93,7 +94,7 @@ class LedgerController extends Controller
         return [
             'success' => LedgerResource::collection($ledger_entries),
             'errors' => $error,
-            'timestamp_string'
+            'timestamp_string' => date('D M j, Y H:i:s')
         ];
     }
 

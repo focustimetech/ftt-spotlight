@@ -282,8 +282,7 @@ class CheckIn extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
-    checkInStatus: state.checkin.status,
-    checkInResponse: state.checkin.response
+    checkInStatus: state.checkin.status
 })
 const mapDispatchToProps = { checkIn, fetchCheckInStatus, queueSnackbar }
 

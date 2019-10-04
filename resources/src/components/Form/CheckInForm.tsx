@@ -95,7 +95,8 @@ class CheckInForm extends React.Component<IProps, IState> {
                     duplicateIndex: -1,
                     inputValue: ''
                 }), () => {
-                    this.fetchStudent(newChip)
+                    if (!this.state.uploading)
+                        this.fetchStudent(newChip)
                 })
             } else {
                 this.setState({ duplicateIndex: index })
@@ -152,11 +153,20 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleSubmit = () => {
-        this.setState({ uploading: true })
-        const request: ICheckInRequest = {
-            student_numbers: this.state.inputValue.split(','),
+        this.setState({ uploading: true }, () => {
+            this.handleCreateChip()
+        })
+        let request: ICheckInRequest = {
+            student_numbers: [],
+            student_ids: [],
             date_time: this.props.dateTime
         }
+        this.state.chips.forEach((chip: CheckInChip) => {
+            if (chip.type === 'student_number')
+                request.student_numbers.push(chip.value)
+            else
+                request.student_ids.push(chip.value.id)
+        })
         this.props.checkIn(request)
             .then((res: any) => {
                 if (this.props.didCheckIn) {
@@ -164,14 +174,13 @@ class CheckInForm extends React.Component<IProps, IState> {
                         this.props.queueSnackbar({ message: 'Checked in students successfully.', key: 'CHECKED_IN_SUCCESSFULLY' })
                         this.setState({
                             uploading: false,
-                            inputValue: ''
+                            chips: [],
                         })
                     })
                 } else {
                     this.props.queueSnackbar({ message: 'Checked in students successfully.', key: 'CHECKED_IN_SUCCESSFULLY' })
                     this.setState({
-                        uploading: false,
-                        inputValue: ''
+                        uploading: false
                     })
                 }
             })

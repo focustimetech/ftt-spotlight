@@ -46,7 +46,7 @@ class ErrorsDialog extends React.Component<IProps> {
                                     <Typography className='check-in_error_header'>{error.timestamp_string}</Typography>
                                     <Typography>
                                         {error.errors.map((errorString: string) => (<span className='check-in_error'>{errorString}</span>))
-                                            .reduce((prev: string, curr: string) => [prev, ', ', curr])
+                                            .reduce((prev: string, curr: string) => [prev, ', ', curr], [])
                                         }
                                     </Typography>
                                 </>

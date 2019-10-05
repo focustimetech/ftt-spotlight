@@ -166,7 +166,8 @@ class CheckInForm extends React.Component<IProps, IState> {
         const success: ILedgerEntry[] = this.props.checkInResponse.success
         const errors: string[] = this.props.checkInResponse.errors
         const timestamp_string: string = this.props.checkInResponse.timestamp_string
-        appendToLocalStorageArray('check-in-errors', { errors, timestamp_string })
+        if (errors.length > 0)
+            appendToLocalStorageArray('check-in-errors', { errors, timestamp_string })
         const message: string = success.length > 0
             ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0
                 ? `, but ${errors.length} ${errors.length === 1 ? 'entry' : 'entries'} could not be resolved` : ''

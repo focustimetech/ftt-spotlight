@@ -50,8 +50,8 @@ class LedgerController extends Controller
         $check_in_time = date('H:i:s');
 
         $student_numbers = $request->input('student_numbers') ?? [];
-        $student_ids = $request->input('student_ids') ?? [];
-        foreach ($student_ids as $student_id) {
+        $scheduled_ids = $request->input('scheduled_ids') ?? [];
+        foreach ($scheduled_ids as $student_id) {
             LedgerEntry::create([
                 'date' => $date,
                 'time' => $check_in_time,
@@ -61,7 +61,7 @@ class LedgerController extends Controller
                 'method' => 2
             ]);
         }
-        $student_ids = [];
+        $student_ids = $request->input('student_ids') ?? [];
         $error = [];
         if (count($student_numbers) > 0) {
             foreach ($student_numbers as $student_number) {
@@ -71,8 +71,10 @@ class LedgerController extends Controller
                 } else {
                     array_push($error, $student_number);
                 }
+                // dd($error);
             }
         }
+
         $ledger_entries = collect();
         foreach ($student_ids as $student_id) {
             $entry = new LedgerEntry;
@@ -91,7 +93,8 @@ class LedgerController extends Controller
 
         return [
             'success' => LedgerResource::collection($ledger_entries),
-            'errors' => $error
+            'errors' => $error,
+            'timestamp_string' => date('D M j, Y H:i:s')
         ];
     }
 

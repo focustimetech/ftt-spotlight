@@ -11,7 +11,8 @@ import {
     Icon,
     IconButton,
     InputBase,
-    Paper
+    Paper,
+    Tooltip
 } from '@material-ui/core'
 
 import { checkIn } from '../../actions/checkinActions'
@@ -44,6 +45,8 @@ interface IState {
 }
 
 class CheckInForm extends React.Component<IProps, IState> {
+    keyBuffer: number[]
+
     state: IState = {
         chips: [],
         duplicateIndex: -1,
@@ -70,9 +73,11 @@ class CheckInForm extends React.Component<IProps, IState> {
             if (this.state.inputValue.length === 0)
                 this.handleRemoveChip(this.state.chips[this.state.chips.length - 1])
 
-        } else if ([188, 13, 32].includes(event.keyCode)) {
+        } else if ([188, 13, 32].includes(event.keyCode)) { // Comma, Enter, Space
             event.preventDefault()
-            if (this.state.inputValue.length > 0) {
+            if (event.ctrlKey && event.keyCode === 13) { // Enter + Ctrl
+                this.handleSubmit()
+            } else if (this.state.inputValue.length > 0) {
                 this.handleCreateChip()
             }
         }
@@ -228,6 +233,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
+        this.keyBuffer = []
         const localStorageChips = makeArray(getObjectFromLocalStorage('check-in-chips')) as CheckInChip[]
         if (localStorageChips.length > 0) {
             console.log('localStorageChips:', localStorageChips)
@@ -277,18 +283,22 @@ class CheckInForm extends React.Component<IProps, IState> {
                                 onPaste={this.onPaste}
                                 autoFocus
                             />
-                            <IconButton disabled={this.state.uploading} onClick={() => this.handleCreateChip()}>
-                                <Icon>keyboard_return</Icon>
-                            </IconButton>
+                            <Tooltip title='Add [Enter]'>
+                                <IconButton disabled={this.state.uploading} onClick={() => this.handleCreateChip()}>
+                                    <Icon>keyboard_return</Icon>
+                                </IconButton>
+                            </Tooltip>
                             <Divider className='chip-textfield__divider' orientation='vertical' />
-                            <LoadingIconButton
-                                color='primary'
-                                loading={this.state.uploading}
-                                onClick={() => this.handleSubmit()}
-                                disabled={this.state.chips.length === 0}
-                            >
-                                <Icon>cloud_upload</Icon>
-                            </LoadingIconButton>
+                            <Tooltip title='Submit [Ctrl + Enter]'>
+                                <LoadingIconButton
+                                    color='primary'
+                                    loading={this.state.uploading}
+                                    onClick={() => this.handleSubmit()}
+                                    disabled={this.state.chips.length === 0}
+                                >
+                                    <Icon>cloud_upload</Icon>
+                                </LoadingIconButton>
+                            </Tooltip>
                         </div>
                     </div>
                 </Paper>

@@ -195,7 +195,7 @@ class CheckIn extends React.Component<IProps, IState> {
                     breadcrumbs={[{ value: 'Check-in' }]}
                     actions={(
                         <Tooltip title='List Errors'>
-                            <IconButton onClick={() => this.handleOpenErrorsDialog()}><Icon>warning</Icon></IconButton>
+                            <IconButton onClick={() => this.handleOpenErrorsDialog()}><Icon>error_outline</Icon></IconButton>
                         </Tooltip>
                     )}
                 />

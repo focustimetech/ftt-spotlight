@@ -18,6 +18,7 @@ import { checkIn } from '../../actions/checkinActions'
 import { ILedgerEntry } from '../../types/calendar'
 import { ICheckInRequest, CheckInChip, ICheckInResponse } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { appendToLocalStorageArray, writeObjectToLocalStorage, getObjectFromLocalStorage, makeArray } from '../../utils/utils'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
 
@@ -84,6 +85,8 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleCreateChip = (value?: string) => {
+        if (!value && this.state.inputValue.length === 0)
+            return
         const chipValues: string[] = value ? value.split(/[\s,]+/) : [this.state.inputValue]
         chipValues.forEach((chipValue: string) => {
             const newChip: CheckInChip = {
@@ -100,6 +103,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                 }), () => {
                     if (!this.state.uploading)
                         this.fetchStudent(newChip)
+                    writeObjectToLocalStorage('check-in-chips', this.state.chips)
                 })
             } else {
                 this.setState({ duplicateIndex: index })
@@ -112,7 +116,9 @@ class CheckInForm extends React.Component<IProps, IState> {
         this.setState((state: IState) => ({
             chips: state.chips.filter((existingChip: CheckInChip, index: number) => index !== removeIndex),
             duplicateIndex: -1
-        }))
+        }), () => {
+            writeObjectToLocalStorage('check-in-chips', this.state.chips)
+        })
     }
 
     findChip = (chip: CheckInChip): number => {
@@ -155,6 +161,28 @@ class CheckInForm extends React.Component<IProps, IState> {
             })
     }
 
+    showResults = () => {
+        const success: ILedgerEntry[] = this.props.checkInResponse.success
+        const errors: string[] = this.props.checkInResponse.errors
+        const timestamp_string: string = this.props.checkInResponse.timestamp_string
+        appendToLocalStorageArray('check-in-errors', { errors, timestamp_string })
+        const message: string = success.length > 0
+            ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0
+                ? `, but ${errors.length} ${errors.length === 1 ? 'entry' : 'entries'} could not be resolved` : ''
+            }.`
+            : 'No students could be checked in.'
+        this.props.queueSnackbar({
+            message,
+            buttons: errors && errors.length > 0 && this.props.handleOpenErrorsDialog ? [{
+                value: 'Show Errors', callback: () => this.props.handleOpenErrorsDialog()
+            }] : undefined,
+            links: !this.props.handleOpenErrorsDialog ? [{
+                value: 'Show Errors', to: '/check-in/#errors'
+            }] : undefined,
+            key: 'CHECKED_IN_SUCCESSFULLY'
+        })
+    }
+
     handleSubmit = () => {
         this.setState({ uploading: true }, () => {
             if (this.state.inputValue.length > 0)
@@ -165,7 +193,6 @@ class CheckInForm extends React.Component<IProps, IState> {
             student_ids: [],
             date_time: this.props.dateTime
         }
-        console.log('REQ:', request)
         this.state.chips.forEach((chip: CheckInChip) => {
             if (chip.type === 'student_number')
                 request.student_numbers.push(chip.value)
@@ -173,35 +200,18 @@ class CheckInForm extends React.Component<IProps, IState> {
                 request.student_ids.push(chip.value.id)
         })
         this.props.checkIn(request)
-            .then((res: any) => {
+            .then(() => {
                 if (this.props.didCheckIn) {
                     this.props.didCheckIn().then(() => {
-                        console.log('RESP:', this.props.checkInResponse)
-                        const success: ILedgerEntry[] = this.props.checkInResponse.success
-                        const errors: string[] = this.props.checkInResponse.errors
-                        //console.log('const error: string[] = ', error)
-                        const message: string = success.length > 0
-                            ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0
-                                ? `, but ${errors.length} ${errors.length === 1 ? 'entry' : 'entries'} could not be resolved` : ''
-                            }.`
-                            : 'No students could be checked in.'
-                        this.props.queueSnackbar({
-                            message,
-                            buttons: errors && errors.length > 0 && this.props.handleOpenErrorsDialog ? [{
-                                value: 'Show Errors', callback: () => this.props.handleOpenErrorsDialog()
-                            }] : undefined,
-                            links: !this.props.handleOpenErrorsDialog ? [{
-                                value: 'Show Errors', to: '/check-in/#errors'
-                            }] : undefined,
-                            key: 'CHECKED_IN_SUCCESSFULLY'
-                        })
+                        this.showResults()
                         this.setState({
                             uploading: false,
                             chips: [],
                         })
+                        localStorage.removeItem('check-in-chips')
                     })
                 } else {
-                    this.props.queueSnackbar({ message: 'Checked in students successfully.', key: 'CHECKED_IN_SUCCESSFULLY' })
+                    this.showResults()
                     this.setState({
                         uploading: false
                     })
@@ -213,6 +223,12 @@ class CheckInForm extends React.Component<IProps, IState> {
                     uploading: false
                 })
             })
+    }
+
+    componentDidMount() {
+        this.setState({ chips: makeArray(getObjectFromLocalStorage('check-in-chips')) as CheckInChip[] }, () => {
+            this.state.chips.forEach((chip: CheckInChip) => { this.fetchStudent(chip) })
+        })
     }
 
     render() {

@@ -24,6 +24,7 @@ import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { getMethodDetailsFromName } from '../../utils/utils'
 import { ICheckInMethodDetails } from '../../types/calendar'
 import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
+import { Banner } from '../Banner/Banner'
 import CheckInForm from './CheckInForm'
 import ErrorsDialog from './ErrorsDialog'
 import { TopNav } from '../TopNav'
@@ -41,6 +42,7 @@ interface ReduxProps {
 interface IProps extends ReduxProps, RouteComponentProps {}
 
 interface IState {
+    bannerOpen: boolean
     date: Date
     datePickerOpen: boolean
     errorsDialogOpen: boolean
@@ -50,6 +52,7 @@ interface IState {
 
 class CheckIn extends React.Component<IProps, IState> {
     state: IState = {
+        bannerOpen: false,
         date: new Date(),
         datePickerOpen: false,
         errorsDialogOpen: false,
@@ -133,6 +136,14 @@ class CheckIn extends React.Component<IProps, IState> {
         this.setState({ errorsDialogOpen: false })
     }
 
+    handleBannerClose = () => {
+        this.setState({ bannerOpen: false })
+    }
+
+    handleBannerOpen = () => {
+        this.setState({ bannerOpen: true })
+    }
+
     componentDidMount() {
         if (this.props.location.hash === '#errors')
             this.setState({ errorsDialogOpen: true })
@@ -140,7 +151,6 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log(this.state)
         const scheduled: ISelectableListItem[] = this.props.checkInStatus.blocks.length > 0 ? (
             this.props.checkInStatus.blocks[0].planned.map((plan: ISchedulePlan) => {
                 return { id: plan.student.id, label: plan.student.name }
@@ -190,6 +200,13 @@ class CheckIn extends React.Component<IProps, IState> {
 
         return (
             <div className='content' id='content'>
+                <Banner
+                    variant='static'
+                    icon='cloud_upload'
+                    message="You have students that still need to be checked in. Click the Upload button as soon as you're ready to submit."
+                    open={this.state.bannerOpen}
+                    onClose={this.handleBannerClose}
+                />
                 <ErrorsDialog open={this.state.errorsDialogOpen} onClose={this.handleCloseErrorsDialog} />
                 <TopNav
                     breadcrumbs={[{ value: 'Check-in' }]}
@@ -249,6 +266,7 @@ class CheckIn extends React.Component<IProps, IState> {
                         <CheckInForm
                             dateTime={this.props.checkInStatus.date.full_date}
                             didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
+                            didReceivedChips={() => this.handleBannerOpen()}
                             handleOpenErrorsDialog={this.handleOpenErrorsDialog}
                         />
                         <ModalSection

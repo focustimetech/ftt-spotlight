@@ -32,6 +32,7 @@ interface IProps extends ReduxProps {
     dateTime?: string
     didCheckIn?: () => Promise<any>
     handleOpenErrorsDialog?: () => void
+    didReceivedChips?: () => void
 }
 
 interface IState {
@@ -226,9 +227,14 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.setState({ chips: makeArray(getObjectFromLocalStorage('check-in-chips')) as CheckInChip[] }, () => {
-            this.state.chips.forEach((chip: CheckInChip) => { this.fetchStudent(chip) })
-        })
+        const localStorageChips = makeArray(getObjectFromLocalStorage('check-in-chips')) as CheckInChip[]
+        if (localStorageChips.length > 0) {
+            console.log('localStorageChips:', localStorageChips)
+            this.setState({ chips: localStorageChips }, () => {
+                this.state.chips.forEach((chip: CheckInChip) => { this.fetchStudent(chip) })
+            })
+            this.props.didReceivedChips()
+        }
     }
 
     render() {

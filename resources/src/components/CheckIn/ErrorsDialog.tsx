@@ -13,7 +13,6 @@ import {
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { getObjectFromLocalStorage, writeObjectToLocalStorage, makeArray } from '../../utils/utils'
-import { EmptyStateIcon } from '../EmptyStateIcon'
 
 interface ReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
@@ -53,13 +52,7 @@ class ErrorsDialog extends React.Component<IProps> {
                             ))}
                         </>
                     ) : (
-                        /**
-                         * @TODO Change the starred variant into a green checkmark or something similar.
-                         */
-                        <EmptyStateIcon variant='starred'>
-                            <h2>No errors yet</h2>
-                            <h3>Student numbers you enter but don't resolve will appear here.</h3>
-                        </EmptyStateIcon>
+                        <DialogContentText>No errors yet. Student numbers you enter but don't resolve will appear here.</DialogContentText>
                     )}
                     <DialogActions>
                         {hasErrors && (

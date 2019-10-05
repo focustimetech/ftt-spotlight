@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core'
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { getObjectFromLocalStorage, writeObjectToLocalStorage, makeArray } from '../../utils/utils'
+import { getObjectFromLocalStorage, makeArray } from '../../utils/utils'
 
 interface ReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void

@@ -267,6 +267,7 @@ class CheckIn extends React.Component<IProps, IState> {
                             dateTime={this.props.checkInStatus.date.full_date}
                             didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
                             didReceivedChips={() => this.handleBannerOpen()}
+                            didSubmit={() => this.handleBannerClose()}
                             handleOpenErrorsDialog={this.handleOpenErrorsDialog}
                         />
                         <ModalSection

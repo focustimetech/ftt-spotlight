@@ -34,6 +34,7 @@ interface IProps extends ReduxProps {
     didCheckIn?: () => Promise<any>
     handleOpenErrorsDialog?: () => void
     didReceivedChips?: () => void
+    didSubmit?: () => void
 }
 
 interface IState {
@@ -191,6 +192,8 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleSubmit = () => {
+        if (this.props.didSubmit)
+            this.props.didSubmit()
         this.setState({ uploading: true }, () => {
             if (this.state.inputValue.length > 0)
                 this.handleCreateChip()

@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-// import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import {
 	BrowserRouter as Router,
 	Redirect,
@@ -8,7 +7,6 @@ import {
 	Switch,
 	RouteComponentProps
 } from 'react-router-dom'
-import { Fade } from '@material-ui/core'
 
 import { setAuthorizationToken } from '../../utils/setAuthorizationToken'
 import { getCurrentUser } from '../../actions/authActions'
@@ -33,7 +31,6 @@ interface IState {
 	loadingUser: boolean
 	loadingSettings: boolean
 	loadingUnauthenticatedSettings: boolean
-	loaded: boolean
 	loginImageLoaded: boolean
 	passwordState: 'loading' | 'expired' | 'valid' | 'cancelled'
 }
@@ -45,7 +42,6 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 		loadingUser: true,
 		loadingSettings: true,
 		loadingUnauthenticatedSettings: false,
-		loaded: false,
 		loginImageLoaded: false,
 		passwordState: 'loading'
 	}
@@ -90,26 +86,14 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 			})
 	}
 
-	/**
-	 * @TODO Delete this? as well as IState.loaded?
-	 */
-	onLoaded = () => {
-		this.setState({ loaded: true })
-	}
-
 	handleLoginImageLoaded = () => {
 		this.setState({ loginImageLoaded: true })
 	}
-/*
-	authenticate = (): Promise<any> => {
-		
-	}
-*/
+
 	componentDidMount() {
 		if (!this.state.loadingSettings || !this.state.loadingUser)
 			this.setState({ loadingSettings: true, loadingUser: true })
 		if (this.isAuthenticated()) {
-			// console.log('isAuthenticated.')
 			return this.fetchCurrentUser()
 				.then(() => {
 					this.props.fetchSettings()
@@ -158,7 +142,6 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 	}
 
 	render() {
-		console.log(this.state)
 		const passwordExpired: boolean = this.state.passwordState === 'expired'
 		const passwordCancelled: boolean = this.state.passwordState === 'cancelled'
 		const isLoading: boolean = this.state.loadingUser || this.state.loadingSettings || this.state.loadingUnauthenticatedSettings
@@ -167,18 +150,14 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 	
 		return (
 			<>
-
-
-						<Splash in={showSplash} showChildren={passwordExpired || passwordCancelled}>
-							<ChangePasswordWidget
-								variant='persistant'
-								disallowed={this.props.currentUser ? [this.props.currentUser.username] : undefined}
-								onClose={this.handleSignOut}
-								onChangePassword={this.handlePasswordChange}
-							/>
-						</Splash>
-
-
+				<Splash in={showSplash} showChildren={passwordExpired || passwordCancelled}>
+					<ChangePasswordWidget
+						variant='persistant'
+						disallowed={this.props.currentUser ? [this.props.currentUser.username] : undefined}
+						onClose={this.handleSignOut}
+						onChangePassword={this.handlePasswordChange}
+					/>
+				</Splash>
 				<Router>
 					<Switch>
 						<Route

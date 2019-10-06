@@ -8,12 +8,6 @@
 
 .splash {
 	position: relative;
-	//z-index: 100;
-	//left: 0;
-	//top: 0;
-	//width: 100vw;
-	//height: 100vh;
-	// pointer-events: none;
 
 	&__inner {
 		position: fixed;
@@ -21,7 +15,6 @@
 		z-index: 110;
 		width: 100vw;
 		height: 100vh;
-		// pointer-events: all;
 	}
 		
 	&__content {

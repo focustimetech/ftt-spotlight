@@ -43,6 +43,7 @@ interface IProps extends ReduxProps, RouteComponentProps {
 	authState: AuthState
 	failedSettings: boolean
 	onSignIn: () => Promise<any>
+	onImageLoad: () => void
 }
 
 interface IState {
@@ -98,15 +99,20 @@ class Login extends React.Component<IProps, IState> {
 			username: this.state.user,
 			password: this.state.password
 		}
+		let loginError: ILoginError = null
 		this.props.login(credentials)
 			.then(() => {
 				this.props.onSignIn()
 					.then(() => {
 						this.props.onSignIn()
 						this.setState({ redirectToReferrer: true })
+					}, () => {
+						loginError = {
+							type: 'username',
+							message: 'Unable to download app settings. Please try again.'
+						}
 					})
 			}, (error: any) => {
-				let loginError: ILoginError = null
 				switch (error.response.status) {
 					case 404:
 						loginError = {
@@ -162,6 +168,7 @@ class Login extends React.Component<IProps, IState> {
 				width: this.boundingBox.clientWidth
 			}
 		})
+		this.props.onImageLoad()
 	}
 
 	componentDidMount() {

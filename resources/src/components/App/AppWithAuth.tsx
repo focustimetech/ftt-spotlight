@@ -17,6 +17,7 @@ import { AuthState, IUser } from '../../types/auth'
 import { Splash } from './Splash'
 import App from './App'
 import Login from '../Views/Login'
+import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
 
 interface ReduxProps {
 	getCurrentUser: () => Promise<any>
@@ -33,7 +34,8 @@ interface IState {
 	loadingSettings: boolean
 	loadingUnauthenticatedSettings: boolean
 	loaded: boolean
-	passwordState: 'loading' | 'expired' | 'valid'
+	loginImageLoaded: boolean
+	passwordState: 'loading' | 'expired' | 'valid' | 'cancelled'
 }
 
 class AppWithAuth extends React.Component<ReduxProps, IState> {
@@ -44,6 +46,7 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 		loadingSettings: true,
 		loadingUnauthenticatedSettings: false,
 		loaded: false,
+		loginImageLoaded: false,
 		passwordState: 'loading'
 	}
 
@@ -62,50 +65,85 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 
 	handleSignOut = (authState?: AuthState) => {
 		this.setState((state: IState) => {
-			if (state.authState !== 'sign-in' || state.authState === authState || !authState)
-				return
-			return { authState }
+			return {
+				authState: state.authState !== 'sign-in' || state.authState === authState || !authState
+					? state.authState
+					: authState,
+				passwordState: 'cancelled'
+			}
 		})
 		setAuthorizationToken(null)
 		this.forceUpdate()
 	}
 
 	onSignIn = (): Promise<any> => {
-		return this.props.fetchSettings()
+		this.setState({
+			loadingSettings: true,
+			loadingUser: true,
+			passwordState: 'valid'
+		})
+		return this.fetchSettings()
 			.then(() => {
-				return this.props.getCurrentUser()
+				return this.fetchCurrentUser()
 			}, () => {
 				this.handleSignOut('failed-settings')
 			})
 	}
 
+	/**
+	 * @TODO Delete this? as well as IState.loaded?
+	 */
 	onLoaded = () => {
 		this.setState({ loaded: true })
 	}
 
+	handleLoginImageLoaded = () => {
+		this.setState({ loginImageLoaded: true })
+	}
+/*
+	authenticate = (): Promise<any> => {
+		
+	}
+*/
 	componentDidMount() {
+		if (!this.state.loadingSettings || !this.state.loadingUser)
+			this.setState({ loadingSettings: true, loadingUser: true })
 		if (this.isAuthenticated()) {
-			this.props.getCurrentUser()
+			// console.log('isAuthenticated.')
+			return this.fetchCurrentUser()
 				.then(() => {
-					this.setState({
-						loadingUser: false,
-						passwordState: this.props.currentUser.password_expired ? 'expired' : 'valid'
-					})
+					this.props.fetchSettings()
+						.then(() => {
+							this.setState({ loadingSettings: false })
+						}, () => {
+							this.fetchUnauthenticatedSettings()
+							this.handleSignOut('failed-settings')
+						})
 				}, () => {
 					this.fetchUnauthenticatedSettings() // Fall back on unauthenticated settings	
 					this.handleSignOut('unauthenticated')
 				})
-			this.props.fetchSettings()
-				.then(() => {
-					this.setState({ loadingSettings: false })
-				}, () => {
-					this.fetchUnauthenticatedSettings()
-					this.handleSignOut('failed-settings')
-				})
 		} else {
 			this.setState({ loadingUser: false, loadingSettings: false, loadingUnauthenticatedSettings: true })
 			this.fetchUnauthenticatedSettings()
-		}	
+		}
+	}
+
+	fetchCurrentUser = (): Promise<any> => {
+		return this.props.getCurrentUser()
+			.then(() => {
+				this.setState({
+					loadingUser: false,
+					passwordState: this.props.currentUser.password_expired ? 'expired' : 'valid'
+				})
+			})
+	}
+
+	fetchSettings = (): Promise<any> => {
+		return this.props.fetchSettings()
+			.then(() => {
+				this.setState({ loadingSettings: false })
+			})
 	}
 
 	fetchUnauthenticatedSettings = (): Promise<any> => {
@@ -120,40 +158,49 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 	}
 
 	render() {
+		console.log(this.state)
 		const passwordExpired: boolean = this.state.passwordState === 'expired'
-		const isLoading: boolean = this.state.loadingUser || this.state.loadingSettings || this.state.loadingUnauthenticatedSettings || passwordExpired
+		const passwordCancelled: boolean = this.state.passwordState === 'cancelled'
+		const isLoading: boolean = this.state.loadingUser || this.state.loadingSettings || this.state.loadingUnauthenticatedSettings
+		const isAuthenticated: boolean = this.isAuthenticated()
+		const showSplash: boolean = (isAuthenticated && (isLoading || passwordExpired)) || !this.state.loginImageLoaded
+	
 		return (
 			<>
-				<Fade in={isLoading} timeout={{enter: 0, exit: 500 }} >
-					<div>
-						<Splash
-							passwordExpired={passwordExpired}
-							username={this.props.currentUser ? this.props.currentUser.username : undefined}
-							onSignOut={this.handleSignOut}
-							onChangePassword={this.handlePasswordChange}
-						/>
-					</div>
-				</Fade>
-				{!isLoading && (
-					<Router>
-						<Switch>
-							<Route
-								path='/login'
-								render={(props: RouteComponentProps) => (
-									<Login
-										{...props}
-										onSignIn={this.onSignIn}
-										authState={this.state.authState}
-										failedSettings={this.state.failedSettings}
-									/>
-								)}
+
+
+						<Splash in={showSplash} showChildren={passwordExpired || passwordCancelled}>
+							<ChangePasswordWidget
+								variant='persistant'
+								disallowed={this.props.currentUser ? [this.props.currentUser.username] : undefined}
+								onClose={this.handleSignOut}
+								onChangePassword={this.handlePasswordChange}
 							/>
+						</Splash>
+
+
+				<Router>
+					<Switch>
+						<Route
+							path='/login'
+							render={(props: RouteComponentProps) => (
+								<Login
+									{...props}
+									onSignIn={this.onSignIn}
+									authState={this.state.authState}
+									failedSettings={this.state.failedSettings}
+									onImageLoad={this.handleLoginImageLoaded}
+								/>
+							)}
+						/>
+						{!(isLoading || passwordExpired) && (
 							<Route path='/' render={(props) => {
 								return this.isAuthenticated() ? (
 									<App
 										onSignOut={this.handleSignOut}
 										currentUser={this.props.currentUser}
 										settings={this.props.settings}
+										didMount={this.handleLoginImageLoaded}
 									/>
 								) : (
 									<Redirect
@@ -164,9 +211,9 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 									/>
 								)
 							}} />
-						</Switch>
-					</Router>
-				)}
+						)}
+					</Switch>
+				</Router>
 			</>
 		)
 	}

@@ -24,12 +24,17 @@ import StaffProfile from '../Views/StaffProfile'
 import PowerScheduler from '../Views/PowerScheduler'
 
 interface IProps {
-	onSignOut: () => void
 	currentUser: IUser
 	settings: any
+	onSignOut: () => void
+	didMount: () => void
 }
 
 export default class App extends React.Component<IProps> {
+	componentDidMount() {
+		this.props.didMount()
+	}
+
 	render() {
 		return (
 			<>

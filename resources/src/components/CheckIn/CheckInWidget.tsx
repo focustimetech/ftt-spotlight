@@ -4,9 +4,9 @@ import {
     Dialog,
 } from '@material-ui/core'
 
-import CheckInForm from '../Form/CheckInForm'
+import CheckInForm from './CheckInForm'
 import { NavItem } from '../Sidebar/NavItem'
-import { EnhancedDialogTitle } from './EnhancedDialogTitle'
+import { EnhancedDialogTitle } from '../Modals/EnhancedDialogTitle'
 
 export const CheckInWidget = () => {
     const [open, setOpen] = React.useState(false)

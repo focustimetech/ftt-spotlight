@@ -1,8 +1,9 @@
 import { FETCH_CHECKIN_STATUS, CHECK_IN } from '../actions/types'
-import { CheckInStatus } from '../types/checkin'
+import { CheckInStatus, ICheckInResponse } from '../types/checkin'
 
 interface IState {
     status: CheckInStatus
+    response: ICheckInResponse
 }
 
 const initialState: IState = {
@@ -12,7 +13,8 @@ const initialState: IState = {
         next: '',
         previous: '',
         today: ''
-    }
+    },
+    response: null
 }
 
 interface IAction {
@@ -24,7 +26,13 @@ export const checkinReducer = (state = initialState, action: IAction) => {
     switch (action.type) {
         case FETCH_CHECKIN_STATUS:
             return {
+                ...state,
                 status: action.payload
+            }
+        case CHECK_IN:
+            return {
+                ...state,
+                response: action.payload
             }
         default:
             return state

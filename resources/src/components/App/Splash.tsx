@@ -1,34 +1,30 @@
 import * as React from 'react'
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Fade } from '@material-ui/core';
 
 import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
+import LoadingBadge from './LoadingBadge'
 
 interface IProps {
-    passwordExpired: boolean
-    username?: string
-    onChangePassword: () => void
-    onSignOut: () => void
+    in: boolean
+    children?: any
+    showChildren?: boolean
 }
 
 export const Splash = (props: IProps) => {
     return (
         <div className='splash' id='splash'>
-            <div className='splash__content'>
-                {props.passwordExpired ? (
-                    <ChangePasswordWidget
-                        isRequiredChange
-                        disallowed={[props.username]}
-                        variant='persistant'
-                        onClose={props.onSignOut}
-                        onChangePassword={props.onChangePassword}
-                    />
-                ) : (
-                    <>
-                        <CircularProgress disableShrink />
-                        <h3>Loading Spotlight...</h3>
-                    </>
-                )}
-            </div>
+            <Fade in={props.in} unmountOnExit>
+                <div className='splash__inner'>
+                    <div className='splash__content'>
+                        <LoadingBadge />
+                        <Fade in={props.showChildren}>
+                            <div>
+                                {props.children}
+                            </div>
+                        </Fade>
+                    </div>
+                </div>
+            </Fade>
         </div>
     )
 }

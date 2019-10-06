@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { RouteComponentProps } from 'react-router-dom'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import ContentLoader from 'react-content-loader'
@@ -23,7 +24,9 @@ import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { getMethodDetailsFromName } from '../../utils/utils'
 import { ICheckInMethodDetails } from '../../types/calendar'
 import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
-import CheckInForm from '../Form/CheckInForm'
+import { Banner } from '../Banner/Banner'
+import CheckInForm from './CheckInForm'
+import ErrorsDialog from './ErrorsDialog'
 import { TopNav } from '../TopNav'
 import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
 import { ModalSection } from '../ModalSection'
@@ -36,19 +39,23 @@ interface ReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {}
+interface IProps extends ReduxProps, RouteComponentProps {}
 
 interface IState {
+    bannerOpen: boolean
     date: Date
     datePickerOpen: boolean
+    errorsDialogOpen: boolean
     loadingStatus: boolean
     scheduledSelected: number[]
 }
 
 class CheckIn extends React.Component<IProps, IState> {
     state: IState = {
+        bannerOpen: false,
         date: new Date(),
         datePickerOpen: false,
+        errorsDialogOpen: false,
         loadingStatus: false,
         scheduledSelected: []
     }
@@ -88,7 +95,7 @@ class CheckIn extends React.Component<IProps, IState> {
 
     handleScheduledCheckIn = (selected: (string | number)[]): Promise<any> => {
         const request: ICheckInRequest = {
-            student_ids: this.state.scheduledSelected,
+            scheduled_ids: this.state.scheduledSelected,
             date_time: this.props.checkInStatus.date.full_date
         }
         return this.props.checkIn(request) 
@@ -121,7 +128,25 @@ class CheckIn extends React.Component<IProps, IState> {
         }))
     }
 
+    handleOpenErrorsDialog = () => {
+        this.setState({ errorsDialogOpen: true })
+    }
+
+    handleCloseErrorsDialog = () => {
+        this.setState({ errorsDialogOpen: false })
+    }
+
+    handleBannerClose = () => {
+        this.setState({ bannerOpen: false })
+    }
+
+    handleBannerOpen = () => {
+        this.setState({ bannerOpen: true })
+    }
+
     componentDidMount() {
+        if (this.props.location.hash === '#errors')
+            this.setState({ errorsDialogOpen: true })
         this.fetchStatus()
     }
 
@@ -175,7 +200,22 @@ class CheckIn extends React.Component<IProps, IState> {
 
         return (
             <div className='content' id='content'>
-                <TopNav breadcrumbs={[{ value: 'Check-in' }]} />
+                <Banner
+                    variant='static'
+                    icon='cloud_upload'
+                    message="You have students that still need to be checked in. Click the Upload button as soon as you're ready to submit."
+                    open={this.state.bannerOpen}
+                    onClose={this.handleBannerClose}
+                />
+                <ErrorsDialog open={this.state.errorsDialogOpen} onClose={this.handleCloseErrorsDialog} />
+                <TopNav
+                    breadcrumbs={[{ value: 'Check-in' }]}
+                    actions={(
+                        <Tooltip title='List Errors'>
+                            <IconButton onClick={() => this.handleOpenErrorsDialog()}><Icon>error_outline</Icon></IconButton>
+                        </Tooltip>
+                    )}
+                />
                 {(this.state.loadingStatus && this.props.checkInStatus) ? (
                     <CheckInLoader />
                 ) : (
@@ -225,7 +265,11 @@ class CheckIn extends React.Component<IProps, IState> {
                         </ul>
                         <CheckInForm
                             dateTime={this.props.checkInStatus.date.full_date}
-                            didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }/>
+                            didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
+                            didReceivedChips={() => this.handleBannerOpen()}
+                            didSubmit={() => this.handleBannerClose()}
+                            handleOpenErrorsDialog={this.handleOpenErrorsDialog}
+                        />
                         <ModalSection
                             icon='event'
                             title='Scheduled'

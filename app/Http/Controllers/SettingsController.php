@@ -11,15 +11,23 @@ class SettingsController extends Controller
     public function index()
     {
         return [
-            'values' => Setting::all()->flatMap(function($setting) {
-                return [$setting->key => $setting];
-            }),
+            'values' => $this->mapSettings(Setting::all()),
             'groups' => SettingsGroup::all()
         ];
     }
 
-    public function update(Request $request)
+    private function mapSettings($settings)
     {
-        
+        return $settings->flatMap(function($setting) {
+            return [$setting->key => $setting];
+        });
+    }
+
+    public function getUnauthenticated()
+    {
+        return [
+            'values' => $this->mapSettings(Setting::where('authenticated', false)->get()),
+            'groups' => SettingsGroup::all()
+        ];
     }
 }

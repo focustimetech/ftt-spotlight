@@ -2,7 +2,8 @@
 .topics_dialog .color_swatch,
 .nav_avatar,
 .student_avatar,
-.profile_avatar {
+.profile_avatar,
+.chip_avatar {
     &.--red {
         background: $red;
     }
@@ -74,4 +75,8 @@
     &.--blue-grey {
         background: $blue-grey;
     }
+}
+
+.chip_avatar {
+    color: $on-primary !important;
 }

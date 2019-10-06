@@ -65,6 +65,14 @@
 				background-size: cover;
 				border-radius: 2px;
 				overflow: hidden;
+
+				&.--logo {
+					background: unset;
+				}
+
+				img {
+					width: 100%;
+				}
 			}
 
 			h4 {

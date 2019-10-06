@@ -1,4 +1,5 @@
 import { IFullDate, IBlock, ILedgerEntry, ISchedulePlan } from './calendar'
+import { IStudent } from './student';
 
 export interface CheckInStatusBlock {
     block: IBlock
@@ -17,5 +18,26 @@ export interface CheckInStatus {
 export interface ICheckInRequest {
     student_numbers?: string[]
     student_ids?: number[]
+    scheduled_ids?: number[]
     date_time?: string    
+}
+
+export interface ICheckInResponse {
+    success: ILedgerEntry[]
+    timestamp_string: string
+    errors?: string[]
+}
+
+interface StudentNumberChip {
+    type: 'student_number'
+    value: string
+}
+
+interface StudentIDChip {
+    type: 'id'
+    value: IStudent
+}
+
+export type CheckInChip = (StudentNumberChip | StudentIDChip) & {
+    loading: boolean
 }

@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 
 // Unauthenticates Routes
 Route::post('login', 'AuthController@login');
+Route::get('settings/unauthenticated', 'SettingsController@getUnauthenticated');
+
 Route::get('test-email', 'JobsController@processQueue');
 
 // App Start-up
@@ -84,6 +86,7 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     // Students
     Route::get('students', 'StudentsController@index');
     Route::get('students/{id}', 'StudentsController@show');
+    Route::get('students/student-number/{id}', 'StudentsController@getByStudentNumber');
     Route::get('students/profile/{id}', 'StudentsController@profile');
     Route::post('students', 'StudentsController@create');
     Route::post('students/upload', 'StudentsController@upload');

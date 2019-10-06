@@ -14,3 +14,16 @@ export const fetchSettings = () => {
             })
     }
 }
+
+export const fetchUnauthenticatedSettings = () => {
+    return (dispatch: any) => {
+        return axios.get('/api/settings/unauthenticated')
+            .then((res: any) => {
+                const settings = res.data
+                dispatch({
+                    type: FETCH_SETTINGS,
+                    payload: settings
+                })
+            })
+    }
+}

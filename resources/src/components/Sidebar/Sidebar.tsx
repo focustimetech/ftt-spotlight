@@ -8,7 +8,7 @@ import AccountWidget from './AccountWidget'
 import { MenuItem } from './MenuItem'
 import { NavItem } from './NavItem'
 import NotificationsWidget from '../Modals/NotificationsWidget'
-import { CheckInWidget } from '../Modals/CheckInWidget'
+import { CheckInWidget } from '../CheckIn/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
 import { HelpWidget } from './HelpWidget'
@@ -25,8 +25,9 @@ interface StyleProps {
 
 interface IProps extends ReduxProps, StyleProps {
 	onSignOut: () => void
-	loading: boolean
+	loading?: boolean
 	schoolName?: string
+	schoolLogo?: string
 }
 
 class Sidebar extends React.Component<IProps> {
@@ -95,7 +96,9 @@ class Sidebar extends React.Component<IProps> {
 						<>
 							{(!this.props.loading && this.props.schoolName) && (
 								<div className='menu_header'>
-									<div className='menu_header__logo'></div>
+									<div className={classNames('menu_header__logo', {['--logo']: this.props.schoolLogo})}>{this.props.schoolLogo && (
+										<img src={`/static/images/logos/${this.props.schoolLogo}`} />	
+									)}</div>
 									<h4>{this.props.schoolName}</h4>
 								</div>
 							)}

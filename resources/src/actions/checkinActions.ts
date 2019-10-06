@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { FETCH_CHECKIN_STATUS, CHECK_IN } from './types'
-import { ICheckInRequest } from '../types/checkin'
+import { ICheckInRequest, ICheckInResponse } from '../types/checkin'
 
 export const fetchCheckInStatus = (dateTime?: string) => {
     return (dispatch: any) => {
@@ -20,7 +20,7 @@ export const checkIn = (request: ICheckInRequest) => {
     return (dispatch: any) => {
         return axios.post('/api/check-in', request)
             .then((res: any) => {
-                const checkIn: any = res.data
+                const checkIn: ICheckInResponse = res.data
                 dispatch({
                     type: CHECK_IN,
                     payload: checkIn

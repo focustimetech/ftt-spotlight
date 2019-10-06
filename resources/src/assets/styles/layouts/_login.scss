@@ -32,8 +32,23 @@
 
 		.ft-logo {
 			height: 48px;
-			margin: 0 auto 16px;
-			display: block;
+			width: 48px;
+		}
+
+		.logos-container {
+			height: 48px;
+			margin: 0 auto 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.cross {
+				font-size: 32px;
+				display: inline-table;
+				margin: 0 8px;
+				font-weight: 400;
+				color: #DDD;
+			}
 		}
 
 		.login_container {
@@ -56,7 +71,7 @@
 
 				img {
 					margin-right: 8px;
-					height: 32px;
+					height: 48px;
 				}
 				
 				h3 {

@@ -180,6 +180,12 @@ class Login extends React.Component<IProps, IState> {
 		if (this.state.redirectToReferrer)
 			return <Redirect to={from} />
 		
+		const schoolName: string = this.props.settings.values && this.props.settings.values['school_name']
+			? this.props.settings.values['school_name'].value
+			: undefined
+		const schoolLogo: string = this.props.settings.values && this.props.settings.values['school_logo']
+			? this.props.settings.values['school_logo'].value
+			: undefined
 		const isVertical: boolean = this.state.imageDimensions.width < this.state.boundingBoxDimension.width
 		let bannerProps: BannerContentProps = null
 		if (this.props.authState === 'failed-settings') {
@@ -219,16 +225,19 @@ class Login extends React.Component<IProps, IState> {
 							<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
 							<Paper className='login_form'>
 								<form>
-									<img className='ft-logo' src='/static/images/ft-logo.svg' />
+									<div className='logos-container'>
+										<img className='ft-logo' src='/static/images/ft-badge.png' />
+										{(schoolName && schoolLogo) && (
+											<>
+												<span className='cross'>×</span>
+												<div className='school_logo'>
+													<img src={`/static/images/logos/${schoolLogo}`} />
+													<h3>{schoolName}</h3>
+												</div>
+											</>
+										)}
+									</div>
 									<h2>Sign in to Spotlight</h2>
-									{this.props.failedSettings ? (
-										<Typography color='error'>Failed settings.</Typography>
-									) : (
-										<div className='school_logo'>
-											<img src={`/static/images/logos/${this.props.settings.values['school_logo'].value}`} />
-											<h3>{this.props.settings.values['school_name'].value}</h3>
-										</div>
-									)}
 									<TextField
 										name='user'
 										type='text'

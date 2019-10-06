@@ -3,7 +3,10 @@ import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
+	Button,
+	Dialog,
 	DialogActions,
+	DialogContent,
 	Paper,
 	TextField,
 	Typography,
@@ -47,32 +50,34 @@ interface IProps extends ReduxProps, RouteComponentProps {
 }
 
 interface IState {
-	user: string
-	password: string
-	error: ILoginError | null
-	redirectToReferrer: boolean
-	loading: boolean
-	imageURL: string
-	imageStatus: 'loading' | 'loaded'
-	imageDimensions: Dimensions
-	boundingBoxDimension: Dimensions
 	bannerOpen: boolean
+	boundingBoxDimension: Dimensions
+	error: ILoginError | null
+	helpDialogOpen: boolean
+	imageDimensions: Dimensions
+	imageStatus: 'loading' | 'loaded'
+	imageURL: string
+	loading: boolean
+	password: string
+	redirectToReferrer: boolean
+	user: string	
 }
 
 class Login extends React.Component<IProps, IState> {
 	image: any
 	boundingBox: any
 	state: IState = {
-		user: '',
-		password: '',
-		error: null,
-		redirectToReferrer: false,
-		loading: false,
-		imageURL: selectBackground(),
-		imageStatus: 'loading',
-		imageDimensions: { height: 0, width: 0 },
+		bannerOpen: true,
 		boundingBoxDimension: { height: 0, width: 0 },
-		bannerOpen: true
+		error: null,
+		helpDialogOpen: false,
+		imageDimensions: { height: 0, width: 0 },
+		imageStatus: 'loading',
+		imageURL: selectBackground(),
+		loading: false,
+		password: '',
+		redirectToReferrer: false,
+		user: ''		
 	}
 
 	handleBannerClose = () => {
@@ -85,6 +90,14 @@ class Login extends React.Component<IProps, IState> {
 			[event.target.name]: event.target.value,
 			error: null
 		} as IState)
+	}
+
+	handleHelpDialogOpen = () => {
+		this.setState({ helpDialogOpen: true })
+	}
+
+	handleHelpDialogClose = () => {
+		this.setState({ helpDialogOpen: false })
 	}
 
 	handleLogin = (event: any) => {
@@ -196,6 +209,14 @@ class Login extends React.Component<IProps, IState> {
 
 		return (
 			<>
+				<Dialog open={this.state.helpDialogOpen}>
+					<DialogContent>
+
+					</DialogContent>
+					<DialogActions>
+						<Button onClick={() => this.setState({ helpDialogOpen: false })}>Cancel</Button>
+					</DialogActions>
+				</Dialog>
 				{bannerProps && (
 					<Banner
 						{...bannerProps}
@@ -263,6 +284,11 @@ class Login extends React.Component<IProps, IState> {
 										fullWidth={true}
 									/>
 									<DialogActions>
+										<Button
+											variant='text'
+											color='primary'
+											onClick={() => this.handleHelpDialogOpen()}
+										>Can't Sign In</Button>
 										<LoadingButton
 											type='submit'
 											onClick={this.handleLogin}

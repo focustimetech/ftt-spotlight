@@ -7,9 +7,9 @@
         <div class="email" style="max-width: 600px;margin: 16px auto 0;font-family: sans-serif;border: 1px solid #DDD;">
             <div class="email__content" style="padding: 32px 16px;">
                 <img class="badge" src="{{asset('static/images/ft-badge.svg')}}" style="margin: 0 auto 32px;width: 48px;display: block;">
-                <p>Hello Curtis,</p>
+                <p>Hello {{$name}},</p>
                 <p>We understand you're unable to access your account. Sorry about that! Here is your password reset code:</p>
-                <h2 class="code" style="font-family: monospace;text-align: center;">C8DH374HFK</h2>
+                <h2 class="code" style="font-family: monospace;text-align: center;">{{$code}}</h2>
                 <p>If you received this email in error, you can safely ignore it.</p>
                 <p>Thanks,<br>the Focustime Support Team</p>
             </div>

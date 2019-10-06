@@ -28,6 +28,6 @@ class PasswordResetMail extends Mailable
      */
     public function build()
     {
-        return $this->view('mail.passwordReset');
+        return $this->view('mail.passwordReset', ['code' => '12345678', 'name' => 'Vlad']);
     }
 }

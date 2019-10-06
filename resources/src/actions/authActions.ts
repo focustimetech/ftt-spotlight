@@ -32,7 +32,7 @@ export const checkUsername = (username: string) => {
     }
     */
     return (dispatch: any) => {
-        return axios.post(`/api/user-exists`, { username })
+        return axios.post(`/api/check-user`, { username })
     }
 }
 

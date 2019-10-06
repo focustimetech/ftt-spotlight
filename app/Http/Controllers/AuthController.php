@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Username as UsernameResource;
 use App\Http\Traits\Authenticate;
+use App\Exceptions\UserNotFoundException;
 
 class AuthController extends Controller
 {
@@ -17,12 +19,15 @@ class AuthController extends Controller
         return new UserResource(auth()->user());
     }
 
-    public function userExists(Request $request)
+    public function getUsername(Request $request)
     {
         $username = $request->input('username');
-        return User::userExists($username)
-            ? response()->json('User exists.', 200)
-            : response()->json('User does not exist.', 404);
+        try {
+            $user = User::findByUsername($username);
+            return new UsernameResource($user);
+        } catch (UserNotFoundException $e) {
+            return response()->json('User does not exist.', 404);
+        }
     }
 
     public function logout() {

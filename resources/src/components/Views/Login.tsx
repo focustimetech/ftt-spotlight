@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
+	Button,
 	DialogActions,
 	Paper,
 	TextField,
@@ -12,8 +13,8 @@ import {
 import { BannerContentProps } from '../Banner/BannerContent'
 import { Banner } from '../Banner/Banner'
 import { LoadingButton } from '../Form/LoadingButton'
-import { AuthState, ICredentials, ILoginError } from '../../types/auth'
-import { login } from '../../actions/authActions'
+import { AuthState, ICredentials, ILoginError, LoginState } from '../../types/auth'
+import { login, checkUsername } from '../../actions/authActions'
 
 const selectBackground = () => {
 	const imageList: string[] = [
@@ -30,12 +31,13 @@ const selectBackground = () => {
 }
 
 interface Dimensions {
-	height: number,
+	height: number
 	width: number
 }
 
 interface ReduxProps {
 	settings: any
+	checkUsername: (username: string) => Promise<any>
 	login: (credentials: ICredentials) => Promise<any>
 }
 
@@ -51,12 +53,14 @@ interface IState {
 	password: string
 	error: ILoginError | null
 	redirectToReferrer: boolean
-	loading: boolean
+	loadingUsername: boolean
+	loadingPassword: boolean
 	imageURL: string
 	imageStatus: 'loading' | 'loaded'
 	imageDimensions: Dimensions
 	boundingBoxDimension: Dimensions
 	bannerOpen: boolean
+	loginState: LoginState
 }
 
 class Login extends React.Component<IProps, IState> {
@@ -67,12 +71,14 @@ class Login extends React.Component<IProps, IState> {
 		password: '',
 		error: null,
 		redirectToReferrer: false,
-		loading: false,
+		loadingUsername: false,
+		loadingPassword: false,
 		imageURL: selectBackground(),
 		imageStatus: 'loading',
 		imageDimensions: { height: 0, width: 0 },
 		boundingBoxDimension: { height: 0, width: 0 },
-		bannerOpen: true
+		bannerOpen: true,
+		loginState: 'username'
 	}
 
 	handleBannerClose = () => {
@@ -87,19 +93,67 @@ class Login extends React.Component<IProps, IState> {
 		} as IState)
 	}
 
+	handleErrorCode = (errorCode: number) => {
+		let loginError: ILoginError = null
+		switch (errorCode) {
+			case 404:
+				loginError = {
+					type: 'username',
+					message: 'The user could not be found. Please check with your administrator.'
+				}
+				break
+			case 401:
+				loginError = {
+					type: 'password',
+					message: 'The given credentials were not correct.'
+				}
+				break
+			case 500:
+			default:
+				loginError = {
+					type: 'username',
+					message: 'The server encountered an error while logging you in. Please try again.'
+				}
+		}
+		if (loginError)
+			this.setState({ error: loginError })
+	}
+
+	/**
+	 * @TODO Combine these two handlers into one onSubmit function, captured by the <form onSubmit...>
+	 */
+	handleCheckUsername = (event: any) => {
+		event.preventDefault()
+		if (!this.validateForm())
+			return
+		this.setState({
+			loadingUsername: true,
+			bannerOpen: false
+		})
+		this.props.checkUsername(this.state.user)
+			.then(() => {
+				this.setState({
+					loadingUsername: false,
+					loginState: 'password'
+				})
+			}, (error: any) => {
+				this.handleErrorCode(error.response.status)
+				this.setState({ loadingUsername: false })
+			})
+	}
+
 	handleLogin = (event: any) => {
 		event.preventDefault()
 		if (!this.validateForm())
 			return
 		this.setState({
-			loading: true,
+			loadingPassword: true,
 			bannerOpen: false
 		})
 		const credentials: ICredentials = {
 			username: this.state.user,
 			password: this.state.password
 		}
-		let loginError: ILoginError = null
 		this.props.login(credentials)
 			.then(() => {
 				this.props.onSignIn()
@@ -107,53 +161,39 @@ class Login extends React.Component<IProps, IState> {
 						this.props.onSignIn()
 						this.setState({ redirectToReferrer: true })
 					}, () => {
-						loginError = {
+						const loginError: ILoginError = {
 							type: 'username',
 							message: 'Unable to download app settings. Please try again.'
 						}
+						this.setState({
+							error: loginError,
+							loadingPassword: false
+						})
 					})
 			}, (error: any) => {
-				switch (error.response.status) {
-					case 404:
-						loginError = {
-							type: 'username',
-							message: 'The user could not be found. Please check with your administrator.'
-						}
-						break
-					case 401:
-						loginError = {
-							type: 'password',
-							message: 'The given credentials were not correct.'
-						}
-						break
-					case 500:
-					default:
-						loginError = {
-							type: 'username',
-							message: 'The server encountered an error while logging you in. Please try again.'
-						}
-				}
-				this.setState({
-					loading: false,
-					error: loginError
-				})
+				this.handleErrorCode(error.response.status)
+				this.setState({ loadingPassword: false })
 			})
 	}
 
 	validateForm = (): boolean => {
-		if (this.state.user.length === 0) {
+		if (this.state.user.length === 0 && this.state.loginState === 'username') {
 			this.setState({
 				error: { type: 'username', message: 'A username is required to log in.' }
 			})
 			return false
 		}
-		if (this.state.password.length === 0) {
+		if (this.state.password.length === 0 && this.state.loginState === 'password') {
 			this.setState({
 				error: { type: 'password', message: 'A password is required to log in.' }
 			})
 			return false
 		}
 		return true
+	}
+
+	resetLoginState = () => {
+		this.setState({ loginState: 'username' })
 	}
 
 	handleImageLoad = () => {
@@ -238,48 +278,69 @@ class Login extends React.Component<IProps, IState> {
 										)}
 									</div>
 									<h2>Sign in to Spotlight</h2>
-									<TextField
-										name='user'
-										type='text'
-										label='Email or Student Number'
-										error={this.state.error && this.state.error.type === 'username'}
-										helperText={
-											this.state.error && this.state.error.type === 'username'
-												? this.state.error.message
-												: undefined
-										}
-										value={this.state.user}
-										onChange={this.handleChange}
-										margin='normal'
-										variant='filled'
-										autoFocus={true}
-										fullWidth={true}
-									/>
-									<TextField
-										name='password'
-										type='password'
-										label='Password'
-										error={this.state.error && this.state.error.type === 'password'}
-										helperText={
-											this.state.error && this.state.error.type === 'password'
-												? this.state.error.message
-												: undefined
-										}
-										value={this.state.password}
-										onChange={this.handleChange}
-										margin='normal'
-										variant='filled'
-										fullWidth={true}
-									/>
-									<DialogActions>
-										<LoadingButton
-											type='submit'
-											onClick={this.handleLogin}
-											color='primary'
-											variant='contained'
-											loading={this.state.loading}
-										>Sign In</LoadingButton>
-									</DialogActions>
+									{this.state.loginState === 'username' && (
+										<>
+											<TextField
+												name='user'
+												type='text'
+												label='Email or Student Number'
+												error={this.state.error && this.state.error.type === 'username'}
+												helperText={
+													this.state.error && this.state.error.type === 'username'
+														? this.state.error.message
+														: undefined
+												}
+												value={this.state.user}
+												onChange={this.handleChange}
+												margin='normal'
+												variant='filled'
+												autoFocus={true}
+												fullWidth={true}
+											/>
+											<DialogActions>
+												<LoadingButton
+													type='submit'
+													onClick={this.handleCheckUsername}
+													color='primary'
+													variant='contained'
+													loading={this.state.loadingUsername}
+												>Next</LoadingButton>
+											</DialogActions>
+										</>
+									)}
+									{this.state.loginState === 'password' && (
+										<>
+											<TextField
+												name='password'
+												type='password'
+												label='Password'
+												error={this.state.error && this.state.error.type === 'password'}
+												helperText={
+													this.state.error && this.state.error.type === 'password'
+														? this.state.error.message
+														: undefined
+												}
+												value={this.state.password}
+												onChange={this.handleChange}
+												margin='normal'
+												variant='filled'
+												fullWidth={true}
+											/>
+											<DialogActions>
+												<Button
+													variant='text'
+													onClick={() => this.resetLoginState()}
+												>Back</Button>
+												<LoadingButton
+													type='submit'
+													onClick={this.handleLogin}
+													color='primary'
+													variant='contained'
+													loading={this.state.loadingPassword}
+												>Sign In</LoadingButton>
+											</DialogActions>
+										</>
+									)}
 								</form>
 							</Paper>
 							<ul className='links_list'>
@@ -296,6 +357,6 @@ class Login extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({
 	settings: state.settings.items
 })
-const mapDispatchToProps = { login }
+const mapDispatchToProps = { login, checkUsername }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

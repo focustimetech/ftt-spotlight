@@ -1,6 +1,8 @@
 import { IStaff } from "./staff";
 import { IStudent } from './student'
 
+export type LoginState = 'username' | 'password'
+
 export type AuthState = 
     | 'sign-in'
     | 'signed-in'

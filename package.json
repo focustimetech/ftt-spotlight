@@ -45,6 +45,7 @@
   "devDependencies": {
     "@types/classnames": "^2.2.9",
     "@types/react-filepond": "^5.0.3",
+    "@types/react-transition-group": "^4.2.2",
     "css-loader": "^2.1.1",
     "file-loader": "^3.0.1",
     "node-sass": "^4.12.0",

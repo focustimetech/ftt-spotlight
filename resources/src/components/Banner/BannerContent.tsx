@@ -12,10 +12,14 @@ export interface BannerAction {
     callback: () => void
 }
 
-export interface BannerProps {
+export interface BannerContentProps {
     message: string
     actions?: BannerAction[]
     icon?: string
+}
+
+export interface BannerProps extends BannerContentProps {
+    
     onClose: () => void
 }
 

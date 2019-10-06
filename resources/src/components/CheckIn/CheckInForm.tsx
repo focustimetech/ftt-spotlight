@@ -286,13 +286,13 @@ class CheckInForm extends React.Component<IProps, IState> {
                                 onPaste={this.onPaste}
                                 autoFocus
                             />
-                            <Tooltip title='Add [Enter]'>
+                            <Tooltip title='Add (Enter)'>
                                 <IconButton disabled={this.state.uploading} onClick={() => this.handleCreateChip()}>
                                     <Icon>keyboard_return</Icon>
                                 </IconButton>
                             </Tooltip>
                             <Divider className='chip-textfield__divider' orientation='vertical' />
-                            <Tooltip title='Submit [Ctrl + Enter]'>
+                            <Tooltip title='Submit (Ctrl + Enter)'>
                                 <LoadingIconButton
                                     color='primary'
                                     loading={this.state.uploading}

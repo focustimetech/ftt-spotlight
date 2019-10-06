@@ -12,7 +12,7 @@ import {
 } from 'react-router-dom'
 
 import { IUser } from '../../types/auth'
-import CheckIn from '../Views/CheckIn'
+import CheckIn from '../CheckIn/CheckIn'
 import { NotFound } from '../Views/NotFound'
 import Settings from '../Views/Settings'
 import Snackbar from '../Snackbar'
@@ -46,7 +46,7 @@ export default class App extends React.Component<IProps> {
 									<Route path='/' exact render={() => (
 										<Redirect to='/check-in' />
 									)} />
-									<Route path='/check-in' component={CheckIn} />
+									<Route path='/check-in' render={(props: RouteComponentProps) => (<CheckIn {...props}/>)} />
 									<Route path='/power-scheduler' component={PowerScheduler} />
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (

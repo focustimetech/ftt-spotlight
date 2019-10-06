@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 // Unauthenticates Routes
 Route::post('login', 'AuthController@login');
 Route::get('settings/unauthenticated', 'SettingsController@getUnauthenticated');
+Route::get('user-exists', 'AuthController@userExists');
 
 // App Start-up
 Route::middleware('auth:api')->group(function() {

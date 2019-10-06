@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use App\User;
 use App\Http\Resources\User as UserResource;
 use App\Http\Traits\Authenticate;
 
@@ -17,12 +17,20 @@ class AuthController extends Controller
         return new UserResource(auth()->user());
     }
 
+    public function userExists(Request $request)
+    {
+        $username = $request->input('username');
+        return User::userExists($username)
+            ? response()->json('User exists.', 200)
+            : response()->json('User does not exist.', 404);
+    }
+
     public function logout() {
         auth()->user()->tokens->each(function ($token, $key) {
             $token->delete();
         });
 
-        return response()->json('Logged out successfully', 200);
+        return response()->json('Logged out successfully.', 200);
     }
 
     public function changePassword(Request $request)

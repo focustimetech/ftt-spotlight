@@ -11,7 +11,6 @@ interface IProps {
 }
 
 export const Splash = (props: IProps) => {
-    console.log('splash.showChildren:', props.showChildren)
     return (
         <div className='splash' id='splash'>
             <Fade in={props.in} unmountOnExit>
@@ -26,7 +25,6 @@ export const Splash = (props: IProps) => {
                     </div>
                 </div>
             </Fade>
-
         </div>
     )
 }

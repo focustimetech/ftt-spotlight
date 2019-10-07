@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { makeArray } from './utils'
+
 export type UserType = 'staff' | 'student'
 
 /**
@@ -34,4 +36,36 @@ export const uploadCSV = (
         .catch((reason: any) => {
             throw new Error('Unable to upload files. ' + reason)
         })
+}
+
+/**
+ * Writes a plain JavaScript object to localStorage, which can only store strings.
+ * @param key The localStorage key.
+ * @param object The object to write.
+ */
+export const writeObjectToLocalStorage = (key: string, object: object | object[]) => {
+    const json: string = JSON.stringify(object)
+    localStorage.setItem(key, json)
+}
+
+/**
+ * Appends an object to another object that is currently in localStorage.
+ * If the object in localStorage isn't currently an array, it is made into
+ * and array, and the given object is then appended to it.
+ * @param key The key of the object.
+ * @param object The object to append.
+ */
+export const appendToLocalStorageArray = (key: string, object: object) => {
+    const array: object[] = makeArray(getObjectFromLocalStorage(key))
+    array.push(object)
+    writeObjectToLocalStorage(key, array)
+}
+
+/**
+ * Retrieves a plain JavaScript object from localStorage which is stored as a string.
+ * @param key The key of the localStorage string to retreive
+ */
+export const getObjectFromLocalStorage = (key: string): object | object[] => {
+    const json: string = localStorage.getItem(key)
+    return JSON.parse(json)
 }

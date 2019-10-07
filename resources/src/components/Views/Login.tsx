@@ -182,8 +182,6 @@ class Login extends React.Component<IProps, IState> {
 						this.setState({ redirectToReferrer: true })
 						if (this.state.rememberUser)
 							this.rememberAuthUsername(this.state.authUsername)
-						else
-							console.log('this.state.rememberUser:', this.state.rememberUser)
 					}, () => {
 						const loginError: ILoginError = {
 							type: 'username',
@@ -432,8 +430,8 @@ class Login extends React.Component<IProps, IState> {
 												onChange={this.handleChange}
 												margin='normal'
 												variant='filled'
-												autoFocus={true}
-												fullWidth={true}
+												autoFocus
+												fullWidth
 											/>
 											<FormControlLabel
 												label='Remember me'
@@ -472,7 +470,8 @@ class Login extends React.Component<IProps, IState> {
 												onChange={this.handleChange}
 												margin='normal'
 												variant='filled'
-												fullWidth={true}
+												autoFocus
+												fullWidth
 											/>
 											<DialogActions>
 												<Button

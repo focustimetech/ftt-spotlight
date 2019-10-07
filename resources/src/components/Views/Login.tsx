@@ -3,14 +3,17 @@ import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
+	Avatar,
 	Button,
 	Checkbox,
 	DialogActions,
+	FormControlLabel,
 	Paper,
 	TextField,
 	Typography,
 } from '@material-ui/core'
 
+import { REMEMBER_USERS, appendToLocalStorageArray, getObjectFromLocalStorage, writeObjectToLocalStorage } from '../../utils/storage'
 import { BannerContentProps } from '../Banner/BannerContent'
 import { Banner } from '../Banner/Banner'
 import { LoadingButton } from '../Form/LoadingButton'
@@ -69,6 +72,7 @@ interface IState {
 class Login extends React.Component<IProps, IState> {
 	image: any
 	boundingBox: any
+	rememberUsers: AuthUsername[]
 	state: IState = {
 		user: '',
 		password: '',
@@ -136,8 +140,10 @@ class Login extends React.Component<IProps, IState> {
 			bannerOpen: false
 		})
 		this.props.checkUsername(this.state.user)
-			.then(() => {
+			.then((res: any) => {
+				const authUsername: AuthUsername = res.data
 				this.setState({
+					authUsername,
 					loadingUsername: false,
 					loginState: 'password'
 				})
@@ -165,6 +171,8 @@ class Login extends React.Component<IProps, IState> {
 					.then(() => {
 						this.props.onSignIn()
 						this.setState({ redirectToReferrer: true })
+						// Reorganaize remembered users
+						// @TODO
 					}, () => {
 						const loginError: ILoginError = {
 							type: 'username',
@@ -198,7 +206,9 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	resetLoginState = () => {
-		this.setState({ loginState: 'username' })
+		this.setState({
+			loginState: 'username'		
+		})
 	}
 
 	handleImageLoad = () => {
@@ -216,8 +226,19 @@ class Login extends React.Component<IProps, IState> {
 		this.props.onImageLoad()
 	}
 
+	toggleRememberUser = () => {
+		this.setState((state: IState) => ({
+			rememberUser: !state.rememberUser
+		}))
+	}
+
 	componentDidMount() {
 		document.title = 'Spotlight - Login'
+		this.rememberUsers = getObjectFromLocalStorage(REMEMBER_USERS) as AuthUsername[]
+		if (this.rememberUsers && this.rememberUsers.length > 0)
+			this.setState({ authUsername: this.rememberUsers[0] })
+		else
+			this.setState({ loginState: 'username' })
 	}
 
 	render() {
@@ -283,6 +304,18 @@ class Login extends React.Component<IProps, IState> {
 										)}
 									</div>
 									<h2>Sign in to Spotlight</h2>
+									<div>
+										{this.state.authUsername ? (
+											<>
+												<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
+													{this.state.authUsername.initials}
+												</Avatar>
+												<Typography>{this.state.authUsername.username}</Typography>
+											</>
+										) : (
+											<Typography>this.state.authUsername = null</Typography>
+										)}
+									</div>
 									{this.state.loginState === 'username' && (
 										<>
 											<TextField
@@ -301,6 +334,16 @@ class Login extends React.Component<IProps, IState> {
 												variant='filled'
 												autoFocus={true}
 												fullWidth={true}
+											/>
+											<FormControlLabel
+												label='Remember me'
+												control={
+													<Checkbox
+														onChange={() => this.toggleRememberUser()}
+														checked={this.state.rememberUser}
+														color='primary'
+													/>
+												}
 											/>
 											<DialogActions>
 												<LoadingButton

@@ -74,3 +74,4 @@ export const getObjectFromLocalStorage = (key: string): object | object[] => {
 export const ACCESS_TOKEN = 'ACCESS_TOKEN'
 export const CHECK_IN_CHIPS = 'CHECK_IN_CHIPS'
 export const CHECK_IN_ERRORS = 'CHECK_IN_ERRORS'
+export const REMEMBER_USERS = 'REMEMBER_USERS'

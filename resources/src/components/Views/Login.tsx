@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
 	Button,
+	Checkbox,
 	DialogActions,
 	Paper,
 	TextField,
@@ -13,7 +14,7 @@ import {
 import { BannerContentProps } from '../Banner/BannerContent'
 import { Banner } from '../Banner/Banner'
 import { LoadingButton } from '../Form/LoadingButton'
-import { AuthState, ICredentials, ILoginError, LoginState } from '../../types/auth'
+import { AuthState, AuthUsername, ICredentials, ILoginError, LoginState } from '../../types/auth'
 import { login, checkUsername } from '../../actions/authActions'
 
 const selectBackground = () => {
@@ -61,6 +62,8 @@ interface IState {
 	boundingBoxDimension: Dimensions
 	bannerOpen: boolean
 	loginState: LoginState
+	rememberUser: boolean
+	authUsername: AuthUsername
 }
 
 class Login extends React.Component<IProps, IState> {
@@ -78,7 +81,9 @@ class Login extends React.Component<IProps, IState> {
 		imageDimensions: { height: 0, width: 0 },
 		boundingBoxDimension: { height: 0, width: 0 },
 		bannerOpen: true,
-		loginState: 'username'
+		loginState: 'password',
+		rememberUser: false,
+		authUsername: null
 	}
 
 	handleBannerClose = () => {

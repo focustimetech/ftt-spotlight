@@ -28,7 +28,7 @@
 		background: $primary;
 		height: 100vh;
 		position: relative;
-		min-width: 450px;
+		min-width: 490px;
 
 		.ft-logo {
 			height: 48px;
@@ -53,7 +53,7 @@
 		}
 
 		.login_container {
-			width: 320px;
+			width: 360px;
 			position: absolute;
 			top: 50%;
 			left: 50%;
@@ -114,5 +114,30 @@
 				font-weight: 500;
 			}
 		}
+	}
+
+	.auth-username {
+		display: flex;
+		align-items: center;
+		font-weight: 400 !important;
+		justify-content: space-between;
+		width: 100%;
+		text-transform: unset !important;
+
+		&__details {
+			display: flex;
+			align-items: center;
+			text-transform: inherit !important;
+
+			& > * + * {
+				margin-left: 8px;
+			}
+		}
+	}
+
+	.login_avatar {
+		width: 32px;
+		height: 32px;
+		font-size: 14px;
 	}
 }

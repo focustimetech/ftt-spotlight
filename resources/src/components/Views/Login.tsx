@@ -9,6 +9,9 @@ import {
 	DialogActions,
 	FormControlLabel,
 	Icon,
+	ListItem,
+	ListItemAvatar,
+	ListItemText,
 	Menu,
 	MenuItem,
 	Paper,
@@ -16,7 +19,7 @@ import {
 	Typography,
 } from '@material-ui/core'
 
-import { REMEMBER_USERS, appendToLocalStorageArray, getObjectFromLocalStorage, writeObjectToLocalStorage } from '../../utils/storage'
+import { REMEMBER_USERS, getObjectFromLocalStorage, writeObjectToLocalStorage } from '../../utils/storage'
 import { BannerContentProps } from '../Banner/BannerContent'
 import { Banner } from '../Banner/Banner'
 import { LoadingButton } from '../Form/LoadingButton'
@@ -69,7 +72,8 @@ interface IState {
 	bannerOpen: boolean
 	loginState: LoginState
 	rememberUser: boolean
-	authUsername: AuthUsername
+	authUsername: AuthUsername,
+	menuRef: any
 }
 
 class Login extends React.Component<IProps, IState> {
@@ -90,7 +94,8 @@ class Login extends React.Component<IProps, IState> {
 		bannerOpen: true,
 		loginState: 'password',
 		rememberUser: false,
-		authUsername: null
+		authUsername: null,
+		menuRef: null
 	}
 
 	handleBannerClose = () => {
@@ -165,7 +170,7 @@ class Login extends React.Component<IProps, IState> {
 			bannerOpen: false
 		})
 		const credentials: ICredentials = {
-			username: this.state.user,
+			username: this.state.authUsername.username,
 			password: this.state.password
 		}
 		this.props.login(credentials)
@@ -174,7 +179,10 @@ class Login extends React.Component<IProps, IState> {
 					.then(() => {
 						this.props.onSignIn()
 						this.setState({ redirectToReferrer: true })
-						this.rememberAuthUsername(this.state.authUsername)
+						if (this.state.rememberUser)
+							this.rememberAuthUsername(this.state.authUsername)
+						else
+							console.log('this.state.rememberUser:', this.state.rememberUser)
 					}, () => {
 						const loginError: ILoginError = {
 							type: 'username',
@@ -209,7 +217,8 @@ class Login extends React.Component<IProps, IState> {
 
 	resetLoginState = () => {
 		this.setState({
-			loginState: 'username'		
+			loginState: 'username',
+			menuRef: null	
 		})
 	}
 
@@ -235,10 +244,28 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	rememberAuthUsername = (authUsername: AuthUsername) => {
-		const otherAuthUsernames: AuthUsername[] = this.rememberUsers.filter((rememberUser: AuthUsername) => {
-			return rememberUser.username !== authUsername.username
-		})
+		console.log('rememberAuthUsername()')
+		const otherAuthUsernames: AuthUsername[] = this.rememberUsers ? (
+			this.rememberUsers.filter((rememberUser: AuthUsername) => {
+				return rememberUser.username !== authUsername.username
+			})
+		) : []
 		writeObjectToLocalStorage(REMEMBER_USERS, [authUsername, ...otherAuthUsernames])
+	}
+
+	handleOpenMenu = (event: any) => {
+		this.setState({ menuRef: event.currentTarget })
+	}
+
+	handleCloseMenu = () => {
+		this.setState({ menuRef: null })
+	}
+
+	handleClickAuthUsername = (authUsername: AuthUsername) => {
+		this.setState({
+			authUsername,
+			loginState: 'password'
+		})
 	}
 
 	componentDidMount() {
@@ -251,6 +278,8 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	render() {
+		//console.log(this.state)
+		//console.log(this.rememberUsers)
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
 		if (this.state.redirectToReferrer)
 			return <Redirect to={from} />
@@ -314,19 +343,42 @@ class Login extends React.Component<IProps, IState> {
 									</div>
 									<h2>Sign in to Spotlight</h2>
 									{(this.state.authUsername || (this.rememberUsers && this.rememberUsers.length > 0)) && (
-										<Button className='auth-username'>
-											{this.state.loginState === 'password' && this.state.authUsername ? (
-												<div>
-													<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
-														{this.state.authUsername.initials}
-													</Avatar>
-													<Typography>{this.state.authUsername.username}</Typography>
-												</div>
-											) : (
-												<Typography>Select a User</Typography>
+										<>
+											<Button className='auth-username' onClick={this.handleOpenMenu}>
+												{this.state.loginState === 'password' && this.state.authUsername ? (
+													<div className='auth-username__details'>
+														<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
+															{this.state.authUsername.initials}
+														</Avatar>
+														<Typography>{this.state.authUsername.username}</Typography>
+													</div>
+												) : (
+													<Typography>Sign in with Username</Typography>
+												)}
+												<Icon>expand_more</Icon>
+											</Button>
+											{(this.state.loginState === 'password' || (this.rememberUsers && this.rememberUsers.length > 0)) && (
+												<Menu
+													open={Boolean(this.state.menuRef)}
+													anchorEl={this.state.menuRef}
+													onClose={this.handleCloseMenu}
+												>
+													{(this.rememberUsers && this.rememberUsers.length) && (
+														this.rememberUsers.map((rememberUser: AuthUsername) => (
+															<ListItem key={rememberUser.username} onClick={() => this.handleClickAuthUsername(rememberUser)} dense>
+																<ListItemAvatar>
+																	<Avatar className={classNames('login_avatar', `--${rememberUser.color}`)}>
+																		{rememberUser.initials}
+																	</Avatar>
+																</ListItemAvatar>
+																<ListItemText>{rememberUser.username}</ListItemText>
+															</ListItem>
+														))
+													)}
+													<MenuItem onClick={() => this.resetLoginState()}>Sign in with Username</MenuItem>
+												</Menu>
 											)}
-											<Icon>expand_more</Icon>
-										</Button>
+										</>
 									)}
 									{this.state.loginState === 'username' && (
 										<>

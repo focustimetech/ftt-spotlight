@@ -19,7 +19,8 @@ import { checkIn } from '../../actions/checkinActions'
 import { ILedgerEntry } from '../../types/calendar'
 import { ICheckInRequest, CheckInChip, ICheckInResponse } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { appendToLocalStorageArray, writeObjectToLocalStorage, getObjectFromLocalStorage, makeArray } from '../../utils/utils'
+import { makeArray } from '../../utils/utils'
+import { appendToLocalStorageArray, writeObjectToLocalStorage, getObjectFromLocalStorage, CHECK_IN_CHIPS, CHECK_IN_ERRORS } from '../../utils/storage'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
 
@@ -110,7 +111,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                 }), () => {
                     if (!this.state.uploading)
                         this.fetchStudent(newChip)
-                    writeObjectToLocalStorage('check-in-chips', this.state.chips)
+                    writeObjectToLocalStorage(CHECK_IN_CHIPS, this.state.chips)
                 })
             } else {
                 this.setState({ duplicateIndex: index })
@@ -124,7 +125,7 @@ class CheckInForm extends React.Component<IProps, IState> {
             chips: state.chips.filter((existingChip: CheckInChip, index: number) => index !== removeIndex),
             duplicateIndex: -1
         }), () => {
-            writeObjectToLocalStorage('check-in-chips', this.state.chips)
+            writeObjectToLocalStorage(CHECK_IN_CHIPS, this.state.chips)
         })
     }
 
@@ -173,7 +174,7 @@ class CheckInForm extends React.Component<IProps, IState> {
         const errors: string[] = this.props.checkInResponse.errors
         const timestamp_string: string = this.props.checkInResponse.timestamp_string
         if (errors.length > 0)
-            appendToLocalStorageArray('check-in-errors', { errors, timestamp_string })
+            appendToLocalStorageArray(CHECK_IN_ERRORS, { errors, timestamp_string })
         const message: string = success.length > 0
             ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0
                 ? `, but ${errors.length} ${errors.length === 1 ? 'entry' : 'entries'} could not be resolved` : ''
@@ -218,7 +219,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                             uploading: false,
                             chips: [],
                         })
-                        localStorage.removeItem('check-in-chips')
+                        localStorage.removeItem(CHECK_IN_CHIPS)
                     })
                 } else {
                     this.showResults()
@@ -237,9 +238,8 @@ class CheckInForm extends React.Component<IProps, IState> {
 
     componentDidMount() {
         this.keyBuffer = []
-        const localStorageChips = makeArray(getObjectFromLocalStorage('check-in-chips')) as CheckInChip[]
+        const localStorageChips = makeArray(getObjectFromLocalStorage(CHECK_IN_CHIPS)) as CheckInChip[]
         if (localStorageChips.length > 0) {
-            console.log('localStorageChips:', localStorageChips)
             this.setState({ chips: localStorageChips }, () => {
                 this.state.chips.forEach((chip: CheckInChip) => { this.fetchStudent(chip) })
             })

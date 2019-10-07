@@ -1,5 +1,8 @@
 import { IStaff } from "./staff";
 import { IStudent } from './student'
+import { TopicColor } from "../theme";
+
+export type LoginState = 'username' | 'password'
 
 export type AuthState = 
     | 'sign-in'
@@ -7,6 +10,12 @@ export type AuthState =
     | 'signed-out'
     | 'unauthenticated'
     | 'failed-settings'
+
+export interface AuthUsername {
+    username: string
+    initials: string
+    color: TopicColor
+}
 
 export interface ICredentials {
     username: string

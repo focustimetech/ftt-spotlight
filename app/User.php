@@ -31,6 +31,16 @@ class User extends Authenticatable
            throw new UserNotFoundException('Could not find user having username '. $username);
     }
 
+    public static function userExists($username)
+    {
+        try {
+            $user = self::findByUsername($username);
+        } catch (UserNotFoundException $e) {
+            return false;
+        }
+        return (bool) $user;
+    }
+
     public function findForPassport($username)
     {
         return $this->where('username', $username)->first();
@@ -92,15 +102,5 @@ class User extends Authenticatable
     public function passwordExpired()
     {
         return $this->password_expired;
-    }
-
-    public static function userExists($username)
-    {
-        try {
-            $user = self::findByUsername($username);
-        } catch (UserNotFoundException $e) {
-            return false;
-        }
-        return (bool) $user;
     }
 }

@@ -22,6 +22,20 @@ export const getCurrentUser = () => {
     }
 }
 
+export const checkUsername = (username: string) => {
+    /*
+    const config = {
+        headers: [
+            { 'Content-Type': 'application/jon' },
+            { 'Accept': 'application/jon' },
+        ]
+    }
+    */
+    return (dispatch: any) => {
+        return axios.post(`/api/check-user`, { username })
+    }
+}
+
 export const login = (credentials: ICredentials) => {
     return (dispatch: any) => {
         return axios.post('/api/login', credentials)

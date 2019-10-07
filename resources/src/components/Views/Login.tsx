@@ -9,6 +9,7 @@ import {
 	DialogActions,
 	FormControlLabel,
 	Icon,
+	List,
 	ListItem,
 	ListItemAvatar,
 	ListItemText,
@@ -264,7 +265,8 @@ class Login extends React.Component<IProps, IState> {
 	handleClickAuthUsername = (authUsername: AuthUsername) => {
 		this.setState({
 			authUsername,
-			loginState: 'password'
+			loginState: 'password',
+			menuRef: null
 		})
 	}
 
@@ -345,35 +347,41 @@ class Login extends React.Component<IProps, IState> {
 									{(this.state.authUsername || (this.rememberUsers && this.rememberUsers.length > 0)) && (
 										<>
 											<Button className='auth-username' onClick={this.handleOpenMenu}>
-												{this.state.loginState === 'password' && this.state.authUsername ? (
-													<div className='auth-username__details'>
-														<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
-															{this.state.authUsername.initials}
-														</Avatar>
-														<Typography>{this.state.authUsername.username}</Typography>
-													</div>
-												) : (
-													<Typography>Sign in with Username</Typography>
-												)}
-												<Icon>expand_more</Icon>
+												<div className='auth-username__inner'>
+													{this.state.loginState === 'password' && this.state.authUsername ? (
+														<>
+															<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
+																{this.state.authUsername.initials}
+															</Avatar>
+															<Typography>{this.state.authUsername.username}</Typography>
+														</>
+													) : (
+														<Typography>Sign in with Username</Typography>
+													)}
+													<Icon>expand_more</Icon>
+												</div>
 											</Button>
 											{(this.state.loginState === 'password' || (this.rememberUsers && this.rememberUsers.length > 0)) && (
 												<Menu
 													open={Boolean(this.state.menuRef)}
 													anchorEl={this.state.menuRef}
+													anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+													transformOrigin={{ vertical: "top", horizontal: "center" }}
 													onClose={this.handleCloseMenu}
 												>
 													{(this.rememberUsers && this.rememberUsers.length) && (
-														this.rememberUsers.map((rememberUser: AuthUsername) => (
-															<ListItem key={rememberUser.username} onClick={() => this.handleClickAuthUsername(rememberUser)} dense>
-																<ListItemAvatar>
-																	<Avatar className={classNames('login_avatar', `--${rememberUser.color}`)}>
-																		{rememberUser.initials}
-																	</Avatar>
-																</ListItemAvatar>
-																<ListItemText>{rememberUser.username}</ListItemText>
-															</ListItem>
-														))
+														
+															this.rememberUsers.map((rememberUser: AuthUsername) => (
+																<MenuItem key={rememberUser.username} onClick={() => this.handleClickAuthUsername(rememberUser)} dense>
+																	<ListItemAvatar>
+																		<Avatar className={classNames('login_avatar', `--${rememberUser.color}`)}>
+																			{rememberUser.initials}
+																		</Avatar>
+																	</ListItemAvatar>
+																	<ListItemText>{rememberUser.username}</ListItemText>
+																</MenuItem>
+															))
+														
 													)}
 													<MenuItem onClick={() => this.resetLoginState()}>Sign in with Username</MenuItem>
 												</Menu>

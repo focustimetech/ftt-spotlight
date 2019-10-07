@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 // Unauthenticates Routes
 Route::post('login', 'AuthController@login');
 Route::get('settings/unauthenticated', 'SettingsController@getUnauthenticated');
+Route::post('check-user', 'AuthController@getUsername');
 
 Route::get('test-email', 'JobsController@processQueue');
 

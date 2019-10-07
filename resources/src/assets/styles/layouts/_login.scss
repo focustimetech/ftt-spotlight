@@ -28,16 +28,32 @@
 		background: $primary;
 		height: 100vh;
 		position: relative;
-		min-width: 450px;
+		min-width: 490px;
 
 		.ft-logo {
 			height: 48px;
-			margin: 0 auto 16px;
-			display: block;
+			width: 48px;
+		}
+
+		.logos-container {
+			height: 48px;
+			margin: 0 auto 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.cross {
+				font-size: 32px;
+				line-height: 16px;
+				display: inline-table;
+				margin: 0 8px;
+				font-weight: 400;
+				color: #DDD;
+			}
 		}
 
 		.login_container {
-			width: 320px;
+			width: 360px;
 			position: absolute;
 			top: 50%;
 			left: 50%;
@@ -56,7 +72,7 @@
 
 				img {
 					margin-right: 8px;
-					height: 32px;
+					height: 48px;
 				}
 				
 				h3 {
@@ -98,5 +114,37 @@
 				font-weight: 500;
 			}
 		}
+	}
+
+	.auth-username {
+		display: block;
+		margin: 0 auto;
+		font-weight: 400 !important;
+		text-transform: unset !important;
+
+		&__inner {
+			display: flex;
+			align-items: center;
+			text-transform: inherit;
+
+			& > * + * {
+				margin-left: 8px;
+			}
+		}
+	}
+}
+
+.login_avatar {
+	width: 32px !important;
+	height: 32px !important;
+	font-size: 14px !important;
+}
+
+.auth-username__list-item {
+	display: flex;
+	align-items: center;
+
+	& > * + * {
+		margin-left: 4px !important;
 	}
 }

@@ -3,7 +3,8 @@
 .nav_avatar,
 .student_avatar,
 .profile_avatar,
-.chip_avatar {
+.chip_avatar,
+.login_avatar {
     &.--red {
         background: $red;
     }

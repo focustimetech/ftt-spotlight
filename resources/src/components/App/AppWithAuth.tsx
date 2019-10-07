@@ -8,6 +8,7 @@ import {
 	RouteComponentProps
 } from 'react-router-dom'
 
+import { ACCESS_TOKEN } from '../../utils/storage'
 import { setAuthorizationToken } from '../../utils/setAuthorizationToken'
 import { getCurrentUser } from '../../actions/authActions'
 import { fetchSettings, fetchUnauthenticatedSettings } from '../../actions/settingsActions'
@@ -51,7 +52,7 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 	}
 
 	isAuthenticated = () => {
-		const token = localStorage.access_token
+		const token = localStorage.getItem(ACCESS_TOKEN)
 		if (token) {
 			return true
 		} else {

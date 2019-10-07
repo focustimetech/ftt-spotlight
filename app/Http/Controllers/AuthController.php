@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use App\User;
 use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Username as UsernameResource;
 use App\Http\Traits\Authenticate;
+use App\Exceptions\UserNotFoundException;
 
 class AuthController extends Controller
 {
@@ -17,12 +19,23 @@ class AuthController extends Controller
         return new UserResource(auth()->user());
     }
 
+    public function getUsername(Request $request)
+    {
+        $username = $request->input('username');
+        try {
+            $user = User::findByUsername($username);
+            return new UsernameResource($user);
+        } catch (UserNotFoundException $e) {
+            return response()->json('User does not exist.', 404);
+        }
+    }
+
     public function logout() {
         auth()->user()->tokens->each(function ($token, $key) {
             $token->delete();
         });
 
-        return response()->json('Logged out successfully', 200);
+        return response()->json('Logged out successfully.', 200);
     }
 
     public function changePassword(Request $request)

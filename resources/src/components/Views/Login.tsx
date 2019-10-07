@@ -9,10 +9,10 @@ import {
 	DialogActions,
 	FormControlLabel,
 	Icon,
-	List,
-	ListItem,
+	IconButton,
 	ListItemAvatar,
 	ListItemText,
+	ListItemSecondaryAction,
 	Menu,
 	MenuItem,
 	Paper,
@@ -245,13 +245,30 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	rememberAuthUsername = (authUsername: AuthUsername) => {
-		console.log('rememberAuthUsername()')
 		const otherAuthUsernames: AuthUsername[] = this.rememberUsers ? (
 			this.rememberUsers.filter((rememberUser: AuthUsername) => {
 				return rememberUser.username !== authUsername.username
 			})
 		) : []
-		writeObjectToLocalStorage(REMEMBER_USERS, [authUsername, ...otherAuthUsernames])
+		const newAuthUsers: AuthUsername[] = [authUsername, ...otherAuthUsernames]
+		this.rememberUsers = newAuthUsers
+		writeObjectToLocalStorage(REMEMBER_USERS, newAuthUsers)
+	}
+
+	forgetAuthUsername = (authUsername: AuthUsername) => {
+		const otherAuthUsernames: AuthUsername[] = this.rememberUsers ? (
+			this.rememberUsers.filter((rememberUser: AuthUsername) => {
+				return rememberUser.username !== authUsername.username
+			})
+		) : []
+		this.rememberUsers = otherAuthUsernames
+		writeObjectToLocalStorage(REMEMBER_USERS, otherAuthUsernames)
+		if (!(this.rememberUsers && this.rememberUsers.length))
+			this.resetLoginState()
+		else if (this.state.authUsername.username === authUsername.username)
+			this.setState({ authUsername: otherAuthUsernames[0] })
+		else
+			this.forceUpdate()
 	}
 
 	handleOpenMenu = (event: any) => {
@@ -270,6 +287,24 @@ class Login extends React.Component<IProps, IState> {
 		})
 	}
 
+	rememberUserListItem = (rememberUser: AuthUsername, removable?: boolean) => (
+		<MenuItem
+			className='auth-username__list-item'
+			key={rememberUser.username}
+			onClick={() => this.handleClickAuthUsername(rememberUser)}
+			dense>
+			<Avatar className={classNames('login_avatar', `--${rememberUser.color}`)}>
+				{rememberUser.initials}
+			</Avatar>
+			<ListItemText>{rememberUser.username}</ListItemText>
+			{removable !== false && (
+				<IconButton onClick={() => this.forgetAuthUsername(rememberUser)}>
+					<Icon>delete</Icon>
+				</IconButton>
+			)}
+		</MenuItem>
+	)
+
 	componentDidMount() {
 		document.title = 'Spotlight - Login'
 		this.rememberUsers = getObjectFromLocalStorage(REMEMBER_USERS) as AuthUsername[]
@@ -280,8 +315,6 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		//console.log(this.state)
-		//console.log(this.rememberUsers)
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
 		if (this.state.redirectToReferrer)
 			return <Redirect to={from} />
@@ -293,6 +326,9 @@ class Login extends React.Component<IProps, IState> {
 			? this.props.settings.values['school_logo'].value
 			: undefined
 		const isVertical: boolean = this.state.imageDimensions.width < this.state.boundingBoxDimension.width
+		const isRemembered: boolean = this.rememberUsers && this.rememberUsers.some((rememberUser: AuthUsername) => {
+			return this.state.authUsername.username === rememberUser.username	
+		})
 		let bannerProps: BannerContentProps = null
 		if (this.props.authState === 'failed-settings') {
 			bannerProps = {
@@ -369,19 +405,11 @@ class Login extends React.Component<IProps, IState> {
 													transformOrigin={{ vertical: "top", horizontal: "center" }}
 													onClose={this.handleCloseMenu}
 												>
+													{(!isRemembered && this.state.authUsername) && (
+														this.rememberUserListItem(this.state.authUsername, false)
+													)}
 													{(this.rememberUsers && this.rememberUsers.length) && (
-														
-															this.rememberUsers.map((rememberUser: AuthUsername) => (
-																<MenuItem key={rememberUser.username} onClick={() => this.handleClickAuthUsername(rememberUser)} dense>
-																	<ListItemAvatar>
-																		<Avatar className={classNames('login_avatar', `--${rememberUser.color}`)}>
-																			{rememberUser.initials}
-																		</Avatar>
-																	</ListItemAvatar>
-																	<ListItemText>{rememberUser.username}</ListItemText>
-																</MenuItem>
-															))
-														
+														this.rememberUsers.map((rememberUser: AuthUsername) => this.rememberUserListItem(rememberUser))
 													)}
 													<MenuItem onClick={() => this.resetLoginState()}>Sign in with Username</MenuItem>
 												</Menu>

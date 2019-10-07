@@ -8,6 +8,9 @@ import {
 	Checkbox,
 	DialogActions,
 	FormControlLabel,
+	Icon,
+	Menu,
+	MenuItem,
 	Paper,
 	TextField,
 	Typography,
@@ -171,8 +174,7 @@ class Login extends React.Component<IProps, IState> {
 					.then(() => {
 						this.props.onSignIn()
 						this.setState({ redirectToReferrer: true })
-						// Reorganaize remembered users
-						// @TODO
+						this.rememberAuthUsername(this.state.authUsername)
 					}, () => {
 						const loginError: ILoginError = {
 							type: 'username',
@@ -230,6 +232,13 @@ class Login extends React.Component<IProps, IState> {
 		this.setState((state: IState) => ({
 			rememberUser: !state.rememberUser
 		}))
+	}
+
+	rememberAuthUsername = (authUsername: AuthUsername) => {
+		const otherAuthUsernames: AuthUsername[] = this.rememberUsers.filter((rememberUser: AuthUsername) => {
+			return rememberUser.username !== authUsername.username
+		})
+		writeObjectToLocalStorage(REMEMBER_USERS, [authUsername, ...otherAuthUsernames])
 	}
 
 	componentDidMount() {
@@ -304,18 +313,21 @@ class Login extends React.Component<IProps, IState> {
 										)}
 									</div>
 									<h2>Sign in to Spotlight</h2>
-									<div>
-										{this.state.authUsername ? (
-											<>
-												<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
-													{this.state.authUsername.initials}
-												</Avatar>
-												<Typography>{this.state.authUsername.username}</Typography>
-											</>
-										) : (
-											<Typography>this.state.authUsername = null</Typography>
-										)}
-									</div>
+									{(this.state.authUsername || (this.rememberUsers && this.rememberUsers.length > 0)) && (
+										<Button className='auth-username'>
+											{this.state.loginState === 'password' && this.state.authUsername ? (
+												<div>
+													<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
+														{this.state.authUsername.initials}
+													</Avatar>
+													<Typography>{this.state.authUsername.username}</Typography>
+												</div>
+											) : (
+												<Typography>Select a User</Typography>
+											)}
+											<Icon>expand_more</Icon>
+										</Button>
+									)}
 									{this.state.loginState === 'username' && (
 										<>
 											<TextField

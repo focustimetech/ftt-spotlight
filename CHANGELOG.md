@@ -1,6 +1,28 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.1 (2019-10-07)
+
+### Added
+ - Added ability to remember usernames when logging in (SPOT-83)
+ - Added list that shows unsuccessful check-ins (SPOT-23)
+ - Added student number accumulation to check-in form in order to expedite check-ins (SPOT-23)
+
+### Changed
+ - Change permissions for staff creating other staff accounts (SPOT-113)
+ - Changed how failed authentication is handled (SPOT-83)
+ - Changed the loading screen (SPOT-83)
+
+### Fixed
+ - Fixed bug that caused Calendar dialog to crash in browser (SPOT-114)
+
+### Unreleased
+ - Ability to reset staff passwords (SPOT-121)
+ - Ability to reset student passwords (SPOT-122)
+ - User Credentials Manager for administrators (SPOT-126)
+ - Limit maximum number of student appointments (SPOT-118)
+ - Change cut-off time for planning and checking in for blocks (SPOT-117)
+
 ## Version 1.2.0 (2019-09-30)
 
 ### Added

@@ -69,3 +69,8 @@ export const getObjectFromLocalStorage = (key: string): object | object[] => {
     const json: string = localStorage.getItem(key)
     return JSON.parse(json)
 }
+
+// localStorage keys
+export const ACCESS_TOKEN = 'ACCESS_TOKEN'
+export const CHECK_IN_CHIPS = 'CHECK_IN_CHIPS'
+export const CHECK_IN_ERRORS = 'CHECK_IN_ERRORS'

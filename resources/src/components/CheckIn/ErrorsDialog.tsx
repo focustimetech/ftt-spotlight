@@ -13,7 +13,7 @@ import {
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { makeArray } from '../../utils/utils'
-import { getObjectFromLocalStorage } from '../../utils/storage'
+import { getObjectFromLocalStorage, CHECK_IN_ERRORS } from '../../utils/storage'
 
 interface ReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
@@ -26,13 +26,13 @@ interface IProps extends ReduxProps {
 
 class ErrorsDialog extends React.Component<IProps> {
     handleClearErrors = () => {
-        localStorage.removeItem('check-in-errors')
+        localStorage.removeItem(CHECK_IN_ERRORS)
         this.props.onClose()
         this.props.queueSnackbar({ message: 'Cleared check-in errors.' })
     }
 
     render() {
-        const errors: any[] = makeArray(getObjectFromLocalStorage('check-in-errors'))
+        const errors: any[] = makeArray(getObjectFromLocalStorage(CHECK_IN_ERRORS))
         const hasErrors: boolean = errors && errors.length > 0
         return (
             <Dialog open={this.props.open}>

@@ -496,8 +496,9 @@ class Login extends React.Component<IProps, IState> {
 											<DialogActions>
 												<Button
 													variant='text'
-													onClick={() => this.resetLoginState()}
-												>Back</Button>
+													color='primary'
+													onClick={() => this.handleHelpDialogOpen()}
+												>Can't Sign In</Button>
 												<LoadingButton
 													type='submit'
 													onClick={this.handleLogin}

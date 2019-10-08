@@ -1,11 +1,11 @@
-// import path from 'path'
+var ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
     entry: './resources/src/index.tsx',
     output: {
-        filename: 'bundle.js',
-        path: __dirname + '/public/js',
-        publicPath: '/public/js'
+        filename: 'bundle-[hash:6].js',
+        path: __dirname + '/public/js/',
+        publicPath: '/public/js/'
     },
 
     // Enable sourcemaps for debugging webpack's output.
@@ -39,6 +39,10 @@ module.exports = {
             }
         ]
     },
+
+    plugins: [
+        new ManifestPlugin({ publicPath: 'js/'})
+    ],
 
     // When importing a module whose path matches one of the following, just
     // assume a corresponding global variable exists and use that instead.

@@ -1,3 +1,9 @@
+<?php
+    $manifest = json_decode(file_get_contents('js/manifest.json'), true);
+    $bundle_path = $manifest['main.js'];
+    // dd($bundle_path);
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,6 +18,6 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
         <!-- Main -->
-        <script src="{{ asset('js/bundle.js') }}"></script>
+        <script src="{{ asset($bundle_path) }}"></script>
     </body>
 </html>

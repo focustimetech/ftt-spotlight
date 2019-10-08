@@ -69,3 +69,9 @@ export const DEQUEUE_SNACKBAR = 'DEQUEUE_SNACKBAR'
 
 // Student Plan
 export const FETCH_STAFF_LIST = 'FETCH_STAFF_LIST'
+
+// Users
+export const FETCH_USERS = 'FETCH_USERS'
+export const RESET_PASSWORD = 'RESET_PASSWORD'
+export const INVALIDATE_PASSWORD = 'INVALIDATE_PASSWORD'
+export const DISABLE_USER = 'DISABLE_USER'

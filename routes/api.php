@@ -18,6 +18,8 @@ Route::post('login', 'AuthController@login');
 Route::get('settings/unauthenticated', 'SettingsController@getUnauthenticated');
 Route::post('check-user', 'AuthController@getUsername');
 
+Route::get('test-email', 'JobsController@processQueue');
+
 // App Start-up
 Route::middleware('auth:api')->group(function() {
     // Authentication
@@ -37,6 +39,7 @@ Route::middleware(['auth:api', 'expired-password'])->group(function() {
 
     // Staff
     Route::get('staff', 'StaffController@index');
+    Route::get('staff/administrators', 'StaffController@getAllAdministrators');
     Route::get('staff/profile/{id}', 'StaffController@profile');
     Route::get('staff/{id}', 'StaffController@show');
 
@@ -68,6 +71,9 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::post('appointments/create', 'AppointmentsController@create');
     Route::delete('appointments/{id}', 'AppointmentsController@delete');
  
+    // Feedback
+    Route::post('feedback', 'FeedbackController@create');
+
     // Staff
     Route::post('staff', 'StaffController@create');
 
@@ -92,6 +98,13 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::put('students', 'StudentsController@update');
     Route::delete('students/{id}', 'StudentsController@destroy');
 
+    // Ledger
+    Route::post('check-in', 'LedgerController@checkIn');
+    Route::get('check-in/status', 'LedgerController@status');
+    Route::get('check-in/status/{datetime}', 'LedgerController@status');
+    Route::post('check-in/air/enable', 'LedgerController@enableAir');
+    Route::post('check-in/air/disable', 'LedgerController@disableAir');
+
     // Notifications
     Route::get('notifications', 'NotificationsController@index');
     Route::put('notifications/archive/all', 'NotificationsController@archiveAllNotifications');
@@ -101,29 +114,23 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::put('notifications/read/{id}', 'NotificationsController@markNotificationRead');
     Route::put('notifications/unread/{id}', 'NotificationsController@markNotificationUnread');
 
-    // Ledger
-    Route::post('check-in', 'LedgerController@checkIn');
-    Route::get('check-in/status', 'LedgerController@status');
-    Route::get('check-in/status/{datetime}', 'LedgerController@status');
-    Route::post('check-in/air/enable', 'LedgerController@enableAir');
-    Route::post('check-in/air/disable', 'LedgerController@disableAir');
-
-    // Student Schedule
-    Route::get('students/{id}/schedule', 'StudentScheduleController@index');
-    Route::get('students/{id}/schedule/{timestamp}', 'StudentScheduleController@index');
-
-    // Staff Schedule
-    Route::get('staff/{id}/schedule', 'StaffScheduleController@index');
-    Route::get('staff/{id}/schedule/{timestamp}', 'StaffScheduleController@index');
-
-    // Feedback
-    Route::post('feedback', 'FeedbackController@create');
-
     // Power Scheduler
     Route::post('power-scheduler', 'PowerSchedulerController@schedule');
 
     // Staff Capacity
     Route::post('staff/capacity', 'StaffController@setCapacity');
+
+    // Staff Schedule
+    Route::get('staff/{id}/schedule', 'StaffScheduleController@index');
+    Route::get('staff/{id}/schedule/{timestamp}', 'StaffScheduleController@index');
+
+    // Student Schedule
+    Route::get('students/{id}/schedule', 'StudentScheduleController@index');
+    Route::get('students/{id}/schedule/{timestamp}', 'StudentScheduleController@index');
+
+    // Users
+    Route::get('users', 'UsersController@getAllUsers');
+    Route::get('users/administrators', 'UsersController@getAllAdministrators');
 });
 
 // Administrator Routes

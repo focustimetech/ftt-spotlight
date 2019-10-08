@@ -20,6 +20,11 @@ class Staff extends Model
 		'password', 'remember_token'
 	];
 
+	public static function administrators()
+	{
+		return Staff::where('administrator', true)->get();
+	}
+
 	public function amendments()
 	{
 		return $this->hasMany('App\Amendment');

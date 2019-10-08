@@ -62,6 +62,7 @@ interface IProps {
 	loading: boolean
 	actions?: ITableAction[]
 	children?: any
+	defaultRowsPerPage?: number
 	link?: ITableLink
 	radio?: boolean
 	searchable?: boolean
@@ -90,7 +91,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		orderBy: this.props.columns[0].id,
 		page: 0,
 		redirect: null,
-		rowsPerPage: 5,
+		rowsPerPage: this.props.defaultRowsPerPage || 5,
 		filters: [],
 		filtersDisabled: true,
 		filterOpen: false,

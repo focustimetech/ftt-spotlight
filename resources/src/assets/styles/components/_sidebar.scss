@@ -47,19 +47,18 @@
 
 		.menu_header {
 			height: 80px;
-			line-height: 48px;
-			margin: 0 32px;
-			padding: 16px 0 16px 56px;
+			margin: 0 16px 8px;
+			padding: 16px;
 			box-sizing: border-box;
 			border-bottom: 1px solid rgba(0,0,0,0.12);
-			position: relative;
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
 
 			&__logo {
-				position: absolute;
-				top: 16px;
-				left: 0;
 				width: 48px;
-				height: 48px;
+				max-height: 48px;
+				margin-right: 8px;
 				background: $primary-semi-light;
 				background-repeat: no-repeat;
 				background-size: cover;
@@ -98,7 +97,7 @@
 					min-width: 128px;
 					max-width: 224px;
 					height: 32px;
-					line-height: 32px;
+					line-height: 18px !important;
 					border-radius: 2px;
 					font-weight: 500;
 					cursor: pointer;

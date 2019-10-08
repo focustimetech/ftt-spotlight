@@ -16,6 +16,7 @@ import { IStaffUser } from '../../types/auth';
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions';
 
 interface ReduxProps {
+	currentUser: IStaffUser
 	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
@@ -35,6 +36,7 @@ class Sidebar extends React.Component<IProps> {
 		const style = {
 			backgroundColor: this.props.theme.palette.primary.main
 		}
+		const isAdministrator: boolean = this.props.currentUser && this.props.currentUser.details.administrator === true
 
 		return (
 			<div className='sidebar'>
@@ -107,6 +109,11 @@ class Sidebar extends React.Component<IProps> {
 								<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
 								<MenuItem to='/students' icon='face' label='Students' />
 								<MenuItem to='/power-scheduler' icon='offline_bolt' label='Power Scheduler' />
+								{isAdministrator && (
+									<>
+										<MenuItem to='/credentials-manager' icon='security' label='Credentials Manager' />
+									</>
+								)}
 							</ul>
 						</>
 					)}
@@ -116,7 +123,9 @@ class Sidebar extends React.Component<IProps> {
 	}
 }
 
-const mapStateToProps = (state: any) => ({})
+const mapStateToProps = (state: any) => ({
+	currentUser: state.auth.user
+})
 const mapDispatchToProps = { queueSnackbar }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(Sidebar))

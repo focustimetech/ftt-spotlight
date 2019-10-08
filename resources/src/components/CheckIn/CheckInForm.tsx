@@ -160,7 +160,7 @@ class CheckInForm extends React.Component<IProps, IState> {
 
         const index: number = this.findChip(chip)
         let replacementChip: CheckInChip = { ...chip, loading: false }
-        axios.get(`http://localhost:8000/api/students/student-number/${chip.value}`)
+        axios.get(`/api/students/student-number/${chip.value}`)
             .then((res: any) => {
                 replacementChip = { type: 'id', value: res.data, loading: false }
                 this.replaceChip(replacementChip, index)

@@ -1,4 +1,6 @@
-var ManifestPlugin = require('webpack-manifest-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     entry: './resources/src/index.tsx',
@@ -41,15 +43,18 @@ module.exports = {
     },
 
     plugins: [
-        new ManifestPlugin({ publicPath: 'js/'})
+        new ManifestPlugin({ publicPath: 'js/'}),
+        new CleanWebpackPlugin(),
     ],
 
     // When importing a module whose path matches one of the following, just
     // assume a corresponding global variable exists and use that instead.
     // This is important because it allows us to avoid bundling all of our
     // dependencies, which allows browsers to cache those libraries between builds.
+    
     externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM'
+        // 'react': 'React',
+        // 'react-dom': 'ReactDOM'
     }
+    
 };

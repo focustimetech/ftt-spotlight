@@ -17,10 +17,12 @@ class CreatePasswordResetsTable extends Migration
             $table->string('username')->index();
             $table->string('code');
             $table->string('token');
-            $table->number('remaining_attempts')
+            $table->integer('remaining_attempts')
                 ->default(3);
-            $table->timestamp('created_at');
-            $table->timestamp('expires_at');
+            $table->timestamp('created_at')
+                ->nullable();
+            $table->timestamp('expires_at')
+                ->nullable();
         });
     }
 

@@ -46,6 +46,29 @@ class User extends Authenticatable
         return $this->where('username', $username)->first();
     }
 
+    public function disable()
+    {
+        // Set disabled to current timestamp
+        $this->attributes['disabled_at'] = date('Y-m-d H:i:s');
+
+        // Log out the user
+        $this->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+        $this->save();
+    }
+
+    public function reenable()
+    {
+        $this->attributes['disabled_at'] = null;
+        $this->save();
+    }
+
+    public function isDisabled()
+    {
+        return $this->disabled_at != null && strtotime($this->disabled_at) < time();
+    }
+
     public function isStaff()
     {
         return $this->account_type === 'staff';

@@ -138,12 +138,19 @@ class Login extends React.Component<IProps, IState> {
 					message: 'The given credentials were not correct.'
 				}
 				break
+			case 423:
+				loginError = {
+					type: 'password',
+					message: 'Your account has been locked. Please contact your administrator.'
+				}
+				break
 			case 500:
 			default:
 				loginError = {
 					type: 'username',
 					message: 'The server encountered an error while logging you in. Please try again.'
 				}
+			console.log('err:', loginError)
 		}
 		if (loginError)
 			this.setState({ error: loginError })

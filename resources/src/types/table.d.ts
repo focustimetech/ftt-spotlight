@@ -20,11 +20,15 @@ export interface ITableHeaderColumn {
 	sortLabel?: string
 	th?: boolean // If set, column is table header
 	searchable?: boolean
+	values?: string[]
 	visible: boolean
 	filterable: boolean
 }
 
-export type ITableFilter = ITableStringFilter | ITableNumericFilter
+export type ITableFilter =
+	| ITableStringFilter
+	| ITableNumericFilter
+	| ITableEnumFilter
 
 export interface ITableStringFilter {
 	id: string
@@ -38,6 +42,13 @@ export interface ITableNumericFilter {
 	id: string
 	type: 'numeric'
 	rule: ITableNumericFilterType
+	value: string
+	[key: string]: any
+}
+
+export interface ITableEnumFilter {
+	id: string
+	type: 'enum'
 	value: string
 	[key: string]: any
 }

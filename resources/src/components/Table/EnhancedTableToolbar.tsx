@@ -90,6 +90,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 	}
 
 	render() {
+		console.log('EnhancedTableToolbar.props.filters:', this.props.filters)
 		const { numSelected, numShown, numTotal, filterOpen } = this.props
 		const { menuRef } = this.state
 		const menuOpen = Boolean(menuRef)

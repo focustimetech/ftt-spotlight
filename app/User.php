@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Exceptions\UserNotFoundException;
@@ -46,15 +47,19 @@ class User extends Authenticatable
         return $this->where('username', $username)->first();
     }
 
+    public function signOut()
+    {
+        $this->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+        $this->save();
+    }
+
     public function disable()
     {
         // Set disabled to current timestamp
         $this->attributes['disabled_at'] = date('Y-m-d H:i:s');
-
-        // Log out the user
-        $this->tokens->each(function ($token, $key) {
-            $token->delete();
-        });
+        $this->signOut();
         $this->save();
     }
 
@@ -122,8 +127,24 @@ class User extends Authenticatable
         }
     }
 
+    public function invalidatePassword()
+    {
+        $this->attributes['password_expired'] = true;
+        $this->signOut();
+        $this->save();
+    }
+
     public function passwordExpired()
     {
         return $this->password_expired;
+    }
+
+    public function resetPassword()
+    {
+        $this->attributes['password'] = Hash::make($this->username);
+        $this->attributes['password_expired'] = true;
+        $this->attributes['disabled_at'] = date('Y-m-d H:i:s', strtotime('+2 hours'));
+        $this->attributes['reenable'] = true;
+        $this->save();
     }
 }

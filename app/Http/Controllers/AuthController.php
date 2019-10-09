@@ -60,16 +60,51 @@ class AuthController extends Controller
         }
     }
 
-    public function resetPassword($user_id)
+    public function resetPasswords(Request $request)
     {
-        $user =  User::find($user_id);
-        
-        $user->password = Hash::make($user->username);
-        $user->password_expired = true;
-        $user->disabled_at = date('Y-m-d H:i:s', strtotime('+60 minutes'));
-        $user->reenable = true;
-        $user->save();
+        $user_ids = $request->input('user_ids');
+        foreach ($user_ids as $user_id) {
+            $user = User::find($id);
+            if ($user)
+                $user->resetPassword();
+        }
 
-        return response()->json('Reset user\'s passwords successfully.', 200);
+        return response()->json("Reset users' passwords successfully.", 200);
+    }
+
+    public function disableAccounts(Request $request)
+    {
+        $user_ids = $request->input('user_ids');
+        foreach ($user_ids as $user_id) {
+            $user = User::find($id);
+            if ($user)
+                $user->disable();
+        }
+
+        return response()->json('Disabled users successfully.', 200);
+    }
+
+    public function reenableAccounts(Request $request)
+    {
+        $user_ids = $request->input('user_ids');
+        foreach ($user_ids as $user_id) {
+            $user = User::find($id);
+            if ($user)
+                $user->reenable();
+        }
+
+        return response()->json('Reenabled users successfully.', 200);
+    }
+
+    public function invalidatePasswords(Request $request)
+    {
+        $user_ids = $request->input('user_ids');
+        foreach ($user_ids as $user_id) {
+            $user = User::find($id);
+            if ($user)
+                $user->invalidatePassword();
+        }
+
+        return response()->json("Invalidated users' passwords successfully.", 200);
     }
 }

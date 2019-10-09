@@ -135,14 +135,17 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
 
 // Administrator Routes
 Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(function() {
+    // Auth
+    Route::post('users/reset-password/', 'AuthController@resetPasswords');
+    Route::post('users/invalidate-password/', 'AuthController@invalidatePasswords');
+    Route::post('users/disable-accounts/', 'AuthController@disableAccounts');
+    Route::post('users/reenable-accounts/', 'AuthController@reenableAccounts');
+
     // Staff
     Route::delete('staff/{id}', 'StaffController@destroy');
 
     // Settings
     Route::put('settings', 'SettingsController@update');
-
-    // Users
-    Route::post('users/reset-password/{id}', 'AuthController@resetPassword');
 });
 
 // Incomplete

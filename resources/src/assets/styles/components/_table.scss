@@ -93,6 +93,10 @@
                 &:first-child {
                     margin-left: 0;
                 }
+
+                &.--enum {
+                    flex-grow: 1;
+                }
             }
 
             &:last-child {

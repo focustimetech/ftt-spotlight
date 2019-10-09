@@ -133,9 +133,11 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 
 			const matchFilters = filters.length ? (
 				filters.some((filter: ITableFilter) => {
+					if (filter.type === 'enum')
+						return row[filter.id] === filter.value
 					switch (filter.rule) {
 						case 'contains':
-							return false
+							return row[filter.id].includes(filter.value)
 						case 'ends-with':
 							return row[filter.id].endsWith(filter.value)
 						case 'equal-to':

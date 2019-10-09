@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 
 import {
 	Button,
@@ -21,6 +22,7 @@ import {
 	ITableStringFilterType,
 	ITableStringFilter,
 	ITableNumericFilter,
+	ITableEnumFilter
 } from '../../types/table';
 
 interface StringFilterRule {
@@ -78,16 +80,23 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 				value: ''
 			}
 		} else {
-			if (this.props.columns[0].isNumeric) {
+			const firstColumn: ITableHeaderColumn = this.props.columns[0]
+			if (firstColumn.values && firstColumn.values.length > 0) {
 				filter = {
-					id: this.props.columns[0].id,
+					id: firstColumn.id,
+					type: 'enum',
+					value: firstColumn.values[0]
+				}
+			} else if (firstColumn.isNumeric) {
+				filter = {
+					id: firstColumn.id,
 					type: 'numeric',
 					rule: numericFilterRules[0].value,
 					value: ''
 				}
 			} else {
 				filter = {
-					id: this.props.columns[0].id,
+					id: firstColumn.id,
 					type: 'string',
 					rule: stringFilterRules[0].value,
 					value: ''
@@ -147,31 +156,43 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		})
 	}
 
-	handleChangeFilterID = (value: any, index: number) => {
+	handleChangeFilterID = (event: any, index: number) => {
+		const value: any = event.target.value
 		this.setState((state: IState) => {
-			const filters: ITableFilter[] = state.filters.map((filter: ITableNumericFilter | ITableStringFilter, idx: number) => {
+			const filters: ITableFilter[] = state.filters.map((filter: ITableFilter, idx: number) => {
 				if (idx !== index) {
 					return filter
 				} else {
 					const column = this.props.columns.find((column: ITableHeaderColumn) => {
 						return column.id === value
 					})
-					const hasTypeChanged: boolean = filter.type === 'string' ? column.isNumeric : !column.isNumeric
-					let newFilter: ITableStringFilter | ITableNumericFilter
-					newFilter = {
-						id: value,
-						value: hasTypeChanged ? '' : filter.value,
-						type: 'string',
-						rule: hasTypeChanged ? stringFilterRules[0].value : (filter as ITableStringFilter).rule
-					} as ITableStringFilter
-					if (hasTypeChanged && column.isNumeric) {
-						newFilter =  {
+					const nextType: ITableFilter['type'] = column.values && column.values.length
+						? 'enum'
+						: (column.isNumeric ? 'numeric' : 'string')
+					const hasTypeChanged: boolean = filter.type !== nextType
+					let newFilter: ITableFilter
+
+					if (hasTypeChanged && nextType === 'enum') {
+						newFilter = {
+							id: value,
+							value: hasTypeChanged ? column.values[0] : filter.value,
+							type: 'enum'
+						} as ITableEnumFilter
+					} else if (hasTypeChanged && nextType === 'numeric') {
+						newFilter = {
 							id: value,
 							value: hasTypeChanged ? '' : filter.value,
 							type: 'numeric',
 							rule: hasTypeChanged ? numericFilterRules[0].value : (filter as ITableNumericFilter).rule
 						} as ITableNumericFilter
-					} 
+					} else {
+						newFilter = {
+							id: value,
+							value: hasTypeChanged ? '' : filter.value,
+							type: 'string',
+							rule: hasTypeChanged ? stringFilterRules[0].value : (filter as ITableStringFilter).rule
+						} as ITableStringFilter
+					}
 					return newFilter
 				}
 			})
@@ -179,7 +200,8 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		})
 	}
 
-	handleChangeFilterRule = (value: any, index: number) => {
+	handleChangeFilterRule = (event: any, index: number) => {
+		const value: any = event.target.value
 		this.setState((state: IState) => {
 			return {
 				filters: state.filters.map((filter, idx) => {
@@ -189,7 +211,8 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		})
 	}
 
-	handleChangeFilterValue = (value: string, index: number) => {
+	handleChangeFilterValue = (event: any, index: number) => {
+		const value: string = event.target.value
 		this.setState((state: IState) => {
 			return {
 				filters: state.filters.map((filter, idx) => {
@@ -247,12 +270,16 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 					</div>
 					<ul>
 						{this.state.filters.map((filter: ITableFilter, idx: number) => {
-							const filterRules: Array<StringFilterRule | NumericFilterRule> = filter.type === 'string' ? (
-								stringFilterRules
-							) : (
-								numericFilterRules
-							)
 							const errored: boolean = this.state.error && filter.value.length === 0
+							const isEnum: boolean = filter.type === 'enum'
+							const column: ITableHeaderColumn = this.props.columns.find((tableColumn: ITableHeaderColumn) => {
+								return tableColumn.id === filter.id
+							})
+							let filterRules: Array<StringFilterRule | NumericFilterRule> = null
+							if (filter.type === 'string')
+								filterRules = stringFilterRules
+							else if (filter.type === 'numeric')
+								filterRules = numericFilterRules
 
 							return (
 								<li key={idx} className='filter-rule'>
@@ -260,7 +287,7 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 										name='id'
 										margin='dense'
 										value={filter.id}
-										onChange={(event: any) => {this.handleChangeFilterID(event.target.value, idx)}}
+										onChange={(event: any) => {this.handleChangeFilterID(event, idx)}}
 										disabled={this.state.disabled}
 									>
 										{this.props.columns.map((column: ITableHeaderColumn, idx: number) => {
@@ -273,27 +300,38 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 									</Select>
 									<Select
 										name='rule'
+										className={classNames({'--enum': isEnum})}
 										margin='dense'
-										value={filter.rule}
-										onChange={(event: any) => this.handleChangeFilterRule(event.target.value, idx)}
+										value={isEnum ? filter.value : filter.rule}
+										onChange={(event: any) => isEnum ? this.handleChangeFilterValue(event, idx) : this.handleChangeFilterRule(event, idx)}
 										disabled={this.state.disabled}
 									>	
-										{filterRules.map((filterRule) => (
-											<MenuItem value={filterRule.value} key={filterRule.value}>
-												{filterRule.label}
-											</MenuItem>
+										{isEnum ? (
+											column.values.map((enumValue: string) => (
+												<MenuItem value={enumValue} key={enumValue}>
+													{enumValue}
+												</MenuItem>
+											))
+										) : (
+											filterRules.map((filterRule: StringFilterRule | NumericFilterRule) => (
+												<MenuItem value={filterRule.value} key={filterRule.value}>
+													{filterRule.label}
+												</MenuItem>
+											)
 										))}
 									</Select>
-									<TextField
-										variant='standard'
-										margin='dense'
-										placeholder='Filter value'
-										onChange={(event: any) => this.handleChangeFilterValue(event.target.value, idx)}
-										value={filter.value}
-										error={errored}
-										helperText={errored ? 'This field cannot be empty.' : undefined}
-										disabled={this.state.disabled}
-									/>
+									{!isEnum && (
+										<TextField
+											variant='standard'
+											margin='dense'
+											placeholder='Filter value'
+											onChange={(event: any) => this.handleChangeFilterValue(event, idx)}
+											value={filter.value}
+											error={errored}
+											helperText={errored ? 'This field cannot be empty.' : undefined}
+											disabled={this.state.disabled}
+										/>
+									)}
 									<IconButton onClick={() => this.onDuplicateFilter(idx)} disabled={this.state.disabled}>
 										<Icon>filter_none</Icon>
 									</IconButton>
@@ -315,7 +353,6 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 						<Button variant='text' color='primary' disabled={!haveFiltersChanged} onClick={() => this.onApplyFilters()}>Apply</Button>
 						<Button variant='text' onClick={() => this.onCancelFilters()}>Cancel</Button>
 					</div>
-					
 				</Paper>
 			</Grow>
 		)

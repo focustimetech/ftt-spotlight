@@ -62,10 +62,11 @@ class AuthController extends Controller
 
     public function resetPasswords(Request $request)
     {
+        $acting_user_id = auth()->user()->id;
         $user_ids = $request->input('user_ids');
         foreach ($user_ids as $user_id) {
             $user = User::find($id);
-            if ($user)
+            if ($user && $user_id !== $acting_user_id)
                 $user->resetPassword();
         }
 
@@ -74,10 +75,11 @@ class AuthController extends Controller
 
     public function disableAccounts(Request $request)
     {
+        $acting_user_id = auth()->user()->id;
         $user_ids = $request->input('user_ids');
         foreach ($user_ids as $user_id) {
             $user = User::find($id);
-            if ($user)
+            if ($user && $user_id !== $acting_user_id)
                 $user->disable();
         }
 
@@ -86,10 +88,11 @@ class AuthController extends Controller
 
     public function reenableAccounts(Request $request)
     {
+        $acting_user_id = auth()->user()->id;
         $user_ids = $request->input('user_ids');
         foreach ($user_ids as $user_id) {
             $user = User::find($id);
-            if ($user)
+            if ($user && $user_id !== $acting_user_id)
                 $user->reenable();
         }
 
@@ -98,10 +101,11 @@ class AuthController extends Controller
 
     public function invalidatePasswords(Request $request)
     {
+        $acting_user_id = auth()->user()->id;
         $user_ids = $request->input('user_ids');
         foreach ($user_ids as $user_id) {
             $user = User::find($id);
-            if ($user)
+            if ($user && $user_id !== $acting_user_id)
                 $user->invalidatePassword();
         }
 

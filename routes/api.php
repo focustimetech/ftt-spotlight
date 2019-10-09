@@ -140,6 +140,9 @@ Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(funct
 
     // Settings
     Route::put('settings', 'SettingsController@update');
+
+    // Users
+    Route::post('users/reset-password/{id}', 'AuthController@resetPassword');
 });
 
 // Incomplete

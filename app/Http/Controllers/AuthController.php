@@ -46,6 +46,10 @@ class AuthController extends Controller
         if ($verify_response->status() === 200) {
             $user->password = Hash::make($new_password);
             $user->password_expired = false;
+            if ($user->reenable) {
+                $user->reenable();
+                $user->reenable = false;
+            }
             if ($user->save())
                 return response()->json('Changed password successfully', 200);
             else {
@@ -54,5 +58,18 @@ class AuthController extends Controller
         } else {
             return $verify_response;
         }
+    }
+
+    public function resetPassword($user_id)
+    {
+        $user =  User::find($user_id);
+        
+        $user->password = Hash::make($user->username);
+        $user->password_expired = true;
+        $user->disabled_at = date('Y-m-d H:i:s', strtotime('+60 minutes'));
+        $user->reenable = true;
+        $user->save();
+
+        return response()->json('Reset user\'s passwords successfully.', 200);
     }
 }

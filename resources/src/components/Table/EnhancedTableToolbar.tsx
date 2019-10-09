@@ -77,7 +77,6 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 	}
 
 	handleMenuSelect = (action: ITableAction['id']) => {
-		// this.props.actions
 		this.handleMenuClose()
 	}
 

@@ -84,8 +84,6 @@ class Students extends React.Component<IProps, IState> {
 		}
 	}
 
-	handleCheckIn = (ids: number[]) => {}
-
 	onAddDialogOpen = () => {
 		this.setState({ addDialogOpen: true })
 	}
@@ -113,6 +111,7 @@ class Students extends React.Component<IProps, IState> {
 				last_name: student.last_name,
 				first_name: student.first_name,
 				grade: student.grade,
+				class: student.grade >= 11 ? 'Senior' : 'Junior',
 				profile: student.id
 			}
 		})
@@ -129,13 +128,8 @@ class Students extends React.Component<IProps, IState> {
 				visible: true
 			},
 			{ id: 'first_name', label: 'First Name', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
-			{ id: 'grade', label: 'Grade', isNumeric: true, visible: true, filterable: true }
-		]
-
-		const actions: ITableAction[] = [
-			{ id: 'check-in', name: 'Check In', action: this.handleCheckIn },
-			{ id: 'add-to-cluster', name: 'Add to Cluster', action: this.handleCheckIn },
-			{ id: 'delete', name: 'Delete', action: this.handleCheckIn }
+			{ id: 'grade', label: 'Grade', isNumeric: true, visible: true, filterable: true },
+			{ id: 'class', label: 'Class', isNumeric: false, visible: true, filterable: true, values: ['Junior', 'Senior']}
 		]
 
 		const tableLink: ITableLink = {label: 'Profile', key: 'profile', path: 'students'}
@@ -148,7 +142,6 @@ class Students extends React.Component<IProps, IState> {
 					title='Students'
 					columns={columns}
 					data={students}
-					actions={actions}
 					searchable={true}
 					loading={this.state.loading}
 					link={tableLink}

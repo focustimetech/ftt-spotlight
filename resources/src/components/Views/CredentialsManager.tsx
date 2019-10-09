@@ -55,20 +55,23 @@ class CredentialsManager extends React.Component<IProps, IState> {
 		const users = this.props.users.map((user: IUser, index: number) => {
 			return {
 				id: index,
-				name: user.details.name
+				name: user.details.name,
+				first_name: user.details.first_name,
+				last_name: user.details.last_name,
+				status: user.status,
+				status_enum: user.status === 'Active' ? 'Active' : 'Disabled',
+				password_status: user.password_expired ? 'Expired' : 'Valid',
+				account_type: user.display_role
 			}
 		})
 		const columns: ITableHeaderColumn[] = [
-			{
-				id: 'name',
-				label: 'Name',
-				th: true,
-				isNumeric: false,
-				disablePadding: true,
-				searchable: true,
-				filterable: true,
-				visible: true
-			}
+			{ id: 'name', label: 'Name', th: true, isNumeric: false, disablePadding: true, searchable: false, filterable: false, visible: true },
+			{ id: 'first_name', label: 'First name', isNumeric: false, searchable: true, filterable: true, visible: false },
+			{ id: 'last_name', label: 'Last name', isNumeric: false, searchable: true, filterable: true, visible: false },
+			{ id: 'status', label: 'Account status', isNumeric: false, disablePadding: true, th: true, searchable: false, filterable: false, visible: true },
+			{ id: 'status_enum', label: 'Account status', isNumeric: false, searchable: false, filterable: true, visible: false, values: ['Active', 'Disabled'] },
+			{ id: 'password_status', label: 'Password status', isNumeric: false, disablePadding: true, th: true, searchable: false, filterable: true, visible: true, values: ['Valid', 'Expired'] },
+			{ id: 'account_type', label: 'Account type', isNumeric: false, disablePadding: true, th: true, searchable: false, filterable: true, visible: true, values: ['Student', 'Teacher', 'Administrator'] },	
 		]
 
 		const tableActions: ITableAction[] = [

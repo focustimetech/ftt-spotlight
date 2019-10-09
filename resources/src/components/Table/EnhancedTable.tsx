@@ -105,7 +105,6 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	handleFilterChange = (filters: ITableFilter[], disabled: boolean) => {
-		console.log('handleFilterChange()')
 		this.setState({
 			filters,
 			filtersDisabled: disabled
@@ -272,7 +271,6 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		console.log('EnhancedTable.state.filters:', this.state.filters)
 		if (this.state.redirect)
 			return <Redirect to={this.state.redirect} />
 

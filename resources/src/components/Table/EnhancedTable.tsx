@@ -21,6 +21,7 @@ import { EmptyStateIcon } from '../EmptyStateIcon'
 import {
 	ITableAction,
 	ITableFilter,
+	ITableEnumFilter,
 	ITableHeaderColumn,
 	ITableLink,
 	SortOrder
@@ -125,16 +126,23 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			return acc
 		}, [])
 		return this.props.data.filter((row: any) => {
+			const enumFilters: ITableEnumFilter[] = filters.filter((filter: ITableFilter) => filter.type === 'enum') as ITableEnumFilter[]
+			const otherFilters: ITableFilter[] = filters.filter((filter: ITableFilter) => filter.type !== 'enum')
+
 			const matchSearch: boolean = tableQuery.length ? (
 				properties.some((property) => {
 					return row[property] && new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
 				})
 			) : true
 
-			const matchFilters = filters.length ? (
-				filters.some((filter: ITableFilter) => {
-					if (filter.type === 'enum')
-						return row[filter.id] === filter.value
+			const matchEnums: boolean =  enumFilters.length ? (
+				enumFilters.every((filter: ITableEnumFilter) => {
+					return row[filter.id] === filter.value
+				})
+			) : true
+
+			const matchFilters = otherFilters.length ? (
+				otherFilters.some((filter: ITableFilter) => {
 					switch (filter.rule) {
 						case 'contains':
 							return row[filter.id].includes(filter.value)
@@ -153,7 +161,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 					}
 				})
 			) : true
-			return matchSearch && matchFilters
+			return matchSearch && matchFilters && matchEnums
 		})
 	}
 

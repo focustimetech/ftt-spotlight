@@ -65,7 +65,7 @@ class AuthController extends Controller
         $acting_user_id = auth()->user()->id;
         $user_ids = $request->input('user_ids');
         foreach ($user_ids as $user_id) {
-            $user = User::find($id);
+            $user = User::find($user_id);
             if ($user && $user_id !== $acting_user_id)
                 $user->resetPassword();
         }
@@ -78,7 +78,7 @@ class AuthController extends Controller
         $acting_user_id = auth()->user()->id;
         $user_ids = $request->input('user_ids');
         foreach ($user_ids as $user_id) {
-            $user = User::find($id);
+            $user = User::find($user_id);
             if ($user && $user_id !== $acting_user_id)
                 $user->disable();
         }
@@ -91,7 +91,7 @@ class AuthController extends Controller
         $acting_user_id = auth()->user()->id;
         $user_ids = $request->input('user_ids');
         foreach ($user_ids as $user_id) {
-            $user = User::find($id);
+            $user = User::find($user_id);
             if ($user && $user_id !== $acting_user_id)
                 $user->reenable();
         }
@@ -104,7 +104,7 @@ class AuthController extends Controller
         $acting_user_id = auth()->user()->id;
         $user_ids = $request->input('user_ids');
         foreach ($user_ids as $user_id) {
-            $user = User::find($id);
+            $user = User::find($user_id);
             if ($user && $user_id !== $acting_user_id)
                 $user->invalidatePassword();
         }

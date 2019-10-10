@@ -1,21 +1,21 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import {
-	Icon,
-	IconButton,
-	Tooltip
-} from '@material-ui/core'
-
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { resetPasswords, invalidatePasswords, disableUsers, reenableUsers } from '../../actions/authActions'
 import { fetchUsers } from '../../actions/userActions'
 import { EnhancedTable } from '../Table/EnhancedTable'
+import { ConfirmPasswordDialog } from '../Modals/ConfirmPasswordDialog'
 import { TopNav } from '../TopNav'
 import { ITableHeaderColumn, ITableLink, ITableAction } from '../../types/table'
 import { isEmpty } from '../../utils/utils'
 import { IUser } from '../../types/auth'
 
+type AuthAction = 'reset-passwords' | 'invalidate-passwords' | 'disable-users' | 'reenable-users'
+
 interface IState {
+	authAction: AuthAction
+	confirmPasswordDialogOpen: boolean
 	loading: boolean
 	selected: number[]
 }
@@ -30,6 +30,8 @@ interface IProps extends ReduxProps {}
 
 class CredentialsManager extends React.Component<IProps, IState> {
 	state: IState = {
+		authAction: null,
+		confirmPasswordDialogOpen: false,
 		loading: false,
 		selected: []
 	}
@@ -38,8 +40,47 @@ class CredentialsManager extends React.Component<IProps, IState> {
 		this.setState({ selected })
 	}
 
-	handlePasswordResets = (selected: number[]) => {
-		
+	handleAuthAction = (authAction: AuthAction) => {
+		this.setState({
+			authAction,
+			confirmPasswordDialogOpen: true
+		})
+	}
+
+	handleCancelAuthAction = () => {
+		this.setState({ confirmPasswordDialogOpen: false })
+	}
+
+	onSubmitAuthAction = (): Promise<any> => {
+		let action: (selected: number[]) => Promise<any>
+		let snackbarMessage: string
+		switch(this.state.authAction) {
+			case 'reset-passwords':
+				action = resetPasswords
+				snackbarMessage = 'Reset passwords successfully.'
+				break
+			case 'invalidate-passwords':
+				action = invalidatePasswords
+				snackbarMessage = 'Invalidated passwords successfully.'
+				break
+			case 'disable-users':
+				action = disableUsers
+				snackbarMessage = 'Disabled accounts successfully.'
+				break
+			case 'reenable-users':
+				action = reenableUsers
+				snackbarMessage = 'Reenabled accounts successfully.'
+				break
+		}
+		return action(this.state.selected.map((index: number) => this.props.users[index].id))
+			.then(() => {
+				return this.props.fetchUsers()
+					.then(() => {
+						this.props.queueSnackbar({ message: snackbarMessage })
+					})
+			}, (error: any) => {
+				console.error(error)
+			})
 	}
 
 	componentDidMount() {
@@ -64,6 +105,7 @@ class CredentialsManager extends React.Component<IProps, IState> {
 				account_type: user.display_role
 			}
 		})
+		const allDisabled = this.state.selected.every((id: number) => users[id].status_enum === 'Disabled')
 		const columns: ITableHeaderColumn[] = [
 			{ id: 'name', label: 'Name', th: true, isNumeric: false, disablePadding: true, searchable: false, filterable: false, visible: true },
 			{ id: 'first_name', label: 'First name', isNumeric: false, searchable: true, filterable: true, visible: false },
@@ -73,13 +115,23 @@ class CredentialsManager extends React.Component<IProps, IState> {
 			{ id: 'password_status', label: 'Password status', isNumeric: false, disablePadding: true, th: true, searchable: false, filterable: true, visible: true, values: ['Valid', 'Expired'] },
 			{ id: 'account_type', label: 'Account type', isNumeric: false, disablePadding: true, th: true, searchable: false, filterable: true, visible: true, values: ['Student', 'Teacher', 'Administrator'] },	
 		]
-
 		const tableActions: ITableAction[] = [
-			{ id: 'reset-password', name: 'Reset Password', action: this.handlePasswordResets}
+			{ id: 'reset-passwords', name: 'Reset Password', callback: () => this.handleAuthAction('reset-passwords')},
+			{ id: 'invalidate-passwords', name: 'Invalidate Password', callback: () => this.handleAuthAction('invalidate-passwords')},
+			allDisabled
+				? { id: 'reenable-users', name: 'Reenable Account', callback: () => this.handleAuthAction('reenable-users')}
+				: { id: 'disable-users', name: 'Disable Account', callback: () => this.handleAuthAction('disable-users')}
 		]
+		if (allDisabled)
+			tableActions
 
 		return (
 			<div className='content' id='content'>
+				<ConfirmPasswordDialog
+					open={this.state.confirmPasswordDialogOpen}
+					onClose={this.handleCancelAuthAction}
+					onVerification={this.onSubmitAuthAction}
+				/>
 				<TopNav
 					breadcrumbs={[{ value: 'Credentials Manager' }]}
 				/>
@@ -93,7 +145,7 @@ class CredentialsManager extends React.Component<IProps, IState> {
 					selected={this.state.selected}
 					onSelect={this.onUsersSelect}
 					defaultRowsPerPage={10}
-					// link={tableLink}
+					actions={tableActions}
 				/>
 			</div>
 		)

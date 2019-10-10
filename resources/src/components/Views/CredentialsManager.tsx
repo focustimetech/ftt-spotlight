@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
@@ -21,6 +22,7 @@ interface IState {
 }
 
 interface ReduxProps {
+	currentUser: IUser
 	users: IUser[]
 	fetchUsers: () => Promise<any>
 	queueSnackbar: (snackbar: ISnackbar) => void
@@ -93,6 +95,10 @@ class CredentialsManager extends React.Component<IProps, IState> {
 	}
 
 	render() {
+		const { currentUser } = this.props
+		if (currentUser && (currentUser.account_type === 'student' || (currentUser.account_type === 'staff' && !currentUser.details.administrator))) {
+			return <Redirect to='/' />
+		}
 		const users = this.props.users.map((user: IUser, index: number) => {
 			return {
 				id: index,
@@ -153,6 +159,7 @@ class CredentialsManager extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
+	currentUser: state.auth.user,
 	users: state.users.items,
 })
 

@@ -56,7 +56,8 @@ export const ConfirmPasswordDialog = (props: IProps) => {
     const handleCompletion = () => {
         setLoading(false)
         props.onClose()
-        props.onSubmit(password)
+        if (props.onSubmit)
+            props.onSubmit(password)
     }
 
     const onExited = () => {

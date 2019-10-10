@@ -138,8 +138,8 @@ Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(funct
     // Auth
     Route::post('users/reset-passwords/', 'AuthController@resetPasswords');
     Route::post('users/invalidate-passwords/', 'AuthController@invalidatePasswords');
-    Route::post('users/disable-accounts/', 'AuthController@disableAccounts');
-    Route::post('users/reenable-accounts/', 'AuthController@reenableAccounts');
+    Route::post('users/disable-users/', 'AuthController@disableAccounts');
+    Route::post('users/reenable-users/', 'AuthController@reenableAccounts');
 
     // Staff
     Route::delete('staff/{id}', 'StaffController@destroy');

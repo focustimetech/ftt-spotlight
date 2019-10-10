@@ -129,13 +129,13 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			const enumFilters: ITableEnumFilter[] = filters.filter((filter: ITableFilter) => filter.type === 'enum') as ITableEnumFilter[]
 			const otherFilters: ITableFilter[] = filters.filter((filter: ITableFilter) => filter.type !== 'enum')
 
-			const matchSearch: boolean = tableQuery.length ? (
+			const matchSearch: boolean = tableQuery.length && !this.state.filtersDisabled ? (
 				properties.some((property) => {
 					return row[property] && new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
 				})
 			) : true
 
-			const matchEnums: boolean =  enumFilters.length ? (
+			const matchEnums: boolean = enumFilters.length && !this.state.filtersDisabled ? (
 				enumFilters.every((filter: ITableEnumFilter) => {
 					return row[filter.id] === filter.value
 				})
@@ -178,7 +178,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			return
 		let newSelected: number[] = []
 		if (event.target.checked && this.props.radio !== true) {
-			newSelected =  this.state.filters.length || this.state.tableQuery.length ? (
+			newSelected = (this.props.searchable && this.state.tableQuery.length) || (this.state.filters.length && !this.state.filtersDisabled) ? (
 				this.filterTableData().map(n => n.id)
 			) : (
 				this.props.data.map(n => n.id)

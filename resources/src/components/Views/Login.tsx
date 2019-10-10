@@ -361,6 +361,7 @@ class Login extends React.Component<IProps, IState> {
 
 		return (
 			<>
+				{/*
 				<Dialog open={this.state.helpDialogOpen}>
 					<DialogContent>
 
@@ -369,6 +370,7 @@ class Login extends React.Component<IProps, IState> {
 						<Button onClick={() => this.setState({ helpDialogOpen: false })}>Cancel</Button>
 					</DialogActions>
 				</Dialog>
+				*/}
 				{bannerProps && (
 					<Banner
 						{...bannerProps}
@@ -501,11 +503,13 @@ class Login extends React.Component<IProps, IState> {
 												fullWidth
 											/>
 											<DialogActions>
+												{/*
 												<Button
 													variant='text'
 													color='primary'
 													onClick={() => this.handleHelpDialogOpen()}
 												>Can't Sign In</Button>
+												*/}
 												<LoadingButton
 													type='submit'
 													onClick={this.handleLogin}

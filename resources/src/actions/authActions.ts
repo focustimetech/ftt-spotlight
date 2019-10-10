@@ -53,26 +53,18 @@ export const logout = () => {
     }
 }
 
-export const resetPasswords = (userIds: number[]) => {
-    return (dispatch: any) => {
-        return axios.post('/api/users/reset-passwords', userIds)
-    }
+export const resetPasswords = (userIds: number[]): Promise<any> => {
+    return axios.post('/api/users/reset-passwords', userIds)
 }
 
-export const invalidatePasswords = (userIds: number[]) => {
-    return (dispatch: any) => {
-        return axios.post('/api/users/invalidate-passwords', userIds)
-    }
+export const invalidatePasswords = (userIds: number[]): Promise<any> => {
+    return axios.post('/api/users/invalidate-passwords', userIds)
 }
 
-export const disableUsers = (userIds: number[]) => {
-    return (dispatch: any) => {
-        return axios.post('/api/users/disable-users', userIds)
-    }
+export const disableUsers = (userIds: number[]): Promise<any> => {
+    return axios.post('/api/users/disable-users', userIds)
 }
 
-export const reenableUsers = (userIds: number[]) => {
-    return (dispatch: any) => {
-        return axios.post('/api/users/reenable-users', userIds)
-    }
+export const reenableUsers = (userIds: number[]): Promise<any> => {
+    return axios.post('/api/users/reenable-users', userIds)
 }

@@ -15,26 +15,30 @@ import { verifyPassword } from '../../utils/http'
 
 interface IProps {
     open: boolean
+    dialogTitle?: string
     onClose: () => void
-    onSubmit: (password: string) => void
+    onSubmit?: (password: string) => void
+    onVerification?: () => Promise<any>
 }
 
 export const ConfirmPasswordDialog = (props: IProps) => {
+    const helperText: string = "That didn't work. Please try again."
     const [password, setPassword]: [string, React.Dispatch<React.SetStateAction<string>>] = React.useState('')
     const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState(false)
     const [errored, setErrored]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState(false)
-
-    const helperText: string = 'That didn\'t work. Please try again.'
 
     const handleAuthorization = () => {
         setLoading(true)
         setErrored(false)
         verifyPassword(password)
             .then((res: any) => {
-                setLoading(false)
-                props.onClose()
-                
-        props.onSubmit(password)
+                if (props.onVerification) {
+                    props.onVerification().then(() => {
+                        handleCompletion()
+                    })
+                } else {
+                    handleCompletion()
+                }
             })
             .catch((reason: any) => {
                 setLoading(false)
@@ -49,13 +53,19 @@ export const ConfirmPasswordDialog = (props: IProps) => {
         setErrored(false)
     }
 
+    const handleCompletion = () => {
+        setLoading(false)
+        props.onClose()
+        props.onSubmit(password)
+    }
+
     const onExited = () => {
         setPassword('')
     }
 
     return (
         <Dialog open={props.open} onExited={() => onExited()}>
-            <DialogTitle>Confirm Authorization</DialogTitle>
+            <DialogTitle>{props.dialogTitle || 'Confirm Authorization'}</DialogTitle>
             <form autoComplete={'off'}>
                 <DialogContent>
                     <DialogContentText>This action requires you to confirm your password.</DialogContentText>

@@ -169,16 +169,16 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 					const nextType: ITableFilter['type'] = column.values && column.values.length
 						? 'enum'
 						: (column.isNumeric ? 'numeric' : 'string')
-					const hasTypeChanged: boolean = filter.type !== nextType
+					const hasTypeChanged: boolean = filter.type !== nextType || filter.type === 'enum'
 					let newFilter: ITableFilter
 
-					if (hasTypeChanged && nextType === 'enum') {
+					if (nextType === 'enum') {
 						newFilter = {
 							id: value,
 							value: hasTypeChanged ? column.values[0] : filter.value,
 							type: 'enum'
 						} as ITableEnumFilter
-					} else if (hasTypeChanged && nextType === 'numeric') {
+					} else if (nextType === 'numeric') {
 						newFilter = {
 							id: value,
 							value: hasTypeChanged ? '' : filter.value,

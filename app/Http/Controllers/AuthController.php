@@ -46,6 +46,10 @@ class AuthController extends Controller
         if ($verify_response->status() === 200) {
             $user->password = Hash::make($new_password);
             $user->password_expired = false;
+            if ($user->reenable) {
+                $user->reenable();
+                $user->reenable = false;
+            }
             if ($user->save())
                 return response()->json('Changed password successfully', 200);
             else {
@@ -54,5 +58,57 @@ class AuthController extends Controller
         } else {
             return $verify_response;
         }
+    }
+
+    public function resetPasswords(Request $request)
+    {
+        $acting_user_id = auth()->user()->id;
+        $user_ids = $request->input('user_ids');
+        foreach ($user_ids as $user_id) {
+            $user = User::find($user_id);
+            if ($user && $user_id !== $acting_user_id)
+                $user->resetPassword();
+        }
+
+        return response()->json("Reset users' passwords successfully.", 200);
+    }
+
+    public function disableAccounts(Request $request)
+    {
+        $acting_user_id = auth()->user()->id;
+        $user_ids = $request->input('user_ids');
+        foreach ($user_ids as $user_id) {
+            $user = User::find($user_id);
+            if ($user && $user_id !== $acting_user_id)
+                $user->disable();
+        }
+
+        return response()->json('Disabled users successfully.', 200);
+    }
+
+    public function reenableAccounts(Request $request)
+    {
+        $acting_user_id = auth()->user()->id;
+        $user_ids = $request->input('user_ids');
+        foreach ($user_ids as $user_id) {
+            $user = User::find($user_id);
+            if ($user && $user_id !== $acting_user_id)
+                $user->reenable();
+        }
+
+        return response()->json('Reenabled users successfully.', 200);
+    }
+
+    public function invalidatePasswords(Request $request)
+    {
+        $acting_user_id = auth()->user()->id;
+        $user_ids = $request->input('user_ids');
+        foreach ($user_ids as $user_id) {
+            $user = User::find($user_id);
+            if ($user && $user_id !== $acting_user_id)
+                $user->invalidatePassword();
+        }
+
+        return response()->json("Invalidated users' passwords successfully.", 200);
     }
 }

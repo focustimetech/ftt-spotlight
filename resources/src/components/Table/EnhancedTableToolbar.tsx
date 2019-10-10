@@ -76,7 +76,8 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		this.handleMenuClose()
 	}
 
-	handleMenuSelect = (action: ITableAction['id']) => {
+	handleActionSelect = (action: ITableAction) => {
+		action.callback()
 		this.handleMenuClose()
 	}
 
@@ -198,7 +199,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 										<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
 										{(this.props.numSelected > 0 && this.props.actions && this.props.actions.length) && (
 											this.props.actions.map((action: ITableAction) => (
-												<MenuItem onClick={() => this.handleMenuSelect(action.id)}>{action.name}</MenuItem>
+												<MenuItem key={action.id} onClick={() => this.handleActionSelect(action)}>{action.name}</MenuItem>
 											))
 										)}
 									</Menu>

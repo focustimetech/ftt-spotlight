@@ -23,8 +23,8 @@ trait Authenticate
                     'message' => 'The user could not be found. Please check with your administrator.'
                 ], 404);
             }
-            $user_role = $user->getRole();
 
+            $user_role = $user->getRole();
             $request->request->add([
                 'grant_type' => 'password',
                 'client_id' => config('services.passport.client_id'),
@@ -40,6 +40,11 @@ trait Authenticate
             );
 
             $response = Route::dispatch($tokenRequest);
+            if ($response->status() === 200) {
+                // Check disabled only if password is successful
+                if ($user->isDisabled())
+                    return response()->json('Account disabled.', 423);
+            }
 
             return $response;
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {

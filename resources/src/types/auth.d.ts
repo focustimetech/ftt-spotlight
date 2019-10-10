@@ -33,6 +33,7 @@ interface IUserProperties {
     display_name: string
     display_role: string
     password_expired: boolean
+    status: string
 }
 
 export interface IStaffUser {

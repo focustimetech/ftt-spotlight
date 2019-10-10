@@ -21,6 +21,7 @@ import { EmptyStateIcon } from '../EmptyStateIcon'
 import {
 	ITableAction,
 	ITableFilter,
+	ITableEnumFilter,
 	ITableHeaderColumn,
 	ITableLink,
 	SortOrder
@@ -62,6 +63,7 @@ interface IProps {
 	loading: boolean
 	actions?: ITableAction[]
 	children?: any
+	defaultRowsPerPage?: number
 	link?: ITableLink
 	radio?: boolean
 	searchable?: boolean
@@ -90,7 +92,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		orderBy: this.props.columns[0].id,
 		page: 0,
 		redirect: null,
-		rowsPerPage: 5,
+		rowsPerPage: this.props.defaultRowsPerPage || 5,
 		filters: [],
 		filtersDisabled: true,
 		filterOpen: false,
@@ -124,16 +126,23 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			return acc
 		}, [])
 		return this.props.data.filter((row: any) => {
-			const matchSearch: boolean = tableQuery.length ? (
+			const enumFilters: ITableEnumFilter[] = filters.filter((filter: ITableFilter) => filter.type === 'enum') as ITableEnumFilter[]
+			const otherFilters: ITableFilter[] = filters.filter((filter: ITableFilter) => filter.type !== 'enum')
+
+			const matchSearch: boolean = tableQuery.length && !this.state.filtersDisabled ? (
 				properties.some((property) => {
 					return row[property] && new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
 				})
 			) : true
 
-			const matchFilters = filters.length ? (
-				filters.some((filter: ITableFilter) => {
-					if (filter.type === 'enum')
-						return row[filter.id] === filter.value
+			const matchEnums: boolean = enumFilters.length && !this.state.filtersDisabled ? (
+				enumFilters.every((filter: ITableEnumFilter) => {
+					return row[filter.id] === filter.value
+				})
+			) : true
+
+			const matchFilters = otherFilters.length ? (
+				otherFilters.some((filter: ITableFilter) => {
 					switch (filter.rule) {
 						case 'contains':
 							return row[filter.id].includes(filter.value)
@@ -152,7 +161,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 					}
 				})
 			) : true
-			return matchSearch && matchFilters
+			return matchSearch && matchFilters && matchEnums
 		})
 	}
 
@@ -169,7 +178,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			return
 		let newSelected: number[] = []
 		if (event.target.checked && this.props.radio !== true) {
-			newSelected =  this.state.filters.length || this.state.tableQuery.length ? (
+			newSelected = (this.props.searchable && this.state.tableQuery.length) || (this.state.filters.length && !this.state.filtersDisabled) ? (
 				this.filterTableData().map(n => n.id)
 			) : (
 				this.props.data.map(n => n.id)

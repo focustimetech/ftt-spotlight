@@ -69,7 +69,7 @@ export type ITableNumericFilterType =
 export interface ITableAction {
 	id: string
 	name: string
-	action: (ids: number[]) => void
+	callback: () => void
 } 
 
 export interface ITableLink {

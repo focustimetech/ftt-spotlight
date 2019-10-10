@@ -52,3 +52,19 @@ export const logout = () => {
         return axios.post('/api/logout')
     }
 }
+
+export const resetPasswords = (user_ids: number[]): Promise<any> => {
+    return axios.post('/api/users/reset-passwords', { user_ids })
+}
+
+export const invalidatePasswords = (user_ids: number[]): Promise<any> => {
+    return axios.post('/api/users/invalidate-passwords', { user_ids })
+}
+
+export const disableUsers = (user_ids: number[]): Promise<any> => {
+    return axios.post('/api/users/disable-users', { user_ids })
+}
+
+export const reenableUsers = (user_ids: number[]): Promise<any> => {
+    return axios.post('/api/users/reenable-users', { user_ids })
+}

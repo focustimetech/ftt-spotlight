@@ -22,7 +22,12 @@ class StaffController extends Controller
     {
         // Get all staff members
         $staff = Staff::all();
+        return StaffResource::collection($staff);
+    }
 
+    public function getAllAdministrators()
+    {
+        $staff = Staff::administrators();
         return StaffResource::collection($staff);
     }
 

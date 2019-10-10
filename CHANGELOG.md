@@ -1,6 +1,22 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.2 (2019-10-10)
+
+### Added
+ - Created the Credentials Manager for administrators (SPOT-126)
+ - Added enumerated filter type to tables (SPOT-125)
+
+### Changed
+ - Changed bundle name so that new updates are instantly downloaded (SPOT-115)
+
+### Fixed
+ - Fixed a bug in Firefox and Safari which caused student number fetching to fail (SPOT-129)
+
+### Unreleased
+ - Limit maximum number of student appointments (SPOT-118)
+ - Change cut-off time for planning and checking in for blocks (SPOT-117)
+
 ## Version 1.2.1 (2019-10-07)
 
 ### Added
@@ -15,13 +31,6 @@ All notable changes to Spotlight will be documented here.
 
 ### Fixed
  - Fixed bug that caused Calendar dialog to crash in browser (SPOT-114)
-
-### Unreleased
- - Ability to reset staff passwords (SPOT-121)
- - Ability to reset student passwords (SPOT-122)
- - User Credentials Manager for administrators (SPOT-126)
- - Limit maximum number of student appointments (SPOT-118)
- - Change cut-off time for planning and checking in for blocks (SPOT-117)
 
 ## Version 1.2.0 (2019-09-30)
 

@@ -14,7 +14,8 @@ import {
     InputBase,
     Paper,
     Switch,
-    Tooltip
+    Tooltip,
+    Typography
 } from '@material-ui/core'
 
 import { checkIn } from '../../actions/checkinActions'
@@ -67,6 +68,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     handleChange = (event: any) => {
         if (this.state.uploading)
             return
+        this.refreshAutoSubmit()
         this.setState({
             inputValue: event.target.value,
             errored: false,
@@ -201,12 +203,14 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleSubmit = () => {
+        if (this.state.chips.length === 0 && this.state.inputValue.length === 0)
+            return
+        this.setState({ uploading: true })
         if (this.props.didSubmit)
             this.props.didSubmit()
-        this.setState({ uploading: true }, () => {
-            if (this.state.inputValue.length > 0)
-                this.handleCreateChip()
-        })
+        if (this.state.inputValue.length > 0)
+            this.handleCreateChip()
+        
         let request: ICheckInRequest = {
             student_numbers: [],
             student_ids: [],
@@ -243,11 +247,17 @@ class CheckInForm extends React.Component<IProps, IState> {
                 })
             })
     }
-    
+
     toggleAutoSubmit = () => {
-        this.setState((state: IState) => ({
-            autoSubmit: !state.autoSubmit
-        }))
+        this.setState((state: IState) => {
+            if (state.autoSubmit) {
+                this.removeAutoSubmit()
+                return { autoSubmit: false }
+            } else {
+                this.refreshAutoSubmit()
+                return { autoSubmit: true }
+            }
+        })
     }
 
     getAutoSubmitState = () => {
@@ -256,8 +266,15 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     refreshAutoSubmit = () => {
-        clearInterval(this.timer)
+        if (this.timer)
+            clearInterval(this.timer)
         this.timer = window.setInterval(() => this.handleSubmit(), AUTO_TIMEOUT)
+    }
+
+    removeAutoSubmit = () => {
+        // Clear polling timer
+        clearInterval(this.timer)
+        this.timer = null
     }
 
     componentDidMount() {
@@ -274,9 +291,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     componentWillUnmount() {
-        // Clear polling timer
-        clearInterval(this.timer)
-        this.timer = null
+        this.removeAutoSubmit()
     }
 
     render() {
@@ -341,7 +356,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                     color='primary'
                                     loading={this.state.uploading}
                                     onClick={() => this.handleSubmit()}
-                                    disabled={this.state.chips.length === 0}
+                                    disabled={this.state.chips.length === 0 && this.state.inputValue.length === 0}
                                 >
                                     <Icon>cloud_upload</Icon>
                                 </LoadingIconButton>
@@ -349,6 +364,9 @@ class CheckInForm extends React.Component<IProps, IState> {
                         </div>
                     </div>
                 </Paper>
+                {this.state.autoSubmit && (
+                    <Typography variant='caption'>Student numbers will be automatically submitted after 5 minutes of inactivity.</Typography>
+                )}
             </ModalSection>
         )
     }

@@ -43,7 +43,7 @@ export const uploadCSV = (
  * @param key The localStorage key.
  * @param object The object to write.
  */
-export const writeObjectToLocalStorage = (key: string, object: object | object[]) => {
+export const writeObjectToLocalStorage = (key: string, object: any) => {
     const json: string = JSON.stringify(object)
     localStorage.setItem(key, json)
 }
@@ -55,7 +55,7 @@ export const writeObjectToLocalStorage = (key: string, object: object | object[]
  * @param key The key of the object.
  * @param object The object to append.
  */
-export const appendToLocalStorageArray = (key: string, object: object) => {
+export const appendToLocalStorageArray = (key: string, object: any) => {
     const array: object[] = makeArray(getObjectFromLocalStorage(key))
     array.push(object)
     writeObjectToLocalStorage(key, array)
@@ -65,7 +65,7 @@ export const appendToLocalStorageArray = (key: string, object: object) => {
  * Retrieves a plain JavaScript object from localStorage which is stored as a string.
  * @param key The key of the localStorage string to retreive
  */
-export const getObjectFromLocalStorage = (key: string): object | object[] => {
+export const getObjectFromLocalStorage = (key: string): any => {
     const json: string = localStorage.getItem(key)
     return JSON.parse(json)
 }
@@ -75,3 +75,4 @@ export const ACCESS_TOKEN = 'ACCESS_TOKEN'
 export const CHECK_IN_CHIPS = 'CHECK_IN_CHIPS'
 export const CHECK_IN_ERRORS = 'CHECK_IN_ERRORS'
 export const REMEMBER_USERS = 'REMEMBER_USERS'
+export const AUTO_SUBMIT = 'AUTO_SUBMIT'

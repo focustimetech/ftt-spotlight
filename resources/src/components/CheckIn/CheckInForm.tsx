@@ -9,6 +9,7 @@ import {
     CircularProgress,
     Divider,
     FormControlLabel,
+    FormHelperText,
     Icon,
     IconButton,
     InputBase,
@@ -23,7 +24,14 @@ import { ILedgerEntry } from '../../types/calendar'
 import { ICheckInRequest, CheckInChip, ICheckInResponse } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { makeArray } from '../../utils/utils'
-import { appendToLocalStorageArray, writeObjectToLocalStorage, getObjectFromLocalStorage, CHECK_IN_CHIPS, CHECK_IN_ERRORS } from '../../utils/storage'
+import {
+    appendToLocalStorageArray,
+    getObjectFromLocalStorage,
+    writeObjectToLocalStorage,
+    AUTO_SUBMIT,
+    CHECK_IN_CHIPS,
+    CHECK_IN_ERRORS
+} from '../../utils/storage'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
 
@@ -252,16 +260,18 @@ class CheckInForm extends React.Component<IProps, IState> {
         this.setState((state: IState) => {
             if (state.autoSubmit) {
                 this.removeAutoSubmit()
+                writeObjectToLocalStorage(AUTO_SUBMIT, 0)
                 return { autoSubmit: false }
             } else {
                 this.refreshAutoSubmit()
+                writeObjectToLocalStorage(AUTO_SUBMIT, 1)
                 return { autoSubmit: true }
             }
         })
     }
 
     getAutoSubmitState = () => {
-        // fetch state from localstorage
+        
         this.setState({ autoSubmit: true })
     }
 
@@ -278,7 +288,8 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.getAutoSubmitState()
+        const autoSubmit: boolean = getObjectFromLocalStorage(AUTO_SUBMIT) == true
+        this.setState({ autoSubmit })
         this.refreshAutoSubmit()
         this.keyBuffer = []
         const localStorageChips = makeArray(getObjectFromLocalStorage(CHECK_IN_CHIPS)) as CheckInChip[]
@@ -308,7 +319,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                 onChange={() => this.toggleAutoSubmit()}
                             />
                         }
-                        label='Auto-Submit'
+                        label={<Typography>Auto-Submit</Typography>}
                     />
                 }
             >
@@ -365,7 +376,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                     </div>
                 </Paper>
                 {this.state.autoSubmit && (
-                    <Typography variant='caption'>Student numbers will be automatically submitted after 5 minutes of inactivity.</Typography>
+                    <FormHelperText>Student numbers will be automatically submitted after 5 minutes of inactivity.</FormHelperText>
                 )}
             </ModalSection>
         )

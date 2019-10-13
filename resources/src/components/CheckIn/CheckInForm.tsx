@@ -8,10 +8,12 @@ import {
     Chip,
     CircularProgress,
     Divider,
+    FormControlLabel,
     Icon,
     IconButton,
     InputBase,
     Paper,
+    Switch,
     Tooltip
 } from '@material-ui/core'
 
@@ -23,6 +25,8 @@ import { makeArray } from '../../utils/utils'
 import { appendToLocalStorageArray, writeObjectToLocalStorage, getObjectFromLocalStorage, CHECK_IN_CHIPS, CHECK_IN_ERRORS } from '../../utils/storage'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
+
+const AUTO_TIMEOUT = 300000 // 5 minutes
 
 interface ReduxProps {
     checkInResponse: ICheckInResponse
@@ -39,6 +43,7 @@ interface IProps extends ReduxProps {
 }
 
 interface IState {
+    autoSubmit: boolean
     chips: CheckInChip[]
     duplicateIndex: number
     errored: boolean
@@ -48,8 +53,10 @@ interface IState {
 
 class CheckInForm extends React.Component<IProps, IState> {
     keyBuffer: number[]
+    timer: number
 
     state: IState = {
+        autoSubmit: false,
         chips: [],
         duplicateIndex: -1,
         errored: false,
@@ -95,6 +102,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     handleCreateChip = (value?: string) => {
         if (!value && this.state.inputValue.length === 0)
             return
+        this.refreshAutoSubmit()
         const chipValues: string[] = value ? value.split(/[\s,]+/) : [this.state.inputValue]
         chipValues.forEach((chipValue: string) => {
             const newChip: CheckInChip = {
@@ -235,8 +243,26 @@ class CheckInForm extends React.Component<IProps, IState> {
                 })
             })
     }
+    
+    toggleAutoSubmit = () => {
+        this.setState((state: IState) => ({
+            autoSubmit: !state.autoSubmit
+        }))
+    }
+
+    getAutoSubmitState = () => {
+        // fetch state from localstorage
+        this.setState({ autoSubmit: true })
+    }
+
+    refreshAutoSubmit = () => {
+        clearInterval(this.timer)
+        this.timer = window.setInterval(() => this.handleSubmit(), AUTO_TIMEOUT)
+    }
 
     componentDidMount() {
+        this.getAutoSubmitState()
+        this.refreshAutoSubmit()
         this.keyBuffer = []
         const localStorageChips = makeArray(getObjectFromLocalStorage(CHECK_IN_CHIPS)) as CheckInChip[]
         if (localStorageChips.length > 0) {
@@ -247,11 +273,29 @@ class CheckInForm extends React.Component<IProps, IState> {
         }
     }
 
+    componentWillUnmount() {
+        // Clear polling timer
+        clearInterval(this.timer)
+        this.timer = null
+    }
+
     render() {
         return (
             <ModalSection
                 icon='keyboard'
                 title='Scan or Enter'
+                labelAdornment={
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={this.state.autoSubmit}
+                                color='primary'
+                                onChange={() => this.toggleAutoSubmit()}
+                            />
+                        }
+                        label='Auto-Submit'
+                    />
+                }
             >
                 <Paper>
                     <div className='chip-textfield'>

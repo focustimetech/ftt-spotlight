@@ -18,7 +18,10 @@ class AppointmentsController extends Controller
     public function create(Request $request)
     {
         $staff = auth()->user()->staff();
-        $student = Student::findOrFail($request->input('student_id'));
+        $student = Student::find($request->input('student_id'));
+        if (!$student)
+            return response()->json([ 'message' => 'The student for this appointment could not be found.' ], 404);
+
         $date = date('Y-m-d', strtotime($request->input('date')));
         $block_id = $request->input('block_id');
         $appointments = $student->appointments()

@@ -29,6 +29,8 @@ class AuthServiceProvider extends ServiceProvider
             $router->forAccessTokens();
         });
 
+        Passport::tokensExpireIn(now()->addHours(24));
+
         // Register user permissions
         Passport::tokensCan([
             'student' => 'Student',

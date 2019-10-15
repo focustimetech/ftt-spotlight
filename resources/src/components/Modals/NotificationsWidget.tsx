@@ -30,16 +30,18 @@ import {
     markNotificationAsUnread,
     unarchiveNotification
 } from '../../actions/notificationsActions'
+import { IStaffUser } from '../../types/auth'
 
 interface IState {
     archiveAllDialogOpen: boolean
-    open: boolean
     loading: boolean
+    open: boolean
     openNotifications: number[]
     snackbars: ISnackbar[]
 }
 
 interface ReduxProps {
+    currentUser: IStaffUser
     notifications: INotification[]
     archiveAllNotifications: () => void
     archiveNotification: (notification: INotification) => void
@@ -61,6 +63,14 @@ class NotificationsWidget extends React.Component<IProps, IState> {
 
     timer: number // Polling timer
 
+    state: IState = {
+        archiveAllDialogOpen: false,
+        loading: false,
+        open: false,
+        openNotifications: [],
+        snackbars: []
+    }
+
     contentLoader = (
         <div className='items_modal__content-loader'>
             <ContentLoader width={500} height={436}>
@@ -76,14 +86,6 @@ class NotificationsWidget extends React.Component<IProps, IState> {
             </ContentLoader>
         </div>
     )
-
-    state: IState = {
-        archiveAllDialogOpen: false,
-        open: false,
-        loading: false,
-        openNotifications: [],
-        snackbars: []
-    }
 
     handleClickOpen = () => {
         this.setState({ open: true })
@@ -188,8 +190,11 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         // Add event listener for escape key press
         document.addEventListener('keydown', this.escFunction, false)
 
-        // Create polling interval (5 seconds)
-        this.timer = window.setInterval(() => this.refreshNotifications(), 3000)
+        // Create polling interval (10 seconds for administrators, 30 seconds otherwise)
+        this.timer = window.setInterval(
+            () => this.refreshNotifications(),
+            this.props.currentUser && this.props.currentUser.details.administrator ? 10000 : 30000
+        )
         
         // Fetch Notifications
         this.setState({ loading: true })
@@ -338,6 +343,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
+    currentUser: state.auth.user,
     notifications: state.notifications.items
 })
 

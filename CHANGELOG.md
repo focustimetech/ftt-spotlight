@@ -1,6 +1,18 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.3 (2019-10-15)
+
+### Added
+ - Added the ability to automatically submit entered student numbers (SPOT-136)
+
+### Changed
+ - Limit the number of appointments that can be booked per student per block (SPOT-118)
+ - Change the timing for notification checking (SPOT-132)
+
+### Security
+ - Changed authentication token expiry (SPOT 85)
+
 ## Version 1.2.2 (2019-10-10)
 
 ### Added
@@ -12,10 +24,6 @@ All notable changes to Spotlight will be documented here.
 
 ### Fixed
  - Fixed a bug in Firefox and Safari which caused student number fetching to fail (SPOT-129)
-
-### Unreleased
- - Limit maximum number of student appointments (SPOT-118)
- - Change cut-off time for planning and checking in for blocks (SPOT-117)
 
 ## Version 1.2.1 (2019-10-07)
 

@@ -216,8 +216,15 @@ class StudentProfile extends React.Component<IProps, IState> {
 			date: this.state.blockDetails.date
 		}
 		return createAppointment(appointment)
-			.then((res: any) => {
+			.then(() => {
 				return this.props.fetchStudentSchedule(studentID, this.getURLDateTime())
+			})
+			.catch((error: any) => {
+				const { response } = error
+				if (response && response.data.message)
+					this.props.queueSnackbar({ message: response.data.message })
+				else
+					this.props.queueSnackbar({ message: 'The appointment could not be created.' })
 			})
 	}
 

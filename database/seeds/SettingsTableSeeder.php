@@ -50,6 +50,12 @@ class SettingsTableSeeder extends Seeder
                         'value' => '2,3,4,5,6',
                         'description' => 'Days included in schedule',
                         'type' => 'weekdays'
+                    ],
+                    [
+                        'key' => 'appointment_limit',
+                        'value' => 1,
+                        'description' => 'Maximum number of appointments a student can have per block',
+                        'type' => 'number'
                     ]
                 ]
             ],

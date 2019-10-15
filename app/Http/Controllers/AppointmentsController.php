@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Appointment;
+use App\Student;
 use App\Http\Resources\Appointment as AppointmentResource;
 
 class AppointmentsController extends Controller
@@ -17,16 +18,29 @@ class AppointmentsController extends Controller
     public function create(Request $request)
     {
         $staff = auth()->user()->staff();
-        $appointment = new Appointment;
-        $appointment->staff_id = $staff->id;
-        $appointment->student_id = $request->input('student_id');
-        $appointment->date = date('Y-m-d', strtotime($request->input('date')));
-        $appointment->block_id = $request->input('block_id');
-        $appointment->memo = $request->input('memo');
+        $student = Student::find($request->input('student_id'));
+        if (!$student)
+            return response()->json([ 'message' => 'The student for this appointment could not be found.' ], 404);
 
-        if ($appointment->save()) {
-            return new AppointmentResource($appointment);
-        }
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        $block_id = $request->input('block_id');
+        $appointments = $student->appointments()
+            ->where('date', $date)
+            ->where('block_id', $block_id)
+            ->get();
+        $appointment_limit = app('settings')['appointment_limit'];
+        if ($appointment_limit > 0 && count($appointments) >= $appointment_limit)
+            return response()->json([ 'message' => 'The maximum number of appointments has been reached.' ], 409);
+
+        $appointment = Appointment::create([
+            'staff_id' => $staff->id,
+            'student_id' => $student->id,
+            'date' => $date,
+            'block_id' => $block_id,
+            'memo' => $request->input('memo')
+        ]);
+
+        return new AppointmentResource($appointment);
     }
 
     public function delete($id)

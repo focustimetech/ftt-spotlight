@@ -8,11 +8,15 @@ import {
     Chip,
     CircularProgress,
     Divider,
+    FormControlLabel,
+    FormHelperText,
     Icon,
     IconButton,
     InputBase,
     Paper,
-    Tooltip
+    Switch,
+    Tooltip,
+    Typography
 } from '@material-ui/core'
 
 import { checkIn } from '../../actions/checkinActions'
@@ -20,9 +24,18 @@ import { ILedgerEntry } from '../../types/calendar'
 import { ICheckInRequest, CheckInChip, ICheckInResponse } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { makeArray } from '../../utils/utils'
-import { appendToLocalStorageArray, writeObjectToLocalStorage, getObjectFromLocalStorage, CHECK_IN_CHIPS, CHECK_IN_ERRORS } from '../../utils/storage'
+import {
+    appendToLocalStorageArray,
+    getObjectFromLocalStorage,
+    writeObjectToLocalStorage,
+    AUTO_SUBMIT,
+    CHECK_IN_CHIPS,
+    CHECK_IN_ERRORS
+} from '../../utils/storage'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
+
+const AUTO_TIMEOUT = 300000 // 5 minutes
 
 interface ReduxProps {
     checkInResponse: ICheckInResponse
@@ -39,6 +52,7 @@ interface IProps extends ReduxProps {
 }
 
 interface IState {
+    autoSubmit: boolean
     chips: CheckInChip[]
     duplicateIndex: number
     errored: boolean
@@ -48,8 +62,10 @@ interface IState {
 
 class CheckInForm extends React.Component<IProps, IState> {
     keyBuffer: number[]
+    timer: number
 
     state: IState = {
+        autoSubmit: false,
         chips: [],
         duplicateIndex: -1,
         errored: false,
@@ -60,6 +76,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     handleChange = (event: any) => {
         if (this.state.uploading)
             return
+        this.refreshAutoSubmit()
         this.setState({
             inputValue: event.target.value,
             errored: false,
@@ -95,6 +112,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     handleCreateChip = (value?: string) => {
         if (!value && this.state.inputValue.length === 0)
             return
+        this.refreshAutoSubmit()
         const chipValues: string[] = value ? value.split(/[\s,]+/) : [this.state.inputValue]
         chipValues.forEach((chipValue: string) => {
             const newChip: CheckInChip = {
@@ -193,12 +211,14 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleSubmit = () => {
+        if (this.state.chips.length === 0 && this.state.inputValue.length === 0)
+            return
+        this.setState({ uploading: true })
         if (this.props.didSubmit)
             this.props.didSubmit()
-        this.setState({ uploading: true }, () => {
-            if (this.state.inputValue.length > 0)
-                this.handleCreateChip()
-        })
+        if (this.state.inputValue.length > 0)
+            this.handleCreateChip()
+        
         let request: ICheckInRequest = {
             student_numbers: [],
             student_ids: [],
@@ -236,7 +256,41 @@ class CheckInForm extends React.Component<IProps, IState> {
             })
     }
 
+    toggleAutoSubmit = () => {
+        this.setState((state: IState) => {
+            if (state.autoSubmit) {
+                this.removeAutoSubmit()
+                writeObjectToLocalStorage(AUTO_SUBMIT, 0)
+                return { autoSubmit: false }
+            } else {
+                this.refreshAutoSubmit()
+                writeObjectToLocalStorage(AUTO_SUBMIT, 1)
+                return { autoSubmit: true }
+            }
+        })
+    }
+
+    getAutoSubmitState = () => {
+        
+        this.setState({ autoSubmit: true })
+    }
+
+    refreshAutoSubmit = () => {
+        if (this.timer)
+            clearInterval(this.timer)
+        this.timer = window.setInterval(() => this.handleSubmit(), AUTO_TIMEOUT)
+    }
+
+    removeAutoSubmit = () => {
+        // Clear polling timer
+        clearInterval(this.timer)
+        this.timer = null
+    }
+
     componentDidMount() {
+        const autoSubmit: boolean = getObjectFromLocalStorage(AUTO_SUBMIT) == true
+        this.setState({ autoSubmit })
+        this.refreshAutoSubmit()
         this.keyBuffer = []
         const localStorageChips = makeArray(getObjectFromLocalStorage(CHECK_IN_CHIPS)) as CheckInChip[]
         if (localStorageChips.length > 0) {
@@ -247,11 +301,27 @@ class CheckInForm extends React.Component<IProps, IState> {
         }
     }
 
+    componentWillUnmount() {
+        this.removeAutoSubmit()
+    }
+
     render() {
         return (
             <ModalSection
                 icon='keyboard'
                 title='Scan or Enter'
+                labelAdornment={
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={this.state.autoSubmit}
+                                color='primary'
+                                onChange={() => this.toggleAutoSubmit()}
+                            />
+                        }
+                        label={<Typography>Auto-Submit</Typography>}
+                    />
+                }
             >
                 <Paper>
                     <div className='chip-textfield'>
@@ -297,7 +367,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                     color='primary'
                                     loading={this.state.uploading}
                                     onClick={() => this.handleSubmit()}
-                                    disabled={this.state.chips.length === 0}
+                                    disabled={this.state.chips.length === 0 && this.state.inputValue.length === 0}
                                 >
                                     <Icon>cloud_upload</Icon>
                                 </LoadingIconButton>
@@ -305,6 +375,9 @@ class CheckInForm extends React.Component<IProps, IState> {
                         </div>
                     </div>
                 </Paper>
+                {this.state.autoSubmit && (
+                    <FormHelperText>Student numbers will be automatically submitted after 5 minutes of inactivity.</FormHelperText>
+                )}
             </ModalSection>
         )
     }

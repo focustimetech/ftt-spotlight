@@ -1,6 +1,11 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.4 (2019-10-16)
+
+### Fixed
+ - Fixed the Table search feature (SPOT-138)
+
 ## Version 1.2.3 (2019-10-15)
 
 ### Added

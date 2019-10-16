@@ -129,7 +129,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 			const enumFilters: ITableEnumFilter[] = filters.filter((filter: ITableFilter) => filter.type === 'enum') as ITableEnumFilter[]
 			const otherFilters: ITableFilter[] = filters.filter((filter: ITableFilter) => filter.type !== 'enum')
 
-			const matchSearch: boolean = tableQuery.length && !this.state.filtersDisabled ? (
+			const matchSearch: boolean = tableQuery.length > 0 ? (
 				properties.some((property) => {
 					return row[property] && new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
 				})

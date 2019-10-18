@@ -15,6 +15,7 @@ import { IUser } from '../../types/auth'
 import CheckIn from '../CheckIn/CheckIn'
 import CredentialsManager from '../Views/CredentialsManager'
 import { NotFound } from '../Views/NotFound'
+import Reporting from '../Views/Reporting'
 import Settings from '../Views/Settings'
 import Snackbar from '../Snackbar'
 import StudentProfile from '../Views/StudentProfile'
@@ -55,6 +56,7 @@ export default class App extends React.Component<IProps> {
 									<Route path='/check-in' render={(props: RouteComponentProps) => (<CheckIn {...props}/>)} />
 									<Route path='/credentials-manager' component={CredentialsManager} />
 									<Route path='/power-scheduler' component={PowerScheduler} />
+									<Route path='/reporting' component={Reporting} />
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
 										<StaffProfile {...props}/>

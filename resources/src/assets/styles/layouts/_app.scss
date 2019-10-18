@@ -1,7 +1,8 @@
 .site-wrap {
 	display: flex;
 
-	&.--menu_open .sidebar {
+	&.--menu_open .sidebar,
+	.sidebar:hover {
 		width: 320px;
 	}
 }

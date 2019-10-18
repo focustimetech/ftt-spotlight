@@ -35,8 +35,8 @@
 
 	&__menu {
 		height: 100vh;
-		min-width: 256px;
-		max-width: 256px;
+		width: 256px;
+		flex-shrink: 0;
 		background: $primary-light;
 		padding: 0;
 		box-sizing: border-box;

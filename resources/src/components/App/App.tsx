@@ -53,10 +53,10 @@ export default class App extends React.Component<IProps> {
 									<Route path='/' exact render={() => (
 										<Redirect to='/check-in' />
 									)} />
-									<Route path='/check-in' render={(props: RouteComponentProps) => (<CheckIn {...props}/>)} />
+									<Route path='/check-in' render={(props: RouteComponentProps) => (<CheckIn {...props} />)} />
 									<Route path='/credentials-manager' component={CredentialsManager} />
 									<Route path='/power-scheduler' component={PowerScheduler} />
-									<Route path='/reporting' component={Reporting} />
+									<Route path='/reporting' render={(props: RouteComponentProps) => <Reporting {...props} />} />
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
 										<StaffProfile {...props}/>

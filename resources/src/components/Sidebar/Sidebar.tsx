@@ -4,9 +4,10 @@ import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
 import { Theme, withTheme } from '@material-ui/core/styles'
 
+import { Icon, IconButton } from '@material-ui/core'
+
 import AccountWidget from './AccountWidget'
 import { MenuItem } from './MenuItem'
-import { NavItem } from './NavItem'
 import NotificationsWidget from '../Modals/NotificationsWidget'
 import { CheckInWidget } from '../CheckIn/CheckInWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
@@ -26,6 +27,7 @@ interface StyleProps {
 
 interface IProps extends ReduxProps, StyleProps {
 	onSignOut: () => void
+	onToggleMenuOpen: () => void
 	loading?: boolean
 	schoolName?: string
 	schoolLogo?: string
@@ -62,6 +64,9 @@ class Sidebar extends React.Component<IProps> {
 					) : (
 						<>
 							<div className='nav_top'>
+								<IconButton onClick={() => this.props.onToggleMenuOpen()}>
+									<Icon>menu</Icon>
+								</IconButton>
 								<SearchWidget />
 								<StarredWidget />
 								<CheckInWidget />

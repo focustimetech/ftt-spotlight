@@ -19,7 +19,7 @@
 		padding: 16px 8px;
 		box-sizing: border-box;
 		background: $primary;
-		color: $on-primary;
+		color: $primary-white;
 		display: flex;
 		flex-flow: column;
 		justify-content: space-between;
@@ -28,8 +28,12 @@
 			padding: 8px;
 		}
 
-		.nav_button {
+		& > div > * {
 			color: inherit;
+		}
+
+		.nav_button {
+			// color: inherit;
 
 			.nav_avatar {
 				width: 32px;

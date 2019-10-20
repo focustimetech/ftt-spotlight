@@ -75,48 +75,50 @@ class Sidebar extends React.Component<IProps> {
 					)}
 				</nav>
 				<div className='sidebar__menu'>
-					{this.props.loading ? (
-						<div style={{height: 600, width:256}}>
-							<ContentLoader height={600} width={256}>
-								<rect x={16} y={16} rx={4} ry={4} height={48} width={48}/>
-								<rect x={72} y={32} rx={4} ry={4} height={16} width={96}/>
-								<rect x={16} y={92} rx={24} ry={24} height={32} width={32}/>
-								<rect x={64} y={100} rx={4} ry={4} height={16} width={64}/>
-								<rect x={16} y={144} rx={24} ry={24} height={32} width={32}/>
-								<rect x={64} y={152} rx={4} ry={4} height={16} width={176}/>
-								<rect x={16} y={196} rx={24} ry={24} height={32} width={32}/>
-								<rect x={64} y={204} rx={4} ry={4} height={16} width={96}/>
-								<rect x={16} y={248} rx={24} ry={24} height={32} width={32}/>
-								<rect x={64} y={256} rx={4} ry={4} height={16} width={64}/>
-								<rect x={16} y={300} rx={24} ry={24} height={32} width={32}/>
-								<rect x={64} y={308} rx={4} ry={4} height={16} width={80}/>
-								<rect x={16} y={352} rx={24} ry={24} height={32} width={32}/>
-								<rect x={64} y={360} rx={4} ry={4} height={16} width={136}/>
-							</ContentLoader>
-						</div>
-					) : (
-						<>
-							{(!this.props.loading && this.props.schoolName) && (
-								<div className='menu_header'>
-									<div className={classNames('menu_header__logo', {['--logo']: this.props.schoolLogo})}>{this.props.schoolLogo && (
-										<img src={`/static/images/logos/${this.props.schoolLogo}`} />	
-									)}</div>
-									<h4>{this.props.schoolName}</h4>
-								</div>
-							)}
-							<ul className='menu_list'>
-								<MenuItem to='/check-in' icon='how_to_vote' label='Check-in' />
-								<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
-								<MenuItem to='/students' icon='face' label='Students' />
-								<MenuItem to='/power-scheduler' icon='offline_bolt' label='Power Scheduler' />
-								{isAdministrator && (
-									<>
-										<MenuItem to='/credentials-manager' icon='security' label='Credentials Manager' />
-									</>
+					<div className='menu_content'>
+						{this.props.loading ? (
+							<div style={{height: 600, width:256}}>
+								<ContentLoader height={600} width={256}>
+									<rect x={16} y={16} rx={4} ry={4} height={48} width={48}/>
+									<rect x={72} y={32} rx={4} ry={4} height={16} width={96}/>
+									<rect x={16} y={92} rx={24} ry={24} height={32} width={32}/>
+									<rect x={64} y={100} rx={4} ry={4} height={16} width={64}/>
+									<rect x={16} y={144} rx={24} ry={24} height={32} width={32}/>
+									<rect x={64} y={152} rx={4} ry={4} height={16} width={176}/>
+									<rect x={16} y={196} rx={24} ry={24} height={32} width={32}/>
+									<rect x={64} y={204} rx={4} ry={4} height={16} width={96}/>
+									<rect x={16} y={248} rx={24} ry={24} height={32} width={32}/>
+									<rect x={64} y={256} rx={4} ry={4} height={16} width={64}/>
+									<rect x={16} y={300} rx={24} ry={24} height={32} width={32}/>
+									<rect x={64} y={308} rx={4} ry={4} height={16} width={80}/>
+									<rect x={16} y={352} rx={24} ry={24} height={32} width={32}/>
+									<rect x={64} y={360} rx={4} ry={4} height={16} width={136}/>
+								</ContentLoader>
+							</div>
+						) : (
+							<>
+								{(!this.props.loading && this.props.schoolName) && (
+									<div className='menu_header'>
+										<div className={classNames('menu_header__logo', {['--logo']: this.props.schoolLogo})}>{this.props.schoolLogo && (
+											<img src={`/static/images/logos/${this.props.schoolLogo}`} />	
+										)}</div>
+										<h4>{this.props.schoolName}</h4>
+									</div>
 								)}
-							</ul>
-						</>
-					)}
+								<ul className='menu_list'>
+									<MenuItem to='/check-in' icon='how_to_vote' label='Check-in' />
+									<MenuItem to='/staff' icon='supervisor_account' label='Staff' />
+									<MenuItem to='/students' icon='face' label='Students' />
+									<MenuItem to='/power-scheduler' icon='offline_bolt' label='Power Scheduler' />
+									{isAdministrator && (
+										<>
+											<MenuItem to='/credentials-manager' icon='security' label='Credentials Manager' />
+										</>
+									)}
+								</ul>
+							</>
+						)}
+					</div>
 				</div>
 			</div>
 		)

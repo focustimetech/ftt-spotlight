@@ -1,9 +1,22 @@
 .site-wrap {
 	display: flex;
 
-	&.--menu_open .sidebar,
 	.sidebar:hover {
-		width: 320px;
+		.sidebar__menu {
+			width: 260px;
+			padding: 0 2px;
+			box-shadow: $elevation2;
+		}
+	}
+
+	&.--menu_open .sidebar {
+		width: 328px;
+
+		.sidebar__menu {
+			width: 260px;
+			padding: 0 0 0 2px;
+			box-shadow: none !important;
+		}
 	}
 }
 

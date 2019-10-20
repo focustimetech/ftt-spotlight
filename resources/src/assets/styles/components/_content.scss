@@ -1,6 +1,7 @@
 .content {
 	box-shadow: $elevation1;
 	position: relative;
+	z-index: 1;
 	padding: 0 64px;
 	flex: 1;
 	height: 100vh;

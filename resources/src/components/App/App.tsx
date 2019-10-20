@@ -43,7 +43,7 @@ export default class App extends React.Component<IProps, IState> {
 
 	handleToggleMenuOpen = () => {
 		this.setState((state: IState) => {
-			writeObjectToLocalStorage(MENU_OPEN, !state.menuOpen)
+			writeObjectToLocalStorage(MENU_OPEN, !state.menuOpen === true ? 1 : 0)
 			return {
 				menuOpen: !state.menuOpen
 			}

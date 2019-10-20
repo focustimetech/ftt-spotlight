@@ -2,7 +2,7 @@
 	display: flex;
 
 	.sidebar:hover {
-		.sidebar__menu {
+		.sidebar__nav:not(:hover) ~ .sidebar__menu {
 			width: 260px;
 			padding: 0 2px;
 			box-shadow: $elevation2;

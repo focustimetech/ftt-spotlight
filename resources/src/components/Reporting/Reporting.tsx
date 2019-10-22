@@ -3,6 +3,10 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import {
     Button,
+    Card,
+    CardActionArea,
+    CardMedia,
+    CardContent,
     Icon,
     IconButton,
     Menu,
@@ -95,7 +99,7 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log('Reporting.STATE:', this.state)
+        // console.log('Reporting.STATE:', this.state)
         return (
             <>
                 <div className='content' id='content'>
@@ -119,15 +123,27 @@ class Reporting extends React.Component<IProps, IState> {
                     <div className='reporting' id='reporting'>
                         {this.state.currentReport === null ? (
                             REPORT_GROUPS.map((reportGroup: IReportGroupInfo) => (
-                                <div className='reporting__group' key={reportGroup.group}>
+                                <div key={reportGroup.group}>
                                     <Typography variant='h6'>{reportGroup.name}</Typography>
-                                    {REPORT_TYPES[reportGroup.group].map((reportVariant: IReportVariantInfo) => (
-                                        <div className='reporting__variant' key={reportVariant.variant}>
-                                            <div>{reportVariant.name}</div>
-                                            <h6>{reportVariant.name}</h6>
-                                            <p>{reportVariant.description}</p>
-                                        </div>
-                                    ))}
+                                    <div className='reporting__group'>
+                                        {REPORT_TYPES[reportGroup.group].map((reportVariant: IReportVariantInfo) => (
+                                            <Card className='reporting__variant' key={reportVariant.variant}>
+                                                <CardActionArea>
+                                                    <CardMedia
+                                                        component='img'
+                                                        alt={reportVariant.name}
+                                                        title={reportVariant.name}
+                                                        height={140}
+                                                        image='/static/images/report-sample.jpg'
+                                                    />
+                                                    <CardContent>
+                                                        <Typography variant='h5'>{reportVariant.name}</Typography>
+                                                        <Typography variant='body2'>{reportVariant.description}</Typography>
+                                                    </CardContent>
+                                                </CardActionArea>                                            
+                                            </Card>
+                                        ))}
+                                    </div>
                                 </div>
                             ))
                         ) : (

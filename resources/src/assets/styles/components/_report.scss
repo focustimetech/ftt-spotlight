@@ -1,3 +1,11 @@
 .reporting {
+    &__group {
+        display: flex;
+        flex-flow: row wrap;
+        margin: 16px 0;
+    }
 
+    &__variant {
+        max-width: 320px
+    }
 }

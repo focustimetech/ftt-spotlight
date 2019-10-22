@@ -3,6 +3,7 @@ import DateFnsUtils from '@date-io/date-fns'
 
 import {
     Button,
+    FormHelperText,
     Icon,
     Menu,
     Typography
@@ -10,7 +11,7 @@ import {
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
 import { DateRange, IAbsoluteDateRange } from '../../types/date'
-import { normalizeDateRange } from '../../utils/date'
+import { normalizeDateRange, dateRangeToString } from '../../utils/date'
 
 interface IProps {
     dateRange: DateRange
@@ -51,10 +52,13 @@ class DateWidget extends React.Component<IProps> {
             <>
                 <Button onClick={this.handleOpen}>
                     <Icon>event</Icon>
-                    <Typography variant='body1'>Select Date Range</Typography>
+                    <Typography variant='body1'>{dateRangeToString(this.props.dateRange)}</Typography>
                 </Button>
+                {this.props.dateRange.type !== 'absolute' && (
+                    <FormHelperText>{dateRangeToString(normalizeDateRange(this.props.dateRange))}</FormHelperText>
+                )}
                 <Menu ref={this.state.widgetRef} open={open} anchorEl={this.state.widgetRef} onClose={this.handleClose}>
-                    <div>
+                    <div className='date_widget'>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <DatePicker
                                 variant='inline'

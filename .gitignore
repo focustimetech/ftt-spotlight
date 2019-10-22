@@ -1,6 +1,7 @@
 node_modules
 public/js
 public/storage
+public/views
 storage/*.key
 vendor
 .env

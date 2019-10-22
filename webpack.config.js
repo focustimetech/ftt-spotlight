@@ -1,60 +1,154 @@
+const path = require('path')
+const webpack = require('webpack')
+const { CleanWebpackPlugin}  = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
+// const Dotenv = require('dotenv-webpack')
+// const styleLintPlugin = require('stylelint-webpack-plugin')
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack');
 
-module.exports = {
-    entry: './resources/src/index.tsx',
-    output: {
-        filename: 'bundle-[hash:6].js',
-        path: __dirname + '/public/js/',
-        publicPath: '/public/js/'
-    },
+module.exports = (env, argv) => {
+    const devMode = argv.mode === 'development'
 
-    // Enable sourcemaps for debugging webpack's output.
-    devtool: '#inline-source-map',
+    return {
+        entry: './resources/src/index.tsx',
 
-    resolve: {
-        // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ['.ts', '.tsx', '.js', '.json', 'jpg']
-    },
+        output: {
+            /**
+             * @TODO Consider using contenthash
+             * filename: devMode ? '[name].js' : '[name].[contenthash].js',
+             */
+            filename: 'bundle-[hash:6].js',
+            path: __dirname + '/public/js/',
+            publicPath: 'js/' // '/public/js/'
+        },
 
-    devServer: {
-        historyApiFallback: true
-    },
+        devtool: devMode ? 'cheap-module-eval-source-map' : 'source-map',
 
-    module: {
-        rules: [
-            // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-            { test: /\.tsx?$/, loader: 'ts-loader' },
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js', '.json'],
+            // plugins: [ new TsconfigPathsPlugin() ]
+        },
 
-            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
+        devServer: {
+            port: 8080,
+            historyApiFallback: true,
+        },
 
-            {
-                test: /\.(scss|css)$/,
-                use: [
-                    'style-loader', // Creates style nodes from JS strings
-                    { loader: 'css-loader' },   // Translates CSS into CommonJS
-                    { loader: 'resolve-url-loader' },
-                    { loader: 'sass-loader' }   // Compiles Sass to CSS, using Node Sass by default
-                ]
-            }
-        ]
-    },
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    loader: 'ts-loader',
+                    options: {
+                        transpileOnly: true,
+                    },
+                },
+                {
+                    test: /\.(png|svg|ttf|woff2?|eot|webmanifest)$/,
+                    use: {
+                        loader: 'file-loader',
+                        options: {
+                            name: devMode ? '[path][name].[ext]' : '[path][name].[hash:8].[ext]',
+                            context: 'src/client/assets',
+                        },
+                    },
+                },
+                {
+                    test: /\.html$/,
+                    loader: 'html-loader',
+                    query: {
+                        interpolate: 'require',
+                    },
+                },
+                {
+                    test: /\.(scss|css)$/,
+                    use: [
+                        devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true,
+                                modules: false,
+                                camelCase: true,
+                                localIdentName: '[name]__[local]',
+                            },
+                        },
+                        {
+                            loader: 'sass-loader',
+                            options: {
+                                sourceMap: true,
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
 
-    plugins: [
-        new ManifestPlugin({ publicPath: 'js/'}),
-        new CleanWebpackPlugin(),
-    ],
+        plugins: [
+            new CleanWebpackPlugin(),
+            
+            new HtmlWebpackPlugin({
+                template: __dirname + '/resources/src/index.html',
+                // publicPath: '',
+                filename: __dirname + '/public/views/index.html',
+            }),
 
-    // When importing a module whose path matches one of the following, just
-    // assume a corresponding global variable exists and use that instead.
-    // This is important because it allows us to avoid bundling all of our
-    // dependencies, which allows browsers to cache those libraries between builds.
-    
-    externals: {
-        // 'react': 'React',
-        // 'react-dom': 'ReactDOM'
+            new ForkTsCheckerWebpackPlugin({
+                workers: 1,
+            }),
+            new MiniCssExtractPlugin({
+                filename: devMode ? '[name].css' : '[name].[contenthash].css',
+            }),
+            new webpack.HashedModuleIdsPlugin(),
+            /*
+            new Dotenv({
+                safe: true,
+                systemvars: true,
+                path: `./.env.${argv.mode}`,
+            }),
+            */
+           /*
+            new styleLintPlugin({
+                failOnError: !devMode,
+                syntax: 'scss',
+            }),
+            */
+            new FriendlyErrorsWebpackPlugin(),
+            new ManifestPlugin({ publicPath: 'js/'}),
+        ],
+
+        optimization: {
+            runtimeChunk: 'single',
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all',
+                    },
+                },
+            },
+            minimizer: [
+                new UglifyJsPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true,
+                }),
+                new OptimizeCSSAssetsPlugin({
+                    cssProcessorOptions: {
+                        map: {
+                            inline: false,
+                            annotation: true,
+                        },
+                    },
+                }),
+            ],
+        }   
     }
-    
-};
+}

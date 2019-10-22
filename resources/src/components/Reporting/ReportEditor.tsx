@@ -4,15 +4,15 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { IReport, ReportingState } from '../../types/report'
+import { Report, ReportingState } from '../../types/report'
 
 interface IProps {
-    report: IReport
+    report: Report
     reportingState: ReportingState
-    onUpdateReport: (params: Partial<IReport>) => void
+    onUpdateReport: (params: Partial<Report>) => void
 }
 
-class Report extends React.Component<IProps> {
+class ReportEditor extends React.Component<IProps> {
     render() {
         return (
             <div className='report' id='report'>
@@ -21,3 +21,5 @@ class Report extends React.Component<IProps> {
         )
     }
 }
+
+export { ReportEditor }

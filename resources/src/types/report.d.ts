@@ -1,5 +1,5 @@
 export interface IReport {
-    id?: number
+    // id?: number
     name: string
     dateRange: DateRange
     segment: ReportSegment

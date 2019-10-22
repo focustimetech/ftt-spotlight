@@ -21,6 +21,7 @@ import {
     ReportVariant,
     TeacherDistributionReport,
 } from '../../types/report'
+import { createEmptyReport } from '../../utils/report'
 import { TopNav } from '../TopNav'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
@@ -47,19 +48,10 @@ const REPORT_TYPES: Record<ReportGroup, IReportVariantInfo[]> = {
     ]
 }
 
-const EMPTY_REPORT: IReport = {
-    name: 'New Report',
-    dateRange: {
-        type: 'predefined',
-        range: 'last-week'
-    },
-    segment: 'day',
-    access: 'private'
-}
-
 interface IProps extends RouteComponentProps {}
 
 interface IState {
+    reportID: number
     reportingState: ReportingState
     savedReport: Report
     currentReport: Report
@@ -67,13 +59,25 @@ interface IState {
 
 class Reporting extends React.Component<IProps, IState> {
     state: IState = {
+        reportID: -1,
         reportingState: 'idle',
         savedReport: null,
         currentReport: null
     }
 
-    componentDidMount() {
+    fetchReport = () => {
 
+    }
+
+    componentWillMount() {
+        const params: any = this.props.match.params
+        const { reportID } = params
+        this.setState({ reportID })
+    }
+
+    componentDidMount() {
+        if (this.state.reportID !== -1)
+            this.fetchReport()
     }
 
     render() {

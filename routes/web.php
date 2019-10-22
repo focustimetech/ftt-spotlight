@@ -11,7 +11,11 @@
 |
 */
 
-Route::view('/{path?}', 'app')->where('path', '.*');
+Route::any('/{path?}', function() {
+    View::addExtension('html', 'php');
+    return view('index');
+})->where('path', '.*');
+
 Route::get('/login', function() {
     return Redirect::to('/');
 });

@@ -68,17 +68,17 @@ export type ReportVariant =
     | 'teacher-distribution'
     | 'student-attendance'
 
-export interface TeacherDistributionReport extends IReport {
+export interface TeacherDistributionReport {
     variant: 'teacher-distribution'
     includeUnattended: boolean
 }
 
-export interface StudentAttendanceReport extends IReport {
+export interface StudentAttendanceReport {
     variant: 'student-attendance'
     showAsPercentage: boolean
 }
 
-export type Report = { variant: ReportVariant } & (
+export type Report = { variant: ReportVariant, [key: string]: any } & IReport & (
     | TeacherDistributionReport
     | StudentAttendanceReport
 )

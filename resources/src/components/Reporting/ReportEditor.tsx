@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { RouteComponentProps } from 'react-router-dom'
 
 import {
     Typography
@@ -6,7 +7,7 @@ import {
 
 import { Report, ReportingState } from '../../types/report'
 
-interface IProps {
+interface IProps extends RouteComponentProps {
     report: Report
     reportingState: ReportingState
     onUpdateReport: (params: Partial<Report>) => void

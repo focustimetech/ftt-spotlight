@@ -38,7 +38,7 @@ export const TopNav = (props: IProps) => {
 						<Breadcrumbs>
 							{props.breadcrumbs.slice(0, props.breadcrumbs.length - 1)
 								.map((link: INavLink) => (
-									<Link to={link.to}>
+									<Link to={link.to} key={link.to}>
 										<Typography variant='h6' color='inherit'>{link.value}</Typography>
 									</Link>
 								))

@@ -1,5 +1,9 @@
 import * as React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import {
+    Route,
+    RouteComponentProps,
+    Switch
+} from 'react-router-dom'
 
 import {
     Button,
@@ -27,7 +31,7 @@ import {
 } from '../../types/report'
 import { createEmptyReport } from '../../utils/report'
 import { ReportEditor } from './ReportEditor'
-import { TopNav } from '../TopNav'
+import { INavLink, TopNav } from '../TopNav'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
     { group: 'staff', name: 'Staff Reports' },
@@ -80,35 +84,45 @@ class Reporting extends React.Component<IProps, IState> {
         }))
     }
 
+    handleCreateReport = (variant: ReportVariant) => {
+        this.props.history.push('/reporting/new')
+        this.setState({ currentReport: createEmptyReport(variant) })
+    }
+
     componentWillMount() {
         const params: any = this.props.match.params
         const { reportID } = params
-        if (reportID)
-            this.setState({ reportID })
+        if (reportID || this.props.location.pathname == '/reporting/new')
+            this.setState({ currentReport: createEmptyReport('teacher-distribution') })
     }
 
     componentDidMount() {
-        if (this.state.reportID !== -1) {
-            this.setState({
-                savedReport: createEmptyReport('teacher-distribution'),
-                currentReport: createEmptyReport('teacher-distribution')
-            }, () => {
-                this.fetchReport()
-            })
-        }
+        if (this.state.currentReport)
+            this.fetchReport()
     }
 
     render() {
-        // console.log('Reporting.STATE:', this.state)
+        console.log('Reporting.PROPS:', this.props)
+        const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
+        const params: any = this.props.match.params
+        const { reportID } = params
+        if (this.state.currentReport && (reportID || this.props.location.pathname === '/reporting/new'))
+            breadcrumbs.push({ value: this.state.currentReport.name })
+
+        const isReportUnchanged: boolean = this.state.savedReport != null && this.state.currentReport != null && (
+            Object.keys(this.state.currentReport).every((reportKey: string) => {
+                return this.state.currentReport[reportKey] === this.state.savedReport[reportKey]
+            })
+        )
         return (
             <>
                 <div className='content' id='content'>
                     <TopNav
-                        breadcrumbs={[{ value: 'Reporting' }]}
+                        breadcrumbs={breadcrumbs}
                         actions={
                             <>
                                 <Button variant='contained' color='primary'>Run Report</Button>
-                                <Button variant='contained'>Save</Button>
+                                <Button variant='contained' disabled={isReportUnchanged}>Save</Button>
                             </>
                             /**
                              * Actions to include:
@@ -121,39 +135,46 @@ class Reporting extends React.Component<IProps, IState> {
                         }
                     />
                     <div className='reporting' id='reporting'>
-                        {this.state.currentReport === null ? (
-                            REPORT_GROUPS.map((reportGroup: IReportGroupInfo) => (
-                                <div key={reportGroup.group}>
-                                    <Typography variant='h6'>{reportGroup.name}</Typography>
-                                    <div className='reporting__group'>
-                                        {REPORT_TYPES[reportGroup.group].map((reportVariant: IReportVariantInfo) => (
-                                            <Card className='reporting__variant' key={reportVariant.variant}>
-                                                <CardActionArea>
-                                                    <CardMedia
-                                                        component='img'
-                                                        alt={reportVariant.name}
-                                                        title={reportVariant.name}
-                                                        height={140}
-                                                        image='/static/images/report-sample.jpg'
-                                                    />
-                                                    <CardContent>
-                                                        <Typography variant='h5'>{reportVariant.name}</Typography>
-                                                        <Typography variant='body2'>{reportVariant.description}</Typography>
-                                                    </CardContent>
-                                                </CardActionArea>                                            
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <ReportEditor
-                                reportingState={this.state.reportingState}
-                                onUpdateReport={this.handleUpdateReport}
-                                report={this.state.currentReport}
+                        <Switch>
+                            <Route 
+                                path={['/reporting/new', '/reporting/:reportID']}
+                                render={(props: RouteComponentProps) => (
+                                    <ReportEditor
+                                        reportingState={this.state.reportingState}
+                                        onUpdateReport={this.handleUpdateReport}
+                                        report={this.state.currentReport}
+                                        {...props}
+                                    />
+                                )}
                             />
-                        )}
-                    </div>
+                            <Route exact path='/reporting'>
+                                {REPORT_GROUPS.map((reportGroup: IReportGroupInfo) => (
+                                    <div key={reportGroup.group}>
+                                        <Typography variant='h6'>{reportGroup.name}</Typography>
+                                        <div className='reporting__group'>
+                                            {REPORT_TYPES[reportGroup.group].map((reportVariant: IReportVariantInfo) => (
+                                                <Card className='reporting__variant' key={reportVariant.variant}>
+                                                    <CardActionArea onClick={() => this.handleCreateReport(reportVariant.variant)}>
+                                                        <CardMedia
+                                                            component='img'
+                                                            alt={reportVariant.name}
+                                                            title={reportVariant.name}
+                                                            height={140}
+                                                            image='/static/images/report-sample.jpg'
+                                                        />
+                                                        <CardContent>
+                                                            <Typography variant='h5'>{reportVariant.name}</Typography>
+                                                            <Typography variant='body2'>{reportVariant.description}</Typography>
+                                                        </CardContent>
+                                                    </CardActionArea>                                            
+                                                </Card>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </Route>
+                        </Switch>
+                    </div>    
                 </div>
             </>
         )

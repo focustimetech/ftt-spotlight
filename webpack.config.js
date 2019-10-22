@@ -6,9 +6,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
-// const Dotenv = require('dotenv-webpack')
-// const styleLintPlugin = require('stylelint-webpack-plugin')
+// const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin');
 
@@ -19,13 +17,9 @@ module.exports = (env, argv) => {
         entry: './resources/src/index.tsx',
 
         output: {
-            /**
-             * @TODO Consider using contenthash
-             * filename: devMode ? '[name].js' : '[name].[contenthash].js',
-             */
-            filename: 'bundle-[hash:6].js',
+            filename: devMode ? '[name].js' : '[name].[contenthash].js',
             path: __dirname + '/public/js/',
-            publicPath: 'js/' // '/public/js/'
+            publicPath: 'js/'
         },
 
         devtool: devMode ? 'cheap-module-eval-source-map' : 'source-map',
@@ -92,33 +86,18 @@ module.exports = (env, argv) => {
 
         plugins: [
             new CleanWebpackPlugin(),
-            
             new HtmlWebpackPlugin({
                 template: __dirname + '/resources/src/index.html',
-                // publicPath: '',
                 filename: __dirname + '/public/views/index.html',
             }),
-
             new ForkTsCheckerWebpackPlugin({
-                workers: 1,
+                workers: devMode ? 4 : 2,
+                useTypescriptIncrementalApi: false
             }),
             new MiniCssExtractPlugin({
                 filename: devMode ? '[name].css' : '[name].[contenthash].css',
             }),
             new webpack.HashedModuleIdsPlugin(),
-            /*
-            new Dotenv({
-                safe: true,
-                systemvars: true,
-                path: `./.env.${argv.mode}`,
-            }),
-            */
-           /*
-            new styleLintPlugin({
-                failOnError: !devMode,
-                syntax: 'scss',
-            }),
-            */
             new FriendlyErrorsWebpackPlugin(),
             new ManifestPlugin({ publicPath: 'js/'}),
         ],

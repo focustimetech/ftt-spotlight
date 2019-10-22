@@ -11,17 +11,24 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { IReportGroup, IReportType, ReportGroup } from '../../types/report'
+import {
+    IReport,
+    IReportVariantInfo,
+    IReportGroupInfo,
+    Report,
+    ReportGroup,
+    ReportingState,
+    ReportVariant,
+    TeacherDistributionReport,
+} from '../../types/report'
 import { TopNav } from '../TopNav'
 
-type ReportingState = 'idle' | 'running' | 'errored'
-
-const REPORT_GROUPS: IReportGroup[] = [
+const REPORT_GROUPS: IReportGroupInfo[] = [
     { group: 'staff', name: 'Staff Reports' },
     { group: 'students', name: 'Student Reports' },
 ]
 
-const REPORT_TYPES: Record<ReportGroup, IReportType[]> = {
+const REPORT_TYPES: Record<ReportGroup, IReportVariantInfo[]> = {
     staff: [
         {
             name: 'Teacher Distribution',
@@ -40,15 +47,33 @@ const REPORT_TYPES: Record<ReportGroup, IReportType[]> = {
     ]
 }
 
+const EMPTY_REPORT: IReport = {
+    name: 'New Report',
+    dateRange: {
+        type: 'predefined',
+        range: 'last-week'
+    },
+    segment: 'day',
+    access: 'private'
+}
+
 interface IProps extends RouteComponentProps {}
 
 interface IState {
     reportingState: ReportingState
+    savedReport: Report
+    currentReport: Report
 }
 
 class Reporting extends React.Component<IProps, IState> {
     state: IState = {
-        reportingState: 'idle'
+        reportingState: 'idle',
+        savedReport: null,
+        currentReport: null
+    }
+
+    componentDidMount() {
+
     }
 
     render() {
@@ -62,9 +87,16 @@ class Reporting extends React.Component<IProps, IState> {
                             <Button variant='contained' color='primary'>Run Report</Button>
                             <Button variant='contained'>Save</Button>
                         </>
+                        /**
+                         * Actions to include:
+                         * Run Report
+                         * Save Report (or Save Report As)
+                         * Star/Unstar
+                         * Access => Private/Public
+                         * New Report => New Variant/Same Variant
+                         */
                     }
                 />
-                <Typography variant='h2'>New Report</Typography>
                 </div>
             </>
         )

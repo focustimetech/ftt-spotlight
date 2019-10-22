@@ -3,7 +3,7 @@ export interface IReport {
     name: string
     dateRange: DateRange
     segment: ReportSegment
-    variant: ReportVariant
+    access: 'public' | 'private'
 }
 
 export type ReportSegment = 
@@ -52,7 +52,7 @@ export type ReportGroup =
     | 'staff'
     | 'students'
 
-export interface IReportVariantGroup {
+export interface IReportGroupInfo {
     group: ReportGroup
     name: string
 }
@@ -78,6 +78,7 @@ export interface StudentAttendanceReport extends IReport {
     showAsPercentage: boolean
 }
 
-export type Report =
+export type Report = { variant: ReportVariant } & (
     | TeacherDistributionReport
     | StudentAttendanceReport
+)

@@ -22,6 +22,7 @@ import {
     TeacherDistributionReport,
 } from '../../types/report'
 import { createEmptyReport } from '../../utils/report'
+import { ReportEditor } from './ReportEditor'
 import { TopNav } from '../TopNav'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
@@ -69,38 +70,74 @@ class Reporting extends React.Component<IProps, IState> {
 
     }
 
+    handleUpdateReport = (params: Partial<Report>) => {
+        this.setState((state: IState) => ({
+            currentReport: { ...state.currentReport }
+        }))
+    }
+
     componentWillMount() {
         const params: any = this.props.match.params
         const { reportID } = params
-        this.setState({ reportID })
+        if (reportID)
+            this.setState({ reportID })
     }
 
     componentDidMount() {
-        if (this.state.reportID !== -1)
-            this.fetchReport()
+        if (this.state.reportID !== -1) {
+            this.setState({
+                savedReport: createEmptyReport('teacher-distribution'),
+                currentReport: createEmptyReport('teacher-distribution')
+            }, () => {
+                this.fetchReport()
+            })
+        }
     }
 
     render() {
+        console.log('Reporting.STATE:', this.state)
         return (
             <>
                 <div className='content' id='content'>
-                <TopNav
-                    breadcrumbs={[{ value: 'Reporting' }]}
-                    actions={
-                        <>
-                            <Button variant='contained' color='primary'>Run Report</Button>
-                            <Button variant='contained'>Save</Button>
-                        </>
-                        /**
-                         * Actions to include:
-                         * Run Report
-                         * Save Report (or Save Report As)
-                         * Star/Unstar
-                         * Access => Private/Public
-                         * New Report => New Variant/Same Variant
-                         */
-                    }
-                />
+                    <TopNav
+                        breadcrumbs={[{ value: 'Reporting' }]}
+                        actions={
+                            <>
+                                <Button variant='contained' color='primary'>Run Report</Button>
+                                <Button variant='contained'>Save</Button>
+                            </>
+                            /**
+                             * Actions to include:
+                             * Run Report
+                             * Save Report (or Save Report As)
+                             * Star/Unstar
+                             * Access => Private/Public
+                             * New Report => New Variant/Same Variant
+                             */
+                        }
+                    />
+                    <div className='reporting' id='reporting'>
+                        {this.state.currentReport === null ? (
+                            REPORT_GROUPS.map((reportGroup: IReportGroupInfo) => (
+                                <div className='reporting__group' key={reportGroup.group}>
+                                    <Typography variant='h6'>{reportGroup.name}</Typography>
+                                    {REPORT_TYPES[reportGroup.group].map((reportVariant: IReportVariantInfo) => (
+                                        <div className='reporting__variant' key={reportVariant.variant}>
+                                            <div>{reportVariant.name}</div>
+                                            <h6>{reportVariant.name}</h6>
+                                            <p>{reportVariant.description}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))
+                        ) : (
+                            <ReportEditor
+                                reportingState={this.state.reportingState}
+                                onUpdateReport={this.handleUpdateReport}
+                                report={this.state.currentReport}
+                            />
+                        )}
+                    </div>
                 </div>
             </>
         )

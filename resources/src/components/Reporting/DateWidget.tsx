@@ -48,10 +48,10 @@ class DateWidget extends React.Component<IProps> {
 
     handleDatePickerSelect = (point: 'start' | 'end', date: Date) => {
         let newDateRange: IAbsoluteDateRange = normalizeDateRange(this.props.dateRange)
-        if (point === 'start')
-            this.props.onChange({ ...newDateRange, start: date })
-        else
-            this.props.onChange({ ...newDateRange, end: date })
+        newDateRange[point] = date
+        if (newDateRange.start > newDateRange.end)
+            newDateRange = { ...newDateRange, start: newDateRange.end, end: newDateRange.start }
+        this.props.onChange(newDateRange)
     }
 
     handlePredefinedDateSelect = (predefinedDateRange: PredefinedDateRange) => {
@@ -64,11 +64,9 @@ class DateWidget extends React.Component<IProps> {
     render() {
         const open: boolean = Boolean(this.state.widgetRef)
         const normalizedDateRange: IAbsoluteDateRange = normalizeDateRange(this.props.dateRange)
-        console.log('DateWidget.PROPS:', this.props)
         return (
             <>
-                <FormControl variant='filled'>
-                    
+                <FormControl variant='outlined'>
                     <Select
                         input={<OutlinedInput labelWidth={0}/>}
                         renderValue={(value: any) => <span><Icon>event</Icon>{value}</span>}
@@ -102,9 +100,9 @@ class DateWidget extends React.Component<IProps> {
                                             <div>
                                                 <DatePicker
                                                     variant='inline'
-                                                    label='Start date'
-                                                    value={normalizedDateRange.start}
-                                                    onChange={(date: Date) => this.handleDatePickerSelect('start', date)}
+                                                    label='End date'
+                                                    value={normalizedDateRange.end}
+                                                    onChange={(date: Date) => this.handleDatePickerSelect('end', date)}
                                                 />
                                             </div>
                                         </MuiPickersUtilsProvider>

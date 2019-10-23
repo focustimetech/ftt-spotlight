@@ -1,6 +1,17 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.5 (2019-10-23)
+
+### Added
+ - Added ability to hide sidebar menu (SPOT-144)
+
+### Changed
+ - Decrease bundle size by 93% (SPOT-128)
+
+### Fixed
+ - Fixed the search functionality in tables (SPOT-138)
+
 ## Version 1.2.4 (2019-10-16)
 
 ### Fixed

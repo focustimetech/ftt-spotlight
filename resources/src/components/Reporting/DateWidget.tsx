@@ -69,7 +69,7 @@ class DateWidget extends React.Component<IProps> {
                 <FormControl variant='outlined'>
                     <Select
                         input={<OutlinedInput labelWidth={0}/>}
-                        renderValue={(value: any) => <span><Icon>event</Icon>{value}</span>}
+                        renderValue={(value: any) => <span>{value}</span>}
                         value={dateRangeToString(this.props.dateRange)}
                         onClose={this.handleClose}
                         MenuProps={{

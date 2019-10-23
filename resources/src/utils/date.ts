@@ -45,11 +45,16 @@ export const normalizeDateRange = (dateRange: DateRange): IAbsoluteDateRange => 
 export const dateRangeToString = (dateRange: DateRange): string => {
     switch(dateRange.type) {
         case 'absolute':
-            return `${dateRange.start.toString()} ${dateRange.end.toString()}`
+            return `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`
         case 'relative':
             const dateSegmentLabel: string[] = DATE_SEGMENT_LABELS[dateRange.segment]
             return `Past ${dateRange.value} ${dateSegmentLabel[dateRange.value === 1 ? 0 : 1]}`
         case 'predefined':
             return PREDEFINED_LABELS[dateRange.range]
     }
+}
+
+export const formatDate = (date: Date): string => {
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options)
 }

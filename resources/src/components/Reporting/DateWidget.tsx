@@ -4,10 +4,16 @@ import DateFnsUtils from '@date-io/date-fns'
 import {
     Button,
     Divider,
+    FormControl,
     FormHelperText,
+    InputLabel,
     Icon,
     Menu,
-    Typography
+    MenuItem,
+    TextField,
+    Typography,
+    Select,
+    OutlinedInput,
 } from '@material-ui/core'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
@@ -61,62 +67,67 @@ class DateWidget extends React.Component<IProps> {
         console.log('DateWidget.PROPS:', this.props)
         return (
             <>
-                <Button onClick={this.handleOpen}>
-                    <Icon>event</Icon>
-                    <Typography variant='body1'>{dateRangeToString(this.props.dateRange)}</Typography>
-                </Button>
+                <FormControl variant='filled'>
+                    
+                    <Select
+                        input={<OutlinedInput labelWidth={0}/>}
+                        renderValue={(value: any) => <span><Icon>event</Icon>{value}</span>}
+                        value={dateRangeToString(this.props.dateRange)}
+                        onClose={this.handleClose}
+                        MenuProps={{
+                            open: open,
+                            anchorEl: this.state.widgetRef,
+                            onClose: this.handleClose,
+                            getContentAnchorEl: null,
+                            anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
+                            transformOrigin: { vertical: "top", horizontal: "left" }
+                        }}
+                        onClick={this.handleOpen}
+                    >
+                        <div className='date_widget'>
+                            <div>
+                                <div>
+                                    <Typography variant='subtitle1'>Absolute Date Range</Typography>
+                                    <div className='date_widget__absolute_range'>
+                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                            <div>
+                                                <DatePicker
+                                                    variant='inline'
+                                                    label='Start date'
+                                                    value={normalizedDateRange.start}
+                                                    onChange={(date: Date) => this.handleDatePickerSelect('start', date)}
+                                                />
+                                            </div>
+                                            <span>→</span>
+                                            <div>
+                                                <DatePicker
+                                                    variant='inline'
+                                                    label='Start date'
+                                                    value={normalizedDateRange.start}
+                                                    onChange={(date: Date) => this.handleDatePickerSelect('start', date)}
+                                                />
+                                            </div>
+                                        </MuiPickersUtilsProvider>
+                                    </div>
+                                </div>
+                            </div>
+                            <Divider orientation='vertical' className='divider' />
+                            <div>
+                                <Typography variant='subtitle1'>Absolute Date Range</Typography>
+                                <ol className='date_widget__predefined_ranges'>
+                                {Object.keys(PREDEFINED_LABELS).map((predefinedDateRange: PredefinedDateRange) => (
+                                    <a className='predefined_range' onClick={() => this.handlePredefinedDateSelect(predefinedDateRange)} key={predefinedDateRange}>
+                                        <li>{PREDEFINED_LABELS[predefinedDateRange]}</li>
+                                    </a>
+                                ))} 
+                                </ol>
+                            </div>
+                        </div>
+                    </Select>
+                </FormControl>
                 {this.props.dateRange.type !== 'absolute' && (
                     <FormHelperText>{dateRangeToString(normalizeDateRange(this.props.dateRange))}</FormHelperText>
                 )}
-                <Menu
-                    ref={this.state.widgetRef}
-                    open={open}
-                    anchorEl={this.state.widgetRef}
-                    onClose={this.handleClose}
-                    getContentAnchorEl={null}
-                    anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-					transformOrigin={{ vertical: "top", horizontal: "left" }}
-                >
-                    <div className='date_widget'>
-                        <div>
-                            <div>
-                                <Typography variant='subtitle1'>Absolute Date Range</Typography>
-                                <div className='date_widget__absolute_range'>
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                        <div>
-                                            <DatePicker
-                                                variant='inline'
-                                                label='Start date'
-                                                value={normalizedDateRange.start}
-                                                onChange={(date: Date) => this.handleDatePickerSelect('start', date)}
-                                            />
-                                        </div>
-                                        <span>→</span>
-                                        <div>
-                                            <DatePicker
-                                                variant='inline'
-                                                label='Start date'
-                                                value={normalizedDateRange.start}
-                                                onChange={(date: Date) => this.handleDatePickerSelect('start', date)}
-                                            />
-                                        </div>
-                                    </MuiPickersUtilsProvider>
-                                </div>
-                            </div>
-                        </div>
-                        <Divider orientation='vertical' className='divider' />
-                        <div>
-                            <Typography variant='subtitle1'>Absolute Date Range</Typography>
-                            <ol className='date_widget__predefined_ranges'>
-                               {Object.keys(PREDEFINED_LABELS).map((predefinedDateRange: PredefinedDateRange) => (
-                                   <a className='predefined_range' onClick={() => this.handlePredefinedDateSelect(predefinedDateRange)} key={predefinedDateRange}>
-                                       <li>{PREDEFINED_LABELS[predefinedDateRange]}</li>
-                                   </a>
-                               ))} 
-                            </ol>
-                        </div>
-                    </div>
-                </Menu>
             </>
         )
     }

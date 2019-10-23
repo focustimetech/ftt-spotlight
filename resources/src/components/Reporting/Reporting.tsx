@@ -78,6 +78,12 @@ class Reporting extends React.Component<IProps, IState> {
 
     }
 
+    reportSelected = (): boolean => {
+        const params: any = this.props.match.params
+        const { reportID } = params
+        return reportID || this.props.location.pathname == '/reporting/new'
+    }
+
     handleUpdateReport = (params: Partial<Report>) => {
         this.setState((state: IState) => {
             const updatedReport: Report = { ...state.currentReport, ...params } as Report
@@ -91,9 +97,7 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     componentWillMount() {
-        const params: any = this.props.match.params
-        const { reportID } = params
-        if (reportID || this.props.location.pathname == '/reporting/new')
+        if (this.reportSelected())
             this.setState({ currentReport: createEmptyReport('teacher-distribution') })
     }
 
@@ -104,9 +108,8 @@ class Reporting extends React.Component<IProps, IState> {
 
     render() {
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
-        const params: any = this.props.match.params
-        const { reportID } = params
-        if (this.state.currentReport && (reportID || this.props.location.pathname === '/reporting/new'))
+        const reportSelected: boolean = this.reportSelected()
+        if (this.state.currentReport && reportSelected)
             breadcrumbs.push({ value: this.state.currentReport.name })
 
         const isReportUnchanged: boolean = this.state.savedReport != null && this.state.currentReport != null && (
@@ -114,6 +117,7 @@ class Reporting extends React.Component<IProps, IState> {
                 return this.state.currentReport[reportKey] === this.state.savedReport[reportKey]
             })
         )
+
         return (
             <>
                 <div className='content' id='content'>
@@ -121,8 +125,12 @@ class Reporting extends React.Component<IProps, IState> {
                         breadcrumbs={breadcrumbs}
                         actions={
                             <>
-                                <Button variant='contained' color='primary'>Run Report</Button>
-                                <Button variant='contained' disabled={isReportUnchanged}>Save</Button>
+                                {reportSelected && (
+                                    <>
+                                        <Button variant='contained' color='primary'>Run Report</Button>
+                                        <Button variant='contained' disabled={isReportUnchanged}>Save</Button>
+                                    </>
+                                )}
                             </>
                             /**
                              * Actions to include:

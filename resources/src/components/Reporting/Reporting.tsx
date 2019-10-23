@@ -79,9 +79,10 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     handleUpdateReport = (params: Partial<Report>) => {
-        this.setState((state: IState) => ({
-            currentReport: { ...state.currentReport }
-        }))
+        this.setState((state: IState) => {
+            const updatedReport: Report = { ...state.currentReport, ...params } as Report
+            return { currentReport: updatedReport }
+        })
     }
 
     handleCreateReport = (variant: ReportVariant) => {
@@ -102,7 +103,6 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log('Reporting.PROPS:', this.props)
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const params: any = this.props.match.params
         const { reportID } = params

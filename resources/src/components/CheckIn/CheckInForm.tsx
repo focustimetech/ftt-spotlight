@@ -37,6 +37,8 @@ import { ModalSection } from '../ModalSection'
 
 const AUTO_TIMEOUT = 300000 // 5 minutes
 
+type NameFetchState = 'allow' | 'skip' | 'force-allow'
+
 interface ReduxProps {
     checkInResponse: ICheckInResponse
     checkIn: (request: ICheckInRequest) => Promise<any>
@@ -49,6 +51,7 @@ interface IProps extends ReduxProps {
     handleOpenErrorsDialog?: () => void
     didReceivedChips?: () => void
     didSubmit?: () => void
+    onExceedTimeouts?: () => void
 }
 
 interface IState {
@@ -56,8 +59,11 @@ interface IState {
     chips: CheckInChip[]
     duplicateIndex: number
     errored: boolean
-    uploading: boolean
     inputValue: string
+    nameFetchState: NameFetchState
+    timedOutChips: number
+    uploading: boolean
+    
 }
 
 class CheckInForm extends React.Component<IProps, IState> {
@@ -69,8 +75,10 @@ class CheckInForm extends React.Component<IProps, IState> {
         chips: [],
         duplicateIndex: -1,
         errored: false,
+        inputValue: '',
+        nameFetchState: 'allow',
+        timedOutChips: 0,
         uploading: false,
-        inputValue: ''
     }
 
     handleChange = (event: any) => {
@@ -118,7 +126,7 @@ class CheckInForm extends React.Component<IProps, IState> {
             const newChip: CheckInChip = {
                 type: 'student_number',
                 value: chipValue,
-                loading: true
+                loading: this.state.nameFetchState !== 'skip'
             }
             const index = this.findChip(newChip)
             if (index === -1) {
@@ -178,13 +186,28 @@ class CheckInForm extends React.Component<IProps, IState> {
 
         const index: number = this.findChip(chip)
         let replacementChip: CheckInChip = { ...chip, loading: false }
-        axios.get(`/api/students/student-number/${chip.value}`)
-            .then((res: any) => {
-                replacementChip = { type: 'id', value: res.data, loading: false }
-                this.replaceChip(replacementChip, index)
-            }, () => {
-                this.replaceChip(replacementChip, index)
-            })
+        if (this.state.nameFetchState !== 'skip') {
+            axios.get(`/api/students/student-number/${chip.value}`, { timeout: 2500 })
+                .then((res: any) => {
+                    replacementChip = { type: 'id', value: res.data, loading: false }
+                    this.replaceChip(replacementChip, index)
+                })
+                .catch((error: any) => {
+                    if (error.code === 'ECONNABORTED') {
+                        // Connection timed out
+                        this.setState((state: IState) => {
+                            const skipNameFetch: boolean = state.timedOutChips >= 2 && state.nameFetchState !== 'force-allow'
+                            if (skipNameFetch && this.props.onExceedTimeouts)
+                                this.props.onExceedTimeouts()
+                            return {
+                                nameFetchState: skipNameFetch ? 'skip' : state.nameFetchState,
+                                timedOutChips: state.timedOutChips + 1
+                            }
+                        })
+                    }
+                    this.replaceChip(replacementChip, index)
+                })
+        }
     }
 
     showResults = () => {

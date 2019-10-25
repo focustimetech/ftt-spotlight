@@ -94,6 +94,7 @@ export const UploadUserForm = (props: IProps) => {
                 open={passwordDialogOpen}
                 onSubmit={(password: string) => handleFileUpload(password)}
                 onClose={() => setPasswordDialogOpen(false)}
+                actionItems={['Upload user CSV files']}
             />
             <DialogContent>
                 <Stepper activeStep={step} orientation='vertical'>

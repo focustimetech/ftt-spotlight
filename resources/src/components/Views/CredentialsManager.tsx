@@ -137,6 +137,7 @@ class CredentialsManager extends React.Component<IProps, IState> {
 					open={this.state.confirmPasswordDialogOpen}
 					onClose={this.handleCancelAuthAction}
 					onVerification={this.onSubmitAuthAction}
+					actionItems={['Reset user passwords', 'Invalidate user passwords', 'Re-enable user accounts', 'Disable user accounts']}
 				/>
 				<TopNav
 					breadcrumbs={[{ value: 'Credentials Manager' }]}

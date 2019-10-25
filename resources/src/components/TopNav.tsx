@@ -48,7 +48,7 @@ export const TopNav = (props: IProps) => {
 					)}
 					{props.children}
 					{props.actions && (
-						<div className='top-nav_actions'>{props.actions}</div>
+						<div className='top-nav__actions'>{props.actions}</div>
 					)}
 				</div>
 				{props.tabs && (

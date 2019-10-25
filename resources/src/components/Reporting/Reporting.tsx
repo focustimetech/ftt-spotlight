@@ -7,6 +7,7 @@ import {
 
 import {
     Button,
+    ButtonGroup,
     Card,
     CardActionArea,
     CardMedia,
@@ -127,8 +128,16 @@ class Reporting extends React.Component<IProps, IState> {
                             <>
                                 {reportSelected && (
                                     <>
-                                        <Button variant='contained' color='primary'>Run Report</Button>
-                                        <Button variant='contained' disabled={isReportUnchanged}>Save</Button>
+                                        <div><Button variant='contained' color='primary'>Run Report</Button></div>
+                                        <div>
+                                            <ButtonGroup variant='contained'>
+                                                <Button disabled={isReportUnchanged}>Save</Button>
+                                                <Button size='small'><Icon>arrow_drop_down</Icon></Button>
+                                            </ButtonGroup>
+                                        </div>
+                                        <div>
+                                            
+                                        </div>                            
                                     </>
                                 )}
                             </>

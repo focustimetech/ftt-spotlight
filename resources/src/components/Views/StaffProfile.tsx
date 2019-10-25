@@ -526,7 +526,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 											</Tooltip>
 										</li>
 										<li>
-											<ChangePasswordWidget />
+											<ChangePasswordWidget variant='dialog' />
 										</li>
 									</>
 								) : (

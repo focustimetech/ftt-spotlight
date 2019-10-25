@@ -10,7 +10,7 @@ import {
 
 import { ACCESS_TOKEN } from '../../utils/storage'
 import { setAuthorizationToken } from '../../utils/setAuthorizationToken'
-import { getCurrentUser } from '../../actions/authActions'
+import { getCurrentUser, logout } from '../../actions/authActions'
 import { fetchSettings, fetchUnauthenticatedSettings } from '../../actions/settingsActions'
 import { AuthState, IUser } from '../../types/auth'
 import { Splash } from './Splash'
@@ -22,6 +22,7 @@ interface ReduxProps {
 	getCurrentUser: () => Promise<any>
 	fetchSettings: () => Promise<any>
 	fetchUnauthenticatedSettings: () => Promise<any>
+	logout: () => Promise<any>
 	settings: any
 	currentUser: IUser
 }
@@ -156,6 +157,7 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 						variant='persistant'
 						disallowed={this.props.currentUser ? [this.props.currentUser.username] : undefined}
 						onClose={this.handleSignOut}
+						onSignOut={this.props.logout}
 						onChangePassword={this.handlePasswordChange}
 					/>
 				</Splash>
@@ -202,7 +204,8 @@ class AppWithAuth extends React.Component<ReduxProps, IState> {
 const mapDispatchToProps = {
 	getCurrentUser,
 	fetchSettings,
-	fetchUnauthenticatedSettings
+	fetchUnauthenticatedSettings,
+	logout
 }
 
 const mapStateToProps = (state: any) => ({

@@ -28,9 +28,10 @@ interface ReduxProps {
 interface IProps extends ReduxProps {
     disallowed?: string[]
     isRequiredChange?: boolean
-    variant?: 'dialog' | 'persistant'
+    variant: 'dialog' | 'persistant'
     onChangePassword?: () => void
     onClose?: () => void
+    onSignOut?: () => Promise<any>
 }
 
 interface IState {
@@ -39,6 +40,7 @@ interface IState {
     confirmPassword: string
     showPassword: boolean
     loading: boolean
+    loadingSignOut: boolean
     errored: boolean
     passwordTooShort: boolean
     unmatchedPasswords: boolean
@@ -52,6 +54,7 @@ const initialState: IState = {
     confirmPassword: '',
     showPassword: false,
     loading: false,
+    loadingSignOut: false,
     errored: false,
     passwordTooShort: false,
     unmatchedPasswords: false,
@@ -68,7 +71,14 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
 
     handleClose = () => {
         this.setState({ open: false })
-        if (this.props.onClose)
+        if (this.props.onSignOut) {
+            this.setState({ loadingSignOut: true })
+            this.props.onSignOut().then(() => {
+                this.setState({ loadingSignOut: false })
+                if (this.props.onClose)
+                    this.props.onClose()
+            })
+        } else if (this.props.onClose)
             this.props.onClose()
     }
 
@@ -145,7 +155,10 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
     render() {
         const passwordForm = (
             <>
-                <EnhancedDialogTitle title='Change Password' onClose={this.handleClose} />
+                <EnhancedDialogTitle
+                    title='Change Password'
+                    onClose={this.props.variant === 'dialog' ? this.handleClose : undefined}
+                />
                 <DialogContent>
                     {this.props.isRequiredChange && (
                         <DialogContentText color='error'>Your old password has expired and must be changed.</DialogContentText>
@@ -211,7 +224,11 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button variant='text' onClick={() => this.handleClose()}>Cancel</Button>
+                    <LoadingButton
+                        variant='text'
+                        onClick={() => this.handleClose()}
+                        loading={this.state.loadingSignOut}
+                    >Cancel</LoadingButton>
                     <LoadingButton
                         variant='contained'
                         color='primary'

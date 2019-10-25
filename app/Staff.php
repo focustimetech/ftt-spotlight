@@ -156,7 +156,7 @@ class Staff extends Model
 
 	public function reports()
 	{
-		return $this->hasManu('App\Report');
+		return $this->hasMany('App\Report');
 	}
 
 	public function starred()

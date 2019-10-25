@@ -24,13 +24,28 @@ import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { getMethodDetailsFromName } from '../../utils/utils'
 import { ICheckInMethodDetails } from '../../types/calendar'
 import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
-import { Banner } from '../Banner/Banner'
+import { Banner, IProps as BannerProps } from '../Banner/Banner'
 import CheckInForm from './CheckInForm'
 import ErrorsDialog from './ErrorsDialog'
 import { TopNav } from '../TopNav'
 import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
 import { ModalSection } from '../ModalSection'
 import { ISchedulePlan, ILedgerEntry } from '../../types/calendar'
+
+type BannerPropsIndex =
+    | 'RECEIVED_CHIPS'
+    | 'EXCEEDED_TIMEOUT'
+
+const BANNERS: Record<BannerPropsIndex, Partial<BannerProps>> = {
+    RECEIVED_CHIPS: {
+        message: "You have students that still need to be checked in. Click the Upload button as soon as you're ready to submit.",
+        icon: 'cloud'
+    },
+    EXCEEDED_TIMEOUT: {
+        message: "Due to connectivity issues, we've stopped fetching student names. We'll keep collecting student numbers until you're ready to submit them.",
+        icon: 'warning'
+    }
+}
 
 interface ReduxProps {
     checkInStatus: CheckInStatus
@@ -43,6 +58,7 @@ interface IProps extends ReduxProps, RouteComponentProps {}
 
 interface IState {
     bannerOpen: boolean
+    bannerPropsIndex: BannerPropsIndex
     date: Date
     datePickerOpen: boolean
     errorsDialogOpen: boolean
@@ -53,6 +69,7 @@ interface IState {
 class CheckIn extends React.Component<IProps, IState> {
     state: IState = {
         bannerOpen: false,
+        bannerPropsIndex: 'RECEIVED_CHIPS',
         date: new Date(),
         datePickerOpen: false,
         errorsDialogOpen: false,
@@ -140,8 +157,8 @@ class CheckIn extends React.Component<IProps, IState> {
         this.setState({ bannerOpen: false })
     }
 
-    handleBannerOpen = () => {
-        this.setState({ bannerOpen: true })
+    handleBannerOpen = (bannerPropsIndex: BannerPropsIndex) => {
+        this.setState({ bannerOpen: true, bannerPropsIndex })
     }
 
     componentDidMount() {
@@ -202,10 +219,10 @@ class CheckIn extends React.Component<IProps, IState> {
             <div className='content' id='content'>
                 <Banner
                     variant='static'
-                    icon='cloud_upload'
-                    message="You have students that still need to be checked in. Click the Upload button as soon as you're ready to submit."
+                    message={BANNERS['RECEIVED_CHIPS'].message}
                     open={this.state.bannerOpen}
                     onClose={this.handleBannerClose}
+                    {...BANNERS[this.state.bannerPropsIndex]}
                 />
                 <ErrorsDialog open={this.state.errorsDialogOpen} onClose={this.handleCloseErrorsDialog} />
                 <TopNav
@@ -266,8 +283,9 @@ class CheckIn extends React.Component<IProps, IState> {
                         <CheckInForm
                             dateTime={this.props.checkInStatus.date.full_date}
                             didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
-                            didReceivedChips={() => this.handleBannerOpen()}
+                            didReceivedChips={() => this.handleBannerOpen('RECEIVED_CHIPS')}
                             didSubmit={() => this.handleBannerClose()}
+                            onExceedTimeouts={() => this.handleBannerOpen('EXCEEDED_TIMEOUT')}
                             handleOpenErrorsDialog={this.handleOpenErrorsDialog}
                         />
                         <ModalSection

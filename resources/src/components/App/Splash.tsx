@@ -19,6 +19,7 @@ export const Splash = (props: IProps) => {
                         <LoadingBadge />
                         <Fade in={props.showChildren}>
                             <div>
+                                <img className='splash__image_logo' src='/static/images/ft-badge.png'/>
                                 {props.children}
                             </div>
                         </Fade>

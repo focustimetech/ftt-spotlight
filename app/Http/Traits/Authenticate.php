@@ -69,7 +69,7 @@ trait Authenticate
 
         $response = $this->login($request);
         if ($response->status() === 200) {
-            return response()->json('Verified user successfully', 200);
+            return response()->json(['message' => 'Verified user successfully'], 200);
         } else {
             return $response;
         }
@@ -84,6 +84,9 @@ trait Authenticate
         $users->each(function($user) use (&$flagged) {
             if (Hash::check($user->username, $user->password)) {
                 $user->password_expired = true;
+                $user->tokens->each(function ($token, $key) {
+                    $token->delete();
+                });
                 $user->save();
                 $flagged ++;
             }

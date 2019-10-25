@@ -15,6 +15,7 @@ import { verifyPassword } from '../../utils/http'
 
 interface IProps {
     open: boolean
+    actionItems?: string[]
     dialogTitle?: string
     onClose: () => void
     onSubmit?: (password: string) => void
@@ -62,6 +63,7 @@ export const ConfirmPasswordDialog = (props: IProps) => {
 
     const onExited = () => {
         setPassword('')
+        setErrored(false)
     }
 
     return (
@@ -69,7 +71,18 @@ export const ConfirmPasswordDialog = (props: IProps) => {
             <DialogTitle>{props.dialogTitle || 'Confirm Authorization'}</DialogTitle>
             <form autoComplete={'off'}>
                 <DialogContent>
-                    <DialogContentText>This action requires you to confirm your password.</DialogContentText>
+                    <DialogContentText>
+                        {props.actionItems ? (
+                            'Please confirm your password to perform the following actions:'
+                        ) : (
+                            'This action requires you to confirm your password.'
+                        )}
+                    </DialogContentText>
+                    {props.actionItems && (
+                        <ul className='password_confirm_dialog_list'>
+                            {props.actionItems.map((actionItem: string, index: number) => <li key={index}>{actionItem}</li>)}
+                        </ul>
+                    )}
                     <TextField
                         name='password'
                         value={password}

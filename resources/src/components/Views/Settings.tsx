@@ -47,7 +47,6 @@ class Settings extends React.Component<IProps, IState> {
 
     render() {
         const { settingsGroups } = this.props
-        console.log(settingsGroups)
         return (
             <div className='content' id='content'>
                 <TopNav breadcrumbs={[{ value: 'Settings', to: '/settings' }]} />

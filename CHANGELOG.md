@@ -1,6 +1,33 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.6 (Release Date Pending)
+
+### Added
+ - Added logo to splash screen (SPOT-84)
+ - Added list of actions when confirming password (SPOT-133)
+ - Added fallback page for users that don't have JavaScript enabled (SPOT-146)
+ - Added timeout on student check-in to reduce server load (SPOT-147)
+
+### Fixed
+ - Fixed a bug where new staff weren't given a title attribute (SPOT-112)
+
+### Security
+ - Require password confirmation when creating staff accounts (SPOT-109)
+ - Delete auth tokens when cancelling password change (SPOT-107)
+ - Delete auth tokens when enforcing password changes (SPOT-111)
+
+## Version 1.2.5 (2019-10-23)
+
+### Added
+ - Added ability to hide sidebar menu (SPOT-144)
+
+### Changed
+ - Decrease bundle size by 93% (SPOT-128)
+
+### Fixed
+ - Fixed the search functionality in tables (SPOT-138)
+
 ## Version 1.2.4 (2019-10-16)
 
 ### Fixed

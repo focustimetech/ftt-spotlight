@@ -529,7 +529,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 								{this.isOwnProfile() ? (
 									<>
 										<li>
-											<ChangePasswordWidget />
+											<ChangePasswordWidget variant='dialog' />
 										</li>
 										<li>
 											<Tooltip title='Sign Out'>

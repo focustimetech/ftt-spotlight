@@ -41,15 +41,16 @@ class ErrorsDialog extends React.Component<IProps> {
                     {hasErrors ? (
                         <>
                             <DialogContentText>The following check-in entries could not be resolved. This may be because the entry was mistyped, or the entry is not associated with an existing student account.</DialogContentText>
-                            {errors.map((error: any) => (
-                                <>
+                            {errors.map((error: any, index: number) => (
+                                <div key={index}>
                                     <Typography className='check-in_error_header'>{error.timestamp_string}</Typography>
                                     <Typography>
-                                        {error.errors.map((errorString: string) => (<span className='check-in_error'>{errorString}</span>))
+                                        {error.errors
+                                            .map((errorString: string) => (<span key={errorString} className='check-in_error'>{errorString}</span>))
                                             .reduce((prev: string, curr: string) => [prev, ', ', curr], [])
                                         }
                                     </Typography>
-                                </>
+                                </div>
                             ))}
                         </>
                     ) : (

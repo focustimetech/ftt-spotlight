@@ -9,10 +9,13 @@ use App\User;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\StaffProfile as StaffProfileResource;
 use App\Http\Utils;
+use App\Http\Traits\Authenticate;
 
 class StaffController extends Controller
 {
     
+    use Authenticate;
+
     /**
      * Display a listing of the resource.
      *
@@ -40,20 +43,28 @@ class StaffController extends Controller
     public function create(Request $request)
     {
         $email = $request->input('email');
-        if (User::userExists($email))
-            abort(409, 'A staff by that email address already exists');
-
-        $staff = Staff::create([
+        $params = [
             'staff_type' => $request->input('staff_type'),
             'administrator' => $request->input('administrator'),
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
+            'title' => $request->input('title'),
             'initials' => $request->input('initials'),
             'staff_type' => 'teacher',
             'administrator' => $request->input('administrator'),
             'email' => $email,
             'color' => Utils::topicColor()
-        ]);
+        ];
+        
+        $verification_response = $this->verify($request);
+        if ($verification_response->status() === 200) { 
+            if (User::userExists($email))
+                abort(409, 'A staff by that email address already exists');
+
+            $staff = Staff::create($params);
+        } else {
+            return $verification_response;
+        }
 
         return new StaffResource($staff);
     }

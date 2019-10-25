@@ -123,10 +123,12 @@ class CheckInForm extends React.Component<IProps, IState> {
         this.refreshAutoSubmit()
         const chipValues: string[] = value ? value.split(/[\s,]+/) : [this.state.inputValue]
         chipValues.forEach((chipValue: string) => {
+            const now: Date = new Date()
             const newChip: CheckInChip = {
                 type: 'student_number',
                 value: chipValue,
-                loading: this.state.nameFetchState !== 'skip'
+                loading: this.state.nameFetchState !== 'skip',
+                time: `${now.toLocaleDateString()}T${now.toLocaleTimeString()}`
             }
             const index = this.findChip(newChip)
             if (index === -1) {
@@ -187,9 +189,10 @@ class CheckInForm extends React.Component<IProps, IState> {
         const index: number = this.findChip(chip)
         let replacementChip: CheckInChip = { ...chip, loading: false }
         if (this.state.nameFetchState !== 'skip') {
-            axios.get(`/api/students/student-number/${chip.value}`, { timeout: 2500 })
+            axios.get(`/api/check-in/student-number/${chip.value}`, { timeout: 2500 })
                 .then((res: any) => {
-                    replacementChip = { type: 'id', value: res.data, loading: false }
+                    const { student, datetime } = res.data
+                    replacementChip = { type: 'id', value: student, time: datetime, loading: false }
                     this.replaceChip(replacementChip, index)
                 })
                 .catch((error: any) => {

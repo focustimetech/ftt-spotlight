@@ -71,7 +71,21 @@ class StudentsController extends Controller
         if ($student)
             return new StudentResource($student);
         else
-            return response()->json('Student couldn\'t be found', 404);
+            return response()->json(['message' => "Student couldn't be found"], 404);
+    }
+
+    public function getChipByStudentNumber($student_number)
+    {
+        $student = Student::findBySN($student_number);
+
+        if ($student) {
+            return [
+                'student' => new StudentResource($student),
+                'datetime' => date('Y-m-d\TH:i:s')
+            ];
+        } else {
+            return response()->json(['message' => "Student couldn't be found"], 404);
+        }
     }
 
     /**

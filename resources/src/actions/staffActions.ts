@@ -20,9 +20,10 @@ export const fetchStaff = () => (dispatch: any) => {
         }))
 }
 
-export const createStaff = (staffData: IStaffRequest) => (dispatch: any) => {
-    console.log(staffData)
-    return axios.post('/api/staff', staffData)
+export const createStaff = (staffData: IStaffRequest, password: string) => (dispatch: any) => {
+    const data: IStaffRequest & { password: string} = { ...staffData, password }
+    console.log('DATA:', data)
+    return axios.post('/api/staff', data)
         .then((res: any) => dispatch({
             type: NEW_STAFF,
             payload: res.data

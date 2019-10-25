@@ -20,6 +20,7 @@ import { IStaff, IStaffTitle } from '../../types/staff';
 import { LoadingButton } from '../Form/LoadingButton'
 import { INavTabs } from '../TopNav'
 import { UploadUserForm, IListItem } from '../Form/UploadUserForm'
+import { ConfirmPasswordDialog } from '../Modals/ConfirmPasswordDialog'
 import { IStaffRequest } from '../../actions/staffActions'
 
 interface IProps {
@@ -27,7 +28,7 @@ interface IProps {
     open: boolean
     staffDetails?: IStaff
     onClose: () => void
-    onSubmit: (event: any, staffDetails: IStaffRequest) => Promise<any>
+    onSubmit: (event: any, staffDetails: IStaffRequest, password: string) => Promise<any>
 }
 
 const TITLES: IStaffTitle[] = ['Dr.', 'Miss', 'Ms.', 'Mlle.', 'Mme.', 'Mr.', 'Mrs.', 'Prof.']
@@ -57,6 +58,7 @@ export const StaffInfoDialog = (props: IProps) => {
     const [uploading, setUploading]: [boolean, SetState<boolean>] = React.useState(false)
     const [userExists, setUserExists]: [boolean, SetState<boolean>] = React.useState(false)
     const [errored, setErrored]: [boolean, SetState<boolean>] = React.useState(false)
+    const [passwordDialogOpen, setPasswordDialogOpen]: [boolean, SetState<boolean>] = React.useState(false)
 
     const handleInputChange = (event: any) => {
         setErrored(false)
@@ -97,9 +99,22 @@ export const StaffInfoDialog = (props: IProps) => {
         setTab(value)
     }
 
+    const handlePasswordDialogOpen = () => {
+        setPasswordDialogOpen(true)
+    }
+
+    const handlePasswordDialogClose = () => {
+        setPasswordDialogOpen(false)
+    }
+
     const handleSubmit = (event: any) => {
+        event.preventDefault()
+        setPasswordDialogOpen(true)
+    }
+
+    const handleCreate = (password: string) => {
         setUploading(true)
-        props.onSubmit(event, details)
+        props.onSubmit(event, details, password)
             .then(() => {
                 setUploading(false)
                 props.onClose()
@@ -230,27 +245,35 @@ export const StaffInfoDialog = (props: IProps) => {
     )
 
     return (
-        <Dialog
-            open={props.open}
-            scroll='paper'
-            aria-labelledby='student-dialog-title'
-        >
-            <EnhancedDialogTitle
-                id='student-dialog-title'
-                onClose={props.onClose}
-                tabs={!edit && navTabs}
-                title={props.edit ? 'Edit Staff' : 'Add Staff'}
+        <>
+            <ConfirmPasswordDialog
+                open={passwordDialogOpen}
+                onClose={handlePasswordDialogClose}
+                onSubmit={handleCreate}
+                actionItems={['Create staff accounts']}
             />
-            {edit ? SingleForm : (
-                <SwipeableViews index={navTabs.value}>
-                    {SingleForm}
-                    <UploadUserForm
-                        onClose={props.onClose}
-                        headers={defaultListItems}
-                        userType='staff'
-                    />
-                </SwipeableViews>
-            )}
-        </Dialog>
+            <Dialog
+                open={props.open}
+                scroll='paper'
+                aria-labelledby='student-dialog-title'
+            >
+                <EnhancedDialogTitle
+                    id='student-dialog-title'
+                    onClose={props.onClose}
+                    tabs={!edit && navTabs}
+                    title={props.edit ? 'Edit Staff' : 'Add Staff'}
+                />
+                {edit ? SingleForm : (
+                    <SwipeableViews index={navTabs.value}>
+                        {SingleForm}
+                        <UploadUserForm
+                            onClose={props.onClose}
+                            headers={defaultListItems}
+                            userType='staff'
+                        />
+                    </SwipeableViews>
+                )}
+            </Dialog>
+        </>
     )
 }

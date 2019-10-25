@@ -25,7 +25,7 @@ interface IState {
 interface ReduxProps {
 	staff: IStaff[]
 	newStaff: IStaff
-	createStaff: (staff: IStaffRequest) => Promise<any>
+	createStaff: (staff: IStaffRequest, password: string) => Promise<any>
 	fetchStaff: () => Promise<any>
 	queueSnackbar: (snackbar: ISnackbar) => void
 }
@@ -63,9 +63,9 @@ class Staff extends React.Component<IProps, IState> {
 		this.setState({ addDialogOpen: false })
 	}
 
-	handleAddStaffSubmit = (event: any, staffDetails: IStaffRequest): Promise<any> => {
+	handleAddStaffSubmit = (event: any, staffDetails: IStaffRequest, password: string): Promise<any> => {
 		event.preventDefault()
-		return this.props.createStaff(staffDetails)
+		return this.props.createStaff(staffDetails, password)
 			.then(() => {
 				this.props.queueSnackbar({
 					message: 'Staff created.',

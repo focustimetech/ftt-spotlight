@@ -172,7 +172,6 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
             memo: this.state.memo,
             date_time: this.state.dateRange.start.toISOString()
         }
-        console.log('DATA:', data)
         axios.post('/api/power-scheduler', data)
             .then((res: AxiosResponse<any>) => {
                 this.setState({

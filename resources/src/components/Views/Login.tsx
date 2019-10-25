@@ -150,7 +150,6 @@ class Login extends React.Component<IProps, IState> {
 					type: 'username',
 					message: 'The server encountered an error while logging you in. Please try again.'
 				}
-			console.log('err:', loginError)
 		}
 		if (loginError)
 			this.setState({ error: loginError })

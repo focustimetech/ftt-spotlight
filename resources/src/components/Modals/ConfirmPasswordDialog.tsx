@@ -63,6 +63,7 @@ export const ConfirmPasswordDialog = (props: IProps) => {
 
     const onExited = () => {
         setPassword('')
+        setErrored(false)
     }
 
     return (

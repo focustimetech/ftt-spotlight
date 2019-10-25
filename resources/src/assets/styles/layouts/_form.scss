@@ -141,7 +141,8 @@
 	font-family: monospace;
 }
 
-.password_reset_dialog_list {
-	padding: 8px 0 0 32px;
-	list-style: initial;
+.password_confirm_dialog_list {
+	padding-left: 32px;
+    list-style: initial;
+    margin-bottom: 8px;
 }

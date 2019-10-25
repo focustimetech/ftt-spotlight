@@ -73,16 +73,16 @@ export const ConfirmPasswordDialog = (props: IProps) => {
                 <DialogContent>
                     <DialogContentText>
                         {props.actionItems ? (
-                            <>
-                                <span>Please confirm your password to perform the following actions:</span>
-                                <ul className='password_reset_dialog_list'>{
-                                    props.actionItems.map((actionItem: string) => <li>{actionItem}</li>)
-                                }</ul>
-                            </>
+                            'Please confirm your password to perform the following actions:'
                         ) : (
                             'This action requires you to confirm your password.'
                         )}
                     </DialogContentText>
+                    {props.actionItems && (
+                        <ul className='password_confirm_dialog_list'>
+                            {props.actionItems.map((actionItem: string, index: number) => <li key={index}>{actionItem}</li>)}
+                        </ul>
+                    )}
                     <TextField
                         name='password'
                         value={password}

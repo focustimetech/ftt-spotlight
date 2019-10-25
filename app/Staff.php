@@ -154,6 +154,11 @@ class Staff extends Model
 		});
 	}
 
+	public function reports()
+	{
+		return $this->hasManu('App\Report');
+	}
+
 	public function starred()
 	{
 		return $this->hasMany('App\Starred');

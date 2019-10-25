@@ -84,6 +84,9 @@ trait Authenticate
         $users->each(function($user) use (&$flagged) {
             if (Hash::check($user->username, $user->password)) {
                 $user->password_expired = true;
+                $user->tokens->each(function ($token, $key) {
+                    $token->delete();
+                });
                 $user->save();
                 $flagged ++;
             }

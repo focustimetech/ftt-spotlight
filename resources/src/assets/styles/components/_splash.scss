@@ -25,6 +25,13 @@
         }
     }
 
+    &__image_logo {
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 16px;
+    }
+
     .loading_badge {
         width: 150px;
         height: 150px;

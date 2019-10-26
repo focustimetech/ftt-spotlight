@@ -10,6 +10,7 @@ import { staffScheduleReducer } from './staffScheduleReducer'
 import { studentReducer } from './studentReducer'
 import { studentProfileReducer} from './studentProfileReducer'
 import { studentScheduleReducer } from './studentScheduleReducer'
+import { reportReducer } from './reportReducer'
 import { notificationReducer } from './notificationReducer'
 import { topicReducer } from './topicReducer'
 import { snackbarReducer } from './snackbarReducer'
@@ -18,6 +19,7 @@ import { usersReducer } from './usersReducer'
 
 export const rootReducer = combineReducers({
     auth: authReducer,
+    reports: reportReducer,
     settings: settingsReducer,
     snackbars: snackbarReducer,
     starred: starReducer,

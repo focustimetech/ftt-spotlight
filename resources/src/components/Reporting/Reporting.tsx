@@ -74,6 +74,7 @@ interface ReduxProps {
 interface IProps extends RouteComponentProps, ReduxProps {}
 
 interface IState {
+    accessMenuRef: any
     currentReport: Report
     drawerOpen: boolean
     loadingReports: boolean
@@ -84,6 +85,7 @@ interface IState {
 
 class Reporting extends React.Component<IProps, IState> {
     state: IState = {
+        accessMenuRef: null,
         currentReport: null,
         drawerOpen: true,
         loadingReports: false,
@@ -122,7 +124,15 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     handleLoadReport = (report: Report) => {
-        this.setState({ savedReport: report })
+        this.setState({
+            savedReport: report,
+            // currentReport: report
+        })
+    }
+
+    handleChangeAccess = (access: Report['access']) => {
+        this.handleUpdateReport({ access })
+        this.setState({ accessMenuRef: null })
     }
 
     componentWillMount() {
@@ -135,8 +145,6 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log('REPORTING.props:', this.props)
-        console.log('REPORTING.state:', this.state)
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const reportSelected: boolean = this.reportSelected()
         if (this.state.currentReport && reportSelected)
@@ -182,7 +190,33 @@ class Reporting extends React.Component<IProps, IState> {
                                                 <Button disabled={isReportUnchanged}>Save</Button>
                                                 <Button size='small'><Icon>arrow_drop_down</Icon></Button>
                                             </ButtonGroup>
-                                        </div>                         
+                                        </div>
+                                        <div>
+                                            <Button
+                                                variant='text'
+                                                color='primary'
+                                                onClick={(event: any) => this.setState({ accessMenuRef: event.currentTarget})}
+                                            >
+                                                <Icon>{this.state.currentReport.access === 'public' ? 'public' : 'lock'}</Icon>
+                                                <span>{this.state.currentReport.access === 'public' ? 'Public' : 'Private'}</span>
+                                            </Button>
+                                            <Menu open={!!this.state.accessMenuRef} ref={this.state.accessMenuRef}>
+                                                <MenuItem onClick={() => this.handleChangeAccess('public')}>
+                                                    <h6><Icon>public</Icon>Public</h6>
+                                                    <p>Anyone with the link to this report can view it.</p>
+                                                </MenuItem>
+                                                <MenuItem onClick={() => this.handleChangeAccess('public')}>
+                                                    <h6><Icon>lock</Icon>Private</h6>
+                                                    <p>Only you can view this report.</p>
+                                                </MenuItem>
+                                            </Menu>
+                                        </div>
+                                        <div>
+                                            <IconButton><Icon>star_outline</Icon></IconButton>
+                                        </div>
+                                        <div>
+                                            <IconButton><Icon>more_vert</Icon></IconButton>
+                                        </div>
                                     </>
                                 )}
                                 <div>
@@ -191,7 +225,7 @@ class Reporting extends React.Component<IProps, IState> {
                                             <Icon>assessment</Icon>
                                         </IconButton>
                                     </Tooltip>
-                                </div>   
+                                </div>
                             </>
                             /**
                              * Actions to include:

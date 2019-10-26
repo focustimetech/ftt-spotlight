@@ -14,6 +14,7 @@ import {
     CardActionArea,
     CardMedia,
     CardContent,
+    CircularProgress,
     Icon,
     IconButton,
     List,
@@ -36,10 +37,12 @@ import {
 } from '../../types/report'
 import { createEmptyReport } from '../../utils/report'
 import { fetchReports, createReport, updateReport, deleteReport } from '../../actions/reportActions'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { ReportEditor } from './ReportEditor'
 import { INavLink, TopNav } from '../TopNav'
 import { Drawer } from '../Drawer'
 import { EmptyStateIcon } from '../EmptyStateIcon'
+import { LoadingButton } from '../Form/LoadingButton'
 import { ReportNameModal } from './ReportNameModal'
 import { ReportUnsavedModal } from './ReportUnsavedModal'
 
@@ -69,8 +72,11 @@ const REPORT_TYPES: Record<ReportGroup, IReportVariantInfo[]> = {
 
 interface ReduxProps {
     reports: IReport[]
+    createReport: (report: Report) => Promise<any>
+    deleteReport: (reportID: number) => Promise<any>
     fetchReports: () => Promise<any>
-    createReport: (report: IReport) => Promise<any>
+    queueSnackbar: (snackbar: ISnackbar) => void
+    updateReport: (report: Report) => Promise<any>
 }
 
 interface IProps extends RouteComponentProps, ReduxProps {}
@@ -82,9 +88,11 @@ interface IState {
     loadingReports: boolean
     reportID: number
     reportingState: ReportingState
+    reportNameModalOpen: boolean
     reportUnsavedModalOpen: boolean
     saveMenuRef: any
     savedReport: Report
+    uploading: boolean
     onRejectSaveReport: () => void
 }
 
@@ -96,9 +104,11 @@ class Reporting extends React.Component<IProps, IState> {
         loadingReports: false,
         reportID: -1,
         reportingState: 'idle',
+        reportNameModalOpen: false,
         reportUnsavedModalOpen: false,
         saveMenuRef: null,
         savedReport: null,
+        uploading: true,
         onRejectSaveReport: () => null
     }
 
@@ -166,11 +176,36 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     handleSaveReport = () => {
-
+        if (this.state.savedReport) {
+            this.props.updateReport(this.state.currentReport)
+            this.setState((state: IState) => ({
+                savedReport: state.currentReport
+            }))
+        } else {
+            this.handleSaveReportAs()
+        }
     }
 
     handleSaveReportAs = () => {
-        this.setState({ saveMenuRef: null })
+        this.setState({
+            saveMenuRef: null,
+            reportNameModalOpen: true
+        })
+    }
+
+    onSaveReportAs = (reportName: string) => {
+        this.setState({ uploading: true, reportNameModalOpen: false })
+        this.props.createReport({ ...this.state.currentReport, name: reportName })
+            .then(() => {
+                this.props.queueSnackbar({ message: 'Created Report successfully.' })
+                this.setState({ uploading: false })
+            })
+            .catch((error: any) => {
+                this.setState({ uploading: false })
+                const { response } = error
+				if (response && response.data.message)
+					this.props.queueSnackbar({ message: response.data.message })
+            })
     }
 
     componentWillMount() {
@@ -207,6 +242,11 @@ class Reporting extends React.Component<IProps, IState> {
                     onSubmit={this.state.onRejectSaveReport}
                     onClose={() => this.setState({ reportUnsavedModalOpen: false })}
                 />
+                <ReportNameModal
+                    open={this.state.reportNameModalOpen}
+                    onSubmit={this.onSaveReportAs}
+                    onClose={() => this.setState({ reportNameModalOpen: false })}
+                />
                 <Drawer title='My Reports' open={this.state.drawerOpen}>
                     {this.state.loadingReports ? (
                         <div>Loading...</div>
@@ -235,7 +275,17 @@ class Reporting extends React.Component<IProps, IState> {
                                         <div><Button variant='contained' color='primary'>Run Report</Button></div>
                                         <div>
                                             <ButtonGroup variant='contained'>
-                                                <Button disabled={isReportUnchanged} onClick={() => this.handleSaveReport()}>Save</Button>
+                                                <Button
+                                                    disabled={isReportUnchanged || this.state.uploading}
+                                                    onClick={() => this.handleSaveReport()}
+                                                >
+                                                    <div className='button-container'>
+                                                        <span>Save</span>
+                                                        {this.state.uploading && (
+                                                            <CircularProgress size={24} className='button-progress' />
+                                                        )}
+                                                    </div>
+                                                </Button>
                                                 <Button size='small' onClick={(event: any) => this.setState({ saveMenuRef: event.currentTarget })}>
                                                     <Icon>arrow_drop_down</Icon>
                                                 </Button>
@@ -350,6 +400,12 @@ const mapStateToProps = (state: any) => ({
     reports: state.reports.items
 })
 
-const mapDispatchToProps = { fetchReports, createReport }
+const mapDispatchToProps = {
+    fetchReports,
+    createReport,
+    updateReport,
+    deleteReport,
+    queueSnackbar
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Reporting)

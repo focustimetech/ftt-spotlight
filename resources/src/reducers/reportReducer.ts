@@ -27,6 +27,26 @@ export const reportReducer = (state: IState = initialState, action: IAction) => 
                 ...state,
                 items: action.payload
             }
+        case CREATE_REPORT:
+            return {
+                ...state,
+                items: [action.payload, ...state.items]
+            }
+        case UPDATE_REPORT:
+            return {
+                ...state,
+                items: state.items.reduce((acc: any[], item: any, index: number) => {
+                    acc.push(item.id === action.payload.id ? action.payload : item)
+                    return acc
+                }, [])
+            }
+        case DELETE_REPORT:
+            return {
+                ...state,
+                items: state.items.filter((item: any) => {
+                    return item.id !== action.payload.id
+                })
+            }
         default:
             return state
     }

@@ -83,6 +83,7 @@ interface IState {
     reportID: number
     reportingState: ReportingState
     reportUnsavedModalOpen: boolean
+    saveMenuRef: any
     savedReport: Report
     onRejectSaveReport: () => void
 }
@@ -96,6 +97,7 @@ class Reporting extends React.Component<IProps, IState> {
         reportID: -1,
         reportingState: 'idle',
         reportUnsavedModalOpen: false,
+        saveMenuRef: null,
         savedReport: null,
         onRejectSaveReport: () => null
     }
@@ -163,6 +165,14 @@ class Reporting extends React.Component<IProps, IState> {
         )
     }
 
+    handleSaveReport = () => {
+
+    }
+
+    handleSaveReportAs = () => {
+        this.setState({ saveMenuRef: null })
+    }
+
     componentWillMount() {
         if (this.reportSelected())
             this.setState({ currentReport: createEmptyReport('teacher-distribution') })
@@ -225,8 +235,17 @@ class Reporting extends React.Component<IProps, IState> {
                                         <div><Button variant='contained' color='primary'>Run Report</Button></div>
                                         <div>
                                             <ButtonGroup variant='contained'>
-                                                <Button disabled={isReportUnchanged}>Save</Button>
-                                                <Button size='small'><Icon>arrow_drop_down</Icon></Button>
+                                                <Button disabled={isReportUnchanged} onClick={() => this.handleSaveReport()}>Save</Button>
+                                                <Button size='small' onClick={(event: any) => this.setState({ saveMenuRef: event.currentTarget })}>
+                                                    <Icon>arrow_drop_down</Icon>
+                                                </Button>
+                                                <Menu
+                                                    open={!!this.state.saveMenuRef}
+                                                    anchorEl={this.state.saveMenuRef}
+                                                    onClose={() => this.setState({ saveMenuRef: null })}
+                                                >
+                                                    <MenuItem onClick={() => this.handleSaveReportAs()}>Save As</MenuItem>
+                                                </Menu>
                                             </ButtonGroup>
                                         </div>
                                         <div>
@@ -238,7 +257,11 @@ class Reporting extends React.Component<IProps, IState> {
                                                 <Icon>{this.state.currentReport.access === 'public' ? 'public' : 'lock'}</Icon>
                                                 <span>{this.state.currentReport.access === 'public' ? 'Public' : 'Private'}</span>
                                             </Button>
-                                            <Menu open={!!this.state.accessMenuRef} ref={this.state.accessMenuRef}>
+                                            <Menu
+                                                open={!!this.state.accessMenuRef}
+                                                anchorEl={this.state.accessMenuRef}
+                                                onClose={() => this.setState({ accessMenuRef: null })}
+                                            >
                                                 <MenuItem onClick={() => this.handleChangeAccess('public')}>
                                                     <h6><Icon>public</Icon>Public</h6>
                                                     <p>Anyone with the link to this report can view it.</p>

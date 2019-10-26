@@ -30,6 +30,8 @@ class ReportEditor extends React.Component<IProps> {
     }
 
     render() {
+        console.log('REPORTEDITOR.props:', this.props)
+        console.log('REPORTEDITOR.state:', this.state)
         return (
             <div className='report' id='report'>
                 <Typography variant='h4'>{this.props.report.name}</Typography>
@@ -48,7 +50,7 @@ class ReportEditor extends React.Component<IProps> {
                         }
                     </TextField>
                     <DateWidget
-                        dateRange={this.props.report.dateRange}
+                        dateRange={this.props.report.date_range}
                         onChange={this.handleChangeDateRange}
                     />
                 </div>

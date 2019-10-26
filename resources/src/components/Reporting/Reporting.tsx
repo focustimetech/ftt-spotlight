@@ -1,9 +1,11 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import {
     Route,
     RouteComponentProps,
     Switch
 } from 'react-router-dom'
+import { ContentLoader } from 'react-content-loader'
 
 import {
     Button,
@@ -14,6 +16,8 @@ import {
     CardContent,
     Icon,
     IconButton,
+    List,
+    ListItem,
     Menu,
     MenuItem,
     TextField,
@@ -32,9 +36,11 @@ import {
     TeacherDistributionReport,
 } from '../../types/report'
 import { createEmptyReport } from '../../utils/report'
+import { fetchReports, createReport, updateReport, deleteReport } from '../../actions/reportActions'
 import { ReportEditor } from './ReportEditor'
 import { INavLink, TopNav } from '../TopNav'
 import { Drawer } from '../Drawer'
+import { EmptyStateIcon } from '../EmptyStateIcon'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
     { group: 'staff', name: 'Staff Reports' },
@@ -60,11 +66,18 @@ const REPORT_TYPES: Record<ReportGroup, IReportVariantInfo[]> = {
     ]
 }
 
-interface IProps extends RouteComponentProps {}
+interface ReduxProps {
+    reports: IReport[]
+    fetchReports: () => Promise<any>
+    createReport: (report: IReport) => Promise<any>
+}
+
+interface IProps extends RouteComponentProps, ReduxProps {}
 
 interface IState {
     currentReport: Report
     drawerOpen: boolean
+    loadingReports: boolean
     reportID: number
     reportingState: ReportingState
     savedReport: Report
@@ -73,14 +86,11 @@ interface IState {
 class Reporting extends React.Component<IProps, IState> {
     state: IState = {
         currentReport: null,
-        drawerOpen: false,
+        drawerOpen: true,
+        loadingReports: false,
         reportID: -1,
         reportingState: 'idle',
         savedReport: null
-    }
-
-    fetchReport = () => {
-
     }
 
     reportSelected = (): boolean => {
@@ -105,17 +115,25 @@ class Reporting extends React.Component<IProps, IState> {
         this.setState((state: IState) => ({ drawerOpen: !state.drawerOpen }))
     }
 
+    fetchReports = () => {
+        this.setState({ loadingReports: true })
+        this.props.fetchReports().then(() => {
+            this.setState({ loadingReports: false })
+        })
+    }
+
     componentWillMount() {
         if (this.reportSelected())
             this.setState({ currentReport: createEmptyReport('teacher-distribution') })
     }
 
     componentDidMount() {
-        if (this.state.currentReport)
-            this.fetchReport()
+        this.fetchReports()
     }
 
     render() {
+        console.log('REPORTING.props:', this.props)
+        console.log('REPORTING.state:', this.state)
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const reportSelected: boolean = this.reportSelected()
         if (this.state.currentReport && reportSelected)
@@ -126,15 +144,27 @@ class Reporting extends React.Component<IProps, IState> {
                 return this.state.currentReport[reportKey] === this.state.savedReport[reportKey]
             })
         )
+        const loading: boolean = this.state.loadingReports && this.state.reportID !== -1
 
         return (
             <>
                 <Drawer title='My Reports' open={this.state.drawerOpen}>
-                    <ul>
-                        <li>Report 1</li>
-                        <li>Report 2</li>
-                        <li>Report 3</li>
-                    </ul>
+                    {this.state.loadingReports ? (
+                        <div>Loading...</div>
+                    ) : (
+                        this.props.reports && this.props.reports.length > 0 ? (
+                            <List>
+                                {this.props.reports.map((report: IReport, index: number) => (
+                                    <ListItem key={index}>{report.name}</ListItem>
+                                ))}
+                            </List>
+                        ) : (
+                            <EmptyStateIcon variant='star'>
+                                <h2>No Reports found</h2>
+                                <h3>Reports you save will appear here.</h3> 
+                            </EmptyStateIcon>
+                        )
+                    )}
                 </Drawer>
                 <div className='content' id='content'>
                     <TopNav
@@ -217,4 +247,10 @@ class Reporting extends React.Component<IProps, IState> {
     }
 }
 
-export default Reporting
+const mapStateToProps = (state: any) => ({
+    reports: state.reports.items
+})
+
+const mapDispatchToProps = { fetchReports, createReport }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Reporting)

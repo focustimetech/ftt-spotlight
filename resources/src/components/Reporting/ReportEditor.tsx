@@ -8,7 +8,12 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { Report, ReportingState, ReportSegment } from '../../types/report'
+import {
+    IReportVariantInfo,
+    Report,
+    ReportingState,
+    ReportSegment
+} from '../../types/report'
 import { DateRange } from '../../types/date'
 import { DateWidget } from './DateWidget'
 import { DATE_SEGMENT_LABELS } from '../../utils/date'
@@ -16,6 +21,7 @@ import { DATE_SEGMENT_LABELS } from '../../utils/date'
 interface IProps extends RouteComponentProps {
     report: Report
     reportingState: ReportingState
+    variantDetails: IReportVariantInfo
     onUpdateReport: (params: Partial<Report>) => void
 }
 
@@ -30,10 +36,9 @@ class ReportEditor extends React.Component<IProps> {
     }
 
     render() {
-        console.log('REPORTEDITOR.props:', this.props)
-        console.log('REPORTEDITOR.state:', this.state)
         return (
             <div className='report' id='report'>
+                <Typography variant='overline'>{this.props.variantDetails.name}</Typography>
                 <Typography variant='h4'>{this.props.report.name}</Typography>
                 <div className='report__date_range'>
                     <TextField

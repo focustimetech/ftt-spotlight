@@ -16,18 +16,8 @@ export const EMPTY_REPORT: IReport = {
  * @param report The empty report.
  */
 export const createEmptyReport = (variant: ReportVariant, report: IReport = EMPTY_REPORT): Report => {
-        switch (variant) {
-            case 'student-attendance':
-                return {
-                    variant: 'student-attendance',
-                    ...report,
-                    showAsPercentage: true
-                }
-            case 'teacher-distribution':
-                return {
-                    variant: 'teacher-distribution',
-                    ...report,
-                    includeUnattended: true
-                }
+        return {
+            variant,
+            ...report
         }
     }

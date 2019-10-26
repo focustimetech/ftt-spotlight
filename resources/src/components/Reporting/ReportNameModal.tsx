@@ -18,7 +18,7 @@ interface IProps {
     onSubmit: (name: string) => void
 }
 
-const ReportUnsavedModal = (props: IProps) => {
+const ReportNameModal = (props: IProps) => {
     const [name, setName] = React.useState('')
     const [error, setError]: [string, SetState<string>] = React.useState(null)
 

@@ -178,6 +178,15 @@ class Reporting extends React.Component<IProps, IState> {
         if (this.state.currentReport && reportSelected)
             breadcrumbs.push({ value: this.state.currentReport.name })
 
+        const reportGroups: ReportGroup[] = REPORT_GROUPS.map((groupInfo: IReportGroupInfo) => groupInfo.group)
+        const variantDetails: IReportVariantInfo = reportGroups
+            .reduce((acc: IReportVariantInfo[], reportGroup: ReportGroup, index: number) => {
+                acc.push(...REPORT_TYPES[reportGroup])
+                return acc
+            }, [])
+            .find((reportVariantInfo: IReportVariantInfo) => {
+                return reportVariantInfo.variant === this.state.currentReport.variant
+            })
         const isReportUnchanged: boolean = this.isReportUnchanged()
         const loading: boolean = this.state.loadingReports && this.state.reportID !== -1
 
@@ -275,6 +284,7 @@ class Reporting extends React.Component<IProps, IState> {
                                         reportingState={this.state.reportingState}
                                         onUpdateReport={this.handleUpdateReport}
                                         report={this.state.currentReport}
+                                        variantDetails={variantDetails}
                                         {...props}
                                     />
                                 )}

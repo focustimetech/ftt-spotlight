@@ -22,7 +22,8 @@ class Report extends JsonResource
             'name' => $this->name,
             'segment' => $this->segment,
             'date_range' => json_decode($this->date_range),
-            'access' => $this->access
+            'access' => $this->access,
+            'variant' => $this->variant
         ];
     }
 }

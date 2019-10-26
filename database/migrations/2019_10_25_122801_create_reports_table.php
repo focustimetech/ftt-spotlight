@@ -17,9 +17,10 @@ class CreateReportsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('staff_id');
             $table->string('name');
-            $table->enum('segment', ['block', 'day', 'week', 'month']);
+            $table->string('segment');
             $table->string('date_range'); // JSON
             $table->enum('access', ['public', 'private']);
+            $table->string('variant');
             $table->timestamps();
 
             // Foreign keys

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Report extends Model
 {
     protected $fillable = [
-        'staff_id', 'name', 'segment', 'date_range', 'access'
+        'staff_id', 'name', 'segment', 'date_range', 'access', 'variant'
     ];
 
     public function staff()

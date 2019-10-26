@@ -63,4 +63,4 @@ const ReportUnsavedModal = (props: IProps) => {
     )
 }
 
-export { ReportUnsavedModal }
+export { ReportNameModal }

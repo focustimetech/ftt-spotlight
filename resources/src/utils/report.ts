@@ -2,7 +2,7 @@ import { IReport, Report, ReportVariant } from "../types/report"
 
 export const EMPTY_REPORT: IReport = {
     name: 'New Report',
-    dateRange: {
+    date_range: {
         type: 'predefined',
         range: 'last-week'
     },

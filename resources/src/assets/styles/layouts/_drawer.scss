@@ -1,0 +1,35 @@
+.drawer {
+    background: #EEE;
+    position: fixed;
+    z-index: 300;
+    top: 0;
+    right: -236px;
+    width: 260px;
+    height: 100vh;
+    padding: 16px 24px;
+    box-sizing: border-box;
+    box-shadow: $elevation2;
+    transition-duration: 0.2s;
+    transition-property: right;
+
+    &.--open  ~ .content {
+        margin-right: 260px;   
+    }
+
+    &.--open,
+    &:hover {
+        right: 0;
+    }
+
+    &__topbar {
+        height: 48px;
+        padding: 0 0 016px;
+        box-sizing: content-box;
+        border-bottom: 1px solid #DDD;
+        margin-bottom: 16px;
+
+        & > * {
+            line-height: 48px;
+        }
+    }
+}

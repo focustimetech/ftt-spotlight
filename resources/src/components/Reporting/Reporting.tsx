@@ -17,6 +17,7 @@ import {
     Menu,
     MenuItem,
     TextField,
+    Tooltip,
     Typography
 } from '@material-ui/core'
 
@@ -33,6 +34,7 @@ import {
 import { createEmptyReport } from '../../utils/report'
 import { ReportEditor } from './ReportEditor'
 import { INavLink, TopNav } from '../TopNav'
+import { Drawer } from '../Drawer'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
     { group: 'staff', name: 'Staff Reports' },
@@ -61,18 +63,20 @@ const REPORT_TYPES: Record<ReportGroup, IReportVariantInfo[]> = {
 interface IProps extends RouteComponentProps {}
 
 interface IState {
+    currentReport: Report
+    drawerOpen: boolean
     reportID: number
     reportingState: ReportingState
     savedReport: Report
-    currentReport: Report
 }
 
 class Reporting extends React.Component<IProps, IState> {
     state: IState = {
+        currentReport: null,
+        drawerOpen: false,
         reportID: -1,
         reportingState: 'idle',
-        savedReport: null,
-        currentReport: null
+        savedReport: null
     }
 
     fetchReport = () => {
@@ -95,6 +99,10 @@ class Reporting extends React.Component<IProps, IState> {
     handleCreateReport = (variant: ReportVariant) => {
         this.props.history.push('/reporting/new')
         this.setState({ currentReport: createEmptyReport(variant) })
+    }
+
+    toggleDrawerOpen = () => {
+        this.setState((state: IState) => ({ drawerOpen: !state.drawerOpen }))
     }
 
     componentWillMount() {
@@ -121,6 +129,13 @@ class Reporting extends React.Component<IProps, IState> {
 
         return (
             <>
+                <Drawer title='My Reports' open={this.state.drawerOpen}>
+                    <ul>
+                        <li>Report 1</li>
+                        <li>Report 2</li>
+                        <li>Report 3</li>
+                    </ul>
+                </Drawer>
                 <div className='content' id='content'>
                     <TopNav
                         breadcrumbs={breadcrumbs}
@@ -136,7 +151,11 @@ class Reporting extends React.Component<IProps, IState> {
                                             </ButtonGroup>
                                         </div>
                                         <div>
-                                            
+                                            <Tooltip title='My Reports'>
+                                                <IconButton onClick={() => this.toggleDrawerOpen()}>
+                                                    <Icon>assessment</Icon>
+                                                </IconButton>
+                                            </Tooltip>
                                         </div>                            
                                     </>
                                 )}

@@ -40,6 +40,8 @@ import { ReportEditor } from './ReportEditor'
 import { INavLink, TopNav } from '../TopNav'
 import { Drawer } from '../Drawer'
 import { EmptyStateIcon } from '../EmptyStateIcon'
+import { ReportNameModal } from './ReportNameModal'
+import { ReportUnsavedModal } from './ReportUnsavedModal'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
     { group: 'staff', name: 'Staff Reports' },
@@ -80,7 +82,9 @@ interface IState {
     loadingReports: boolean
     reportID: number
     reportingState: ReportingState
+    reportUnsavedModalOpen: boolean
     savedReport: Report
+    onRejectSaveReport: () => void
 }
 
 class Reporting extends React.Component<IProps, IState> {
@@ -91,7 +95,9 @@ class Reporting extends React.Component<IProps, IState> {
         loadingReports: false,
         reportID: -1,
         reportingState: 'idle',
-        savedReport: null
+        reportUnsavedModalOpen: false,
+        savedReport: null,
+        onRejectSaveReport: () => null
     }
 
     reportSelected = (): boolean => {
@@ -124,15 +130,37 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     handleLoadReport = (report: Report) => {
-        this.setState({
-            savedReport: report,
-            // currentReport: report
-        })
+        if (this.isReportUnchanged()) {
+            this.setState({
+                savedReport: report,
+                currentReport: report
+            })
+        } else {
+            this.setState({
+                onRejectSaveReport: () => {
+                    this.setState({
+                        savedReport: report,
+                        currentReport: report,
+                        onRejectSaveReport: () => null
+                    })
+                }
+            }, () => {
+                this.setState({ reportUnsavedModalOpen: true })
+            })
+        }        
     }
 
     handleChangeAccess = (access: Report['access']) => {
         this.handleUpdateReport({ access })
         this.setState({ accessMenuRef: null })
+    }
+
+    isReportUnchanged = (): boolean => {
+        return this.state.savedReport != null && this.state.currentReport != null && (
+            Object.keys(this.state.currentReport).every((reportKey: string) => {
+                return this.state.currentReport[reportKey] === this.state.savedReport[reportKey]
+            })
+        )
     }
 
     componentWillMount() {
@@ -150,15 +178,16 @@ class Reporting extends React.Component<IProps, IState> {
         if (this.state.currentReport && reportSelected)
             breadcrumbs.push({ value: this.state.currentReport.name })
 
-        const isReportUnchanged: boolean = this.state.savedReport != null && this.state.currentReport != null && (
-            Object.keys(this.state.currentReport).every((reportKey: string) => {
-                return this.state.currentReport[reportKey] === this.state.savedReport[reportKey]
-            })
-        )
+        const isReportUnchanged: boolean = this.isReportUnchanged()
         const loading: boolean = this.state.loadingReports && this.state.reportID !== -1
 
         return (
             <>
+                <ReportUnsavedModal
+                    open={this.state.reportUnsavedModalOpen}
+                    onSubmit={this.state.onRejectSaveReport}
+                    onClose={() => this.setState({ reportUnsavedModalOpen: false })}
+                />
                 <Drawer title='My Reports' open={this.state.drawerOpen}>
                     {this.state.loadingReports ? (
                         <div>Loading...</div>

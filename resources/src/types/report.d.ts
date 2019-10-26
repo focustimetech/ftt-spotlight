@@ -36,17 +36,7 @@ export type ReportVariant =
     | 'teacher-distribution'
     | 'student-attendance'
 
-export interface TeacherDistributionReport {
-    variant: 'teacher-distribution'
-    includeUnattended: boolean
+export interface Report extends IReport {
+    variant: ReportVariant
+    [key: string]: any
 }
-
-export interface StudentAttendanceReport {
-    variant: 'student-attendance'
-    showAsPercentage: boolean
-}
-
-export type Report = { variant: ReportVariant, [key: string]: any } & IReport & (
-    | TeacherDistributionReport
-    | StudentAttendanceReport
-)

@@ -5,7 +5,7 @@ import {
     RouteComponentProps,
     Switch
 } from 'react-router-dom'
-import { ContentLoader } from 'react-content-loader'
+import ContentLoader from 'react-content-loader'
 
 import {
     Button,
@@ -33,7 +33,6 @@ import {
     ReportGroup,
     ReportingState,
     ReportVariant,
-    TeacherDistributionReport,
 } from '../../types/report'
 import { createEmptyReport } from '../../utils/report'
 import { fetchReports, createReport, updateReport, deleteReport } from '../../actions/reportActions'
@@ -122,6 +121,10 @@ class Reporting extends React.Component<IProps, IState> {
         })
     }
 
+    handleLoadReport = (report: Report) => {
+        this.setState({ savedReport: report })
+    }
+
     componentWillMount() {
         if (this.reportSelected())
             this.setState({ currentReport: createEmptyReport('teacher-distribution') })
@@ -154,8 +157,8 @@ class Reporting extends React.Component<IProps, IState> {
                     ) : (
                         this.props.reports && this.props.reports.length > 0 ? (
                             <List>
-                                {this.props.reports.map((report: IReport, index: number) => (
-                                    <ListItem key={index}>{report.name}</ListItem>
+                                {this.props.reports.map((report: Report, index: number) => (
+                                    <ListItem key={index} onClick={() => this.handleLoadReport(report)}>{report.name}</ListItem>
                                 ))}
                             </List>
                         ) : (
@@ -179,16 +182,16 @@ class Reporting extends React.Component<IProps, IState> {
                                                 <Button disabled={isReportUnchanged}>Save</Button>
                                                 <Button size='small'><Icon>arrow_drop_down</Icon></Button>
                                             </ButtonGroup>
-                                        </div>
-                                        <div>
-                                            <Tooltip title='My Reports'>
-                                                <IconButton onClick={() => this.toggleDrawerOpen()}>
-                                                    <Icon>assessment</Icon>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </div>                            
+                                        </div>                         
                                     </>
                                 )}
+                                <div>
+                                    <Tooltip title='My Reports'>
+                                        <IconButton onClick={() => this.toggleDrawerOpen()}>
+                                            <Icon>assessment</Icon>
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>   
                             </>
                             /**
                              * Actions to include:

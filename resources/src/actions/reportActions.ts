@@ -7,7 +7,7 @@ import {
     DELETE_REPORT
 } from '../actions/types'
 
-import { IReport } from '../types/report'
+import { Report } from '../types/report'
 
 export const fetchReports = () => {
     return (dispatch: any) => {
@@ -19,7 +19,7 @@ export const fetchReports = () => {
     }
 }
 
-export const createReport = (report: IReport) => {
+export const createReport = (report: Report) => {
     return (dispatch: any) => {
         return axios.post('/api/reports', report)
             .then((res: any) => dispatch({
@@ -29,7 +29,7 @@ export const createReport = (report: IReport) => {
     }
 }
 
-export const updateReport = (report: IReport) => {
+export const updateReport = (report: Report) => {
     return (dispatch: any) => {
         return axios.put('/api/reports', report)
             .then((res: any) => dispatch({

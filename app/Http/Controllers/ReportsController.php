@@ -40,7 +40,8 @@ class ReportsController extends Controller
             'name' => $request->input('name'),
             'segment' => $request->input('segment'),
             'date_range' => json_encode($request->input('date_range')),
-            'access' => $request->input('access')
+            'access' => $request->input('access'),
+            'variant' => $request->input('variant')
         ]);
 
         return new ReportResource($report);
@@ -57,6 +58,7 @@ class ReportsController extends Controller
             $report->segment = $request->input('segment');
             $report->date_range = json_encode($request->input('date_range'));
             $report->access = $request->input('access');
+            $report->variant = $request->input('variant');
 
             if ($report->save())
                 return new ReportResource($report);

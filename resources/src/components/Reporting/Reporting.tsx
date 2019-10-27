@@ -108,7 +108,7 @@ class Reporting extends React.Component<IProps, IState> {
         reportUnsavedModalOpen: false,
         saveMenuRef: null,
         savedReport: null,
-        uploading: true,
+        uploading: false,
         onRejectSaveReport: () => null
     }
 
@@ -119,6 +119,8 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     handleUpdateReport = (params: Partial<Report>) => {
+        if (this.state.uploading)
+            return
         this.setState((state: IState) => {
             const updatedReport: Report = { ...state.currentReport, ...params } as Report
             return { currentReport: updatedReport }
@@ -198,7 +200,10 @@ class Reporting extends React.Component<IProps, IState> {
         this.props.createReport({ ...this.state.currentReport, name: reportName })
             .then(() => {
                 this.props.queueSnackbar({ message: 'Created Report successfully.' })
-                this.setState({ uploading: false })
+                this.setState({
+                    savedReport: this.state.currentReport,
+                    uploading: false
+                })
             })
             .catch((error: any) => {
                 this.setState({ uploading: false })
@@ -275,17 +280,11 @@ class Reporting extends React.Component<IProps, IState> {
                                         <div><Button variant='contained' color='primary'>Run Report</Button></div>
                                         <div>
                                             <ButtonGroup variant='contained'>
-                                                <Button
-                                                    disabled={isReportUnchanged || this.state.uploading}
+                                                <LoadingButton
+                                                    disabled={isReportUnchanged}
                                                     onClick={() => this.handleSaveReport()}
-                                                >
-                                                    <div className='button-container'>
-                                                        <span>Save</span>
-                                                        {this.state.uploading && (
-                                                            <CircularProgress size={24} className='button-progress' />
-                                                        )}
-                                                    </div>
-                                                </Button>
+                                                    loading={this.state.uploading}
+                                                >Save</LoadingButton>
                                                 <Button size='small' onClick={(event: any) => this.setState({ saveMenuRef: event.currentTarget })}>
                                                     <Icon>arrow_drop_down</Icon>
                                                 </Button>
@@ -316,7 +315,7 @@ class Reporting extends React.Component<IProps, IState> {
                                                     <h6><Icon>public</Icon>Public</h6>
                                                     <p>Anyone with the link to this report can view it.</p>
                                                 </MenuItem>
-                                                <MenuItem onClick={() => this.handleChangeAccess('public')}>
+                                                <MenuItem onClick={() => this.handleChangeAccess('private')}>
                                                     <h6><Icon>lock</Icon>Private</h6>
                                                     <p>Only you can view this report.</p>
                                                 </MenuItem>

@@ -27,7 +27,7 @@ interface IProps extends RouteComponentProps {
 
 class ReportEditor extends React.Component<IProps> {
     handleChangeDateRange = (dateRange: DateRange) => {
-        this.props.onUpdateReport({ dateRange })
+        this.props.onUpdateReport({ date_range: dateRange })
     }
 
     handleChangeSegment = (event: any) => {
@@ -38,26 +38,30 @@ class ReportEditor extends React.Component<IProps> {
     render() {
         return (
             <div className='report' id='report'>
-                <Typography variant='overline'>{this.props.variantDetails.name}</Typography>
-                <Typography variant='h4'>{this.props.report.name}</Typography>
-                <div className='report__date_range'>
-                    <TextField
-                        value={this.props.report.segment}
-                        onChange={this.handleChangeSegment}
-                        label='Segment'
-                        select
-                        variant='outlined'
-                    >
-                        {Object.keys(DATE_SEGMENT_LABELS).map((segment: ReportSegment) => (
-                            <MenuItem value={segment} key={segment}>{DATE_SEGMENT_LABELS[segment][1]}</MenuItem>
-                        ))
-
-                        }
-                    </TextField>
-                    <DateWidget
-                        dateRange={this.props.report.date_range}
-                        onChange={this.handleChangeDateRange}
-                    />
+                <div className='report__header'>
+                    <div>
+                        <Typography variant='overline'>{this.props.variantDetails.name}</Typography>
+                        <Typography variant='h4'>{this.props.report.name}</Typography>
+                    </div>
+                    <div>
+                        <TextField
+                            value={this.props.report.segment}
+                            onChange={this.handleChangeSegment}
+                            label='Segment'
+                            select
+                            variant='outlined'
+                        >
+                            {Object.keys(DATE_SEGMENT_LABELS).map((segment: ReportSegment) => (
+                                <MenuItem value={segment} key={segment}>{DATE_SEGMENT_LABELS[segment][1]}</MenuItem>
+                            ))}
+                        </TextField>
+                    </div>
+                    <div>
+                        <DateWidget
+                            dateRange={this.props.report.date_range}
+                            onChange={this.handleChangeDateRange}
+                        />
+                    </div>
                 </div>
             </div>
         )

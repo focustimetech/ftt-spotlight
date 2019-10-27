@@ -8,4 +8,16 @@
     &__variant {
         max-width: 320px
     }
+
+    .report {
+        &__header {
+            display: flex;
+            align-items: baseline;
+            flex-flow: row wrap;
+
+            & > div + div {
+                margin-left: 16px;
+            }
+        }
+    }
 }

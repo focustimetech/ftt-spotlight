@@ -97,7 +97,7 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::get('reports/self', 'ReportsController@index');
     Route::get('reports/{id}', 'ReportsController@find');
     Route::post('reports', 'ReportsController@create');
-    Route::put('reports/{id}', 'ReportsController@update');
+    Route::put('reports', 'ReportsController@update');
     Route::delete('reports/{id}', 'ReportsController@destroy');
 
     // Staff

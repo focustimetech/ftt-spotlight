@@ -206,10 +206,18 @@ class Reporting extends React.Component<IProps, IState> {
 
     handleSaveReport = () => {
         if (this.state.savedReport) {
+            this.setState({ uploading: true })
             this.props.updateReport(this.state.currentReport)
-            this.setState((state: IState) => ({
-                savedReport: state.currentReport
-            }))
+                .then(() => {
+                    this.setState({
+                        uploading: false,
+                        savedReport: this.state.currentReport
+                    })
+                    this.props.queueSnackbar({ message: 'Updated Report successfully.' })
+                })
+                .catch((error: any) => {
+                    this.setState({ uploading: false })
+                })
         } else {
             this.handleSaveReportAs()
         }

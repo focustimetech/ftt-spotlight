@@ -1,11 +1,12 @@
 import { DateRange } from './date'
 
 export interface IReport {
-    id?: number
     name: string
     date_range: DateRange
     segment: ReportSegment
     access: 'public' | 'private'
+    id?: number
+    date_created: string
 }
 
 export type ReportSegment = 

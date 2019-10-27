@@ -237,6 +237,7 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     render() {
+        console.log('Reporting.PROPS:', this.props)
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const reportSelected: boolean = this.reportSelected()
         if (this.state.currentReport && reportSelected)
@@ -428,7 +429,7 @@ class Reporting extends React.Component<IProps, IState> {
 
 const mapStateToProps = (state: any) => ({
     reports: state.reports.items,
-    changedReport: state.report.item
+    changedReport: state.reports.item
 })
 
 const mapDispatchToProps = {

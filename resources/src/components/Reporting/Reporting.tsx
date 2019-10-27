@@ -21,6 +21,7 @@ import {
     ListItem,
     Menu,
     MenuItem,
+    Radio,
     TextField,
     Tooltip,
     Typography
@@ -311,13 +312,23 @@ class Reporting extends React.Component<IProps, IState> {
                                                 anchorEl={this.state.accessMenuRef}
                                                 onClose={() => this.setState({ accessMenuRef: null })}
                                             >
-                                                <MenuItem onClick={() => this.handleChangeAccess('public')}>
-                                                    <h6><Icon>public</Icon>Public</h6>
-                                                    <p>Anyone with the link to this report can view it.</p>
+                                                <MenuItem className='report_access' onClick={() => this.handleChangeAccess('public')}>
+                                                    <div>
+                                                        <Radio color='primary' checked={this.state.currentReport.access === 'public'} />
+                                                    </div>
+                                                    <div>
+                                                        <Typography variant='body1' component='h6'><Icon>public</Icon><span>Public</span></Typography>
+                                                        <Typography variant='body1' component='p'>Anyone with the link to this report can view it.</Typography>
+                                                    </div>
                                                 </MenuItem>
-                                                <MenuItem onClick={() => this.handleChangeAccess('private')}>
-                                                    <h6><Icon>lock</Icon>Private</h6>
-                                                    <p>Only you can view this report.</p>
+                                                <MenuItem className='report_access' onClick={() => this.handleChangeAccess('private')}>
+                                                    <div>
+                                                        <Radio color='primary' checked={this.state.currentReport.access === 'private'} />
+                                                    </div>
+                                                    <div>
+                                                        <Typography variant='body1' component='h6'><Icon>lock</Icon><span>Private</span></Typography>
+                                                        <Typography variant='body1' component='p'>Only you can view this report.</Typography>
+                                                    </div>
                                                 </MenuItem>
                                             </Menu>
                                         </div>

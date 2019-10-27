@@ -39,28 +39,30 @@ class ReportEditor extends React.Component<IProps> {
         return (
             <div className='report' id='report'>
                 <div className='report__header'>
-                    <div>
+                    <div className='header_info'>
                         <Typography variant='overline'>{this.props.variantDetails.name}</Typography>
                         <Typography variant='h4'>{this.props.report.name}</Typography>
                     </div>
-                    <div>
-                        <TextField
-                            value={this.props.report.segment}
-                            onChange={this.handleChangeSegment}
-                            label='Segment'
-                            select
-                            variant='outlined'
-                        >
-                            {Object.keys(DATE_SEGMENT_LABELS).map((segment: ReportSegment) => (
-                                <MenuItem value={segment} key={segment}>{DATE_SEGMENT_LABELS[segment][1]}</MenuItem>
-                            ))}
-                        </TextField>
-                    </div>
-                    <div>
-                        <DateWidget
-                            dateRange={this.props.report.date_range}
-                            onChange={this.handleChangeDateRange}
-                        />
+                    <div className='header_actions'>
+                        <div>
+                            <TextField
+                                value={this.props.report.segment}
+                                onChange={this.handleChangeSegment}
+                                label='Segment'
+                                select
+                                variant='outlined'
+                            >
+                                {Object.keys(DATE_SEGMENT_LABELS).map((segment: ReportSegment) => (
+                                    <MenuItem value={segment} key={segment}>{DATE_SEGMENT_LABELS[segment][1]}</MenuItem>
+                                ))}
+                            </TextField>
+                        </div>
+                        <div>
+                            <DateWidget
+                                dateRange={this.props.report.date_range}
+                                onChange={this.handleChangeDateRange}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

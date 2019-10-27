@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
+import ContentLoader from 'react-content-loader'
 
 import {
 	Breadcrumbs,
@@ -22,10 +23,11 @@ export interface INavLink {
 }
 
 interface IProps {
-	breadcrumbs?: INavLink[]
 	actions?: React.ReactNode
+	breadcrumbs?: INavLink[]
 	children?: any
 	className?: string
+	loading?: boolean
 	tabs?: INavTabs
 }
 
@@ -43,7 +45,15 @@ export const TopNav = (props: IProps) => {
 									</Link>
 								))
 							}
-							<Typography variant='h6' color='textPrimary'>{props.breadcrumbs[props.breadcrumbs.length - 1].value}</Typography>
+							{props.loading ? (
+								<div style={{ width: 100, height: 32 }}>
+									<ContentLoader width={100} height={32}>
+										<rect x={0} y={0} rx={4} ry={4} height={32} width={100} />
+									</ContentLoader>
+								</div>
+							) : (
+								<Typography variant='h6' color='textPrimary'>{props.breadcrumbs[props.breadcrumbs.length - 1].value}</Typography>
+							)}
 						</Breadcrumbs>
 					)}
 					{props.children}

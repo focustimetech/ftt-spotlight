@@ -14,6 +14,7 @@ import {
     CardActionArea,
     CardMedia,
     CardContent,
+    CircularProgress,
     Icon,
     IconButton,
     List,
@@ -297,6 +298,8 @@ class Reporting extends React.Component<IProps, IState> {
     render() {
         console.log('Reporting.PROPS:', this.props)
         console.log('Reporting.STATE:', this.state)
+        const loading: boolean = this.state.loadingReports && this.props.reportingRoute === 'saved'
+        const isReportUnchanged: boolean = this.isReportUnchanged()
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const reportSelected: boolean = this.props.reportingRoute !== 'unselected'
         if (this.state.currentReport && reportSelected)
@@ -311,9 +314,8 @@ class Reporting extends React.Component<IProps, IState> {
             .find((reportVariantInfo: IReportVariantInfo) => {
                 return reportVariantInfo.variant === this.state.currentReport.variant
             })
-        const isReportUnchanged: boolean = this.isReportUnchanged()
-        const loading: boolean = this.state.loadingReports && this.props.reportingRoute === 'saved'
-
+        
+        
         return (
             <>
                 <ReportUnsavedModal
@@ -335,7 +337,9 @@ class Reporting extends React.Component<IProps, IState> {
                 />
                 <Drawer title='My Reports' open={this.state.drawerOpen}>
                     {this.state.loadingReports ? (
-                        <div>Loading...</div>
+                        <div className='drawer__loading'>
+                            <CircularProgress size={32} />
+                        </div>
                     ) : (
                         this.props.reports && this.props.reports.length > 0 ? (
                             <List>
@@ -367,6 +371,7 @@ class Reporting extends React.Component<IProps, IState> {
                         {...BANNERS[this.state.bannerIndex]}
                     />
                     <TopNav
+                        loading={loading}
                         breadcrumbs={breadcrumbs}
                         actions={
                             <>

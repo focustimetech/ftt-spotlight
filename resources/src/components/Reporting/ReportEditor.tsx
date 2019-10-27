@@ -41,8 +41,19 @@ class ReportEditor extends React.Component<IProps> {
             <div className='report' id='report'>
                 <div className='report__header'>
                     <div className='header_info'>
-                        <Typography variant='overline'>{this.props.variantDetails.name}</Typography>
-                        <Typography variant='h4'>{this.props.report.name}</Typography>
+                        {this.props.loading ? (
+                            <div style={{ width: 200, height: 70 }}>
+                                <ContentLoader width={200} height={70}>
+                                    <rect x={0} y={0} rx={4} ry={4} height={14} width={160} />
+                                    <rect x={0} y={32} rx={4} ry={4} height={38} width={200} />
+                                </ContentLoader>
+                            </div>
+                        ) : (
+                            <>
+                                <Typography variant='overline'>{this.props.variantDetails.name}</Typography>
+                                <Typography variant='h4'>{this.props.report.name}</Typography>
+                            </>
+                        )}
                     </div>
                     <div className='header_actions'>
                         <div>

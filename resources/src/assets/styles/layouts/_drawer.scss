@@ -32,4 +32,12 @@
             line-height: 48px !important;
         }
     }
+
+    &__loading {
+        position: absolute;
+        top: calc(50% + 64px);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }

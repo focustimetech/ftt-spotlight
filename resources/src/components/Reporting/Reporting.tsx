@@ -14,11 +14,12 @@ import {
     CardActionArea,
     CardMedia,
     CardContent,
-    CircularProgress,
     Icon,
     IconButton,
     List,
     ListItem,
+    ListItemSecondaryAction,
+    ListItemText,
     Menu,
     MenuItem,
     Radio,
@@ -72,7 +73,8 @@ const REPORT_TYPES: Record<ReportGroup, IReportVariantInfo[]> = {
 }
 
 interface ReduxProps {
-    reports: IReport[]
+    changedReport: Report
+    reports: Report[]
     createReport: (report: Report) => Promise<any>
     deleteReport: (reportID: number) => Promise<any>
     fetchReports: () => Promise<any>
@@ -85,6 +87,8 @@ interface IProps extends RouteComponentProps, ReduxProps {}
 interface IState {
     accessMenuRef: any
     currentReport: Report
+    deleteReportModalOpen: boolean
+    deletingReport: Report
     drawerOpen: boolean
     loadingReports: boolean
     reportID: number
@@ -101,6 +105,8 @@ class Reporting extends React.Component<IProps, IState> {
     state: IState = {
         accessMenuRef: null,
         currentReport: null,
+        deleteReportModalOpen: false,
+        deletingReport: null,
         drawerOpen: true,
         loadingReports: false,
         reportID: -1,
@@ -214,6 +220,13 @@ class Reporting extends React.Component<IProps, IState> {
             })
     }
 
+    handleDeleteReport = (report: Report) => {
+        this.setState({
+            deleteReportModalOpen: true,
+            deletingReport: report
+        })
+    }
+
     componentWillMount() {
         if (this.reportSelected())
             this.setState({ currentReport: createEmptyReport('teacher-distribution') })
@@ -260,7 +273,14 @@ class Reporting extends React.Component<IProps, IState> {
                         this.props.reports && this.props.reports.length > 0 ? (
                             <List>
                                 {this.props.reports.map((report: Report, index: number) => (
-                                    <ListItem key={index} onClick={() => this.handleLoadReport(report)}>{report.name}</ListItem>
+                                    <ListItem dense button key={index} onClick={() => this.handleLoadReport(report)}>
+                                        <ListItemText>{report.name}</ListItemText>
+                                        <ListItemSecondaryAction>
+                                            <IconButton onClick={() => this.handleDeleteReport(report)}>
+                                                <Icon>delete</Icon>
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
                                 ))}
                             </List>
                         ) : (
@@ -407,7 +427,8 @@ class Reporting extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
-    reports: state.reports.items
+    reports: state.reports.items,
+    changedReport: state.report.item
 })
 
 const mapDispatchToProps = {

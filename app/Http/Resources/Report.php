@@ -18,6 +18,7 @@ class Report extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'staff' => new StaffResource(Staff::findOrFail($this->staff_id)),
             'name' => $this->name,
             'segment' => $this->segment,

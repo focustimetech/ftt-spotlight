@@ -16,6 +16,7 @@ import {
 } from '../../types/report'
 import { DateRange } from '../../types/date'
 import { DateWidget } from './DateWidget'
+import { ReportNameWidget } from './ReportNameWidget'
 import { DATE_SEGMENT_LABELS } from '../../utils/date'
 
 interface IProps extends RouteComponentProps {
@@ -36,6 +37,10 @@ class ReportEditor extends React.Component<IProps> {
         this.props.onUpdateReport({ segment })
     }
 
+    handleChangeName = (name: string) => {
+        this.props.onUpdateReport({ name })
+    }
+
     render() {
         return (
             <div className='report' id='report'>
@@ -51,7 +56,7 @@ class ReportEditor extends React.Component<IProps> {
                         ) : (
                             <>
                                 <Typography variant='overline'>{this.props.variantDetails.name}</Typography>
-                                <Typography variant='h4'>{this.props.report.name}</Typography>
+                                <ReportNameWidget name={this.props.report.name} onSubmit={this.handleChangeName} />
                             </>
                         )}
                     </div>

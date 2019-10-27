@@ -41,3 +41,39 @@
         transform: translate(-50%, -50%);
     }
 }
+
+.report_name_widget {
+    padding: 8px 0;
+    position: relative;
+
+    &__input {
+        font: inherit;
+        padding: 8px 0;
+        margin: -2px;
+        min-width: 12px;
+    }
+
+    &__hidden {
+        position: absolute;
+        height: 0;
+        overflow: hidden;
+        white-space: pre;
+    }
+
+    &__helper {
+        position: absolute;
+        left: 0;
+        top: 56px;
+        color: $failure !important;
+    }
+
+    &.--edit {
+        padding: 0;
+    }
+
+    &.--error,
+    &.--error input,
+    &__helper {
+        width: 200px !important;
+    }
+}

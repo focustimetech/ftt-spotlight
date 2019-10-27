@@ -86,6 +86,8 @@ const BANNERS: Record<BannerIndex, Partial<BannerProps>> = {
     }
 }
 
+const DEFAULT_VARIANT: ReportVariant = 'teacher-distribution'
+
 interface ReduxProps {
     changedReport: Report
     reports: Report[]
@@ -124,7 +126,7 @@ class Reporting extends React.Component<IProps, IState> {
         accessMenuRef: null,
         bannerIndex: 'NOT_FOUND',
         bannerOpen: false,
-        currentReport: createEmptyReport('teacher-distribution'),
+        currentReport: createEmptyReport(DEFAULT_VARIANT),
         deleteReportModalOpen: false,
         deletingReport: null,
         drawerOpen: true,
@@ -148,7 +150,7 @@ class Reporting extends React.Component<IProps, IState> {
         })
     }
 
-    handleCreateReport = (variant: ReportVariant) => {
+    handleCreateReport = (variant: ReportVariant = DEFAULT_VARIANT) => {
         this.props.history.push('/reporting/new')
         this.setState({ currentReport: createEmptyReport(variant) })
     }
@@ -170,6 +172,7 @@ class Reporting extends React.Component<IProps, IState> {
                 savedReport: report,
                 currentReport: report
             })
+            this.props.history.push(`/reporting/${report.id}`)
         } else {
             this.setState({
                 onRejectSaveReport: () => {
@@ -245,6 +248,11 @@ class Reporting extends React.Component<IProps, IState> {
         return this.props.deleteReport(reportID)
             .then(() => {
                 this.props.queueSnackbar({ message: 'Deleted Report successfully.' })
+                if (this.props.reportingRoute === 'saved') {
+                    const routerReportID = (this.props.match.params as any).reportID
+                    if (parseInt(routerReportID) === reportID)
+                        this.handleCreateReport()
+                }
             })
             .catch((error: any) => {
                 const { response } = error
@@ -260,13 +268,15 @@ class Reporting extends React.Component<IProps, IState> {
                 const loadedReport: Report | undefined = this.props.reports.find((report: Report) => {
                     return report.id === parseInt(reportID)
                 })
-                if (loadedReport)
+                if (loadedReport) {
                     this.setState({
                         savedReport: loadedReport,
                         currentReport: loadedReport
                     })
-                else
+                    this.props.history.push(`/reporting/${loadedReport.id}`)
+                } else {
                     this.setState({ bannerOpen: true, bannerIndex: 'NOT_FOUND' })
+                }
             }
         })
     }

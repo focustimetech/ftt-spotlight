@@ -47,6 +47,7 @@ import { EmptyStateIcon } from '../EmptyStateIcon'
 import { LoadingButton } from '../Form/LoadingButton'
 import { ReportNameModal } from './ReportNameModal'
 import { ReportUnsavedModal } from './ReportUnsavedModal'
+import { ReportDeleteModal } from './ReportDeleteModal'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
     { group: 'staff', name: 'Staff Reports' },
@@ -227,6 +228,17 @@ class Reporting extends React.Component<IProps, IState> {
         })
     }
 
+    onDeleteReport = (reportID: number) => {
+        return this.props.deleteReport(reportID)
+            .then(() => {
+                this.props.queueSnackbar({ message: 'Deleted Report successfully.' })
+            })
+            .catch((error: any) => {
+                const { response } = error
+				if (response && response.data.message)
+					this.props.queueSnackbar({ message: response.data.message })
+            })
+    }
     componentWillMount() {
         if (this.reportSelected())
             this.setState({ currentReport: createEmptyReport('teacher-distribution') })
@@ -266,6 +278,13 @@ class Reporting extends React.Component<IProps, IState> {
                     open={this.state.reportNameModalOpen}
                     onSubmit={this.onSaveReportAs}
                     onClose={() => this.setState({ reportNameModalOpen: false })}
+                />
+                <ReportDeleteModal
+                    open={this.state.deleteReportModalOpen}
+                    onDelete={this.onDeleteReport}
+                    onClose={() => this.setState({ deleteReportModalOpen: false })}
+                    report={this.state.deletingReport}
+                    variantDetails={variantDetails}
                 />
                 <Drawer title='My Reports' open={this.state.drawerOpen}>
                     {this.state.loadingReports ? (

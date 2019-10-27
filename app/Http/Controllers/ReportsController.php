@@ -69,7 +69,7 @@ class ReportsController extends Controller
 
     public function destroy($report_id)
     {
-        $staff = auth()->user()->stafff();
+        $staff = auth()->user()->staff();
         $report = Report::find($report_id);
 
         if ($report->staff_id !== $staff->id) {

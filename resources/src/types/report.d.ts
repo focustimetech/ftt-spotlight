@@ -6,7 +6,7 @@ export interface IReport {
     segment: ReportSegment
     access: 'public' | 'private'
     id?: number
-    date_created: string
+    date_created?: string
 }
 
 export type ReportSegment = 

@@ -48,6 +48,12 @@ import { LoadingButton } from '../Form/LoadingButton'
 import { ReportNameModal } from './ReportNameModal'
 import { ReportUnsavedModal } from './ReportUnsavedModal'
 import { ReportDeleteModal } from './ReportDeleteModal'
+import { Banner, IProps as BannerProps } from '../Banner/Banner'
+
+type ReportingRoute = 'unselected' | 'new' | 'saved'
+
+type BannerIndex = 
+    | 'NOT_FOUND'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
     { group: 'staff', name: 'Staff Reports' },
@@ -73,7 +79,12 @@ const REPORT_TYPES: Record<ReportGroup, IReportVariantInfo[]> = {
     ]
 }
 
-type ReportingRoute = 'unselected' | 'new' | 'saved'
+const BANNERS: Record<BannerIndex, Partial<BannerProps>> = {
+    NOT_FOUND: {
+        icon: 'report_problem',
+        message: 'The Report associated with this link could not be found.'
+    }
+}
 
 interface ReduxProps {
     changedReport: Report
@@ -91,6 +102,8 @@ interface IProps extends RouteComponentProps, ReduxProps {
 
 interface IState {
     accessMenuRef: any
+    bannerIndex: BannerIndex
+    bannerOpen: boolean
     currentReport: Report
     deleteReportModalOpen: boolean
     deletingReport: Report
@@ -109,6 +122,8 @@ interface IState {
 class Reporting extends React.Component<IProps, IState> {
     state: IState = {
         accessMenuRef: null,
+        bannerIndex: 'NOT_FOUND',
+        bannerOpen: false,
         currentReport: createEmptyReport('teacher-distribution'),
         deleteReportModalOpen: false,
         deletingReport: null,
@@ -251,7 +266,7 @@ class Reporting extends React.Component<IProps, IState> {
                         currentReport: loadedReport
                     })
                 else
-                    console.log("REPORT NOT FOUND!!! Show a banner here")
+                    this.setState({ bannerOpen: true, bannerIndex: 'NOT_FOUND' })
             }
         })
     }
@@ -321,6 +336,13 @@ class Reporting extends React.Component<IProps, IState> {
                     )}
                 </Drawer>
                 <div className='content' id='content'>
+                    <Banner
+                        variant='static'
+                        message={BANNERS[this.state.bannerIndex].message}
+                        open={this.state.bannerOpen}
+                        onClose={() => this.setState({ bannerOpen: false })}
+                        {...BANNERS[this.state.bannerIndex]}
+                    />
                     <TopNav
                         breadcrumbs={breadcrumbs}
                         actions={

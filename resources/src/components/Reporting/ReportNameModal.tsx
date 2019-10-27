@@ -50,15 +50,16 @@ const ReportNameModal = (props: IProps) => {
                     value={name}
                     label='Report Name'
                     placeholder='My Report'
-                    variant='filled'
+                    variant='outlined'
+                    fullWidth
                     error={!!error}
                     helperText={error || undefined}
                 />
-                <DialogActions>
-                    <Button variant='text' color='primary' onClick={() => handleSubmit()}>Submit</Button>
-                    <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
-                </DialogActions>
             </DialogContent>
+            <DialogActions>
+                <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
+                <Button variant='text' color='primary' onClick={() => handleSubmit()}>Submit</Button>
+            </DialogActions>
         </Dialog>
     )
 }

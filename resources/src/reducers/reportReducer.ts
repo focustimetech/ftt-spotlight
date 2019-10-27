@@ -30,7 +30,8 @@ export const reportReducer = (state: IState = initialState, action: IAction) => 
         case CREATE_REPORT:
             return {
                 ...state,
-                items: [action.payload, ...state.items]
+                items: [action.payload, ...state.items],
+                item: action.payload
             }
         case UPDATE_REPORT:
             return {
@@ -38,14 +39,16 @@ export const reportReducer = (state: IState = initialState, action: IAction) => 
                 items: state.items.reduce((acc: any[], item: any, index: number) => {
                     acc.push(item.id === action.payload.id ? action.payload : item)
                     return acc
-                }, [])
+                }, []),
+                item: action.payload
             }
         case DELETE_REPORT:
             return {
                 ...state,
                 items: state.items.filter((item: any) => {
                     return item.id !== action.payload.id
-                })
+                }),
+                item: action.payload
             }
         default:
             return state

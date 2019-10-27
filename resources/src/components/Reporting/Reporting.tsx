@@ -152,7 +152,10 @@ class Reporting extends React.Component<IProps, IState> {
 
     handleCreateReport = (variant: ReportVariant = DEFAULT_VARIANT) => {
         this.props.history.push('/reporting/new')
-        this.setState({ currentReport: createEmptyReport(variant) })
+        this.setState({
+            savedReport: null,
+            currentReport: createEmptyReport(variant)
+        })
     }
 
     toggleDrawerOpen = () => {
@@ -223,9 +226,11 @@ class Reporting extends React.Component<IProps, IState> {
         this.setState({ uploading: true, reportNameModalOpen: false })
         this.props.createReport({ ...this.state.currentReport, name: reportName })
             .then(() => {
+                this.props.history.push(`/reporting/${this.props.changedReport.id}`)
                 this.props.queueSnackbar({ message: 'Created Report successfully.' })
                 this.setState({
-                    savedReport: this.state.currentReport,
+                    currentReport: this.props.changedReport,
+                    savedReport: this.props.changedReport,
                     uploading: false
                 })
             })

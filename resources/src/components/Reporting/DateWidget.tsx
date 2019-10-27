@@ -26,6 +26,7 @@ import {
 
 interface IProps {
     dateRange: DateRange
+    disabled: boolean
     onChange: (dateRange: DateRange) => void
 }
 
@@ -81,6 +82,7 @@ class DateWidget extends React.Component<IProps> {
                             transformOrigin: { vertical: "top", horizontal: "left" }
                         }}
                         onClick={this.handleOpen}
+                        disabled={this.props.disabled}
                     >
                         <div className='date_widget'>
                             <div>

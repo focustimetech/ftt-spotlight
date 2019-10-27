@@ -19,6 +19,7 @@ import { DateWidget } from './DateWidget'
 import { DATE_SEGMENT_LABELS } from '../../utils/date'
 
 interface IProps extends RouteComponentProps {
+    loading: boolean
     report: Report
     reportingState: ReportingState
     variantDetails: IReportVariantInfo
@@ -51,6 +52,7 @@ class ReportEditor extends React.Component<IProps> {
                                 label='Segment'
                                 select
                                 variant='outlined'
+                                disabled={this.props.loading}
                             >
                                 {Object.keys(DATE_SEGMENT_LABELS).map((segment: ReportSegment) => (
                                     <MenuItem value={segment} key={segment}>{DATE_SEGMENT_LABELS[segment][1]}</MenuItem>
@@ -61,6 +63,7 @@ class ReportEditor extends React.Component<IProps> {
                             <DateWidget
                                 dateRange={this.props.report.date_range}
                                 onChange={this.handleChangeDateRange}
+                                disabled={this.props.loading}
                             />
                         </div>
                     </div>

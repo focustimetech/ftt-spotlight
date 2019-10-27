@@ -73,6 +73,8 @@ const REPORT_TYPES: Record<ReportGroup, IReportVariantInfo[]> = {
     ]
 }
 
+type ReportingRoute = 'unselected' | 'new' | 'saved'
+
 interface ReduxProps {
     changedReport: Report
     reports: Report[]
@@ -83,7 +85,9 @@ interface ReduxProps {
     updateReport: (report: Report) => Promise<any>
 }
 
-interface IProps extends RouteComponentProps, ReduxProps {}
+interface IProps extends RouteComponentProps, ReduxProps {
+    reportingRoute: ReportingRoute
+}
 
 interface IState {
     accessMenuRef: any
@@ -120,12 +124,6 @@ class Reporting extends React.Component<IProps, IState> {
         onRejectSaveReport: () => null
     }
 
-    reportSelected = (): boolean => {
-        const params: any = this.props.match.params
-        const { reportID } = params
-        return reportID || this.props.location.pathname == '/reporting/new'
-    }
-
     handleUpdateReport = (params: Partial<Report>) => {
         if (this.state.uploading)
             return
@@ -146,7 +144,7 @@ class Reporting extends React.Component<IProps, IState> {
 
     fetchReports = () => {
         this.setState({ loadingReports: true })
-        this.props.fetchReports().then(() => {
+        return this.props.fetchReports().then(() => {
             this.setState({ loadingReports: false })
         })
     }
@@ -241,14 +239,28 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.fetchReports()
+        this.fetchReports().then(() => {
+            const { reportID } = this.props.match.params as any
+            if (this.props.reportingRoute === 'saved') {
+                const loadedReport: Report | undefined = this.props.reports.find((report: Report) => {
+                    return report.id === parseInt(reportID)
+                })
+                if (loadedReport)
+                    this.setState({
+                        savedReport: loadedReport,
+                        currentReport: loadedReport
+                    })
+                else
+                    console.log("REPORT NOT FOUND!!! Show a banner here")
+            }
+        })
     }
 
     render() {
         console.log('Reporting.PROPS:', this.props)
         console.log('Reporting.STATE:', this.state)
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
-        const reportSelected: boolean = this.reportSelected()
+        const reportSelected: boolean = this.props.reportingRoute !== 'unselected'
         if (this.state.currentReport && reportSelected)
             breadcrumbs.push({ value: this.state.currentReport.name })
 
@@ -262,7 +274,7 @@ class Reporting extends React.Component<IProps, IState> {
                 return reportVariantInfo.variant === this.state.currentReport.variant
             })
         const isReportUnchanged: boolean = this.isReportUnchanged()
-        const loading: boolean = this.state.loadingReports && this.state.reportID !== -1
+        const loading: boolean = this.state.loadingReports && this.props.reportingRoute === 'saved'
 
         return (
             <>
@@ -315,15 +327,19 @@ class Reporting extends React.Component<IProps, IState> {
                             <>
                                 {reportSelected && (
                                     <>
-                                        <div><Button variant='contained' color='primary'>Run Report</Button></div>
+                                        <div><Button variant='contained' color='primary' disabled={loading}>Run Report</Button></div>
                                         <div>
                                             <ButtonGroup variant='contained'>
                                                 <LoadingButton
-                                                    disabled={isReportUnchanged}
+                                                    disabled={isReportUnchanged || loading}
                                                     onClick={() => this.handleSaveReport()}
                                                     loading={this.state.uploading}
                                                 >Save</LoadingButton>
-                                                <Button size='small' onClick={(event: any) => this.setState({ saveMenuRef: event.currentTarget })}>
+                                                <Button
+                                                    size='small'
+                                                    onClick={(event: any) => this.setState({ saveMenuRef: event.currentTarget })}
+                                                    disabled={loading}
+                                                >
                                                     <Icon>arrow_drop_down</Icon>
                                                 </Button>
                                                 <Menu
@@ -340,6 +356,7 @@ class Reporting extends React.Component<IProps, IState> {
                                                 variant='text'
                                                 color='primary'
                                                 onClick={(event: any) => this.setState({ accessMenuRef: event.currentTarget})}
+                                                disabled={loading}
                                             >
                                                 <Icon>{this.state.currentReport.access === 'public' ? 'public' : 'lock'}</Icon>
                                                 <span>{this.state.currentReport.access === 'public' ? 'Public' : 'Private'}</span>
@@ -370,7 +387,7 @@ class Reporting extends React.Component<IProps, IState> {
                                             </Menu>
                                         </div>
                                         <div>
-                                            <IconButton><Icon>star_outline</Icon></IconButton>
+                                            <IconButton disabled={loading}><Icon>star_outline</Icon></IconButton>
                                         </div>
                                         <div>
                                             <IconButton><Icon>more_vert</Icon></IconButton>
@@ -405,6 +422,7 @@ class Reporting extends React.Component<IProps, IState> {
                                         onUpdateReport={this.handleUpdateReport}
                                         report={this.state.currentReport}
                                         variantDetails={variantDetails}
+                                        loading={loading}
                                         {...props}
                                     />
                                 )}

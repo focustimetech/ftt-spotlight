@@ -105,7 +105,7 @@ interface IState {
 class Reporting extends React.Component<IProps, IState> {
     state: IState = {
         accessMenuRef: null,
-        currentReport: null,
+        currentReport: createEmptyReport('teacher-distribution'),
         deleteReportModalOpen: false,
         deletingReport: null,
         drawerOpen: true,
@@ -239,10 +239,6 @@ class Reporting extends React.Component<IProps, IState> {
 					this.props.queueSnackbar({ message: response.data.message })
             })
     }
-    componentWillMount() {
-        if (this.reportSelected())
-            this.setState({ currentReport: createEmptyReport('teacher-distribution') })
-    }
 
     componentDidMount() {
         this.fetchReports()
@@ -250,6 +246,7 @@ class Reporting extends React.Component<IProps, IState> {
 
     render() {
         console.log('Reporting.PROPS:', this.props)
+        console.log('Reporting.STATE:', this.state)
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const reportSelected: boolean = this.reportSelected()
         if (this.state.currentReport && reportSelected)

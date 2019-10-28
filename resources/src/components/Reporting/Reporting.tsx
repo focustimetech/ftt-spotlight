@@ -433,14 +433,17 @@ class Reporting extends React.Component<IProps, IState> {
                                                 >
                                                     <Icon>arrow_drop_down</Icon>
                                                 </Button>
-                                                <Menu
-                                                    open={!!this.state.saveMenuRef}
-                                                    anchorEl={this.state.saveMenuRef}
-                                                    onClose={() => this.setState({ saveMenuRef: null })}
-                                                >
-                                                    <MenuItem onClick={() => this.handleSaveReportAs()}>Save As</MenuItem>
-                                                </Menu>
                                             </ButtonGroup>
+                                            <Menu
+                                                open={!!this.state.saveMenuRef}
+                                                anchorEl={this.state.saveMenuRef}
+                                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                                getContentAnchorEl={null}
+                                                onClose={() => this.setState({ saveMenuRef: null })}
+                                            >
+                                                <MenuItem onClick={() => this.handleSaveReportAs()}>Save As</MenuItem>
+                                            </Menu>
                                         </div>
                                         <div>
                                             <Button
@@ -455,6 +458,9 @@ class Reporting extends React.Component<IProps, IState> {
                                             <Menu
                                                 open={!!this.state.accessMenuRef}
                                                 anchorEl={this.state.accessMenuRef}
+                                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                                getContentAnchorEl={null}
                                                 onClose={() => this.setState({ accessMenuRef: null })}
                                             >
                                                 <MenuItem className='report_access' onClick={() => this.handleChangeAccess('public')}>
@@ -487,6 +493,9 @@ class Reporting extends React.Component<IProps, IState> {
                                             <Menu
                                                 open={!!this.state.menuRef}
                                                 anchorEl={this.state.menuRef}
+                                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                                getContentAnchorEl={null}
                                                 onClose={() => this.setState({ menuRef: null })}
                                             >
                                                 <MenuItem onClick={() => this.handleCreateReport()}>{`New ${variantDetails.name} Report`}</MenuItem>

@@ -48,3 +48,7 @@ export const deleteReport = (reportID: number) => {
             }))
     }
 }
+
+export const fetchReportByID = (reportID: number): Promise<any> => {
+    return axios.get(`/api/reports/${reportID}`)
+}

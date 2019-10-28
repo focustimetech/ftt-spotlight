@@ -39,7 +39,13 @@ import {
     ReportVariant,
 } from '../../types/report'
 import { createEmptyReport } from '../../utils/report'
-import { fetchReports, createReport, updateReport, deleteReport } from '../../actions/reportActions'
+import {
+    fetchReports,
+    createReport,
+    updateReport,
+    deleteReport,
+    fetchReportByID
+} from '../../actions/reportActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { ReportEditor } from './ReportEditor'
 import { INavLink, TopNav } from '../TopNav'
@@ -55,6 +61,7 @@ type ReportingRoute = 'unselected' | 'new' | 'saved'
 
 type BannerIndex = 
     | 'NOT_FOUND'
+    | 'REPORT_PRIVATE'
 
 const REPORT_GROUPS: IReportGroupInfo[] = [
     { group: 'staff', name: 'Staff Reports' },
@@ -84,6 +91,10 @@ const BANNERS: Record<BannerIndex, Partial<BannerProps>> = {
     NOT_FOUND: {
         icon: 'report_problem',
         message: 'The Report associated with this link could not be found.'
+    },
+    REPORT_PRIVATE: {
+        icon: 'lock',
+        message: "This Report isn't public, so only the owner of the Report can view it."
     }
 }
 
@@ -112,6 +123,7 @@ interface IState {
     deletingReport: Report
     drawerOpen: boolean
     loadingReports: boolean
+    loadingSingleReport: boolean
     reportID: number
     reportingState: ReportingState
     reportNameModalOpen: boolean
@@ -132,6 +144,7 @@ class Reporting extends React.Component<IProps, IState> {
         deletingReport: null,
         drawerOpen: true,
         loadingReports: false,
+        loadingSingleReport: false,
         reportID: -1,
         reportingState: 'idle',
         reportNameModalOpen: false,
@@ -163,7 +176,7 @@ class Reporting extends React.Component<IProps, IState> {
         this.setState((state: IState) => ({ drawerOpen: !state.drawerOpen }))
     }
 
-    fetchReports = () => {
+    fetchReports = (): Promise<any> => {
         this.setState({ loadingReports: true })
         return this.props.fetchReports().then(() => {
             this.setState({ loadingReports: false })
@@ -244,6 +257,7 @@ class Reporting extends React.Component<IProps, IState> {
                 })
             })
             .catch((error: any) => {
+                console.error(error)
                 this.setState({ uploading: false })
                 const { response } = error
 				if (response && response.data.message)
@@ -277,10 +291,10 @@ class Reporting extends React.Component<IProps, IState> {
 
     componentDidMount() {
         this.fetchReports().then(() => {
-            const { reportID } = this.props.match.params as any
+            const reportID: number = parseInt((this.props.match.params as any).reportID)
             if (this.props.reportingRoute === 'saved') {
                 const loadedReport: Report | undefined = this.props.reports.find((report: Report) => {
-                    return report.id === parseInt(reportID)
+                    return report.id === reportID
                 })
                 if (loadedReport) {
                     this.setState({
@@ -289,7 +303,34 @@ class Reporting extends React.Component<IProps, IState> {
                     })
                     this.props.history.push(`/reporting/${loadedReport.id}`)
                 } else {
-                    this.setState({ bannerOpen: true, bannerIndex: 'NOT_FOUND' })
+                    this.setState({ loadingSingleReport: true })
+                    fetchReportByID(reportID)
+                        .then((response: any) => {
+                            this.setState({ loadingSingleReport: false })
+                            const report: Report = response.data
+                            this.setState({
+                                savedReport: null,
+                                currentReport: report
+                            })
+                        }, (error: any) => {
+                            this.setState({ loadingSingleReport: true })
+                            const { response } = error
+                            this.handleCreateReport()
+                            switch (response.status) {
+                                case 404:
+                                    this.setState({ bannerOpen: true, bannerIndex: 'NOT_FOUND' })
+                                    break
+                                case 403:
+                                    this.setState({ bannerOpen: true, bannerIndex: 'REPORT_PRIVATE' })
+                                    break
+                                default:
+                                    const { response } = error
+                                    if (response && response.data.message)
+                                        this.props.queueSnackbar({ message: response.data.message })
+                                    break
+                            }
+                        })
+                    
                 }
             }
         })
@@ -298,7 +339,7 @@ class Reporting extends React.Component<IProps, IState> {
     render() {
         console.log('Reporting.PROPS:', this.props)
         console.log('Reporting.STATE:', this.state)
-        const loading: boolean = this.state.loadingReports && this.props.reportingRoute === 'saved'
+        const loading: boolean = (this.state.loadingReports || this.state.loadingSingleReport) && this.props.reportingRoute === 'saved'
         const isReportUnchanged: boolean = this.isReportUnchanged()
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const reportSelected: boolean = this.props.reportingRoute !== 'unselected'

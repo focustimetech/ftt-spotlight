@@ -12,7 +12,6 @@ import {
     ButtonGroup,
     Card,
     CardActionArea,
-    CardMedia,
     CardContent,
     CircularProgress,
     Icon,
@@ -24,13 +23,11 @@ import {
     Menu,
     MenuItem,
     Radio,
-    TextField,
     Tooltip,
     Typography
 } from '@material-ui/core'
 
 import {
-    IReport,
     IReportVariantInfo,
     IReportGroupInfo,
     Report,
@@ -527,12 +524,11 @@ class Reporting extends React.Component<IProps, IState> {
                                             {REPORT_TYPES[reportGroup.group].map((reportVariant: IReportVariantInfo) => (
                                                 <Card className='reporting__variant' key={reportVariant.variant}>
                                                     <CardActionArea onClick={() => this.handleCreateReport(reportVariant.variant)}>
-                                                        <CardMedia
-                                                            component='img'
-                                                            alt={reportVariant.name}
-                                                            title={reportVariant.name}
-                                                            height={140}
-                                                            image='/static/images/report-sample.jpg'
+                                                        <img
+                                                            height={112}
+                                                            style={{ width: '100%', objectFit: 'cover' }}
+                                                            src='/static/images/report-sample.jpg'
+                                                            onLoad={() => this.forceUpdate()}
                                                         />
                                                         <CardContent>
                                                             <Typography variant='h5'>{reportVariant.name}</Typography>

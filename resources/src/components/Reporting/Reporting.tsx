@@ -5,7 +5,7 @@ import {
     RouteComponentProps,
     Switch
 } from 'react-router-dom'
-import ContentLoader from 'react-content-loader'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 import {
     Button,
@@ -502,46 +502,58 @@ class Reporting extends React.Component<IProps, IState> {
                         }
                     />
                     <div className='reporting' id='reporting'>
-                        <Switch>
-                            <Route 
-                                path={['/reporting/new', '/reporting/:reportID']}
-                                render={(props: RouteComponentProps) => (
-                                    <ReportEditor
-                                        reportingState={this.state.reportingState}
-                                        onUpdateReport={this.handleUpdateReport}
-                                        report={this.state.currentReport}
-                                        variantDetails={variantDetails}
-                                        loading={loading}
-                                        {...props}
+                        <TransitionGroup>
+                            <CSSTransition
+                                timeout={450}
+                                classNames='fade'
+                                key={this.props.location.key}
+                            >
+                                <Switch location={this.props.location}>
+                                    <Route 
+                                        path={['/reporting/new', '/reporting/:reportID']}
+                                        render={(props: RouteComponentProps) => (
+                                            <div className='router_page'>
+                                                <ReportEditor
+                                                    reportingState={this.state.reportingState}
+                                                    onUpdateReport={this.handleUpdateReport}
+                                                    report={this.state.currentReport}
+                                                    variantDetails={variantDetails}
+                                                    loading={loading}
+                                                    {...props}
+                                                />
+                                            </div>
+                                        )}
                                     />
-                                )}
-                            />
-                            <Route exact path='/reporting'>
-                                {REPORT_GROUPS.map((reportGroup: IReportGroupInfo) => (
-                                    <div key={reportGroup.group}>
-                                        <Typography variant='h6'>{reportGroup.name}</Typography>
-                                        <div className='reporting__group'>
-                                            {REPORT_TYPES[reportGroup.group].map((reportVariant: IReportVariantInfo) => (
-                                                <Card className='reporting__variant' key={reportVariant.variant}>
-                                                    <CardActionArea onClick={() => this.handleCreateReport(reportVariant.variant)}>
-                                                        <img
-                                                            height={112}
-                                                            style={{ width: '100%', objectFit: 'cover' }}
-                                                            src='/static/images/report-sample.jpg'
-                                                            onLoad={() => this.forceUpdate()}
-                                                        />
-                                                        <CardContent>
-                                                            <Typography variant='h5'>{reportVariant.name}</Typography>
-                                                            <Typography variant='body2'>{reportVariant.description}</Typography>
-                                                        </CardContent>
-                                                    </CardActionArea>                                            
-                                                </Card>
+                                    <Route exact path='/reporting' render={() => (
+                                        <div className='router_page'>
+                                            {REPORT_GROUPS.map((reportGroup: IReportGroupInfo) => (
+                                                <div key={reportGroup.group}>
+                                                    <Typography variant='h6'>{reportGroup.name}</Typography>
+                                                    <div className='reporting__group'>
+                                                        {REPORT_TYPES[reportGroup.group].map((reportVariant: IReportVariantInfo) => (
+                                                            <Card className='reporting__variant' key={reportVariant.variant}>
+                                                                <CardActionArea onClick={() => this.handleCreateReport(reportVariant.variant)}>
+                                                                    <img
+                                                                        height={112}
+                                                                        style={{ width: '100%', objectFit: 'cover' }}
+                                                                        src='/static/images/report-sample.jpg'
+                                                                        onLoad={() => this.forceUpdate()}
+                                                                    />
+                                                                    <CardContent>
+                                                                        <Typography variant='h5'>{reportVariant.name}</Typography>
+                                                                        <Typography variant='body2'>{reportVariant.description}</Typography>
+                                                                    </CardContent>
+                                                                </CardActionArea>                                            
+                                                            </Card>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             ))}
                                         </div>
-                                    </div>
-                                ))}
-                            </Route>
-                        </Switch>
+                                    )} />
+                                </Switch>
+                            </CSSTransition>
+                        </TransitionGroup>
                     </div>    
                 </div>
             </>

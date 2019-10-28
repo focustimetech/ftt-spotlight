@@ -14,4 +14,9 @@ class Report extends Model
     {
         return $this->belongsTo('App\Staff');
     }
+
+    public function getStars()
+    {
+        return Starred::where('item_id', $this->id)->where('item_type', 'report')->get();
+    }
 }

@@ -72,10 +72,14 @@ class ReportsController extends Controller
         $staff = auth()->user()->staff();
         $report = Report::find($report_id);
 
-        if ($report->staff_id !== $staff->id) {
+        if ($report && $report->staff_id !== $staff->id) {
             return response()->json(['message' => 'Only the owner of this Report can delete it.'], 403);
-        } else if ($report->delete()) {
-            return new ReportResource($report);
+        } else if ($report) {
+            $report->getStars()->each(function($starred) {
+                $starred->delete();
+            });
+            if ($report->delete())
+                return new ReportResource($report);
         } else {
             return response()->json(['message' => 'The Report could not be deleted'], 500);
         }

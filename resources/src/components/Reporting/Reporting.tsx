@@ -206,6 +206,7 @@ class Reporting extends React.Component<IProps, IState> {
                         currentReport: report,
                         onRejectSaveReport: () => null
                     })
+                    this.props.history.push(`/reporting/${report.id}`)
                 }
             }, () => {
                 this.setState({ reportUnsavedModalOpen: true })

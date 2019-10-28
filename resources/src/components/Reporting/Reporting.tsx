@@ -121,6 +121,7 @@ interface IState {
     drawerOpen: boolean
     loadingReports: boolean
     loadingSingleReport: boolean
+    menuRef: any
     reportID: number
     reportingState: ReportingState
     reportNameModalOpen: boolean
@@ -142,6 +143,7 @@ class Reporting extends React.Component<IProps, IState> {
         drawerOpen: true,
         loadingReports: false,
         loadingSingleReport: false,
+        menuRef: null,
         reportID: -1,
         reportingState: 'idle',
         reportNameModalOpen: false,
@@ -165,6 +167,7 @@ class Reporting extends React.Component<IProps, IState> {
         this.props.history.push('/reporting/new')
         this.setState({
             savedReport: null,
+            menuRef: null,
             currentReport: createEmptyReport(variant)
         })
     }
@@ -254,7 +257,6 @@ class Reporting extends React.Component<IProps, IState> {
                 })
             })
             .catch((error: any) => {
-                console.error(error)
                 this.setState({ uploading: false })
                 const { response } = error
 				if (response && response.data.message)
@@ -479,7 +481,16 @@ class Reporting extends React.Component<IProps, IState> {
                                             <IconButton disabled={loading}><Icon>star_outline</Icon></IconButton>
                                         </div>
                                         <div>
-                                            <IconButton><Icon>more_vert</Icon></IconButton>
+                                            <IconButton onClick={(event: any) => this.setState({ menuRef: event.currentTarget })}>
+                                                <Icon>more_vert</Icon>
+                                            </IconButton>
+                                            <Menu
+                                                open={!!this.state.menuRef}
+                                                anchorEl={this.state.menuRef}
+                                                onClose={() => this.setState({ menuRef: null })}
+                                            >
+                                                <MenuItem onClick={() => this.handleCreateReport()}>{`New ${variantDetails.name} Report`}</MenuItem>
+                                            </Menu>
                                         </div>
                                     </>
                                 )}

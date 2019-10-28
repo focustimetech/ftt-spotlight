@@ -29,7 +29,7 @@ const ReportNameModal = (props: IProps) => {
         if (nameLength < 3)
             setError('Please choose a name that is at least 3 characters long.')
         else
-            props.onSubmit(name)
+            props.onSubmit(name || props.name)
     }
 
     const onChange = (event: any) => {

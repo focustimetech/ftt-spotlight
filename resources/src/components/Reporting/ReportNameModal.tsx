@@ -14,17 +14,19 @@ import { SetState } from '../../types/app'
 
 interface IProps {
     open: boolean
+    name?: string
     onClose: () => void
     onSubmit: (name: string) => void
 }
 
 const ReportNameModal = (props: IProps) => {
-    const [name, setName] = React.useState('')
+    const [name, setName]: [string, SetState<string>] = React.useState(null)
     const [error, setError]: [string, SetState<string>] = React.useState(null)
 
     const handleSubmit = () => {
         // Validate input
-        if (name.length < 3)
+        const nameLength: number = name ? name.length : props.name.length || 0
+        if (nameLength < 3)
             setError('Please choose a name that is at least 3 characters long.')
         else
             props.onSubmit(name)
@@ -36,7 +38,7 @@ const ReportNameModal = (props: IProps) => {
     }
 
     const onExited = () => {
-        setName('')
+        setName(null)
         setError(null)
     }
 
@@ -47,7 +49,7 @@ const ReportNameModal = (props: IProps) => {
                 <DialogContentText>Choose a name to give to the Report.</DialogContentText>
                 <TextField
                     onChange={onChange}
-                    value={name}
+                    value={name || props.name}
                     label='Report Name'
                     placeholder='My Report'
                     variant='outlined'

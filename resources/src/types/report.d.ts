@@ -1,11 +1,11 @@
 import { DateRange } from './date'
 
 export interface IReport {
-    name: string
     date_range: DateRange
     segment: ReportSegment
     access: 'public' | 'private'
     id?: number
+    name?: string
     date_created?: string
 }
 

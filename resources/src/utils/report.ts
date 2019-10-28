@@ -1,7 +1,6 @@
 import { IReport, Report, ReportVariant } from "../types/report"
 
 export const EMPTY_REPORT: IReport = {
-    name: 'New Report',
     date_range: {
         type: 'predefined',
         range: 'last-week'
@@ -9,6 +8,8 @@ export const EMPTY_REPORT: IReport = {
     segment: 'day',
     access: 'private'
 }
+
+export const REPORT_PLACEHOLDER_NAME = 'New Report'
 
 /**
  * Creates an empty report when given a report variant

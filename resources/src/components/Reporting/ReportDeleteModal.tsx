@@ -45,7 +45,7 @@ const ReportDeleteModal = (props: IProps) => {
                 {props.report && (
                     <div>
                         <Typography variant='overline'>{props.variantDetails.name}</Typography>
-                        <Typography variant='h5'>{props.report.name}</Typography>
+                        <Typography variant='h5'>{props.report.name || 'Report'}</Typography>
                         {props.report.date_created && (
                             <Typography variant='subtitle1'>{props.report.date_created}</Typography>
                         )}

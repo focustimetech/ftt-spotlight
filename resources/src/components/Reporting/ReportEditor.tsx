@@ -18,6 +18,7 @@ import { DateRange } from '../../types/date'
 import { DateWidget } from './DateWidget'
 import { ReportNameWidget } from './ReportNameWidget'
 import { DATE_SEGMENT_LABELS } from '../../utils/date'
+import { REPORT_PLACEHOLDER_NAME } from '../../utils/report'
 
 interface IProps extends RouteComponentProps {
     loading: boolean
@@ -56,7 +57,7 @@ class ReportEditor extends React.Component<IProps> {
                         ) : (
                             <>
                                 <Typography variant='overline'>{this.props.variantDetails.name}</Typography>
-                                <ReportNameWidget name={this.props.report.name} onSubmit={this.handleChangeName} />
+                                <ReportNameWidget name={this.props.report.name || REPORT_PLACEHOLDER_NAME} onSubmit={this.handleChangeName} />
                             </>
                         )}
                     </div>

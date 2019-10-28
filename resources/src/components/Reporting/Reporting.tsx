@@ -38,7 +38,7 @@ import {
     ReportingState,
     ReportVariant,
 } from '../../types/report'
-import { createEmptyReport } from '../../utils/report'
+import { createEmptyReport, REPORT_PLACEHOLDER_NAME } from '../../utils/report'
 import {
     fetchReports,
     createReport,
@@ -344,7 +344,7 @@ class Reporting extends React.Component<IProps, IState> {
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const reportSelected: boolean = this.props.reportingRoute !== 'unselected'
         if (this.state.currentReport && reportSelected)
-            breadcrumbs.push({ value: this.state.currentReport.name })
+            breadcrumbs.push({ value: this.state.currentReport.name || REPORT_PLACEHOLDER_NAME })
 
         const reportGroups: ReportGroup[] = REPORT_GROUPS.map((groupInfo: IReportGroupInfo) => groupInfo.group)
         const variantDetails: IReportVariantInfo = reportGroups
@@ -366,6 +366,7 @@ class Reporting extends React.Component<IProps, IState> {
                 />
                 <ReportNameModal
                     open={this.state.reportNameModalOpen}
+                    name={this.state.currentReport.name}
                     onSubmit={this.onSaveReportAs}
                     onClose={() => this.setState({ reportNameModalOpen: false })}
                 />

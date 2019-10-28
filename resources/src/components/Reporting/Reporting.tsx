@@ -27,6 +27,7 @@ import {
     Typography
 } from '@material-ui/core'
 
+import { IUser } from '../../types/auth'
 import {
     IReportVariantInfo,
     IReportGroupInfo,
@@ -35,6 +36,7 @@ import {
     ReportingState,
     ReportVariant,
 } from '../../types/report'
+import { StarredItem } from '../../reducers/starReducer'
 import { createEmptyReport, REPORT_PLACEHOLDER_NAME } from '../../utils/report'
 import {
     fetchReports,
@@ -44,6 +46,7 @@ import {
     fetchReportByID
 } from '../../actions/reportActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { starItem, unstarItem } from '../../actions/starActions'
 import { ReportEditor } from './ReportEditor'
 import { INavLink, TopNav } from '../TopNav'
 import { Drawer } from '../Drawer'
@@ -53,6 +56,7 @@ import { ReportNameModal } from './ReportNameModal'
 import { ReportUnsavedModal } from './ReportUnsavedModal'
 import { ReportDeleteModal } from './ReportDeleteModal'
 import { Banner, IProps as BannerProps } from '../Banner/Banner'
+import { StarButton } from '../StarButton'
 
 type ReportingRoute = 'unselected' | 'new' | 'saved'
 
@@ -99,11 +103,15 @@ const DEFAULT_VARIANT: ReportVariant = 'teacher-distribution'
 
 interface ReduxProps {
     changedReport: Report
+    currentUser: IUser
+    newStarred: StarredItem
     reports: Report[]
     createReport: (report: Report) => Promise<any>
     deleteReport: (reportID: number) => Promise<any>
     fetchReports: () => Promise<any>
+    starItem: (item: StarredItem) => void
     queueSnackbar: (snackbar: ISnackbar) => void
+    unstarItem: (item: StarredItem) => void
     updateReport: (report: Report) => Promise<any>
 }
 
@@ -288,6 +296,22 @@ class Reporting extends React.Component<IProps, IState> {
             })
     }
 
+    toggleStarred = (isStarred: boolean) => {
+		if (this.props.currentUser.account_type !== 'staff')
+            return
+        if (!this.state.currentReport.id)
+            return
+		const starredItem: StarredItem = {
+			item_id: this.state.currentReport.id,
+			item_type: 'report'
+		}
+		if (isStarred) {
+            this.props.unstarItem(starredItem)
+        } else {
+            this.props.starItem(starredItem)
+        }
+	}
+
     componentDidMount() {
         this.fetchReports().then(() => {
             const reportID: number = parseInt((this.props.match.params as any).reportID)
@@ -355,7 +379,10 @@ class Reporting extends React.Component<IProps, IState> {
                 return reportVariantInfo.variant === this.state.currentReport.variant
             })
         
-        
+        const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.state.currentReport.id && this.props.newStarred.item_type === 'report' ? (
+                this.props.newStarred.isStarred !== false
+            ) : this.state.currentReport.starred
+
         return (
             <>
                 <ReportUnsavedModal
@@ -484,7 +511,11 @@ class Reporting extends React.Component<IProps, IState> {
                                             </Menu>
                                         </div>
                                         <div>
-                                            <IconButton disabled={loading}><Icon>star_outline</Icon></IconButton>
+                                            <StarButton
+                                                isStarred={starred}
+                                                onClick={() => this.toggleStarred(starred)}
+                                                disabled={!this.state.currentReport.id}
+                                            />
                                         </div>
                                         <div>
                                             <IconButton onClick={(event: any) => this.setState({ menuRef: event.currentTarget })}>
@@ -582,8 +613,10 @@ class Reporting extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: any) => ({
-    reports: state.reports.items,
-    changedReport: state.reports.item
+    currentUser: state.auth.user,
+    changedReport: state.reports.item,
+    newStarred: state.starred.item,
+    reports: state.reports.items
 })
 
 const mapDispatchToProps = {
@@ -591,6 +624,8 @@ const mapDispatchToProps = {
     createReport,
     updateReport,
     deleteReport,
+    starItem,
+	unstarItem,
     queueSnackbar
 }
 

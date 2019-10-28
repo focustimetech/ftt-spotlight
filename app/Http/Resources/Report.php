@@ -25,7 +25,10 @@ class Report extends JsonResource
             'date_range' => json_decode($this->date_range),
             'date_created' => date('M j, Y, g:iA', strtotime($this->created_at)),
             'access' => $this->access,
-            'variant' => $this->variant
+            'variant' => $this->variant,
+            'starred' => auth()->user()->staff()->starred()->get()->some(function($item) {
+                return $item->item_id === $this->id && $item->item_type === 'report';
+            })
         ];
     }
 }

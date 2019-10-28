@@ -7,6 +7,7 @@ export interface IReport {
     id?: number
     name?: string
     date_created?: string
+    starred?: boolean
 }
 
 export type ReportSegment = 

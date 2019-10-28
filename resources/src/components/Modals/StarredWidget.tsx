@@ -55,6 +55,7 @@ class StarredWidget extends React.Component<IProps, IState> {
 
     handleClickOpen = () => {
         this.setState({ open: true })
+        this.fetchStarred()
     }
 
     handleClose = () => {

@@ -1,7 +1,7 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
-## Version 1.2.6 (Release Date Pending)
+## Version 1.2.6 (2019-10-28)
 
 ### Added
  - Added logo to splash screen (SPOT-84)

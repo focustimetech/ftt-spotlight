@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
-import { RouteComponentProps } from 'react-router-dom'
+import { Switch, Route, RouteComponentProps } from 'react-router-dom'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 import { IStaffUser } from '../../types/auth'
 import { MenuItem } from './MenuItem'
+import { WikiMenu } from '../Wiki/WikiMenu'
 
 interface ReduxProps {
     currentUser: IStaffUser
@@ -29,17 +31,36 @@ class SidebarMenu extends React.Component<IProps> {
                         )}</div>
                         <h4>{schoolName}</h4>
                     </div>
-                    <ul className='menu_list'>
-                        <MenuItem to='/check-in' icon='how_to_vote' label='Check-in' />
-                        <MenuItem to='/staff' icon='supervisor_account' label='Staff' />
-                        <MenuItem to='/students' icon='face' label='Students' />
-                        <MenuItem to='/power-scheduler' icon='offline_bolt' label='Power Scheduler' />
-                        {isAdministrator && (
-                            <>
-                                <MenuItem to='/credentials-manager' icon='security' label='Credentials Manager' />
-                            </>
-                        )}
-                    </ul>
+                    <TransitionGroup>
+                        <CSSTransition
+                            timeout={3000}
+                            classNames='fade'
+                            key={this.props.routeComponentProps.location.key}
+                        >
+                            <Switch location={this.props.routeComponentProps.location}>
+                                <Route path='/wiki' component={() => (
+                                    <div className='router-page'>
+                                        <WikiMenu />
+                                    </div>
+                                )} />
+                                <Route render={() => (
+                                    <div className='router-page'>
+                                        <ul className='menu_list'>
+                                            <MenuItem to='/check-in' icon='how_to_vote' label='Check-in' />
+                                            <MenuItem to='/staff' icon='supervisor_account' label='Staff' />
+                                            <MenuItem to='/students' icon='face' label='Students' />
+                                            <MenuItem to='/power-scheduler' icon='offline_bolt' label='Power Scheduler' />
+                                            {isAdministrator && (
+                                                <>
+                                                    <MenuItem to='/credentials-manager' icon='security' label='Credentials Manager' />
+                                                </>
+                                            )}
+                                        </ul>
+                                    </div>
+                                )} />
+                            </Switch>
+                        </CSSTransition>
+                    </TransitionGroup>
                 </div>
             </div>
         )

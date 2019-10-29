@@ -23,6 +23,7 @@ import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Views/Staff'
 import StaffProfile from '../Views/StaffProfile'
 import PowerScheduler from '../Views/PowerScheduler'
+import Wiki from '../Views/Wiki'
 import { getObjectFromLocalStorage, writeObjectToLocalStorage, MENU_OPEN } from '../../utils/storage'
 
 interface IProps {
@@ -88,6 +89,7 @@ export default class App extends React.Component<IProps, IState> {
 										<StudentProfile {...props} />
 									)}/>
 									<Route path='/students' component={Students} />
+									<Route path='/wiki' component={Wiki} />
 									<Route component={NotFound} />
 								</Switch>
 							</> : <>

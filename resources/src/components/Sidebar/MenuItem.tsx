@@ -1,24 +1,30 @@
 import * as React from 'react'
-
-import Icon from '@material-ui/core/Icon'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import { NavLink } from 'react-router-dom'
 
+import { Icon, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
+
+
 interface IProps {
-	to: string
 	icon: string
 	label: string
 	inactive?: boolean
+	to?: string
 }
 
 const MenuItem = (props: IProps) => {
-	return (
+	const MenuItemContent = () => (
+		<li className='list_item'>
+			<ListItemIcon className='list_item__icon'><Icon>{props.icon}</Icon></ListItemIcon>
+			<ListItemText>{props.label}</ListItemText>
+		</li>
+	)
+	
+	return props.to ? (
 		<NavLink className='menu_list__link' activeClassName={props.inactive ? undefined : '--selected'} to={props.to}>
-			<li className='list_item'>
-				<ListItemIcon className='list_item__icon'><Icon>{props.icon}</Icon></ListItemIcon>
-				<span>{props.label}</span>
-			</li>
+			<MenuItemContent />
 		</NavLink>
+	) : (
+		<MenuItemContent />
 	)
 }
 

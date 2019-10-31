@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import classNames from 'classnames'
 import { Switch, Route, RouteComponentProps } from 'react-router-dom'
 
+import { Typography } from '@material-ui/core'
+
 import { IStaffUser } from '../../types/auth'
 import { MenuItem } from './MenuItem'
 import { WikiMenu } from '../Wiki/WikiMenu'
@@ -28,7 +30,7 @@ class SidebarMenu extends React.Component<IProps> {
                         <div className={classNames('menu_header__logo', {['--logo']: schoolLogo})}>{schoolLogo && (
                             <img src={`/static/images/logos/${schoolLogo}`} />	
                         )}</div>
-                        <h4>{schoolName}</h4>
+                        <Typography variant='subtitle1'>{schoolName}</Typography>
                     </div>
                     <Switch location={this.props.routeComponentProps.location}>
                         <Route path='/wiki' component={() => (

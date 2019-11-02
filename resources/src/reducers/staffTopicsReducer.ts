@@ -1,6 +1,6 @@
+import { IStaffTopic } from '../actions/studentScheduleActions'
 import { FETCH_STAFF_LIST } from '../actions/types'
 import { ReduxAction } from '../types/app'
-import { IStaffTopic } from '../actions/studentScheduleActions'
 
 interface IState {
     items: IStaffTopic[],

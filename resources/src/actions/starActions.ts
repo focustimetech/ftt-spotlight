@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { FETCH_STARRED, STAR_ITEM, UNSTAR_ITEM } from './types';
-import { StarredItem } from '../reducers/starReducer'
+import { IStarredItem } from '../reducers/starReducer'
+import { FETCH_STARRED, STAR_ITEM, UNSTAR_ITEM } from './types'
 
-export interface StarRequest {
+export interface IStarRequest {
     item_type: string,
     item_id: number,
 }
@@ -10,7 +10,7 @@ export interface StarRequest {
 export const fetchStarred = () => {
     return (dispatch: any) => {
         return axios.get('/api/starred')
-            .then(res => {
+            .then((res: any) => {
                 const starred = res.data
                 dispatch({
                     type: FETCH_STARRED,
@@ -20,7 +20,7 @@ export const fetchStarred = () => {
     }
 }
 
-export const starItem = (starred: StarredItem) => {
+export const starItem = (starred: IStarredItem) => {
     return (dispatch: any) => {
         const uri = '/api/star'
         axios.post(uri, starred)
@@ -31,7 +31,7 @@ export const starItem = (starred: StarredItem) => {
     }
 }
 
-export const unstarItem = (starred: StarRequest) => {
+export const unstarItem = (starred: IStarRequest) => {
     return (dispatch: any) => {
         const uri = '/api/unstar'
         axios.post(uri, starred)
@@ -39,6 +39,5 @@ export const unstarItem = (starred: StarRequest) => {
             type: UNSTAR_ITEM,
             payload: starred
         })
-     
     }
 }

@@ -24,8 +24,9 @@ export const NewAppointment = (props: IProps) => {
     = React.useState(false)
 
     const handleChange = (event: any) => {
-        if (loading)
+        if (loading) {
             return
+        }
         setInputValue(event.target.value)
         setErrored(false)
     }
@@ -56,7 +57,7 @@ export const NewAppointment = (props: IProps) => {
             }
         )
     }
-    
+
     return (
         <div className='calendar_widget'>
             {open ? <>
@@ -74,7 +75,11 @@ export const NewAppointment = (props: IProps) => {
                     multiline
                 />
                 <div className='calendar_widget__actions'>
-                    <LoadingButton loading={loading} onClick={() => handleSubmit()} variant='text' color='primary'>Submit</LoadingButton>
+                    <LoadingButton
+                        loading={loading}
+                        onClick={() => handleSubmit()}
+                        variant='text' color='primary'
+                    >Submit</LoadingButton>
                     <Button onClick={() => handleClose()} variant='text'>Cancel</Button>
                 </div>
             </> : (

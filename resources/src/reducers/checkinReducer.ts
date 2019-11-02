@@ -1,4 +1,4 @@
-import { FETCH_CHECKIN_STATUS, CHECK_IN } from '../actions/types'
+import { CHECK_IN, FETCH_CHECKIN_STATUS } from '../actions/types'
 import { CheckInStatus, ICheckInResponse } from '../types/checkin'
 
 interface IState {
@@ -18,7 +18,7 @@ const initialState: IState = {
 }
 
 interface IAction {
-    type: string,
+    type: string
     payload: any
 }
 

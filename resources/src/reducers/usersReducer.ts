@@ -1,5 +1,5 @@
-import { FETCH_USERS, INVALIDATE_PASSWORD, RESET_PASSWORD, DISABLE_USER } from '../actions/types'
-import { IUser } from '../types/auth';
+import { DISABLE_USER, FETCH_USERS, INVALIDATE_PASSWORD, RESET_PASSWORD } from '../actions/types'
+import { IUser } from '../types/auth'
 
 interface IState {
     items: IUser[]

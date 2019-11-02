@@ -1,5 +1,5 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 
 import {
     Icon,
@@ -7,10 +7,10 @@ import {
     Tooltip
 } from '@material-ui/core'
 
+import { ICalendarItemAction, ICalendarItemDetails, ICheckInMethodDetails } from '../../types/calendar'
+import { getMethodDetailsFromName } from '../../utils/utils'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { LoadingMenuItem } from '../Form/LoadingMenuItem'
-import { ICalendarItemDetails, ICalendarItemAction, ICheckInMethodDetails } from '../../types/calendar'
-import { getMethodDetailsFromName } from '../../utils/utils'
 
 interface IProps {
     details: ICalendarItemDetails
@@ -31,7 +31,6 @@ export const CalendarDialogItem = (props: IProps) => {
         = React.useState(null)
     const [loadingActions, setLoadingActions]: [number[], React.Dispatch<React.SetStateAction<number[]>>]
         = React.useState([])
-    
 
     const setLoading = (index: number) => {
         setLoadingActions([...loadingActions, index])
@@ -51,8 +50,9 @@ export const CalendarDialogItem = (props: IProps) => {
         callback()
             .then(() => {
                 unsetLoading(index)
-                if (closeOnCallback)
+                if (closeOnCallback) {
                     props.onCloseDialog()
+                }
                 handleClose()
             })
             .catch(() => {
@@ -65,8 +65,9 @@ export const CalendarDialogItem = (props: IProps) => {
     }
 
     const handleClick = (onClick: () => void) => {
-        if (props.disabled || props.unavailable)
+        if (props.disabled || props.unavailable) {
             return
+        }
         onClick()
     }
 
@@ -121,7 +122,7 @@ export const CalendarDialogItem = (props: IProps) => {
                             >{action.value}</LoadingMenuItem>
                         ))}
                     </Menu>
-                </div>          
+                </div>
             )}
         </div>
     )

@@ -1,10 +1,10 @@
 import {
+    ATTACH_STUDENTS,
+    DELETE_CLUSTER,
+    DETATCH_STUDENTS,
     FETCH_CLUSTERS,
     NEW_CLUSTER,
-    DELETE_CLUSTER,
     UPDATE_CLUSTER,
-    ATTACH_STUDENTS,
-    DETATCH_STUDENTS
 } from '../actions/types'
 
 interface IState {
@@ -32,7 +32,9 @@ export const clustersReducer = (state = initialState, action: IAction) => {
         case ATTACH_STUDENTS:
             return {
                 ...state,
-                prev: state.prev.filter((item: any) => action.payload.every((payloadItem: any) => item.id !== payloadItem.id)),
+                prev: state.prev.filter((item: any) => (
+                    action.payload.every((payloadItem: any) => item.id !== payloadItem.id)
+                )),
                 next: action.payload
             }
     }

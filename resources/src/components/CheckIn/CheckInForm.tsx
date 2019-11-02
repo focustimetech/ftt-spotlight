@@ -1,6 +1,6 @@
-import * as React from 'react'
 import axios from 'axios'
 import classNames from 'classnames'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
 import {

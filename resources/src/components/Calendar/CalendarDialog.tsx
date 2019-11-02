@@ -3,24 +3,25 @@ import * as React from 'react'
 import {
     Button,
     Dialog,
-    DialogContent,
     DialogActions,
+    DialogContent
 } from '@material-ui/core'
 
 import {
     IAppointment,
     IBlockDetails,
-    ICalendarItemAction,
     ICalendarDialogGroup,
+    ICalendarItemAction,
+    ICalendarItemDetails,
     ILedgerEntry,
     IScheduled,
-    ICalendarItemDetails,
     ItemMap,
 } from '../../types/calendar'
-import { isEmpty } from '../../utils/utils'
 import { IStaff } from '../../types/staff'
-import { CalendarDialogItem } from './CalendarDialogItem'
+import { isEmpty } from '../../utils/utils'
+
 import { EnhancedDialogTitle } from '../Modals/EnhancedDialogTitle'
+import { CalendarDialogItem } from './CalendarDialogItem'
 
 interface IProps {
     blockDetails: IBlockDetails
@@ -34,7 +35,7 @@ export const CalendarDialog = (props: IProps) => {
         props.onClose()
     }
     const { date, end, flex, label, pending, start } = props.blockDetails
-    //console.log('CalendarDialog.PROPS:', props)
+
     return (
         <Dialog open={props.open} className='calendar-block-dialog'>
             <EnhancedDialogTitle className='calendar-block-dialog__title' onClose={handleClose}>
@@ -61,9 +62,11 @@ export const CalendarDialog = (props: IProps) => {
                                             calendarGroup.keys.map((groupKey: string, keyIndex: number) => (
                                                 props.blockDetails.data[groupKey].map((data: any, index: number) => {
                                                     const itemMap: ItemMap = calendarGroup.itemMaps[keyIndex]
-                                                    if (!itemMap)
+                                                    if (!itemMap) {
                                                         return
-                                                    const itemDetails: ICalendarItemDetails = itemMap(data, props.blockDetails)
+                                                    }
+                                                    const itemDetails: ICalendarItemDetails
+                                                        = itemMap(data, props.blockDetails)
                                                     const actions: ICalendarItemAction[] = calendarGroup.actions ? (
                                                         calendarGroup.actions(data, props.blockDetails)
                                                     ) : undefined

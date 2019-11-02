@@ -1,7 +1,7 @@
-import * as React from 'react'
-import { CircularProgress, Fade } from '@material-ui/core';
+import React from 'react'
 
-import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
+import { Fade } from '@material-ui/core'
+
 import LoadingBadge from './LoadingBadge'
 
 interface IProps {

@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import * as React from 'react'
+import React from 'react'
 
 import { CircularProgress, MenuItem } from '@material-ui/core'
 import { MenuItemProps } from '@material-ui/core/MenuItem'

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import { Button, CircularProgress } from '@material-ui/core'
 import { ButtonProps } from '@material-ui/core/Button'

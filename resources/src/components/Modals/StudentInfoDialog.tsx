@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import SwipeableViews from 'react-swipeable-views'
 
 import {

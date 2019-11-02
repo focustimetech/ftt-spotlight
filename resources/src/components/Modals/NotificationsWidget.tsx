@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import * as React from 'react'
+import React from 'react'
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
 

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { connect } from 'react-redux'
 import DateFnsUtils from '@date-io/date-fns'

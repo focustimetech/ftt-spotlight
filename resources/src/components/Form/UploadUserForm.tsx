@@ -1,5 +1,5 @@
 import 'filepond/dist/filepond.min.css'
-import * as React from 'react'
+import React from 'react'
 import { File as FilePondFile, FilePond as IFilePond } from 'react-filepond'
 
 import {

@@ -12,12 +12,10 @@ import {
     IReportVariantInfo,
     Report,
     ReportingState,
-    ReportSegment
 } from '../../types/report'
 import { DateRange } from '../../types/date'
 import { DateWidget } from './DateWidget'
 import { ReportNameWidget } from './ReportNameWidget'
-import { DATE_SEGMENT_LABELS } from '../../utils/date'
 import { REPORT_PLACEHOLDER_NAME } from '../../utils/report'
 
 interface IProps extends RouteComponentProps {
@@ -29,15 +27,6 @@ interface IProps extends RouteComponentProps {
 }
 
 class ReportEditor extends React.Component<IProps> {
-    handleChangeDateRange = (dateRange: DateRange) => {
-        this.props.onUpdateReport({ date_range: dateRange })
-    }
-
-    handleChangeSegment = (event: any) => {
-        const segment: ReportSegment = event.target.value as ReportSegment
-        this.props.onUpdateReport({ segment })
-    }
-
     handleChangeName = (name: string) => {
         this.props.onUpdateReport({ name })
     }
@@ -63,23 +52,10 @@ class ReportEditor extends React.Component<IProps> {
                     </div>
                     <div className='header_actions'>
                         <div>
-                            <TextField
-                                value={this.props.report.segment}
-                                onChange={this.handleChangeSegment}
-                                label='Segment'
-                                select
-                                variant='outlined'
-                                disabled={this.props.loading}
-                            >
-                                {Object.keys(DATE_SEGMENT_LABELS).map((segment: ReportSegment) => (
-                                    <MenuItem value={segment} key={segment}>{DATE_SEGMENT_LABELS[segment][1]}</MenuItem>
-                                ))}
-                            </TextField>
-                        </div>
-                        <div>
                             <DateWidget
                                 dateRange={this.props.report.date_range}
-                                onChange={this.handleChangeDateRange}
+                                segment={this.props.report.segment}
+                                onUpdateReport={this.props.onUpdateReport}
                                 disabled={this.props.loading}
                             />
                         </div>

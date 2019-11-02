@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development",
+    "lint": "tslint --project .",
     "watch": "webpack --mode development --watch",
     "prod": "webpack --mode production",
     "dev-server": "webpack-dev-server --mode development --inline --hot"

@@ -16,8 +16,8 @@ import {
 	Typography
 } from '@material-ui/core'
 
+import { ITableAction, ITableFilter, ITableHeaderColumn } from '../../types/table'
 import { EnhancedTableFilter} from './EnhancedTableFilter'
-import { ITableAction, ITableFilter, ITableHeaderColumn } from '../../types/table';
 
 interface IProps {
 	numSelected: number
@@ -111,8 +111,8 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 			<div style={{ height: 48, width: 160 }}>
 				<ContentLoader width={160} height={48} preserveAspectRatio='none'>
 					<circle cx='24' cy='24' r='24' />
-					<circle cx='80' cy='24' r='24' /> 
-					<circle cx='136' cy='24' r='24' /> 
+					<circle cx='80' cy='24' r='24' />
+					<circle cx='136' cy='24' r='24' />
 				</ContentLoader>
 			</div>
 		)
@@ -199,7 +199,10 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 										<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
 										{(this.props.numSelected > 0 && this.props.actions && this.props.actions.length) && (
 											this.props.actions.map((action: ITableAction) => (
-												<MenuItem key={action.id} onClick={() => this.handleActionSelect(action)}>{action.name}</MenuItem>
+												<MenuItem
+													key={action.id}
+													onClick={() => this.handleActionSelect(action)}
+												>{action.name}</MenuItem>
 											))
 										)}
 									</Menu>

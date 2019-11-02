@@ -1,14 +1,14 @@
-import React from 'react'
 import axios from 'axios'
+import React from 'react'
 
 import {
     Menu,
     MenuItem
 } from '@material-ui/core'
 
-import { NavItem } from './NavItem'
-import FeedbackDialog from '../Modals/FeedbackDialog'
 import { AboutSpotlight } from '../Modals/AboutSpotlight'
+import FeedbackDialog from '../Modals/FeedbackDialog'
+import { NavItem } from './NavItem'
 
 export const HelpWidget = () => {
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]

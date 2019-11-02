@@ -11,12 +11,13 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { LoadingButton } from '../Form/LoadingButton'
-import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { IStudent } from '../../types/student';
-import { INavTabs } from '../TopNav'
-import { UploadUserForm, IListItem } from '../Form/UploadUserForm'
+import { IStudent } from '../../types/student'
 import { isEmpty } from '../../utils/utils'
+import { INavTabs } from '../TopNav'
+
+import { LoadingButton } from '../Form/LoadingButton'
+import { IListItem, UploadUserForm } from '../Form/UploadUserForm'
+import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 
 interface IProps {
     edit?: boolean
@@ -47,7 +48,8 @@ const defaultListItems: IListItem[] = [
 export const StudentInfoDialog = (props: IProps) => {
     // Cast undefined props.edit as boolean; Ensure props.studentDetails aren't empty.
     const edit: boolean = props.edit !== false && !isEmpty(props.studentDetails)
-	const [tab, setTab]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
+    const [tab, setTab]: [number, React.Dispatch<React.SetStateAction<number>>]
+        = React.useState(0)
     const [details, setDetails]: [IStudent, React.Dispatch<React.SetStateAction<IStudent>>]
         = React.useState(edit ? props.studentDetails : emptyStudentDetails)
     const [uploading, setUploading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -61,23 +63,26 @@ export const StudentInfoDialog = (props: IProps) => {
         setErrored(false)
         const { name, value } = event.target
         if (name === 'initials') {
-            if (value.length > 2)
+            if (value.length > 2) {
                 return
+            }
             setDetails({
                 ...details,
                 initials: (value as string).toUpperCase()
             })
             return
         }
-        if (name === 'student_number')
+        if (name === 'student_number') {
             setUserExists(false)
-        const first_name: string = name === 'first_name' ? value : details.first_name
-        const last_name: string = name === 'last_name' ? value : details.last_name
+        }
+        const firstName: string = name === 'first_name' ? value : details.first_name
+        const lastName: string = name === 'last_name' ? value : details.last_name
         let autoInitials: string = null
-        if (name === 'first_name' || name === 'last_name')
-            autoInitials = first_name.length > 0 || last_name.length > 0
-                ? `${first_name.slice(0, 1).trim()}${last_name.slice(0, 1).trim()}`.trim().toUpperCase()
+        if (name === 'first_name' || name === 'last_name') {
+            autoInitials = firstName.length > 0 || lastName.length > 0
+                ? `${firstName.slice(0, 1).trim()}${lastName.slice(0, 1).trim()}`.trim().toUpperCase()
                 : ''
+        }
         setDetails({
             ...details,
             [name]: value,
@@ -98,8 +103,8 @@ export const StudentInfoDialog = (props: IProps) => {
             })
             .catch((error: any) => {
                 setUploading(false)
-				const errorCode = error.response.status
-                switch(errorCode) {
+				const errorCode: number = error.response.status
+                switch (errorCode) {
                     case 409:
                         setUserExists(true)
                         break

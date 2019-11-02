@@ -2,10 +2,10 @@ import React from 'react'
 
 import {
     Table,
-    TableCell,
-    TableRow,
     TableBody,
-    TableHead
+    TableCell,
+    TableHead,
+    TableRow,
 } from '@material-ui/core'
 
 interface IProps {

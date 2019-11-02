@@ -1,7 +1,8 @@
-import React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+
 import {
 	Avatar,
 	Button,
@@ -13,8 +14,8 @@ import {
 	Icon,
 	IconButton,
 	ListItemAvatar,
-	ListItemText,
 	ListItemSecondaryAction,
+	ListItemText,
 	Menu,
 	MenuItem,
 	Paper,
@@ -22,12 +23,13 @@ import {
 	Typography
 } from '@material-ui/core'
 
-import { REMEMBER_USERS, getObjectFromLocalStorage, writeObjectToLocalStorage } from '../../utils/storage'
-import { BannerContentProps } from '../Banner/BannerContent'
-import { Banner } from '../Banner/Banner'
-import { LoadingButton } from '../Form/LoadingButton'
+import { checkUsername, login} from '../../actions/authActions'
 import { AuthState, AuthUsername, ICredentials, ILoginError, LoginState } from '../../types/auth'
-import { login, checkUsername } from '../../actions/authActions'
+import { getObjectFromLocalStorage, REMEMBER_USERS, writeObjectToLocalStorage } from '../../utils/storage'
+import { Banner } from '../Banner/Banner'
+import { IBannerContentProps } from '../Banner/BannerContent'
+
+import { LoadingButton } from '../Form/LoadingButton'
 
 const selectBackground = () => {
 	const imageList: string[] = [
@@ -43,18 +45,18 @@ const selectBackground = () => {
 	return `static/images/splash/${imageList[arrayIndex]}`
 }
 
-interface Dimensions {
+interface IDimensions {
 	height: number
 	width: number
 }
 
-interface ReduxProps {
+interface IReduxProps {
 	settings: any
 	checkUsername: (username: string) => Promise<any>
 	login: (credentials: ICredentials) => Promise<any>
 }
 
-interface IProps extends ReduxProps, RouteComponentProps {
+interface IProps extends IReduxProps, RouteComponentProps {
 	authState: AuthState
 	failedSettings: boolean
 	onSignIn: () => Promise<any>
@@ -63,7 +65,7 @@ interface IProps extends ReduxProps, RouteComponentProps {
 
 interface IState {
 	bannerOpen: boolean
-	boundingBoxDimension: Dimensions
+	boundingBoxDimension: IDimensions
 	error: ILoginError | null
 	helpDialogOpen: boolean
 	redirectToReferrer: boolean
@@ -71,7 +73,7 @@ interface IState {
 	loadingPassword: boolean
 	imageURL: string
 	imageStatus: 'loading' | 'loaded'
-	imageDimensions: Dimensions
+	imageDimensions: IDimensions
 	loginState: LoginState
 	rememberUser: boolean
 	authUsername: AuthUsername
@@ -151,8 +153,9 @@ class Login extends React.Component<IProps, IState> {
 					message: 'The server encountered an error while logging you in. Please try again.'
 				}
 		}
-		if (loginError)
+		if (loginError) {
 			this.setState({ error: loginError })
+		}
 	}
 
 	/**
@@ -160,8 +163,9 @@ class Login extends React.Component<IProps, IState> {
 	 */
 	handleCheckUsername = (event: any) => {
 		event.preventDefault()
-		if (!this.validateForm())
+		if (!this.validateForm()) {
 			return
+		}
 		this.setState({
 			loadingUsername: true,
 			bannerOpen: false
@@ -182,8 +186,9 @@ class Login extends React.Component<IProps, IState> {
 
 	handleLogin = (event: any) => {
 		event.preventDefault()
-		if (!this.validateForm())
+		if (!this.validateForm()) {
 			return
+		}
 		this.setState({
 			loadingPassword: true,
 			bannerOpen: false
@@ -198,8 +203,9 @@ class Login extends React.Component<IProps, IState> {
 					.then(() => {
 						this.props.onSignIn()
 						this.setState({ redirectToReferrer: true })
-						if (this.state.rememberUser)
+						if (this.state.rememberUser) {
 							this.rememberAuthUsername(this.state.authUsername)
+						}
 					}, () => {
 						const loginError: ILoginError = {
 							type: 'username',
@@ -235,7 +241,7 @@ class Login extends React.Component<IProps, IState> {
 	resetLoginState = () => {
 		this.setState({
 			loginState: 'username',
-			menuRef: null	
+			menuRef: null
 		})
 	}
 
@@ -279,12 +285,13 @@ class Login extends React.Component<IProps, IState> {
 		) : []
 		this.rememberUsers = otherAuthUsernames
 		writeObjectToLocalStorage(REMEMBER_USERS, otherAuthUsernames)
-		if (!(this.rememberUsers && this.rememberUsers.length))
+		if (!(this.rememberUsers && this.rememberUsers.length)) {
 			this.resetLoginState()
-		else if (this.state.authUsername.username === authUsername.username)
+		} else if (this.state.authUsername.username === authUsername.username) {
 			this.setState({ authUsername: otherAuthUsernames[0] })
-		else
+		} else {
 			this.forceUpdate()
+		}
 	}
 
 	handleOpenMenu = (event: any) => {
@@ -324,17 +331,19 @@ class Login extends React.Component<IProps, IState> {
 	componentDidMount() {
 		document.title = 'Spotlight - Login'
 		this.rememberUsers = getObjectFromLocalStorage(REMEMBER_USERS) as AuthUsername[]
-		if (this.rememberUsers && this.rememberUsers.length > 0)
+		if (this.rememberUsers && this.rememberUsers.length > 0) {
 			this.setState({ authUsername: this.rememberUsers[0] })
-		else
+		} else {
 			this.setState({ loginState: 'username' })
+		}
 	}
 
 	render() {
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
-		if (this.state.redirectToReferrer)
+		if (this.state.redirectToReferrer) {
 			return <Redirect to={from} />
-		
+		}
+
 		const schoolName: string = this.props.settings.values && this.props.settings.values['school_name']
 			? this.props.settings.values['school_name'].value
 			: undefined
@@ -343,18 +352,18 @@ class Login extends React.Component<IProps, IState> {
 			: undefined
 		const isVertical: boolean = this.state.imageDimensions.width < this.state.boundingBoxDimension.width
 		const isRemembered: boolean = this.rememberUsers && this.rememberUsers.some((rememberUser: AuthUsername) => {
-			return this.state.authUsername.username === rememberUser.username	
+			return this.state.authUsername.username === rememberUser.username
 		})
-		let bannerProps: BannerContentProps = null
+		let bannerProps: IBannerContentProps = null
 		if (this.props.authState === 'failed-settings') {
 			bannerProps = {
-				'icon': 'warning',
-				'message': 'The server encountered an error while signing in. Please try again.'
+				icon: 'warning',
+				message: 'The server encountered an error while signing in. Please try again.'
 			}
 		} else if (this.props.authState === 'unauthenticated') {
 			bannerProps = {
-				'icon': 'lock',
-				'message': 'Your session has expired. Please sign back in to continue.'
+				icon: 'lock',
+				message: 'Your session has expired. Please sign back in to continue.'
 			}
 		}
 
@@ -390,7 +399,10 @@ class Login extends React.Component<IProps, IState> {
 					<div className='login__panel'>
 						<div className='login_container'>
 							<h2>Smart attendance for the internet age.</h2>
-							<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
+							<a
+								href='https://focustime.ca'
+								className='subtitle_link'
+							>Start using powerful tools that let your self directed study blocks succeed.</a>
 							<Paper className='login_form'>
 								<form>
 									<div className='logos-container'>
@@ -428,7 +440,7 @@ class Login extends React.Component<IProps, IState> {
 													open={Boolean(this.state.menuRef)}
 													anchorEl={this.state.menuRef}
 													anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-													transformOrigin={{ vertical: "top", horizontal: "center" }}
+													transformOrigin={{ vertical: 'top', horizontal: 'center' }}
 													onClose={this.handleCloseMenu}
 												>
 													{(!isRemembered && this.state.authUsername) && (

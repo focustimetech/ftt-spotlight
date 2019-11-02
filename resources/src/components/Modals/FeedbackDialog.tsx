@@ -1,6 +1,6 @@
+import axios from 'axios'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import axios from 'axios'
 
 import {
     Button,
@@ -15,10 +15,11 @@ import {
     TextField
 } from '@material-ui/core'
 
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { IStaffUser } from '../../types/auth'
+
 import { LoadingButton } from '../Form/LoadingButton'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { queueSnackbar, ISnackbar } from '../../actions/snackbarActions'
-import { IStaffUser } from '../../types/auth'
 
 interface IChip {
     label: string,
@@ -40,12 +41,12 @@ const initialState: IState = {
     uploading: false
 }
 
-interface ReduxProps {
+interface IReduxProps {
 	currentUser: IStaffUser
 	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     open: boolean
     onClose: () => void
 }
@@ -91,7 +92,7 @@ class FeedbackDialog extends React.Component<IProps, IState> {
         }
         this.setState({ uploading: true })
         axios.post('/api/feedback', data)
-            .then(res => {
+            .then((res: any) => {
                 this.setState(initialState)
                 this.props.onClose()
                 this.props.queueSnackbar({ message: 'Thanks for your feedback!' })
@@ -103,13 +104,18 @@ class FeedbackDialog extends React.Component<IProps, IState> {
             <Dialog open={this.props.open}>
                 <EnhancedDialogTitle title='Provide Feedback' onClose={this.props.onClose}/>
                 <DialogContent>
+                    {/* tslint:disable-next-line: max-line-length */}
                     <DialogContentText>We take feedback seriously to ensure Spotlight meets your school's needs.</DialogContentText>
                     <div className='chips_container'>
                         {chips.map((chip: IChip, index: number) => {
                             const selected: boolean = this.state.selectedChips.includes(chip.value)
                             return (
                                 <Chip
-                                    onClick={() => {selected ? this.handleDeselectChip(chip.value) : this.handleSelectChip(chip.value)}}
+                                    onClick={() => {
+                                        selected
+                                            ? this.handleDeselectChip(chip.value)
+                                            : this.handleSelectChip(chip.value)
+                                    }}
                                     variant={selected ? 'default' : 'outlined'}
                                     onDelete={selected ? () => null : undefined}
                                     deleteIcon={selected ? <Icon>done</Icon> : undefined}

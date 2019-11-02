@@ -7,29 +7,29 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,    
+    DialogContentText,
 } from '@material-ui/core'
 
-import { LoadingButton } from '../Form/LoadingButton'
-import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
-import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 import {
     fetchStaffList,
-    setStudentPlan,
+    ISchedulePlanRequest,
     IStaffTopic,
-    ISchedulePlanRequest
+    setStudentPlan
 } from '../../actions/studentScheduleActions'
 import { IBlockDetails } from '../../types/calendar'
 
-interface ReduxProps {
+import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
+import { LoadingButton } from '../Form/LoadingButton'
+import { EnhancedDialogTitle } from './EnhancedDialogTitle'
+
+interface IReduxProps {
     fetchStaffList: (blockID: number, dateTime: string) => Promise<any>
     setStudentPlan: (schedulePlan: ISchedulePlanRequest) => Promise<any>
     staffList: IStaffTopic[]
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     blockDetails: IBlockDetails
-    //onClose: () => void  // check aroud where itemMap is done
     onSubmit: () => Promise<any>
 }
 
@@ -74,7 +74,7 @@ class PlanDialog extends React.Component<IProps, IState> {
                             uploading: false
                         })
                     })
-            })        
+            })
     }
 
     componentDidMount() {

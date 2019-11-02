@@ -1,8 +1,8 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import * as React from 'react'
 
+import { CircularProgress, MenuItem } from '@material-ui/core'
 import { MenuItemProps } from '@material-ui/core/MenuItem'
-import { MenuItem, CircularProgress } from '@material-ui/core'
 
 interface IProps extends MenuItemProps {
     loading: boolean

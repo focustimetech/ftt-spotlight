@@ -4,8 +4,8 @@ import {
     Button,
     Checkbox,
     Dialog,
-    DialogContent,
     DialogActions,
+    DialogContent,
     List,
     ListItem,
     ListItemIcon,
@@ -15,11 +15,9 @@ import {
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 
-interface ReduxProps {}
-
 type LoadingState = 'idle' | 'submitting' | 'fetching'
 
-interface IProps extends ReduxProps {
+interface IProps {
     open: boolean
     clusters: any[]
     selected?: number[]
@@ -39,7 +37,7 @@ export class ClustersDialog extends React.Component<IProps, IState> {
     }
 
     handleToggle = (index: number) => {
-
+        //
     }
 
     handleSubmit = () => {

@@ -13,15 +13,16 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { isEmpty } from '../../utils/utils'
-import { SetState } from '../../types/app'
-import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { IStaff, IStaffTitle } from '../../types/staff';
-import { LoadingButton } from '../Form/LoadingButton'
-import { INavTabs } from '../TopNav'
-import { UploadUserForm, IListItem } from '../Form/UploadUserForm'
-import { ConfirmPasswordDialog } from '../Modals/ConfirmPasswordDialog'
 import { IStaffRequest } from '../../actions/staffActions'
+import { SetState } from '../../types/app'
+import { IStaff, IStaffTitle } from '../../types/staff'
+import { isEmpty } from '../../utils/utils'
+
+import { LoadingButton } from '../Form/LoadingButton'
+import { IListItem, UploadUserForm } from '../Form/UploadUserForm'
+import { ConfirmPasswordDialog } from '../Modals/ConfirmPasswordDialog'
+import { INavTabs } from '../TopNav'
+import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 
 interface IProps {
     edit?: boolean
@@ -51,8 +52,7 @@ const defaultListItems: IListItem[] = [
 
 export const StaffInfoDialog = (props: IProps) => {
     const edit: boolean = props.edit !== false && !isEmpty(props.staffDetails)
-
-	const [tab, setTab]: [number, SetState<number>] = React.useState(0)
+    const [tab, setTab]: [number, SetState<number>] = React.useState(0)
     const [details, setDetails]: [IStaffRequest, SetState<IStaffRequest>]
         = React.useState(edit ? props.staffDetails : emptyStaffRequest)
     const [uploading, setUploading]: [boolean, SetState<boolean>] = React.useState(false)
@@ -64,23 +64,26 @@ export const StaffInfoDialog = (props: IProps) => {
         setErrored(false)
         const { name, value } = event.target
         if (name === 'initials') {
-            if (value.length > 2)
+            if (value.length > 2) {
                 return
+            }
             setDetails({
                 ...details,
                 initials: (value as string).toUpperCase()
             })
             return
         }
-        if (name === 'email')
+        if (name === 'email') {
             setUserExists(false)
-        const first_name: string = name === 'first_name' ? value : details.first_name
-        const last_name: string = name === 'last_name' ? value : details.last_name
+        }
+        const firstName: string = name === 'first_name' ? value : details.first_name
+        const lastName: string = name === 'last_name' ? value : details.last_name
         let autoInitials: string = null
-        if (name === 'first_name' || name === 'last_name')
-            autoInitials = first_name.length > 0 || last_name.length > 0
-                ? `${first_name.slice(0, 1).trim()}${last_name.slice(0, 1).trim()}`.trim().toUpperCase()
+        if (name === 'first_name' || name === 'last_name') {
+            autoInitials = firstName.length > 0 || lastName.length > 0
+                ? `${firstName.slice(0, 1).trim()}${lastName.slice(0, 1).trim()}`.trim().toUpperCase()
                 : ''
+        }
         setDetails({
             ...details,
             [name]: value,
@@ -121,8 +124,8 @@ export const StaffInfoDialog = (props: IProps) => {
             })
             .catch((error: any) => {
                 setUploading(false)
-				const errorCode = error.response.status
-                switch(errorCode) {
+			    const errorCode: number = error.response.status
+                switch (errorCode) {
                     case 409:
                         setUserExists(true)
                         break
@@ -151,7 +154,11 @@ export const StaffInfoDialog = (props: IProps) => {
                         className='text-field'
                         required
                         error={userExists}
-                            helperText={userExists ? 'A staff member with this email address already exists.' : undefined}
+                            helperText={
+                                userExists
+                                    ? 'A staff member with this email address already exists.'
+                                    : undefined
+                            }
                         margin='normal'
                         fullWidth
                         type='text'

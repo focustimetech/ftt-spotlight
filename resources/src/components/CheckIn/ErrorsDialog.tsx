@@ -12,14 +12,14 @@ import {
 } from '@material-ui/core'
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { CHECK_IN_ERRORS, getObjectFromLocalStorage } from '../../utils/storage'
 import { makeArray } from '../../utils/utils'
-import { getObjectFromLocalStorage, CHECK_IN_ERRORS } from '../../utils/storage'
 
-interface ReduxProps {
+interface IReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     open: boolean
     onClose: () => void
 }
@@ -40,6 +40,7 @@ class ErrorsDialog extends React.Component<IProps> {
                 <DialogContent>
                     {hasErrors ? (
                         <>
+                            {/* tslint:disable-next-line: max-line-length */}
                             <DialogContentText>The following check-in entries could not be resolved. This may be because the entry was mistyped, or the entry is not associated with an existing student account.</DialogContentText>
                             {errors.map((error: any, index: number) => (
                                 <div key={index}>
@@ -54,11 +55,18 @@ class ErrorsDialog extends React.Component<IProps> {
                             ))}
                         </>
                     ) : (
-                        <DialogContentText>No errors yet. Student numbers you enter but don't resolve will appear here.</DialogContentText>
+                        <>
+                            {/* tslint:disable-next-line: max-line-length */}
+                            <DialogContentText>No errors yet. Student numbers you enter but don't resolve will appear here.</DialogContentText>
+                        </>
                     )}
                     <DialogActions>
                         {hasErrors && (
-                            <Button variant='text' color='primary' onClick={() => this.handleClearErrors()}>Clear All</Button>
+                            <Button
+                                variant='text'
+                                color='primary'
+                                onClick={() => this.handleClearErrors()}
+                            >Clear All</Button>
                         )}
                         <Button variant='text' onClick={() => this.props.onClose()}>Close</Button>
                     </DialogActions>

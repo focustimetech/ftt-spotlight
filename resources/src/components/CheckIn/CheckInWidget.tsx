@@ -1,12 +1,10 @@
 import * as React from 'react'
 
-import {
-    Dialog,
-} from '@material-ui/core'
+import { Dialog } from '@material-ui/core'
 
-import CheckInForm from './CheckInForm'
-import { NavItem } from '../Sidebar/NavItem'
 import { EnhancedDialogTitle } from '../Modals/EnhancedDialogTitle'
+import { NavItem } from '../Sidebar/NavItem'
+import CheckInForm from './CheckInForm'
 
 export const CheckInWidget = () => {
     const [open, setOpen] = React.useState(false)

@@ -1,7 +1,7 @@
+import axios from 'axios'
 import * as React from 'react'
 import ContentLoader from 'react-content-loader'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 
 import {
     Drawer,
@@ -38,8 +38,6 @@ interface IState {
     searchResults: ISearchResults
 }
 
-interface IProps {}
-
 const searchGroups: ISearchGroup[] = [
     { value: 'students', label: 'Students' },
     { value: 'staff', label: 'Staff' },
@@ -54,17 +52,17 @@ const emptySearchResults: ISearchResults = {
     clusters: []
 }
 
-export class SearchWidget extends React.Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props)
-        this.escFunction = this.escFunction.bind(this)
-    }
-
+export class SearchWidget extends React.Component<{}, IState> {
     state: IState = {
         open: false,
         loading: false,
         searchQuery: '',
         searchResults: emptySearchResults
+    }
+
+    constructor(props: any) {
+        super(props)
+        this.escFunction = this.escFunction.bind(this)
     }
 
     handleClickOpen = () => {
@@ -85,7 +83,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
         if (query.length > 0) {
             this.setState({ loading: true }, () => {
                 axios.get(`/api/search?query=${query}`)
-                .then(res => {
+                .then((res: any) => {
                     // Wait to show results until the query matches what was typed in.
                     if (res.data.query === this.state.searchQuery) {
                         const results: ISearchResults = res.data.results
@@ -118,7 +116,7 @@ export class SearchWidget extends React.Component<IProps, IState> {
         document.removeEventListener('keydown', this.escFunction, false)
     }
 
-    render () {
+    render() {
         const resultCount: number = this.state.searchResults ? (
             searchGroups.reduce((count: number, itemGroup: ISearchGroup) => {
                 return count + this.state.searchResults[itemGroup.value].length
@@ -131,7 +129,9 @@ export class SearchWidget extends React.Component<IProps, IState> {
                 <Drawer open={this.state.open}>
 					<div className='sidebar_modal search_modal items_modal'>
                         <div className='sidebar_modal__header'>
-                            <IconButton className='button_back' onClick={this.handleClose}><Icon>arrow_back</Icon></IconButton>
+                            <IconButton className='button_back' onClick={this.handleClose}>
+                                <Icon>arrow_back</Icon>
+                            </IconButton>
                             <TextField
                                 name='search'
 								type='text'
@@ -148,12 +148,16 @@ export class SearchWidget extends React.Component<IProps, IState> {
                         <div className='sidebar_modal__content items_modal__content'>
                             <Grow in={!this.state.loading && resultCount > 0} timeout={{enter: 200, exit: 0}}>
                                 <div className='content-inner'>
-                                    {searchGroups.filter((searchGroup: ISearchGroup) => this.state.searchResults[searchGroup.value].length > 0)
+                                    {searchGroups
+                                        .filter((searchGroup: ISearchGroup) => (
+                                            this.state.searchResults[searchGroup.value].length > 0
+                                        ))
                                         .map((searchGroup: ISearchGroup) => (
                                             <>
                                                 <h4 className='items-group_header'>{searchGroup.label}</h4>
                                                 <List className='items-group_list'>{
-                                                    this.state.searchResults[searchGroup.value].map((item: any, index: number) => {
+                                                    this.state.searchResults[searchGroup.value]
+                                                        .map((item: any, index: number) => {
                                                         let url: string
                                                         let value: string
                                                         switch (searchGroup.value) {
@@ -176,7 +180,9 @@ export class SearchWidget extends React.Component<IProps, IState> {
                                                         }
                                                         return (
                                                             <Link key={index} to={url} onClick={this.handleClose}>
-                                                                <ListItem className='items-group_list__item'>{value}</ListItem>
+                                                                <ListItem className='items-group_list__item'>
+                                                                    {value}
+                                                                </ListItem>
                                                             </Link>
                                                         )
                                                     })}

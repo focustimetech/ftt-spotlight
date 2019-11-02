@@ -14,16 +14,16 @@ import {
     Tooltip
 } from '@material-ui/core'
 
-import { setCapacity } from '../../actions/staffActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { setCapacity } from '../../actions/staffActions'
 import { LoadingButton } from '../Form/LoadingButton'
 
-interface ReduxProps {
+interface IReduxProps {
     setCapacity: (capacity: number) => Promise<any>
     queueSnackbar: (snackabr: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     capacity: number
 }
 

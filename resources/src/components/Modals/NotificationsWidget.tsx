@@ -1,7 +1,7 @@
-import * as React from 'react'
 import classNames from 'classnames'
-import { connect } from 'react-redux'
+import * as React from 'react'
 import ContentLoader from 'react-content-loader'
+import { connect } from 'react-redux'
 
 import {
     Button,
@@ -16,11 +16,6 @@ import {
     IconButton
 } from '@material-ui/core'
 
-import { EmptyStateIcon } from '../EmptyStateIcon'
-import { NavItem } from '../Sidebar/NavItem'
-import { ISnackbar, ISnackbarButton, queueSnackbar } from '../../actions/snackbarActions'
-import { ConfirmationDialog } from './ConfirmationDialog'
-import { INotification } from '../../types/staff'
 import {
     archiveAllNotifications,
     archiveNotification,
@@ -30,7 +25,13 @@ import {
     markNotificationAsUnread,
     unarchiveNotification
 } from '../../actions/notificationsActions'
+import { ISnackbar, ISnackbarButton, queueSnackbar } from '../../actions/snackbarActions'
 import { IStaffUser } from '../../types/auth'
+import { INotification } from '../../types/staff'
+
+import { EmptyStateIcon } from '../EmptyStateIcon'
+import { NavItem } from '../Sidebar/NavItem'
+import { ConfirmationDialog } from './ConfirmationDialog'
 
 interface IState {
     archiveAllDialogOpen: boolean
@@ -40,7 +41,7 @@ interface IState {
     snackbars: ISnackbar[]
 }
 
-interface ReduxProps {
+interface IReduxProps {
     currentUser: IStaffUser
     notifications: INotification[]
     archiveAllNotifications: () => void
@@ -53,14 +54,7 @@ interface ReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {}
-
-class NotificationsWidget extends React.Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props)
-        this.escFunction = this.escFunction.bind(this)
-    }
-
+class NotificationsWidget extends React.Component<IReduxProps, IState> {
     timer: number // Polling timer
 
     state: IState = {
@@ -87,6 +81,11 @@ class NotificationsWidget extends React.Component<IProps, IState> {
         </div>
     )
 
+    constructor(props: IReduxProps) {
+        super(props)
+        this.escFunction = this.escFunction.bind(this)
+    }
+
     handleClickOpen = () => {
         this.setState({ open: true })
     }
@@ -110,8 +109,9 @@ class NotificationsWidget extends React.Component<IProps, IState> {
             // Notification is closed
             this.handleOpenNotification(id)
         }
-        if (!read)
+        if (!read) {
             this.handleMarkRead(notification)
+        }
     }
 
     handleCloseNotification = (id: number) => {
@@ -195,7 +195,7 @@ class NotificationsWidget extends React.Component<IProps, IState> {
             () => this.refreshNotifications(),
             this.props.currentUser && this.props.currentUser.details.administrator ? 10000 : 30000
         )
-        
+
         // Fetch Notifications
         this.setState({ loading: true })
         this.props.fetchNotifications().then(
@@ -207,13 +207,13 @@ class NotificationsWidget extends React.Component<IProps, IState> {
 
     componentWillUnmount() {
         document.removeEventListener('keydown', this.escFunction, false)
-        
+
         // Clear polling timer
         clearInterval(this.timer)
         this.timer = null
     }
 
-    componentDidUpdate(previousProps: IProps) {
+    componentDidUpdate(previousProps: IReduxProps) {
         if (this.state.loading || !this.props.notifications || !previousProps.notifications) {
             return
         }
@@ -266,7 +266,9 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                 <Drawer open={this.state.open}>
 					<div className='sidebar_modal notifications_modal items_modal'>
                         <div className='sidebar_modal__header'>
-                            <IconButton className='button_back' onClick={this.handleClose}><Icon>arrow_back</Icon></IconButton>
+                            <IconButton className='button_back' onClick={this.handleClose}>
+                                <Icon>arrow_back</Icon>
+                            </IconButton>
                             <h3>Notifications</h3>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
@@ -284,7 +286,8 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                             <Grow in={this.props.notifications && this.props.notifications.length > 0}>
                                 <div className='content-inner'>
                                     {this.props.notifications.map((notification: INotification) => {
-                                        const expanded: boolean = this.state.openNotifications.indexOf(notification.id) >= 0
+                                        const expanded: boolean
+                                            = this.state.openNotifications.indexOf(notification.id) >= 0
                                         const read: boolean = expanded || notification.read
                                         return (
                                             <ExpansionPanel
@@ -292,7 +295,10 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                                                 expanded={expanded}
                                                 key={notification.id}
                                             >
-                                                <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>} onClick={() => this.handleClick(notification)}>
+                                                <ExpansionPanelSummary
+                                                    expandIcon={<Icon>expand_more</Icon>}
+                                                    onClick={() => this.handleClick(notification)}
+                                                >
                                                     <div className='notification__info'>
                                                         {expanded ? (
                                                             <>
@@ -310,10 +316,16 @@ class NotificationsWidget extends React.Component<IProps, IState> {
                                                         )}
                                                     </div>
                                                 </ExpansionPanelSummary>
-                                                <ExpansionPanelDetails><p>{notification.body}</p></ExpansionPanelDetails>
+                                                <ExpansionPanelDetails>
+                                                    <p>{notification.body}</p>
+                                                </ExpansionPanelDetails>
                                                 <ExpansionPanelActions>
-                                                    <Button onClick={() => this.handleMarkUnread(notification)}>Mark Unread</Button>
-                                                    <Button onClick={() => this.handleArchive(notification)}>Archive</Button>
+                                                    <Button
+                                                        onClick={() => this.handleMarkUnread(notification)}
+                                                    >Mark Unread</Button>
+                                                    <Button
+                                                        onClick={() => this.handleArchive(notification)}
+                                                    >Archive</Button>
                                                 </ExpansionPanelActions>
                                             </ExpansionPanel>
                                         )

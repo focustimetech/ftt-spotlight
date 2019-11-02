@@ -1,6 +1,7 @@
-import * as React from 'react'
-import { FilePond as IFilePond, File as FilePondFile } from 'react-filepond'
 import 'filepond/dist/filepond.min.css'
+import * as React from 'react'
+import { File as FilePondFile, FilePond as IFilePond } from 'react-filepond'
+
 import {
     Button,
     CircularProgress,
@@ -12,19 +13,19 @@ import {
     ListItem,
     ListItemSecondaryAction,
     Step,
-    Stepper,
     StepContent,
     StepLabel,
+    Stepper,
     Tooltip
 } from '@material-ui/core'
-import { CSSProperties } from '@material-ui/styles';
+import { CSSProperties } from '@material-ui/styles'
+
+import { uploadCSV, UserType } from '../../utils/storage'
 
 import { LoadingButton } from '../Form/LoadingButton'
-import { uploadCSV, UserType } from '../../utils/storage'
-import { ConfirmPasswordDialog } from '../Modals/ConfirmPasswordDialog';
+import { ConfirmPasswordDialog } from '../Modals/ConfirmPasswordDialog'
 
 type ActualFileObject = FilePondFile['file']
-
 
 export interface IListItem {
     label: string
@@ -40,13 +41,13 @@ interface IProps {
 export const UploadUserForm = (props: IProps) => {
 
     const [step, setStep]: [number, React.Dispatch<React.SetStateAction<number>>] = React.useState(0)
-    
+
     const [files, setFiles]: [ActualFileObject[], React.Dispatch<React.SetStateAction<ActualFileObject[]>>]
         = React.useState([])
 
     const [listItems, setListItems]: [IListItem[], React.Dispatch<React.SetStateAction<IListItem[]>>]
         = React.useState(props.headers)
-    
+
     const [uploading, setUploading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState(false)
 
     const [passwordDialogOpen, setPasswordDialogOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -101,6 +102,7 @@ export const UploadUserForm = (props: IProps) => {
                     <Step key={0}>
                         <StepLabel>Choose Files</StepLabel>
                         <StepContent>
+                            {/* tslint:disable-next-line: max-line-length */}
                             <p>Select up to five CSV files to create Student accounts. Ensure that all files have identical column ordering.</p>
                             <FilePond
                                 files={files}
@@ -109,7 +111,12 @@ export const UploadUserForm = (props: IProps) => {
                                 maxFiles={5}
                             />
                             <div className='stepper-actions'>
-                                <Button disabled={files.length === 0} onClick={() => setStep(1)} variant='contained' color='primary'>Next</Button>
+                                <Button
+                                    disabled={files.length === 0}
+                                    onClick={() => setStep(1)}
+                                    variant='contained'
+                                    color='primary'
+                                >Next</Button>
                             </div>
                         </StepContent>
                     </Step>
@@ -131,7 +138,10 @@ export const UploadUserForm = (props: IProps) => {
                                         </IconButton>
                                     )
                                     const buttonDown = (
-                                        <IconButton onClick={() => swapIndices(index, index + 1)} disabled={index >= listItems.length - 1}>
+                                        <IconButton
+                                            onClick={() => swapIndices(index, index + 1)}
+                                            disabled={index >= listItems.length - 1}
+                                        >
                                             <Icon>expand_more</Icon>
                                         </IconButton>
                                     )
@@ -141,7 +151,11 @@ export const UploadUserForm = (props: IProps) => {
                                             {listItem.label}
                                             <ListItemSecondaryAction>
                                                 {index >= 0 ? buttonUp : <Tooltip title='Move Up'>{buttonUp}</Tooltip>}
-                                                {index >= listItems.length - 1 ? buttonDown : <Tooltip title='Move Down'>{buttonDown}</Tooltip>}
+                                                {index >= listItems.length - 1 ? (
+                                                    buttonDown
+                                                ) : (
+                                                    <Tooltip title='Move Down'>{buttonDown}</Tooltip>
+                                                )}
                                             </ListItemSecondaryAction>
                                         </ListItem>
                                     )
@@ -156,6 +170,7 @@ export const UploadUserForm = (props: IProps) => {
                     <Step>
                         <StepLabel>Submit Files</StepLabel>
                         <StepContent>
+                            {/* tslint:disable-next-line: max-line-length */}
                             <p>When you're ready, click <span style={{fontWeight: 500}}>Upload</span> to send your CSV files.</p>
                             <div className='stepper-actions'>
                                 <Button onClick={() => setStep(1)} variant='text'>Back</Button>
@@ -171,6 +186,7 @@ export const UploadUserForm = (props: IProps) => {
                     <Step completed={step >= 3}>
                         <StepLabel>Done</StepLabel>
                         <StepContent>
+                            {/* tslint:disable-next-line: max-line-length */}
                             <p>All done! We'll take it from here. You'll receive a notification once all CSVs have been processed.</p>
                             <DialogActions>
                                 <Button onClick={() => setStep(0)} variant='contained' color='primary'>Add More</Button>

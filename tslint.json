@@ -31,7 +31,9 @@
 				"functions": "never",
 				"typeLiterals": "ignore"
 			}
-		]
+		],
+		"max-line-length": false,
+		"align": false
 	},
 	"rulesDirectory": [],
 	"linterOptions": {

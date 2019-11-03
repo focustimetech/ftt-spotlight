@@ -21,7 +21,17 @@
 			true,
 			"no-public"
 		],
-		"indent": [false]
+        "indent": [false],
+		"no-string-literal": false,
+		"trailing-comma": [
+			true,
+			{
+				"objects": "ignore",
+				"arrays": "always",
+				"functions": "never",
+				"typeLiterals": "ignore"
+			}
+		]
 	},
 	"rulesDirectory": [],
 	"linterOptions": {

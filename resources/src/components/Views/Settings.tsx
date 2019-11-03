@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { connect } from 'react-redux'
 
 import {
@@ -11,25 +10,24 @@ import {
     Icon,
     Switch,
     TextField
-} from '@material-ui/core';
+} from '@material-ui/core'
 
-import { ISettingsGroup, ISetting } from '../../types/appSettings'
 import { fetchSettings } from '../../actions/settingsActions'
+import { ISetting, ISettingsGroup } from '../../types/appSettings'
+
 import { TopNav } from '../TopNav'
 
-interface ReduxProps {
+interface IReduxProps {
     settingsGroups: ISettingsGroup[]
     fetchSettings: () => void
 }
-
-interface IProps extends ReduxProps {}
 
 interface IState {
     expanded: number,
     loading: boolean
 }
 
-class Settings extends React.Component<IProps, IState> {
+class Settings extends React.Component<IReduxProps, IState> {
     state: IState = {
         expanded: 0,
         loading: false
@@ -60,7 +58,10 @@ class Settings extends React.Component<IProps, IState> {
                                     key={index}
                                     expanded={expanded}
                                 >
-                                    <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}onClick={() => this.handleClick(index)}>
+                                    <ExpansionPanelSummary
+                                        expandIcon={<Icon>expand_more</Icon>}
+                                        onClick={() => this.handleClick(index)}
+                                    >
                                         <p className='expansion-panel__heading'>{settingsGroup.name}</p>
                                         <p className='expansion-panel__subheading'>{settingsGroup.description}</p>
                                     </ExpansionPanelSummary>
@@ -77,7 +78,12 @@ class Settings extends React.Component<IProps, IState> {
                                                             break
                                                         case 'number':
                                                             control = (
-                                                                <TextField value={setting.value} id={setting.key} type='number' required />
+                                                                <TextField
+                                                                    value={setting.value}
+                                                                    id={setting.key}
+                                                                    type='number'
+                                                                    required
+                                                                />
                                                             )
                                                             break
                                                         case 'datetime':

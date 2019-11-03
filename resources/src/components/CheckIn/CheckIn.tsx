@@ -142,7 +142,7 @@ class CheckIn extends React.Component<IProps, IState> {
             scheduledSelected: newSelected ? (
                 [...state.scheduledSelected, id]
             ) : (
-                state.scheduledSelected.filter((newSelected: number) => selected !== id)
+                state.scheduledSelected.filter((newSelected: number) => newSelected !== id)
             )
         }))
     }

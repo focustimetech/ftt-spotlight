@@ -8,8 +8,8 @@ import {
     LinearProgress,
     List,
     ListItem,
-    ListItemText,
     ListItemIcon,
+    ListItemText,
     TableSortLabel,
     Tooltip,
     Typography
@@ -26,13 +26,13 @@ export interface ISelectableListItem {
 export interface ISelectableListAction {
     icon: string
     title: string
-    callback: (selected: (string | number)[]) => Promise<any>
+    callback: (selected: Array<string | number>) => Promise<any>
 }
 
 interface IProps {
     actions: ISelectableListAction[]
     items: ISelectableListItem[]
-    selected: (string | number)[]
+    selected: Array<string | number>
     title: string
     sortable?: boolean
     sortLabel?: string
@@ -87,14 +87,16 @@ export class SelectableList extends React.Component<IProps, IState> {
     }
 
     handleClick = (item: ISelectableListItem, selected: boolean) => {
-        if (this.isLoading())
+        if (this.isLoading()) {
             return
+        }
         this.props.onToggleSelected(item.id, !selected)
     }
 
     handleSelectAll = () => {
-        if (this.isLoading())
+        if (this.isLoading()) {
             return
+        }
         this.props.onSelectAll()
     }
 
@@ -150,20 +152,20 @@ export class SelectableList extends React.Component<IProps, IState> {
                 {isLoading ? <LinearProgress /> : <Divider />}
                 <List className='selectable-list__list'>
                     {items.map((item: ISelectableListItem) => {
-                        const selected: boolean = this.props.selected.indexOf(item.id) !== -1
+                        const isSelected: boolean = this.props.selected.indexOf(item.id) !== -1
                         return (
                             <ListItem
                                 disabled={isLoading}
                                 dense
                                 button
                                 disableRipple
-                                onClick={() => this.handleClick(item, selected)}
+                                onClick={() => this.handleClick(item, isSelected)}
                                 key={item.id}
                             >
                                 <ListItemIcon>
                                     <Checkbox
                                         color='primary'
-                                        edge="start"
+                                        edge='start'
                                         checked={selected}
                                         tabIndex={-1}
                                     />

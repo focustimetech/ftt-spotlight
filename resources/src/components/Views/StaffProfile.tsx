@@ -1,8 +1,8 @@
-import React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 import ContentLoader from 'react-content-loader'
-import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router-dom'
 
 import {
 	Avatar,
@@ -14,47 +14,49 @@ import {
 	Tooltip,
 } from '@material-ui/core'
 
-import { isEmpty, makeArray } from '../../utils/utils'
-import { StarredItem } from '../../reducers/starReducer'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { fetchStaffProfile } from '../../actions/staffProfileActions'
+import { fetchStaffSchedule } from '../../actions/staffScheduleActions'
+import { starItem, unstarItem } from '../../actions/starActions'
+import { deleteAppointment } from '../../actions/studentScheduleActions'
+
+import { createTopicSchedule, deleteTopicSchedule, ITopicScheduleRequest } from '../../actions/topicActions'
+import { IStarredItem } from '../../reducers/starReducer'
 import { IUser } from '../../types/auth'
-import { IStudent } from '../../types/student'
-import { ConfirmationDialog } from '../Modals/ConfirmationDialog'
 import {
 	IAmendment,
 	IAppointment,
-	ICalendarDay,
-	ICalendarBlock,
 	IBlockDetails,
+	ICalendarBlock,
+	ICalendarBlockVariant,
+	ICalendarDay,
 	ICalendarDialogGroup,
 	ILedgerEntry,
-	ITopic,
-	ITopicSchedule,
 	ISchedulePlan,
-	ICalendarBlockVariant,
+	ITopic,
+	ITopicSchedule
 } from '../../types/calendar'
+import { IStudent } from '../../types/student'
+import { isEmpty, makeArray } from '../../utils/utils'
+
+import { Calendar } from '../Calendar/Calendar'
+import { CancelAppointment } from '../Calendar/CancelAppointment'
 import { LoadingButton } from '../Form/LoadingButton'
 import CapacityWidget from '../Modals/CapacityWidget'
 import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
-import { CancelAppointment } from '../Calendar/CancelAppointment'
-import { Calendar } from '../Calendar/Calendar'
-import { TopNav } from '../TopNav'
-import { StarButton } from '../StarButton'
+import { ConfirmationDialog } from '../Modals/ConfirmationDialog'
 import TopicsDialog from '../Modals/TopicsDialog'
-import { queueSnackbar, ISnackbar } from '../../actions/snackbarActions'
-import { deleteAppointment } from '../../actions/studentScheduleActions'
-import { starItem, unstarItem } from '../../actions/starActions'
-import { fetchStaffProfile } from '../../actions/staffProfileActions'
-import { fetchStaffSchedule } from '../../actions/staffScheduleActions'
-import { createTopicSchedule, deleteTopicSchedule, ITopicScheduleRequest } from '../../actions/topicActions'
+import { StarButton } from '../StarButton'
+import { TopNav } from '../TopNav'
 
 interface IReduxProps {
 	currentUser: IUser
 	staff: any
 	schedule: any
-	newStarred: StarredItem
+	newStarred: IStarredItem
 	fetchStaffProfile: (staffID: number) => any
-	starItem: (item: StarredItem) => any
-	unstarItem: (item: StarredItem) => any
+	starItem: (item: IStarredItem) => any
+	unstarItem: (item: IStarredItem) => any
 	queueSnackbar: (snackbar: ISnackbar) => any
 	fetchStaffSchedule: (staffID: number, dateTime?: string) => any
 	createTopicSchedule: (topicSchedule: ITopicScheduleRequest) => Promise<any>
@@ -99,7 +101,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 	}
 
 	toggleStarred = (isStarred: boolean) => {
-		const starredItem: StarredItem = {
+		const starredItem: IStarredItem = {
 			item_id: this.props.staff.id,
 			item_type: 'staff'
 		}
@@ -225,9 +227,9 @@ class StaffProfile extends React.Component<IProps, IState> {
 			date: this.state.blockDetails.date
 		}
 		this.props.createTopicSchedule(topicSchedule)
-			.then(res => {
+			.then(() => {
 				this.props.fetchStaffSchedule(this.state.staffID, this.getURLDateTime())
-					.then((res: any) => {
+					.then(() => {
 						this.setState({
 							loadingSetTopic: false,
 							calendarDialogOpen: false
@@ -237,7 +239,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 						})
 					})
 			})
-			.catch(error => {
+			.catch(() => {
 				this.setState({ loadingSetTopic: false })
 			})
 	}
@@ -275,17 +277,18 @@ class StaffProfile extends React.Component<IProps, IState> {
 		)
 	}
 
-	render () {
+	render() {
 		const isOwner: boolean = this.props.currentUser.account_type === 'staff'
 		&& this.state.staffID === this.props.currentUser.details.id
-		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.staff.id && this.props.newStarred.item_type === 'staff' ? (
+		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.staff.id
+		&& this.props.newStarred.item_type === 'staff' ? (
 			this.props.newStarred.isStarred !== false
 		) : this.props.staff.starred
 
 		const avatarColor: string = this.props.staff.color || null
 
 		const { menuRef, editDialogOpen } = this.state
-		const menuOpen: boolean = Boolean(this.state.menuRef) 
+		const menuOpen: boolean = Boolean(this.state.menuRef)
 
 		let calendar: ICalendarDay[] = null
 		if (this.props.schedule && !isEmpty(this.props.schedule)) {
@@ -393,10 +396,16 @@ class StaffProfile extends React.Component<IProps, IState> {
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
 					return !isEmpty(appointment)
 					&& this.props.currentUser.account_type === 'staff'
-					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
+					&& (
+						this.props.currentUser.details.administrator === true
+						|| this.props.currentUser.details.id === appointment.staff.id
+					)
 					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment)) }
+						{
+							value: 'Cancel Appointment',
+							callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment))
+						}
 					] : undefined
 				}
 			},
@@ -414,7 +423,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 								onClick={() => this.handleSetTopic()}
 							>Set Topic</LoadingButton>
 						)}
-					</>					
+					</>
 				),
 				itemMaps: [
 					(topicSchedule: ITopicSchedule, blockDetails: IBlockDetails) => ({
@@ -428,7 +437,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 					return !isEmpty(topicSchedule)
 					&& blockDetails.flex
 					&& blockDetails.pending
-					&& isOwner ?				
+					&& isOwner ?
 					[
 						// { value: 'Change Topic', callback: () => Promise.resolve(this.handleTopicsDialogOpen('select')) },
 						{ value: 'Remove Topic', callback: () => this.onRemoveTopic(topicSchedule), closeOnCallback: true }
@@ -533,7 +542,7 @@ class StaffProfile extends React.Component<IProps, IState> {
 									<li>
 										<StarButton onClick={() => this.toggleStarred(starred)} isStarred={starred} />
 									</li>
-								)}								
+								)}
 							</ul>
 						)}
 					</TopNav>

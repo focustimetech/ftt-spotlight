@@ -10,11 +10,12 @@ import {
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { createStaff, fetchStaff, IStaffRequest } from '../../actions/staffActions'
-import { EnhancedTable } from '../Table/EnhancedTable'
-import { ITableHeaderColumn, ITableLink } from '../../types/table'
-import { StaffInfoDialog } from '../Modals/StaffInfoDialog'
-import { isEmpty } from '../../utils/utils'
 import { IStaff } from '../../types/staff'
+import { ITableHeaderColumn, ITableLink } from '../../types/table'
+import { isEmpty } from '../../utils/utils'
+
+import { StaffInfoDialog } from '../Modals/StaffInfoDialog'
+import { EnhancedTable } from '../Table/EnhancedTable'
 
 interface IState {
 	addDialogOpen: boolean
@@ -22,7 +23,7 @@ interface IState {
 	loading: boolean
 }
 
-interface ReduxProps {
+interface IReduxProps {
 	staff: IStaff[]
 	newStaff: IStaff
 	createStaff: (staff: IStaffRequest, password: string) => Promise<any>
@@ -30,9 +31,7 @@ interface ReduxProps {
 	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {}
-
-class Staff extends React.Component<IProps, IState> {
+class Staff extends React.Component<IReduxProps, IState> {
 	state: IState = {
 		staff: [],
 		addDialogOpen: false,
@@ -75,13 +74,13 @@ class Staff extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		const staff = this.props.staff.map((staff: any, index: number) => {
+		const staff: any[] = this.props.staff.map((staffUser: IStaff, index: number) => {
 			return {
 				id: index,
-				last_name: staff.last_name,
-				first_name: staff.first_name,
-				email: staff.email,
-				profile: staff.id
+				last_name: staffUser.last_name,
+				first_name: staffUser.first_name,
+				email: staffUser.email,
+				profile: staffUser.id
 			}
 		})
 		const columns: ITableHeaderColumn[] = [
@@ -95,15 +94,37 @@ class Staff extends React.Component<IProps, IState> {
 				filterable: true,
 				visible: true
 			},
-			{ id: 'first_name', label: 'First Name', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
-			{ id: 'email', label: 'Email', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
+			{
+				id: 'first_name',
+				label: 'First Name',
+				disablePadding: true,
+				th: true,
+				isNumeric: false,
+				filterable: true,
+				searchable: true,
+				visible: true
+			},
+			{
+				id: 'email',
+				label: 'Email',
+				disablePadding: true,
+				th: true,
+				isNumeric: false,
+				filterable: true,
+				searchable: true,
+				visible: true
+			},
 		]
 
 		const tableLink: ITableLink = {label: 'Profile', key: 'profile', path: 'staff'}
 
 		return (
 			<div className='content --content-inner' id='content'>
-				<StaffInfoDialog open={this.state.addDialogOpen} onClose={this.onAddDialogClose} onSubmit={this.handleAddStaffSubmit} />
+				<StaffInfoDialog
+					open={this.state.addDialogOpen}
+					onClose={this.onAddDialogClose}
+					onSubmit={this.handleAddStaffSubmit}
+				/>
 				<EnhancedTable
 					showEmptyTable={false}
 					title='Staff'

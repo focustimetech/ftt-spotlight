@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { connect } from 'react-redux'
 
 import {
@@ -22,13 +21,14 @@ import {
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { createStudent, fetchStudents } from '../../actions/studentActions'
-import { EnhancedTable } from '../Table/EnhancedTable'
-import { ITableAction, ITableHeaderColumn, ITableLink } from '../../types/table'
-import { StudentInfoDialog } from '../Modals/StudentInfoDialog'
-import { isEmpty } from '../../utils/utils'
 import { IStudent } from '../../types/student'
+import { ITableAction, ITableHeaderColumn, ITableLink } from '../../types/table'
+import { isEmpty } from '../../utils/utils'
 
-interface NewStudent {
+import { StudentInfoDialog } from '../Modals/StudentInfoDialog'
+import { EnhancedTable } from '../Table/EnhancedTable'
+
+interface INewStudent {
 	first_name: string,
 	last_name: string,
 	clusters: number[],
@@ -36,7 +36,7 @@ interface NewStudent {
 	student_number: string
 }
 
-interface Cluster {
+interface ICluster {
 	name: string,
 	id: number
 }
@@ -44,12 +44,12 @@ interface Cluster {
 interface IState {
 	addDialogOpen: boolean
 	students: IStudent[]
-	clusters: Cluster[]
+	clusters: ICluster[]
 	loading: boolean
 	snackbarOpen: boolean
 }
 
-interface ReduxProps {
+interface IReduxProps {
 	students: IStudent[]
 	newStudent: IStudent
 	createStudent: (student: any) => any
@@ -57,9 +57,7 @@ interface ReduxProps {
 	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {}
-
-class Students extends React.Component<IProps, IState> {
+class Students extends React.Component<IReduxProps, IState> {
 	state: IState = {
 		students: [],
 		addDialogOpen: false,
@@ -91,7 +89,6 @@ class Students extends React.Component<IProps, IState> {
 	onAddDialogClose = () => {
 		this.setState({ addDialogOpen: false })
 	}
-
 
 	handleAddStudentSubmit = (event: any, studentDetails: IStudent): Promise<any> => {
 		event.preventDefault()
@@ -127,16 +124,42 @@ class Students extends React.Component<IProps, IState> {
 				filterable: true,
 				visible: true
 			},
-			{ id: 'first_name', label: 'First Name', disablePadding: true, th: true, isNumeric: false, filterable: true, searchable: true, visible: true},
-			{ id: 'grade', label: 'Grade', isNumeric: true, visible: true, filterable: true },
-			{ id: 'class', label: 'Class', isNumeric: false, visible: true, filterable: true, values: ['Junior', 'Senior']}
+			{
+				id: 'first_name',
+				label: 'First Name',
+				disablePadding: true,
+				th: true,
+				isNumeric: false,
+				filterable: true,
+				searchable: true,
+				visible: true
+			},
+			{
+				id: 'grade',
+				label: 'Grade',
+				isNumeric: true,
+				visible: true,
+				filterable: true
+			},
+			{
+				id: 'class',
+				label: 'Class',
+				isNumeric: false,
+				visible: true,
+				filterable: true,
+				values: ['Junior', 'Senior']
+			}
 		]
 
 		const tableLink: ITableLink = {label: 'Profile', key: 'profile', path: 'students'}
 
 		return (
 			<div className='content --content-inner' id='content'>
-				<StudentInfoDialog open={this.state.addDialogOpen} onClose={this.onAddDialogClose} onSubmit={this.handleAddStudentSubmit}/>
+				<StudentInfoDialog
+					open={this.state.addDialogOpen}
+					onClose={this.onAddDialogClose}
+					onSubmit={this.handleAddStudentSubmit}
+				/>
 				<EnhancedTable
 					showEmptyTable={false}
 					title='Students'

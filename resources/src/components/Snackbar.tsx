@@ -1,33 +1,32 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+
 import {
     Button,
     Icon,
     IconButton,
     Snackbar as MuiSnackbar
-} from '@material-ui/core';
-import { CSSProperties } from '@material-ui/styles';
+} from '@material-ui/core'
+import { CSSProperties } from '@material-ui/styles'
 
-import { ISnackbar, ISnackbarButton, dequeueSnackbar, ISnackbarLink } from '../actions/snackbarActions'
+import { dequeueSnackbar, ISnackbar, ISnackbarButton, ISnackbarLink } from '../actions/snackbarActions'
 
-interface ReduxProps {
+interface IReduxProps {
     currentSnackbar: ISnackbar
     snackbars: ISnackbar[]
     getNextSnackbar: () => void
 }
 
-interface IProps extends ReduxProps {}
-
 interface IState {
     open: boolean
 }
 
-class Snackbar extends React.Component<IProps, IState> {
+class Snackbar extends React.Component<IReduxProps, IState> {
     state: IState = {
         open: true
     }
-    
+
     handleExited = () => {
         this.props.getNextSnackbar()
         window.setTimeout(() => this.handleOpen(), 200)
@@ -41,10 +40,11 @@ class Snackbar extends React.Component<IProps, IState> {
         this.setState({ open: false })
     }
 
-    componentWillReceiveProps(nextProps: IProps) {
+    componentWillReceiveProps(nextProps: IReduxProps) {
         if (!nextProps.currentSnackbar) {
-            if (nextProps.snackbars.length === 0)
+            if (nextProps.snackbars.length === 0) {
                 return
+            }
             this.props.getNextSnackbar()
         }
     }

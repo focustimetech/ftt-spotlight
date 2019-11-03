@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import ContentLoader from 'react-content-loader'
 import { Link, Redirect } from 'react-router-dom'
 
@@ -15,19 +15,20 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { EnhancedTableHead } from './EnhancedTableHead'
-import { EnhancedTableToolbar } from './EnhancedTableToolbar'
-import { EmptyStateIcon } from '../EmptyStateIcon'
 import {
 	ITableAction,
-	ITableFilter,
 	ITableEnumFilter,
+	ITableFilter,
 	ITableHeaderColumn,
 	ITableLink,
 	SortOrder
-} from '../../types/table';
+} from '../../types/table'
 
-const desc = (a: any, b: any, orderBy: any) => {
+import { EmptyStateIcon } from '../EmptyStateIcon'
+import { EnhancedTableHead } from './EnhancedTableHead'
+import { EnhancedTableToolbar } from './EnhancedTableToolbar'
+
+const desc = (a: any, b: any, orderBy: any): number => {
 	if (b[orderBy] < a[orderBy]) {
 		return -1
 	}
@@ -46,7 +47,7 @@ const stableSort = (array: any[], cmp: any) => {
 		}
 		return a[1] - b[1]
 	})
-	return stabilizedThis.map(item => item[0])
+	return stabilizedThis.map((item: any) => item[0])
 }
 
 const getSorting = (order: SortOrder, orderBy: any) => {
@@ -121,13 +122,15 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		const { tableQuery, filters } = this.state
 		const properties: string[] = this.props.columns.reduce((acc: string[], column: ITableHeaderColumn) => {
 			if (column.searchable) {
-				acc.push(column.id);
+				acc.push(column.id)
 			}
 			return acc
 		}, [])
 		return this.props.data.filter((row: any) => {
-			const enumFilters: ITableEnumFilter[] = filters.filter((filter: ITableFilter) => filter.type === 'enum') as ITableEnumFilter[]
-			const otherFilters: ITableFilter[] = filters.filter((filter: ITableFilter) => filter.type !== 'enum')
+			const enumFilters: ITableEnumFilter[]
+				= filters.filter((filter: ITableFilter) => filter.type === 'enum') as ITableEnumFilter[]
+			const otherFilters: ITableFilter[]
+				= filters.filter((filter: ITableFilter) => filter.type !== 'enum')
 
 			const matchSearch: boolean = tableQuery.length > 0 ? (
 				properties.some((property) => {
@@ -149,12 +152,14 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 						case 'ends-with':
 							return row[filter.id].endsWith(filter.value)
 						case 'equal-to':
+							// tslint:disable-next-line: triple-equals
 							return row[filter.id] == filter.value
 						case 'greater-than':
 							return row[filter.id] > filter.value
 						case 'less-than':
 							return row[filter.id] < filter.value
 						case 'not-equal-to':
+							// tslint:disable-next-line: triple-equals
 							return row[filter.id] != filter.value
 						case 'starts-with':
 							return row[filter.id].startsWith(filter.value)
@@ -167,43 +172,49 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 
 	handleRequestSort = (property: any) => {
 		let order: SortOrder = 'desc'
-		if (this.state.orderBy === property && this.state.order === 'desc')
+		if (this.state.orderBy === property && this.state.order === 'desc') {
 			order = 'asc'
-
+		}
 		this.setState({ order, orderBy: property })
 	}
 
 	handleSelectAllClick = (event: any) => {
-		if (!this.props.onSelect)
+		if (!this.props.onSelect) {
 			return
+		}
 		let newSelected: number[] = []
 		if (event.target.checked && this.props.radio !== true) {
-			newSelected = (this.props.searchable && this.state.tableQuery.length) || (this.state.filters.length && !this.state.filtersDisabled) ? (
-				this.filterTableData().map(n => n.id)
+			newSelected = (
+				this.props.searchable && this.state.tableQuery.length)
+				|| (this.state.filters.length && !this.state.filtersDisabled
+				) ? (
+				this.filterTableData().map((n: any) => n.id)
 			) : (
-				this.props.data.map(n => n.id)
+				this.props.data.map((n: any) => n.id)
 			)
 		}
-		
+
 		this.props.onSelect(newSelected)
 	}
 
 	handleInvertSelection = () => {
-		if (!this.isSelectable() || this.props.radio)
+		if (!this.isSelectable() || this.props.radio) {
 			return
-		const newSelected: number[] = this.props.data.map(n => n.id).filter((index: number) => {
+		}
+		const newSelected: number[] = this.props.data.map((n: any) => n.id).filter((index: number) => {
 			return this.props.selected.indexOf(index) < 0
 		})
 		this.props.onSelect(newSelected)
 	}
 
 	handleClick = (id: number) => {
-		if (!this.isSelectable())
+		if (!this.isSelectable()) {
 			return
+		}
 		let newSelected: number[] = []
-		if (this.props.radio)
+		if (this.props.radio) {
 			newSelected = [id]
-		else {
+		} else {
 			const { selected } = this.props
 			const selectedIndex = selected.indexOf(id)
 
@@ -231,8 +242,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	isSelected = (id: number): boolean => {
-		if (!this.isSelectable())
+		if (!this.isSelectable()) {
 			return false
+		}
 		return this.props.selected.indexOf(id) !== -1
 	}
 
@@ -280,8 +292,9 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		if (this.state.redirect)
+		if (this.state.redirect) {
 			return <Redirect to={this.state.redirect} />
+		}
 
 		const { order, orderBy, rowsPerPage, page } = this.state
 		const { selected } = this.props
@@ -347,7 +360,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 									) : (
 										stableSort(data, getSorting(order, orderBy))
 										.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-										.map(n => {
+										.map((n: any) => {
 											const isSelected = this.isSelected(n.id)
 											const columns = this.props.columns.filter((column: ITableHeaderColumn) => {
 												return column.visible
@@ -375,9 +388,17 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 														const columnData: any = n[column.id]
 														if (column.th) {
 															return (
-																<TableCell component='th' scope='row' padding={selectable || index !== 0 ? 'none' : 'default'} key={column.id}>
+																<TableCell
+																	component='th'
+																	scope='row'
+																	padding={selectable || index !== 0 ? 'none' : 'default'}
+																	key={column.id}
+																>
 																	{this.props.link && !selectable ? (
-																		<Link className='enhanced-table__link' to={`${this.props.link.path}/${n[this.props.link.key]}`}>
+																		<Link
+																			className='enhanced-table__link'
+																			to={`${this.props.link.path}/${n[this.props.link.key]}`}
+																		>
 																			{columnData}
 																		</Link>
 																	) : columnData
@@ -388,7 +409,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 															return <TableCell align='right' key={column.id}>{columnData}</TableCell>
 														}
 													})}
-													{(this.props.link && selectable)  && (	
+													{(this.props.link && selectable)  && (
 														<TableCell padding='checkbox' align='center'>
 															<Tooltip title={this.props.link.label} placement='left'>
 																<Link to={`${this.props.link.path}/${n[this.props.link.key]}`}>

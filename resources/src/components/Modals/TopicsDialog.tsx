@@ -1,5 +1,5 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 import { connect } from 'react-redux'
 
 import {
@@ -18,16 +18,16 @@ import {
     Typography
 } from '@material-ui/core'
 
+import { createTopic, deleteTopic, fetchTopics, ITopicRequest } from '../../actions/topicActions'
+import { getRandomColor, TopicColor } from '../../theme'
 import { ITopic } from '../../types/calendar'
-import { TopicColor, getRandomColor } from '../../theme'
-import { ITopicRequest } from '../../actions/topicActions'
-import { EmptyStateIcon } from '../EmptyStateIcon'
-import { LoadingButton } from '../Form/LoadingButton';
-import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
-import { ColorsDialog } from './ColorsDialog'
-import { createTopic, deleteTopic, fetchTopics} from '../../actions/topicActions'
 import { isEmpty } from '../../utils/utils'
-import { ConfirmationDialog } from './ConfirmationDialog';
+
+import { CalendarDialogItem } from '../Calendar/CalendarDialogItem'
+import { EmptyStateIcon } from '../EmptyStateIcon'
+import { LoadingButton } from '../Form/LoadingButton'
+import { ColorsDialog } from './ColorsDialog'
+import { ConfirmationDialog } from './ConfirmationDialog'
 
 const emptyTopic = (): ITopicRequest => ({
     memo: '',
@@ -35,14 +35,14 @@ const emptyTopic = (): ITopicRequest => ({
     unavailable: false
 })
 
-interface ReduxProps {
+interface IReduxProps {
     topics: ITopic[]
     createTopic: (topic: ITopicRequest) => Promise<any>
     deleteTopic: (topicID: number) => Promise<any>
     fetchTopics: () => Promise<any>
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     open: boolean
     mode: 'edit' | 'select'
     onClose: () => void
@@ -105,8 +105,9 @@ class TopicsDialog extends React.Component<IProps, IState> {
 
     handleNewTopicChange = (event: any) => {
         const memo: string = event.target.value
-        if (this.state.loadingNewTopic)
+        if (this.state.loadingNewTopic) {
             return
+        }
         this.setState((state: IState) => {
             return {
                 newTopic: { ...state.newTopic, memo },
@@ -170,7 +171,7 @@ class TopicsDialog extends React.Component<IProps, IState> {
     componentDidMount() {
         this.setState({ loadingTopics: true })
         this.props.fetchTopics()
-            .then(res => {
+            .then((res: any) => {
                 this.setState({ loadingTopics: false })
             })
     }
@@ -191,7 +192,8 @@ class TopicsDialog extends React.Component<IProps, IState> {
                             <h2>Loading</h2>
                         ) : (
                             <>
-                                {((!this.props.topics || this.props.topics.length === 0) && !this.state.newTopicOpen) && (
+                                {((!this.props.topics || this.props.topics.length === 0)
+                                    && !this.state.newTopicOpen) && (
                                     <EmptyStateIcon variant='not-found'>
                                         <h3>You don't have any Topics yet.</h3>
                                         <Button
@@ -204,7 +206,10 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                 {(this.props.topics && this.props.topics.length > 0) && (
                                     this.props.topics.map((topic: ITopic) => (
                                         <CalendarDialogItem
-                                            onClick={this.props.mode === 'select' ? () => this.handleClick(topic) : undefined}
+                                            onClick={this.props.mode === 'select'
+                                                ? () => this.handleClick(topic)
+                                                : undefined
+                                            }
                                             onCloseDialog={this.handleClose}
                                             details={{
                                                 id: topic.id,
@@ -213,7 +218,10 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                                 memo: topic.unavailable ? 'Unavailable' : undefined
                                             }}
                                             actions={this.props.mode === 'edit' ? [
-                                                { value: 'Delete Topic', callback: () => Promise.resolve(this.handleDeleteTopic(topic)) }
+                                                {
+                                                    value: 'Delete Topic',
+                                                    callback: () => Promise.resolve(this.handleDeleteTopic(topic))
+                                                }
                                             ] : undefined}
                                             key={topic.id}
                                         />
@@ -237,7 +245,10 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                                     label='New Topic'
                                                     placeholder='What will you be offering?'
                                                     margin='none'
-                                                    helperText={this.state.newTopicErrored ? 'Please try that again.' : undefined}
+                                                    helperText={this.state.newTopicErrored
+                                                        ? 'Please try that again.'
+                                                        : undefined
+                                                    }
                                                     error={this.state.errored}
                                                     autoFocus
                                                     fullWidth
@@ -247,7 +258,10 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                                 label={
                                                     <div className='topic_unavailable_label'>
                                                         <Typography>Unavailable</Typography>
-                                                        <Tooltip title='Student will not be able to join Unavailable blocks.'><Icon>help</Icon></Tooltip>
+                                                        {/* tslint:disable-next-line: max-line-length */}
+                                                        <Tooltip title='Student will not be able to join Unavailable blocks.'>
+                                                            <Icon>help</Icon>
+                                                        </Tooltip>
                                                     </div>
                                                 }
                                                 control={
@@ -265,15 +279,27 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                             onClick={() => this.handleNewTopic()}
                                             loading={this.state.loadingNewTopic}
                                         >Submit</LoadingButton>
-                                        <Button variant='text' onClick={() => this.handleNewTopicClose()}>Cancel</Button>
+                                        <Button
+                                            variant='text'
+                                            onClick={() => this.handleNewTopicClose()}
+                                        >Cancel</Button>
                                     </>
                                 )}
                             </>
                         )}
                     </DialogContent>
                     <DialogActions>
-                        <Button variant='text' color='primary' onClick={() => this.handleNewTopicOpen()}>New Topic</Button>
-                        <Button variant='text' onClick={() => this.handleClose()}>{this.props.mode === 'edit' ? 'Close' : 'Cancel'}</Button>
+                        <Button
+                            variant='text'
+                            color='primary'
+                            onClick={() => this.handleNewTopicOpen()}
+                        >New Topic</Button>
+                        <Button
+                            variant='text'
+                            onClick={() => this.handleClose()}
+                        >
+                            {this.props.mode === 'edit' ? 'Close' : 'Cancel'}
+                        </Button>
                     </DialogActions>
                 </Dialog>
                 <ColorsDialog

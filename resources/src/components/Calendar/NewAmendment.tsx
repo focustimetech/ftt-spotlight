@@ -1,21 +1,20 @@
-import * as React from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 
-import {
-    Button,
-    TextField,
-} from '@material-ui/core'
-import { LoadingButton } from '../Form/LoadingButton'
+import { Button, TextField } from '@material-ui/core'
+
 import { createAmendment, IAmendmentRequest } from '../../actions/studentScheduleActions'
-import { queueSnackbar, ISnackbar } from '../../actions/snackbarActions'
+import { LoadingButton } from '../Form/LoadingButton'
+
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { IBlockDetails } from '../../types/calendar'
 
-interface ReduxProps {
+interface IReduxProps {
     createAmendment: (amendment: IAmendmentRequest) => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     studentID: number
     blockDetails: IBlockDetails
     onSubmit: () => Promise<any>
@@ -48,8 +47,9 @@ class NewAmendment extends React.Component<IProps, IState> {
     }
 
     handleChange = (event: any) => {
-        if (this.state.uploading)
+        if (this.state.uploading) {
             return
+        }
         this.setState({
             value: event.target.value,
             error: null
@@ -78,7 +78,7 @@ class NewAmendment extends React.Component<IProps, IState> {
             })
             .catch(() => {
                 this.setState({
-                    error: 'That didn\'t work. Please try again.',
+                    error: "That didn't work. Please try again.",
                     uploading: false
                 })
             })

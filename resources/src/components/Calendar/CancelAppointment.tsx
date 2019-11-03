@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import {
     Button,
@@ -54,7 +54,12 @@ export const CancelAppointment = (props: IProps) => {
                 )}
             </DialogContent>
             <DialogActions>
-                <LoadingButton loading={loading} variant='text' color='primary' onClick={() => handleSubmit()}>Confirm</LoadingButton>
+                <LoadingButton
+                    loading={loading}
+                    variant='text'
+                    color='primary'
+                    onClick={() => handleSubmit()}
+                >Confirm</LoadingButton>
                 <Button variant='text' onClick={() => props.onClose()}>Cancel</Button>
             </DialogActions>
         </Dialog>

@@ -1,5 +1,5 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 
 import {
     Badge,
@@ -8,7 +8,7 @@ import {
     CardContent
 } from '@material-ui/core'
 
-import { ICalendarBlock, IBlockDetails } from '../../types/calendar'
+import { IBlockDetails, ICalendarBlock } from '../../types/calendar'
 
 interface IProps extends ICalendarBlock {
     onClick: (blockDetails: IBlockDetails) => void
@@ -19,7 +19,13 @@ export const CalendarBlock = (props: IProps) => {
     const { label } = props.details
 
     return (
-        <Badge badgeContent={badgeCount} invisible={badgeCount === 0} color='secondary' max={9} className='block__badge'>
+        <Badge
+            badgeContent={badgeCount}
+            invisible={badgeCount === 0}
+            color='secondary'
+            max={9}
+            className='block__badge'
+        >
             <Card className='block'>
                 <CardActionArea
                     className={classNames('block__inner', {[`--${variant}`]: variant}, {['--void']: voided})}

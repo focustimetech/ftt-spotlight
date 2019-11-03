@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-import { FETCH_USERS, INVALIDATE_PASSWORD, DISABLE_USER, RESET_PASSWORD } from './types'
 import { IUser } from '../types/auth'
+import { DISABLE_USER, FETCH_USERS, INVALIDATE_PASSWORD, RESET_PASSWORD } from './types'
 
 export const fetchUsers = () => {
     return (dispatch: any) => {

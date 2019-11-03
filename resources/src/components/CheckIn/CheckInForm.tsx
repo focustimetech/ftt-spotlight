@@ -1,6 +1,6 @@
-import * as React from 'react'
 import axios from 'axios'
 import classNames from 'classnames'
+import React from 'react'
 import { connect } from 'react-redux'
 
 import {
@@ -20,18 +20,19 @@ import {
 } from '@material-ui/core'
 
 import { checkIn } from '../../actions/checkinActions'
-import { ILedgerEntry } from '../../types/calendar'
-import { ICheckInRequest, CheckInChip, ICheckInResponse } from '../../types/checkin'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { makeArray } from '../../utils/utils'
+import { ILedgerEntry } from '../../types/calendar'
+import { CheckInChip, ICheckInRequest, ICheckInResponse } from '../../types/checkin'
 import {
     appendToLocalStorageArray,
-    getObjectFromLocalStorage,
-    writeObjectToLocalStorage,
     AUTO_SUBMIT,
     CHECK_IN_CHIPS,
-    CHECK_IN_ERRORS
+    CHECK_IN_ERRORS,
+    getObjectFromLocalStorage,
+    writeObjectToLocalStorage,
 } from '../../utils/storage'
+import { makeArray } from '../../utils/utils'
+
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
 
@@ -39,13 +40,13 @@ const AUTO_TIMEOUT = 300000 // 5 minutes
 
 type NameFetchState = 'allow' | 'skip' | 'force-allow'
 
-interface ReduxProps {
+interface IReduxProps {
     checkInResponse: ICheckInResponse
     checkIn: (request: ICheckInRequest) => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     dateTime?: string
     didCheckIn?: () => Promise<any>
     handleOpenErrorsDialog?: () => void
@@ -63,7 +64,6 @@ interface IState {
     nameFetchState: NameFetchState
     timedOutChips: number
     uploading: boolean
-    
 }
 
 class CheckInForm extends React.Component<IProps, IState> {
@@ -82,8 +82,9 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleChange = (event: any) => {
-        if (this.state.uploading)
+        if (this.state.uploading) {
             return
+        }
         this.refreshAutoSubmit()
         this.setState({
             inputValue: event.target.value,
@@ -93,13 +94,13 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     onKeyDown = (event: any) => {
-        if (this.state.uploading)
+        if (this.state.uploading) {
             return
-
+        }
         if (event.keyCode === 8) { // Backspace
-            if (this.state.inputValue.length === 0)
+            if (this.state.inputValue.length === 0) {
                 this.handleRemoveChip(this.state.chips[this.state.chips.length - 1])
-
+            }
         } else if ([188, 13, 32].includes(event.keyCode)) { // Comma, Enter, Space
             event.preventDefault()
             if (event.ctrlKey && event.keyCode === 13) { // Enter + Ctrl
@@ -118,8 +119,9 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleCreateChip = (value?: string) => {
-        if (!value && this.state.inputValue.length === 0)
+        if (!value && this.state.inputValue.length === 0) {
             return
+        }
         this.refreshAutoSubmit()
         const chipValues: string[] = value ? value.split(/[\s,]+/) : [this.state.inputValue]
         chipValues.forEach((chipValue: string) => {
@@ -135,8 +137,9 @@ class CheckInForm extends React.Component<IProps, IState> {
                     duplicateIndex: -1,
                     inputValue: ''
                 }), () => {
-                    if (!this.state.uploading)
+                    if (!this.state.uploading) {
                         this.fetchStudent(newChip)
+                    }
                     writeObjectToLocalStorage(CHECK_IN_CHIPS, this.state.chips)
                 })
             } else {
@@ -159,30 +162,35 @@ class CheckInForm extends React.Component<IProps, IState> {
         for (let i = 0; i < this.state.chips.length; i ++) {
             const pivot: CheckInChip = this.state.chips[i]
             if (chip.type === 'id' && pivot.type === 'id') {
-                if (chip.value.id === pivot.value.id)
+                if (chip.value.id === pivot.value.id) {
                     return i
+                }
             } else if (chip.type === 'student_number' && this.state.chips[i].type === 'student_number') {
-                if (chip.value === pivot.value)
+                if (chip.value === pivot.value) {
                     return i
+                }
             }
         }
         return -1
     }
 
     replaceChip = (newChip: CheckInChip, index: number) => {
-        const newChips: CheckInChip[] = this.state.chips.reduce((acc: CheckInChip[], chip: CheckInChip, idx: number) => {
-            if (index === idx)
+        const newChips: CheckInChip[]
+            = this.state.chips.reduce((acc: CheckInChip[], chip: CheckInChip, idx: number) => {
+            if (index === idx) {
                 acc.push(newChip)
-            else
+            } else {
                 acc.push(chip)
+            }
             return acc
         }, [])
         this.setState({ chips: newChips })
     }
 
     fetchStudent = (chip: CheckInChip) => {
-        if (chip.type !== 'student_number')
+        if (chip.type !== 'student_number') {
             return
+        }
 
         const index: number = this.findChip(chip)
         let replacementChip: CheckInChip = { ...chip, loading: false }
@@ -197,8 +205,9 @@ class CheckInForm extends React.Component<IProps, IState> {
                         // Connection timed out
                         this.setState((state: IState) => {
                             const skipNameFetch: boolean = state.timedOutChips >= 2 && state.nameFetchState !== 'force-allow'
-                            if (skipNameFetch && this.props.onExceedTimeouts)
+                            if (skipNameFetch && this.props.onExceedTimeouts) {
                                 this.props.onExceedTimeouts()
+                            }
                             return {
                                 nameFetchState: skipNameFetch ? 'skip' : state.nameFetchState,
                                 timedOutChips: state.timedOutChips + 1
@@ -214,8 +223,9 @@ class CheckInForm extends React.Component<IProps, IState> {
         const success: ILedgerEntry[] = this.props.checkInResponse.success
         const errors: string[] = this.props.checkInResponse.errors
         const timestamp_string: string = this.props.checkInResponse.timestamp_string
-        if (errors.length > 0)
+        if (errors.length > 0) {
             appendToLocalStorageArray(CHECK_IN_ERRORS, { errors, timestamp_string })
+        }
         const message: string = success.length > 0
             ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0
                 ? `, but ${errors.length} ${errors.length === 1 ? 'entry' : 'entries'} could not be resolved` : ''
@@ -234,24 +244,28 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleSubmit = () => {
-        if (this.state.chips.length === 0 && this.state.inputValue.length === 0)
+        if (this.state.chips.length === 0 && this.state.inputValue.length === 0) {
             return
+        }
         this.setState({ uploading: true })
-        if (this.props.didSubmit)
+        if (this.props.didSubmit) {
             this.props.didSubmit()
-        if (this.state.inputValue.length > 0)
+        }
+        if (this.state.inputValue.length > 0) {
             this.handleCreateChip()
-        
-        let request: ICheckInRequest = {
+        }
+
+        const request: ICheckInRequest = {
             student_numbers: [],
             student_ids: [],
             date_time: this.props.dateTime
         }
         this.state.chips.forEach((chip: CheckInChip) => {
-            if (chip.type === 'student_number')
+            if (chip.type === 'student_number') {
                 request.student_numbers.push(chip.value)
-            else
+            } else {
                 request.student_ids.push(chip.value.id)
+            }
         })
         this.props.checkIn(request)
             .then(() => {
@@ -294,13 +308,13 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     getAutoSubmitState = () => {
-        
         this.setState({ autoSubmit: true })
     }
 
     refreshAutoSubmit = () => {
-        if (this.timer)
+        if (this.timer) {
             clearInterval(this.timer)
+        }
         this.timer = window.setInterval(() => this.handleSubmit(), AUTO_TIMEOUT)
     }
 
@@ -311,7 +325,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        const autoSubmit: boolean = getObjectFromLocalStorage(AUTO_SUBMIT) == true
+        const autoSubmit: boolean = Boolean(getObjectFromLocalStorage(AUTO_SUBMIT))
         this.setState({ autoSubmit })
         this.refreshAutoSubmit()
         this.keyBuffer = []
@@ -351,13 +365,15 @@ class CheckInForm extends React.Component<IProps, IState> {
                         {this.state.chips.map((chip: CheckInChip, index: number) => {
                             const isDuplicate: boolean = this.state.duplicateIndex === index
                             let label: string = ''
-                            let avatar: any = undefined
+                            let avatar: any
                             if (chip.type === 'student_number') {
                                 label = chip.value
                                 avatar = chip.loading ? <Avatar><CircularProgress size={24} /></Avatar> : undefined
                             } else {
                                 label = chip.value.name
-                                avatar = <Avatar className={classNames('chip_avatar', `--${chip.value.color}`)}>{chip.value.initials}</Avatar> 
+                                avatar = <Avatar className={classNames(
+                                    'chip_avatar', `--${chip.value.color}`
+                                )}>{chip.value.initials}</Avatar>
                             }
                             return (
                                 <Chip
@@ -399,6 +415,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                     </div>
                 </Paper>
                 {this.state.autoSubmit && (
+                    // tslint:disable-next-line: max-line-length
                     <FormHelperText>Student numbers will be automatically submitted after 5 minutes of inactivity.</FormHelperText>
                 )}
             </ModalSection>

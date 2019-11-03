@@ -8,8 +8,8 @@ import {
     UNARCHIVE_NOTIFICATION
 } from '../actions/types'
 
-import { INotification } from '../types/staff'
 import { ReduxAction } from '../types/app'
+import { INotification } from '../types/staff'
 
 interface IState {
     items: INotification[]

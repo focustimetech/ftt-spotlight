@@ -1,4 +1,4 @@
-import { StarRequest } from '../actions/starActions'
+import { IStarRequest } from '../actions/starActions'
 import { FETCH_STARRED, STAR_ITEM, UNSTAR_ITEM } from '../actions/types'
 
 export interface IStarredGroup {

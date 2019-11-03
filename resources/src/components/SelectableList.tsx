@@ -166,7 +166,7 @@ export class SelectableList extends React.Component<IProps, IState> {
                                     <Checkbox
                                         color='primary'
                                         edge='start'
-                                        checked={selected}
+                                        checked={isSelected}
                                         tabIndex={-1}
                                     />
                                 </ListItemIcon>

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-import { FETCH_STAFF, NEW_STAFF, DELETE_STAFF, UPDATE_STAFF } from './types'
 import { IStaff, IStaffTitle } from '../types/staff'
+import { DELETE_STAFF, FETCH_STAFF, NEW_STAFF, UPDATE_STAFF } from './types'
 
 export interface IStaffRequest {
     first_name: string

@@ -123,8 +123,8 @@ export const StaffInfoDialog = (props: IProps) => {
                 props.onClose()
             })
             .catch((error: any) => {
+                const errorCode: number = error.response.status
                 setUploading(false)
-			    const errorCode: number = error.response.status
                 switch (errorCode) {
                     case 409:
                         setUserExists(true)

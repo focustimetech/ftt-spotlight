@@ -1,4 +1,4 @@
-import { IReport, Report, ReportVariant } from "../types/report"
+import { IReport, Report, ReportVariant } from '../types/report'
 
 export const EMPTY_REPORT: IReport = {
     date_range: {

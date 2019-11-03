@@ -1,8 +1,7 @@
 import '../../assets/styles/main.scss'
 
-import * as React from 'react'
 import classNames from 'classnames'
-import { connect } from 'react-redux'
+import React from 'react'
 import {
 	BrowserRouter as Router,
 	Redirect,
@@ -13,18 +12,19 @@ import {
 
 import { IUser } from '../../types/auth'
 import CheckIn from '../CheckIn/CheckIn'
+import Reporting from '../Reporting/Reporting'
+import Sidebar from '../Sidebar/Sidebar'
+import Snackbar from '../Snackbar'
 import CredentialsManager from '../Views/CredentialsManager'
 import { NotFound } from '../Views/NotFound'
-import Reporting from '../Reporting/Reporting'
+import PowerScheduler from '../Views/PowerScheduler'
 import Settings from '../Views/Settings'
-import Snackbar from '../Snackbar'
-import StudentProfile from '../Views/StudentProfile'
-import Students from '../Views/Students'
-import Sidebar from '../Sidebar/Sidebar'
 import Staff from '../Views/Staff'
 import StaffProfile from '../Views/StaffProfile'
-import PowerScheduler from '../Views/PowerScheduler'
-import { getObjectFromLocalStorage, writeObjectToLocalStorage, MENU_OPEN } from '../../utils/storage'
+import StudentProfile from '../Views/StudentProfile'
+import Students from '../Views/Students'
+
+import { getObjectFromLocalStorage, MENU_OPEN, writeObjectToLocalStorage } from '../../utils/storage'
 
 interface IProps {
 	currentUser: IUser
@@ -53,10 +53,11 @@ export default class App extends React.Component<IProps, IState> {
 
 	componentDidMount() {
 		const localStorageMenuOpen = getObjectFromLocalStorage(MENU_OPEN)
-		if (localStorageMenuOpen === null)
+		if (localStorageMenuOpen === null) {
 			writeObjectToLocalStorage(MENU_OPEN, 1)
-		else
+		} else {
 			this.setState({ menuOpen: Boolean(localStorageMenuOpen)})
+		}
 		this.props.didMount()
 	}
 

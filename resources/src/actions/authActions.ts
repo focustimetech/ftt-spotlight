@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-import { SET_CURRENT_USER } from './types'
 import { IUser } from '../types/auth'
 import { setAuthorizationToken } from '../utils/setAuthorizationToken'
+import { SET_CURRENT_USER } from './types'
 
 interface ICredentials {
     username: string
@@ -12,13 +12,13 @@ interface ICredentials {
 export const getCurrentUser = () => {
     return (dispatch: any) => {
         return axios.get('/api/user')
-            .then(res => {
+            .then((res: any) => {
                 const user: IUser = res.data
                 dispatch({
                     type: SET_CURRENT_USER,
                     payload: user
                 })
-            }) 
+            })
     }
 }
 
@@ -32,14 +32,14 @@ export const checkUsername = (username: string) => {
     }
     */
     return (dispatch: any) => {
-        return axios.post(`/api/check-user`, { username })
+        return axios.post('/api/check-user', { username })
     }
 }
 
 export const login = (credentials: ICredentials) => {
     return (dispatch: any) => {
         return axios.post('/api/login', credentials)
-            .then(res => {
+            .then((res: any) => {
                 const token = res.data.access_token
                 setAuthorizationToken(token)
                 getCurrentUser()
@@ -53,18 +53,18 @@ export const logout = () => {
     }
 }
 
-export const resetPasswords = (user_ids: number[]): Promise<any> => {
-    return axios.post('/api/users/reset-passwords', { user_ids })
+export const resetPasswords = (userIDs: number[]): Promise<any> => {
+    return axios.post('/api/users/reset-passwords', { user_ids: userIDs })
 }
 
-export const invalidatePasswords = (user_ids: number[]): Promise<any> => {
-    return axios.post('/api/users/invalidate-passwords', { user_ids })
+export const invalidatePasswords = (userIDs: number[]): Promise<any> => {
+    return axios.post('/api/users/invalidate-passwords', { user_ids: userIDs })
 }
 
-export const disableUsers = (user_ids: number[]): Promise<any> => {
-    return axios.post('/api/users/disable-users', { user_ids })
+export const disableUsers = (userIDs: number[]): Promise<any> => {
+    return axios.post('/api/users/disable-users', { user_ids: userIDs })
 }
 
-export const reenableUsers = (user_ids: number[]): Promise<any> => {
-    return axios.post('/api/users/reenable-users', { user_ids })
+export const reenableUsers = (userIDs: number[]): Promise<any> => {
+    return axios.post('/api/users/reenable-users', { user_ids: userIDs })
 }

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import {
     Route,
@@ -27,40 +27,41 @@ import {
     Typography
 } from '@material-ui/core'
 
+import {
+    createReport,
+    deleteReport,
+    fetchReportByID,
+    fetchReports,
+    updateReport,
+} from '../../actions/reportActions'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { starItem, unstarItem } from '../../actions/starActions'
+import { IStarredItem } from '../../reducers/starReducer'
 import { IUser } from '../../types/auth'
 import {
-    IReportVariantInfo,
     IReportGroupInfo,
+    IReportVariantInfo,
     Report,
     ReportGroup,
     ReportingState,
     ReportVariant,
 } from '../../types/report'
-import { StarredItem } from '../../reducers/starReducer'
 import { createEmptyReport, REPORT_PLACEHOLDER_NAME } from '../../utils/report'
-import {
-    fetchReports,
-    createReport,
-    updateReport,
-    deleteReport,
-    fetchReportByID
-} from '../../actions/reportActions'
-import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { starItem, unstarItem } from '../../actions/starActions'
-import { ReportEditor } from './ReportEditor'
-import { INavLink, TopNav } from '../TopNav'
+
+import { Banner, IProps as BannerProps } from '../Banner/Banner'
 import { Drawer } from '../Drawer'
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { LoadingButton } from '../Form/LoadingButton'
+import { StarButton } from '../StarButton'
+import { INavLink, TopNav } from '../TopNav'
+import { ReportDeleteModal } from './ReportDeleteModal'
+import { ReportEditor } from './ReportEditor'
 import { ReportNameModal } from './ReportNameModal'
 import { ReportUnsavedModal } from './ReportUnsavedModal'
-import { ReportDeleteModal } from './ReportDeleteModal'
-import { Banner, IProps as BannerProps } from '../Banner/Banner'
-import { StarButton } from '../StarButton'
 
 type ReportingRoute = 'unselected' | 'new' | 'saved'
 
-type BannerIndex = 
+type BannerIndex =
     | 'NOT_FOUND'
     | 'REPORT_PRIVATE'
 
@@ -101,21 +102,21 @@ const BANNERS: Record<BannerIndex, Partial<BannerProps>> = {
 
 const DEFAULT_VARIANT: ReportVariant = 'teacher-distribution'
 
-interface ReduxProps {
+interface IReduxProps {
     changedReport: Report
     currentUser: IUser
-    newStarred: StarredItem
+    newStarred: IStarredItem
     reports: Report[]
     createReport: (report: Report) => Promise<any>
     deleteReport: (reportID: number) => Promise<any>
     fetchReports: () => Promise<any>
-    starItem: (item: StarredItem) => void
+    starItem: (item: IStarredItem) => void
     queueSnackbar: (snackbar: ISnackbar) => void
-    unstarItem: (item: StarredItem) => void
+    unstarItem: (item: IStarredItem) => void
     updateReport: (report: Report) => Promise<any>
 }
 
-interface IProps extends RouteComponentProps, ReduxProps {
+interface IProps extends RouteComponentProps, IReduxProps {
     reportingRoute: ReportingRoute
 }
 
@@ -163,8 +164,9 @@ class Reporting extends React.Component<IProps, IState> {
     }
 
     handleUpdateReport = (params: Partial<Report>) => {
-        if (this.state.uploading)
+        if (this.state.uploading) {
             return
+        }
         this.setState((state: IState) => {
             const updatedReport: Report = { ...state.currentReport, ...params } as Report
             return { currentReport: updatedReport }
@@ -211,7 +213,7 @@ class Reporting extends React.Component<IProps, IState> {
             }, () => {
                 this.setState({ reportUnsavedModalOpen: true })
             })
-        }        
+        }
     }
 
     handleChangeAccess = (access: Report['access']) => {
@@ -268,8 +270,9 @@ class Reporting extends React.Component<IProps, IState> {
             .catch((error: any) => {
                 this.setState({ uploading: false })
                 const { response } = error
-				if (response && response.data.message)
-					this.props.queueSnackbar({ message: response.data.message })
+				if (response && response.data.message) {
+                    this.props.queueSnackbar({ message: response.data.message })
+                }
             })
     }
 
@@ -286,26 +289,30 @@ class Reporting extends React.Component<IProps, IState> {
                 this.props.queueSnackbar({ message: 'Deleted Report successfully.' })
                 if (this.props.reportingRoute === 'saved') {
                     const routerReportID = (this.props.match.params as any).reportID
-                    if (parseInt(routerReportID) === reportID)
+                    if (parseInt(routerReportID, 10) === reportID) {
                         this.handleCreateReport()
+                    }
                 }
             })
             .catch((error: any) => {
                 const { response } = error
-				if (response && response.data.message)
-					this.props.queueSnackbar({ message: response.data.message })
+				if (response && response.data.message) {
+                    this.props.queueSnackbar({ message: response.data.message })
+                }
             })
     }
 
     toggleStarred = (isStarred: boolean) => {
-		if (this.props.currentUser.account_type !== 'staff')
-            return
-        if (!this.state.currentReport.id)
-            return
-		const starredItem: StarredItem = {
+        const starredItem: IStarredItem = {
 			item_id: this.state.currentReport.id,
 			item_type: 'report'
 		}
+		if (this.props.currentUser.account_type !== 'staff') {
+            return
+        }
+        if (!this.state.currentReport.id) {
+            return
+        }
 		if (isStarred) {
             this.props.unstarItem(starredItem)
         } else {
@@ -315,7 +322,7 @@ class Reporting extends React.Component<IProps, IState> {
 
     componentDidMount() {
         this.fetchReports().then(() => {
-            const reportID: number = parseInt((this.props.match.params as any).reportID)
+            const reportID: number = parseInt((this.props.match.params as any).reportID, 10)
             if (this.props.reportingRoute === 'saved') {
                 const loadedReport: Report | undefined = this.props.reports.find((report: Report) => {
                     return report.id === reportID
@@ -348,13 +355,13 @@ class Reporting extends React.Component<IProps, IState> {
                                     this.setState({ bannerOpen: true, bannerIndex: 'REPORT_PRIVATE' })
                                     break
                                 default:
-                                    const { response } = error
-                                    if (response && response.data.message)
+                                    // const { response } = error
+                                    if (response && response.data.message) {
                                         this.props.queueSnackbar({ message: response.data.message })
+                                    }
                                     break
                             }
                         })
-                    
                 }
             }
         })
@@ -363,12 +370,15 @@ class Reporting extends React.Component<IProps, IState> {
     render() {
         console.log('Reporting.PROPS:', this.props)
         console.log('Reporting.STATE:', this.state)
-        const loading: boolean = (this.state.loadingReports || this.state.loadingSingleReport) && this.props.reportingRoute === 'saved'
+        const loading: boolean = (
+            this.state.loadingReports || this.state.loadingSingleReport
+        ) && this.props.reportingRoute === 'saved'
         const isReportUnchanged: boolean = this.isReportUnchanged()
         const breadcrumbs: INavLink[] = [ { value: 'Reporting', to: '/reporting' } ]
         const reportSelected: boolean = this.props.reportingRoute !== 'unselected'
-        if (this.state.currentReport && reportSelected)
+        if (this.state.currentReport && reportSelected) {
             breadcrumbs.push({ value: this.state.currentReport.name || REPORT_PLACEHOLDER_NAME })
+        }
 
         const reportGroups: ReportGroup[] = REPORT_GROUPS.map((groupInfo: IReportGroupInfo) => groupInfo.group)
         const variantDetails: IReportVariantInfo = reportGroups
@@ -379,8 +389,10 @@ class Reporting extends React.Component<IProps, IState> {
             .find((reportVariantInfo: IReportVariantInfo) => {
                 return reportVariantInfo.variant === this.state.currentReport.variant
             })
-        
-        const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.state.currentReport.id && this.props.newStarred.item_type === 'report' ? (
+
+        const starred: boolean
+            = this.props.newStarred && this.props.newStarred.item_id === this.state.currentReport.id
+            && this.props.newStarred.item_type === 'report' ? (
                 this.props.newStarred.isStarred !== false
             ) : this.state.currentReport.starred
 
@@ -426,7 +438,7 @@ class Reporting extends React.Component<IProps, IState> {
                         ) : (
                             <EmptyStateIcon variant='star'>
                                 <h2>No Reports found</h2>
-                                <h3>Reports you save will appear here.</h3> 
+                                <h3>Reports you save will appear here.</h3>
                             </EmptyStateIcon>
                         )
                     )}
@@ -446,7 +458,13 @@ class Reporting extends React.Component<IProps, IState> {
                             <>
                                 {reportSelected && (
                                     <>
-                                        <div><Button variant='contained' color='primary' disabled={loading}>Run Report</Button></div>
+                                        <div>
+                                            <Button
+                                                variant='contained'
+                                                color='primary'
+                                                disabled={loading}
+                                            >Run Report</Button>
+                                        </div>
                                         <div>
                                             <ButtonGroup variant='contained'>
                                                 <LoadingButton
@@ -561,7 +579,7 @@ class Reporting extends React.Component<IProps, IState> {
                                 key={this.props.location.key}
                             >
                                 <Switch location={this.props.location}>
-                                    <Route 
+                                    <Route
                                         path={['/reporting/new', '/reporting/:reportID']}
                                         render={(props: RouteComponentProps) => (
                                             <div className='router_page'>
@@ -595,7 +613,7 @@ class Reporting extends React.Component<IProps, IState> {
                                                                         <Typography variant='h5'>{reportVariant.name}</Typography>
                                                                         <Typography variant='body2'>{reportVariant.description}</Typography>
                                                                     </CardContent>
-                                                                </CardActionArea>                                            
+                                                                </CardActionArea>
                                                             </Card>
                                                         ))}
                                                     </div>
@@ -606,7 +624,7 @@ class Reporting extends React.Component<IProps, IState> {
                                 </Switch>
                             </CSSTransition>
                         </TransitionGroup>
-                    </div>    
+                    </div>
                 </div>
             </>
         )

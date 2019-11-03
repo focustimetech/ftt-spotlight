@@ -1,13 +1,13 @@
-import * as React from 'react'
-import { Link } from 'react-router-dom'
 import classNames from 'classnames'
+import React from 'react'
 import ContentLoader from 'react-content-loader'
+import { Link } from 'react-router-dom'
 
 import {
 	Breadcrumbs,
+	FormControlLabel,
 	Tab,
 	Tabs,
-	FormControlLabel,
 	Typography
 } from '@material-ui/core'
 
@@ -52,7 +52,9 @@ export const TopNav = (props: IProps) => {
 									</ContentLoader>
 								</div>
 							) : (
-								<Typography variant='h6' color='textPrimary'>{props.breadcrumbs[props.breadcrumbs.length - 1].value}</Typography>
+								<Typography variant='h6' color='textPrimary'>
+									{props.breadcrumbs[props.breadcrumbs.length - 1].value}
+								</Typography>
 							)}
 						</Breadcrumbs>
 					)}

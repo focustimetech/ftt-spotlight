@@ -1,5 +1,5 @@
-import * as React from 'react'
 import DateFnsUtils from '@date-io/date-fns'
+import React from 'react'
 
 import {
     ClickAwayListener,
@@ -7,20 +7,20 @@ import {
     FormControl,
     FormHelperText,
     MenuItem,
-    TextField,
-    Typography,
-    Select,
     OutlinedInput,
+    Select,
+    TextField,
+    Typography
 } from '@material-ui/core'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
-import { Report, ReportSegment } from '../../types/report'
 import { DateRange, IAbsoluteDateRange, PredefinedDateRange } from '../../types/date'
+import { Report, ReportSegment } from '../../types/report'
 import {
+    DATE_SEGMENT_LABELS,
     dateRangeToString,
     normalizeDateRange,
-    PREDEFINED_LABELS,
-    DATE_SEGMENT_LABELS,
+    PREDEFINED_LABELS
 } from '../../utils/date'
 
 interface IProps {
@@ -50,8 +50,9 @@ class DateWidget extends React.Component<IProps> {
     handleDatePickerSelect = (point: 'start' | 'end', date: Date) => {
         let newDateRange: IAbsoluteDateRange = normalizeDateRange(this.props.dateRange)
         newDateRange[point] = date
-        if (newDateRange.start > newDateRange.end)
+        if (newDateRange.start > newDateRange.end) {
             newDateRange = { ...newDateRange, start: newDateRange.end, end: newDateRange.start }
+        }
         this.handleChangeDateRange(newDateRange)
     }
 
@@ -83,12 +84,12 @@ class DateWidget extends React.Component<IProps> {
                         value={dateRangeToString(this.props.dateRange)}
                         onClose={this.handleClose}
                         MenuProps={{
-                            open: open,
+                            open,
                             anchorEl: this.state.widgetRef,
                             onClose: this.handleClose,
                             getContentAnchorEl: null,
                             anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
-                            transformOrigin: { vertical: "top", horizontal: "left" }
+                            transformOrigin: { vertical: 'top', horizontal: 'left' }
                         }}
                         onClick={this.handleOpen}
                         disabled={this.props.disabled}
@@ -144,7 +145,7 @@ class DateWidget extends React.Component<IProps> {
                                         <a className='predefined_range' onClick={() => this.handlePredefinedDateSelect(predefinedDateRange)} key={predefinedDateRange}>
                                             <li>{PREDEFINED_LABELS[predefinedDateRange]}</li>
                                         </a>
-                                    ))} 
+                                    ))}
                                     </ol>
                                 </div>
                             </div>

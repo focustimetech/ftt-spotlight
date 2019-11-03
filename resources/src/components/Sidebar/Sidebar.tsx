@@ -1,31 +1,32 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
-import { Theme, withTheme } from '@material-ui/core/styles'
 
 import { Icon, IconButton } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core/styles'
 
-import AccountWidget from './AccountWidget'
-import { MenuItem } from './MenuItem'
-import NotificationsWidget from '../Modals/NotificationsWidget'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { IStaffUser } from '../../types/auth'
+
 import { CheckInWidget } from '../CheckIn/CheckInWidget'
+import NotificationsWidget from '../Modals/NotificationsWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
+import AccountWidget from './AccountWidget'
 import { HelpWidget } from './HelpWidget'
-import { IStaffUser } from '../../types/auth';
-import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions';
+import { MenuItem } from './MenuItem'
 
-interface ReduxProps {
+interface IReduxProps {
 	currentUser: IStaffUser
 	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface StyleProps {
+interface IStyleProps {
 	theme: Theme
 }
 
-interface IProps extends ReduxProps, StyleProps {
+interface IProps extends IReduxProps, IStyleProps {
 	onSignOut: () => void
 	onToggleMenuOpen: () => void
 	loading?: boolean
@@ -74,7 +75,7 @@ class Sidebar extends React.Component<IProps> {
 							<div className='nav_bottom'>
 								<NotificationsWidget />
 								<HelpWidget />
-								<AccountWidget onSignOut={this.props.onSignOut} />								
+								<AccountWidget onSignOut={this.props.onSignOut} />
 							</div>
 						</>
 					)}
@@ -82,7 +83,7 @@ class Sidebar extends React.Component<IProps> {
 				<div className='sidebar__menu'>
 					<div className='menu_content'>
 						{this.props.loading ? (
-							<div style={{height: 600, width:256}}>
+							<div style={{height: 600, width: 256}}>
 								<ContentLoader height={600} width={256}>
 									<rect x={16} y={16} rx={4} ry={4} height={48} width={48}/>
 									<rect x={72} y={32} rx={4} ry={4} height={16} width={96}/>
@@ -104,9 +105,11 @@ class Sidebar extends React.Component<IProps> {
 							<>
 								{(!this.props.loading && this.props.schoolName) && (
 									<div className='menu_header'>
-										<div className={classNames('menu_header__logo', {['--logo']: this.props.schoolLogo})}>{this.props.schoolLogo && (
-											<img src={`/static/images/logos/${this.props.schoolLogo}`} />	
-										)}</div>
+										<div className={classNames('menu_header__logo', {['--logo']: this.props.schoolLogo})}>
+											{this.props.schoolLogo && (
+												<img src={`/static/images/logos/${this.props.schoolLogo}`} />
+											)}
+										</div>
 										<h4>{this.props.schoolName}</h4>
 									</div>
 								)}

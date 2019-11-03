@@ -1,10 +1,10 @@
 import axios from 'axios'
 
 import {
-    FETCH_REPORTS,
     CREATE_REPORT,
+    DELETE_REPORT,
+    FETCH_REPORTS,
     UPDATE_REPORT,
-    DELETE_REPORT
 } from '../actions/types'
 
 import { Report } from '../types/report'

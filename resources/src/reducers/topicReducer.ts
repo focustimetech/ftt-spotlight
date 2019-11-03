@@ -1,4 +1,4 @@
-import { FETCH_TOPICS, NEW_TOPIC, DELETE_TOPIC } from '../actions/types'
+import { DELETE_TOPIC, FETCH_TOPICS, NEW_TOPIC } from '../actions/types'
 import { ReduxAction } from '../types/app'
 import { ITopic } from '../types/calendar'
 

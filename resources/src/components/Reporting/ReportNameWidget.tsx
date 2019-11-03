@@ -1,5 +1,5 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 
 import {
     CardActionArea,
@@ -41,8 +41,9 @@ class ReportNameWidget extends React.Component<IProps, IState> {
 */
 
     handleEsc = (event: any) => {
-        if (event.keyCode === 27)
+        if (event.keyCode === 27) {
             this.setState({ editing: false })
+        }
     }
 
     handleChange = (event: any) => {
@@ -66,8 +67,9 @@ class ReportNameWidget extends React.Component<IProps, IState> {
     }
 
     handleClickAway = (event: any) => {
-        if (this.state.editing)
+        if (this.state.editing) {
             this.handleSubmit(event)
+        }
     }
 
     handleEdit = () => {
@@ -102,8 +104,8 @@ class ReportNameWidget extends React.Component<IProps, IState> {
                                 <input
                                     value={this.state.name}
                                     onChange={this.handleChange}
-                                    className='report_name_widget__input'  
-                                    style={{ width: this.state.hiddenInputWidth }}     
+                                    className='report_name_widget__input'
+                                    style={{ width: this.state.hiddenInputWidth }}
                                     autoFocus
                                     placeholder={INPUT_PLACEHOLDER}
                                 />

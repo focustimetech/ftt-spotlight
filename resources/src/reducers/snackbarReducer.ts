@@ -1,5 +1,5 @@
-import { QUEUE_SNACKBAR, DEQUEUE_SNACKBAR } from '../actions/types'
 import { ISnackbar } from '../actions/snackbarActions'
+import { DEQUEUE_SNACKBAR, QUEUE_SNACKBAR } from '../actions/types'
 
 interface IState {
     items: ISnackbar[],
@@ -23,8 +23,9 @@ export const snackbarReducer = (state = initialState, action: IAction) => {
                 return snackbar.key && action.payload.key && snackbar.key === action.payload.key
             }) || (state.item && state.item.key === action.payload.key))
 
-            if (keyExists)
+            if (keyExists) {
                 return state
+            }
 
             return {
                 ...state,

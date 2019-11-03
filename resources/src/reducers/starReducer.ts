@@ -1,12 +1,12 @@
+import { IStarRequest } from '../actions/starActions'
 import { FETCH_STARRED, STAR_ITEM, UNSTAR_ITEM } from '../actions/types'
-import { StarRequest } from '../actions/starActions'
 
-export interface StarredGroup {
+export interface IStarredGroup {
     value: string
     label: string
 }
 
-export interface StarredList {
+export interface IStarredList {
     student?: any[],
     staff?: any[],
     course?: any[],
@@ -14,7 +14,7 @@ export interface StarredList {
     [key: string]: any
 }
 
-export const starredGroups: StarredGroup[] = [
+export const starredGroups: IStarredGroup[] = [
     { value: 'student', label: 'Students' },
     { value: 'staff', label: 'Staff' },
     { value: 'report', label: 'Reports' },
@@ -22,14 +22,14 @@ export const starredGroups: StarredGroup[] = [
     { value: 'cluster', label: 'Clusters' },
 ]
 
-export const emptyStarred: StarredList = {
+export const emptyStarred: IStarredList = {
     student: [],
     staff: [],
     course: [],
     cluster: [],
 }
 
-export interface StarredItem {
+export interface IStarredItem {
     id?: number,
     item_id: number,
     item_type: string,
@@ -38,8 +38,8 @@ export interface StarredItem {
 }
 
 interface IState {
-    items: StarredItem[],
-    item: StarredItem
+    items: IStarredItem[],
+    item: IStarredItem
 }
 
 const initialState: IState = {
@@ -62,7 +62,7 @@ export const starReducer = (state = initialState, action: IAction) => {
         case STAR_ITEM:
             return {
                 ...state,
-                items: state.items.reduce((arr: StarredItem[], item: StarredItem) => {
+                items: state.items.reduce((arr: IStarredItem[], item: IStarredItem) => {
                     arr.push(item.id === action.payload.id ? {
                         ...item,
                         isStarred: true
@@ -77,7 +77,7 @@ export const starReducer = (state = initialState, action: IAction) => {
         case UNSTAR_ITEM:
             return {
                 ...state,
-                items: state.items.reduce((arr: StarredItem[], item: StarredItem) => {
+                items: state.items.reduce((arr: IStarredItem[], item: IStarredItem) => {
                     arr.push(item.id === action.payload.id ? {
                         ...item,
                         isStarred: false

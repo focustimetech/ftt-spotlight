@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import React from 'react'
 import ContentLoader from 'react-content-loader'
+import { RouteComponentProps } from 'react-router-dom'
 
 import {
     MenuItem,
@@ -8,15 +8,15 @@ import {
     Typography
 } from '@material-ui/core'
 
+import { DateRange } from '../../types/date'
 import {
     IReportVariantInfo,
     Report,
     ReportingState,
 } from '../../types/report'
-import { DateRange } from '../../types/date'
+import { REPORT_PLACEHOLDER_NAME } from '../../utils/report'
 import { DateWidget } from './DateWidget'
 import { ReportNameWidget } from './ReportNameWidget'
-import { REPORT_PLACEHOLDER_NAME } from '../../utils/report'
 
 interface IProps extends RouteComponentProps {
     loading: boolean

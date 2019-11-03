@@ -1,4 +1,21 @@
 import {
+    endOfMonth,
+    endOfToday,
+    endOfWeek,
+    endOfYesterday,
+    startOfMonth,
+    startOfToday,
+    startOfWeek,
+    startOfYear,
+    startOfYesterday,
+    subDays,
+    subHours,
+    subMonths,
+    subWeeks,
+    subYears
+} from 'date-fns'
+
+import {
     DateRange,
     IAbsoluteDateRange,
     IPredefinedDateRange,
@@ -6,14 +23,14 @@ import {
     PredefinedDateRange
 } from '../types/date'
 import { ReportSegment } from '../types/report'
-import { subHours, startOfYesterday, endOfToday, endOfYesterday, startOfToday, subDays, endOfWeek, subYears } from 'date-fns'
-import { startOfWeek, subWeeks, startOfMonth, subMonths, endOfMonth, startOfYear } from 'date-fns/esm'
+
+// import { endOfMonth, startOfWeek, subWeeks, startOfMonth, subMonths, , startOfYear } from 'date-fns/esm'
 
 export const DATE_SEGMENT_LABELS: Record<ReportSegment, string[]> = {
-    'block': ['Block', 'Blocks'],
-    'day': ['Day', 'Days'],
-    'week': ['Week', 'Weeks'],
-    'month': ['Month', 'Months'],
+    block: ['Block', 'Blocks'],
+    day: ['Day', 'Days'],
+    week: ['Week', 'Weeks'],
+    month: ['Month', 'Months']
 }
 
 export const PREDEFINED_LABELS: Record<PredefinedDateRange, string> = {
@@ -34,7 +51,7 @@ export const PREDEFINED_LABELS: Record<PredefinedDateRange, string> = {
 
 export const normalizeDateRange = (dateRange: DateRange): IAbsoluteDateRange => {
     const normalizedDateRange: IAbsoluteDateRange = { type: 'absolute', start: new Date(), end: new Date()}
-    switch(dateRange.type) {
+    switch (dateRange.type) {
         case 'absolute':
             return dateRange
         case 'relative':
@@ -95,7 +112,7 @@ export const normalizeDateRange = (dateRange: DateRange): IAbsoluteDateRange => 
 }
 
 export const dateRangeToString = (dateRange: DateRange): string => {
-    switch(dateRange.type) {
+    switch (dateRange.type) {
         case 'absolute':
             return `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`
         case 'relative':
@@ -107,6 +124,6 @@ export const dateRangeToString = (dateRange: DateRange): string => {
 }
 
 export const formatDate = (date: Date): string => {
-    const options: Intl.DateTimeFormatOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }
     return date.toLocaleDateString('en-US', options)
 }

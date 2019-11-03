@@ -1,8 +1,8 @@
 import {
-    FETCH_REPORTS,
     CREATE_REPORT,
-    UPDATE_REPORT,
-    DELETE_REPORT
+    DELETE_REPORT,
+    FETCH_REPORTS,
+    UPDATE_REPORT
 } from '../actions/types'
 
 interface IState {

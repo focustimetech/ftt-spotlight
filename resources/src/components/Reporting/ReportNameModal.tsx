@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import {
     Button,
@@ -26,10 +26,11 @@ const ReportNameModal = (props: IProps) => {
     const handleSubmit = () => {
         // Validate input
         const nameLength: number = name ? name.length : props.name.length || 0
-        if (nameLength < 3)
+        if (nameLength < 3) {
             setError('Please choose a name that is at least 3 characters long.')
-        else
+        } else {
             props.onSubmit(name || props.name)
+        }
     }
 
     const onChange = (event: any) => {

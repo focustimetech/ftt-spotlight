@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development",
+    "lint": "tslint --project .",
     "watch": "webpack --mode development --watch",
     "prod": "webpack --mode production",
     "dev-server": "webpack-dev-server --mode development --inline --hot"
@@ -60,6 +61,7 @@
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
     "ts-loader": "^5.3.3",
+    "tslint": "^5.20.0",
     "typescript": "^3.5.3",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.39.2",

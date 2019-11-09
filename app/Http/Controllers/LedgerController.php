@@ -46,15 +46,12 @@ class LedgerController extends Controller
         $time = $request->input('date_time') ? strtotime($request->input('date_time')) : time();
         $week_day = date('w', $time) + 1;
         $block = Block::atTime($time);
-        $date = date('Y-m-d', $time);
-        $check_in_time = date('H:i:s');
 
         $student_numbers = $request->input('student_numbers') ?? [];
         $scheduled_ids = $request->input('scheduled_ids') ?? [];
         foreach ($scheduled_ids as $student_id) {
             LedgerEntry::create([
-                'date' => $date,
-                'time' => $check_in_time,
+                'checked_in_at' => date('Y-m-d H:i:s', $time),
                 'block_id' => $block->id,
                 'staff_id' => $staff->id,
                 'student_id' => $student_id,
@@ -78,8 +75,7 @@ class LedgerController extends Controller
         $ledger_entries = collect();
         foreach ($student_ids as $student_id) {
             $entry = new LedgerEntry;
-            $entry->date = $date;
-            $entry->time = $check_in_time;
+            $entry->checked_in_at = date('Y-m-d H:i:s', $time);
             $entry->block_id = $block->id;
             $entry->staff_id = $staff->id;
             $entry->student_id = $student_id;
@@ -112,7 +108,7 @@ class LedgerController extends Controller
         $status_blocks = [];
         $blocks_of_day->each(function ($block_schedule) use ($date, &$status_blocks, $staff) {
             $ledger_entries = LedgerEntry::where('staff_id', $staff->id)
-                ->where('date', $date)
+                ->whereDate('checked_in_at', '=', $date)
                 ->where('block_id', $block_schedule->block_id)
                 ->get();
             $ledger_student_ids = $ledger_entries->pluck('student_id')->toArray();

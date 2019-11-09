@@ -1,4 +1,4 @@
-import { FETCH_STAFF, NEW_STAFF, DELETE_STAFF, UPDATE_STAFF } from '../actions/types'
+import { DELETE_STAFF, FETCH_STAFF, NEW_STAFF, UPDATE_STAFF } from '../actions/types'
 
 interface IState {
     items: any[],

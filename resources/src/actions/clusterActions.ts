@@ -1,12 +1,12 @@
 import axios from 'axios'
 
 import {
+    ATTACH_STUDENTS,
+    DELETE_CLUSTER,
+    DETATCH_STUDENTS,
     FETCH_CLUSTERS,
     NEW_CLUSTER,
-    DELETE_CLUSTER,
     UPDATE_CLUSTER,
-    ATTACH_STUDENTS,
-    DETATCH_STUDENTS
 } from './types'
 
 export const fetchClusters = () => (dispatch: any) => {

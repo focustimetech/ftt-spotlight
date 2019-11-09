@@ -20,7 +20,7 @@ class LedgerEntry extends Model
     public function getAppointments()
     {
         return App\Appointment::where('student_id', $this->student_id)
-            ->where('date', $this->date)
+            ->where('date', strtotime('Y-m-d', strtotime($this->checked_in_at)))
             ->where('block_id', $this->block_id)
             ->get();
     }

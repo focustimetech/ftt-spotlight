@@ -1,7 +1,7 @@
-import * as React from 'react'
-import { CircularProgress, Fade } from '@material-ui/core';
+import React from 'react'
 
-import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
+import { Fade } from '@material-ui/core'
+
 import LoadingBadge from './LoadingBadge'
 
 interface IProps {
@@ -19,6 +19,7 @@ export const Splash = (props: IProps) => {
                         <LoadingBadge />
                         <Fade in={props.showChildren}>
                             <div>
+                                <img className='splash__image_logo' src='/static/images/ft-badge.png'/>
                                 {props.children}
                             </div>
                         </Fade>

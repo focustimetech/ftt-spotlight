@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 
 import {
@@ -16,16 +16,17 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { EnhancedDialogTitle } from './EnhancedDialogTitle'
-import { LoadingButton } from '../Form/LoadingButton'
-import { changePassword } from '../../utils/http'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { changePassword } from '../../utils/http'
 
-interface ReduxProps {
+import { LoadingButton } from '../Form/LoadingButton'
+import { EnhancedDialogTitle } from './EnhancedDialogTitle'
+
+interface IReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     disallowed?: string[]
     isRequiredChange?: boolean
     variant: 'dialog' | 'persistant'
@@ -75,11 +76,13 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
             this.setState({ loadingSignOut: true })
             this.props.onSignOut().then(() => {
                 this.setState({ loadingSignOut: false })
-                if (this.props.onClose)
+                if (this.props.onClose) {
                     this.props.onClose()
+                }
             })
-        } else if (this.props.onClose)
+        } else if (this.props.onClose) {
             this.props.onClose()
+        }
     }
 
     handleSubmit = () => {
@@ -89,7 +92,8 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
         } else if (!this.state.showPassword && this.state.newPassword !== this.state.confirmPassword) {
             this.setState({ unmatchedPasswords: true })
             return
-        } else if (this.props.disallowed && this.props.disallowed.some((password: string) => password === this.state.newPassword)) {
+        } else if (this.props.disallowed
+            && this.props.disallowed.some((password: string) => password === this.state.newPassword)) {
             this.setState({ disallowedPassword: true })
             return
         }
@@ -101,10 +105,11 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
         changePassword(this.state.oldPassword, this.state.newPassword)
             .then(() => {
                 this.setState(initialState)
-                if (this.props.onChangePassword)
+                if (this.props.onChangePassword) {
                     this.props.onChangePassword()
-                else
+                } else {
                     this.props.queueSnackbar({ message: 'Changed passsword.' })
+                }
             })
             .catch(() => {
                 this.setState({
@@ -115,8 +120,9 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
     }
 
     handleChange = (event: any, field: 'old' | 'new' | 'confirm') => {
-        if (this.state.loading)
+        if (this.state.loading) {
             return
+        }
         const value: string = event.target.value
         this.setState({ errored: false })
         switch (field) {
@@ -140,8 +146,9 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
     }
 
     toggleShowPassword = () => {
-        if (this.state.loading)
+        if (this.state.loading) {
             return
+        }
         if (this.state.showPassword) {
             this.setState({
                 showPassword: false,
@@ -161,8 +168,10 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
                 />
                 <DialogContent>
                     {this.props.isRequiredChange && (
+                        // tslint:disable-next-line: max-line-length
                         <DialogContentText color='error'>Your old password has expired and must be changed.</DialogContentText>
                     )}
+                    {/*tslint:disable-next-line: max-line-length*/}
                     <DialogContentText>Enter your old password, followed by your new password. Passwords must be at least 8 characters long.</DialogContentText>
                     <TextField
                         name='old_password'
@@ -196,9 +205,9 @@ class ChangePasswordWidget extends React.Component<IProps, IState> {
                         margin='normal'
                         InputProps={{
                             endAdornment: (
-                                <InputAdornment position="end">
+                                <InputAdornment position='end'>
                                     <IconButton
-                                        edge="end"
+                                        edge='end'
                                         onClick={() => this.toggleShowPassword()}
                                     >
                                         <Icon>{this.state.showPassword ? 'visibility_off' : 'visibility'}</Icon>

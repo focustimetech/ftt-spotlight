@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import {
     Button,
@@ -10,8 +10,8 @@ import {
     TextField
 } from '@material-ui/core'
 
-import { LoadingButton } from '../Form/LoadingButton'
 import { verifyPassword } from '../../utils/http'
+import { LoadingButton } from '../Form/LoadingButton'
 
 interface IProps {
     open: boolean
@@ -57,8 +57,9 @@ export const ConfirmPasswordDialog = (props: IProps) => {
     const handleCompletion = () => {
         setLoading(false)
         props.onClose()
-        if (props.onSubmit)
+        if (props.onSubmit) {
             props.onSubmit(password)
+        }
     }
 
     const onExited = () => {
@@ -73,16 +74,18 @@ export const ConfirmPasswordDialog = (props: IProps) => {
                 <DialogContent>
                     <DialogContentText>
                         {props.actionItems ? (
-                            <>
-                                <span>Please confirm your password to perform the following actions:</span>
-                                <ul className='password_reset_dialog_list'>{
-                                    props.actionItems.map((actionItem: string) => <li>{actionItem}</li>)
-                                }</ul>
-                            </>
+                            'Please confirm your password to perform the following actions:'
                         ) : (
                             'This action requires you to confirm your password.'
                         )}
                     </DialogContentText>
+                    {props.actionItems && (
+                        <ul className='password_confirm_dialog_list'>
+                            {props.actionItems.map((actionItem: string, index: number) => (
+                                <li key={index}>{actionItem}</li>
+                            ))}
+                        </ul>
+                    )}
                     <TextField
                         name='password'
                         value={password}
@@ -92,7 +95,7 @@ export const ConfirmPasswordDialog = (props: IProps) => {
                         helperText={errored ? helperText : undefined}
                         variant='outlined'
                         type='password'
-                        label="Password"
+                        label='Password'
                         fullWidth
                         required
                         autoFocus

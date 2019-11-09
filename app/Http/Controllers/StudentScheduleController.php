@@ -13,6 +13,7 @@ use App\Course;
 use App\Topic;
 use App\TopicSchedule;
 use App\SchedulePlan;
+use App\LedgerEntry;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Amendment as AmendmentResource;
 use App\Http\Resources\Appointment as AppointmentResource;
@@ -50,7 +51,6 @@ class StudentScheduleController extends Controller
         $blocks = $student->getBlocks($start_time, $end_time);
         $appointments = $student->appointments();
         $amendments = $student->amendments();
-        $ledger_entries = $student->ledgerEntries()->get();
         $plans = $student->plans();
 
         $student_schedule = [
@@ -78,7 +78,7 @@ class StudentScheduleController extends Controller
                     'date' => Utils::getFullDate($time),
                     'events' => []
                 ];
-                $blocks_of_day->each(function($block_schedule) use ($amendments, $appointments, $blocks, $date, $ledger_entries, $plans, &$schedule_day, $year_start, $year_end) {
+                $blocks_of_day->each(function($block_schedule) use ($amendments, $appointments, $blocks, $date, $student, $plans, &$schedule_day, $year_start, $year_end) {
                     if (strtotime($date. ' '. $block_schedule->end) < $year_start || strtotime($date. ' '. $block_schedule->start) > $year_end) {
                         // Only include blocks within school year
                         return;
@@ -95,7 +95,7 @@ class StudentScheduleController extends Controller
                         ];
                         $day_block['amendments'] = AmendmentResource::collection($amendments->get()->where('block_id', $block->id)->where('date', $date));
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
-                        $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->where('date', $date)->where('block_id', $block->id));
+                        $day_block['logs'] = LedgerEntryResource::collection(LedgerEntry::where('student_id', $student->id)->whereRaw('DATE(checked_in_at) = DATE(?)', $date)->where('block_id', $block->id)->get());
                         if ($block->flex) {
                             $plan = $plans->get()->where('date', $date)->where('block_id', $block->id)->flatten()->first();
                             if ($plan) {

@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-import { FETCH_STUDENTS, NEW_STUDENT, DELETE_STUDENT, UPDATE_STUDENT } from './types'
+import { DELETE_STUDENT, FETCH_STUDENTS, NEW_STUDENT, UPDATE_STUDENT } from './types'
 
-export interface StudentRequest {
+export interface IStudentRequest {
     id?: number
     clusters?: any[]
     first_name: string
@@ -19,7 +19,7 @@ export const fetchStudents = () => (dispatch: any) => {
         }))
 }
 
-export const createStudent = (studentData: StudentRequest) => (dispatch: any) => {
+export const createStudent = (studentData: IStudentRequest) => (dispatch: any) => {
     return axios.post('/api/students', studentData)
         .then((res: any) => dispatch({
             type: NEW_STUDENT,
@@ -35,7 +35,7 @@ export const deleteStudent = (studentID: number) => (dispatch: any) => {
         }))
 }
 
-export const updateStudent = (studentData: StudentRequest) => (dispatch: any) => {
+export const updateStudent = (studentData: IStudentRequest) => (dispatch: any) => {
     return axios.put('/api/students', studentData)
         .then((res: any) => dispatch({
             type: UPDATE_STUDENT,

@@ -1,37 +1,38 @@
-import * as React from 'react'
-import axios, { AxiosResponse } from 'axios'
-import { connect } from 'react-redux'
 import DateFnsUtils from '@date-io/date-fns'
+import axios, { AxiosResponse } from 'axios'
+import React from 'react'
+import { connect } from 'react-redux'
 
 import {
     Button,
     Collapse,
-    Icon,
     FormControl,
     FormControlLabel,
     FormLabel,
+    Icon,
+    Radio,
+    RadioGroup,
     Step,
     StepContent,
     StepLabel,
     Stepper,
-    Typography,
-    Radio,
-    RadioGroup,
-    TextField
+    TextField,
+    Typography
 } from '@material-ui/core'
 import StepIcon, { StepIconProps } from '@material-ui/core/StepIcon'
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
-import { TopNav } from '../TopNav'
-import { EnhancedTable } from '../Table/EnhancedTable'
-import { LoadingButton } from '../Form/LoadingButton'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { fetchStaff } from '../../actions/staffActions'
 import { fetchStudents } from '../../actions/studentActions'
-import { queueSnackbar, ISnackbar } from '../../actions/snackbarActions'
+import { IBlock } from '../../types/calendar'
 import { IStaff } from '../../types/staff'
 import { IStudent } from '../../types/student'
 import { ITableHeaderColumn } from '../../types/table'
-import { IBlock } from '../../types/calendar'
+
+import { LoadingButton } from '../Form/LoadingButton'
+import { EnhancedTable } from '../Table/EnhancedTable'
+import { TopNav } from '../TopNav'
 
 interface IDateRange {
     start: Date
@@ -45,19 +46,17 @@ interface IBlockRange {
     [key: string]: any
 }
 
-interface FinalStepContentProps {
+interface IFinalStepContentProps {
     onPrevious: () => void
 }
 
-interface ReduxProps {
+interface IReduxProps {
     staff: IStaff[]
     students: IStudent[]
     fetchStaff: () => Promise<any>
     fetchStudents: () => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
-
-interface IProps extends ReduxProps {}
 
 interface IState {
     blockRange: IBlockRange
@@ -97,7 +96,7 @@ const initialState: IState = {
     uploading: false,
 }
 
-class CreatePowerSchedule extends React.Component<IProps, IState> {
+class CreatePowerSchedule extends React.Component<IReduxProps, IState> {
     state: IState = initialState
 
     handleNextStep = () => {
@@ -141,8 +140,9 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
     }
 
     handleDatePickerSelect = (date: Date, key: 'start' | 'end') => {
-        if (!key)
+        if (!key) {
             return
+        }
         this.setState((state: IState) => {
             return {
                 dateRange: { ...state.dateRange, [key]: date }
@@ -280,12 +280,12 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
         ) : []
 
         const staff = this.props.staff ? (
-            this.props.staff.map((staff: IStaff) => {
+            this.props.staff.map((staffUser: IStaff) => {
                 return {
-                    id: staff.id,
-                    last_name: staff.last_name,
-                    first_name: staff.first_name,
-                    email: staff.email
+                    id: staffUser.id,
+                    last_name: staffUser.last_name,
+                    first_name: staffUser.first_name,
+                    email: staffUser.email
                 }
             })
         ) : []
@@ -297,7 +297,7 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
             }
         }
 
-        const FinalStepContent = (props: FinalStepContentProps) => (
+        const FinalStepContent = (props: IFinalStepContentProps) => (
             <div className='stepper-actions'>
                 <Button variant='text' onClick={() => props.onPrevious()}>Back</Button>
                 <LoadingButton
@@ -336,13 +336,20 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                                         selected={this.state.selectedStudents}
                                         searchable
                                     />
-                                    {(this.state.selectedStudents.length === students.length && students.length > 0) && (
+                                    {(
+                                        this.state.selectedStudents.length === students.length && students.length > 0
+                                    ) && (
+                                        // tslint:disable-next-line: max-line-length
                                         <Typography color='error'><Icon>warning</Icon> Are you sure you don't mean to select All Students? Selecting All Students ensures that students added in the future are also affected.</Typography>
                                     )}
                                 </Collapse>
                                 <div className='stepper-actions'>
                                     <Button
-                                        disabled={!this.state.studentType || (this.state.studentType === 'some' && this.state.selectedStudents.length === 0)}
+                                        disabled={
+                                            !this.state.studentType
+                                            || (this.state.studentType === 'some'
+                                            && this.state.selectedStudents.length === 0)
+                                        }
                                         variant='contained'
                                         color='primary'
                                         onClick={() => this.handleNextStep()}
@@ -381,8 +388,26 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                                 <FormControl component='fieldset'>
                                     <FormLabel component='legend'>Schedule classification</FormLabel>
                                     <RadioGroup onChange={this.handleScheduleTypeChange}>
-                                        <FormControlLabel value='appointment' label='Appointment' control={<Radio color='primary' checked={this.state.scheduleType === 'appointment'} />} />
-                                        <FormControlLabel value='amendment' label='Amendment' control={<Radio color='primary' checked={this.state.scheduleType === 'amendment'} />} />
+                                        <FormControlLabel
+                                            value='appointment'
+                                            label='Appointment'
+                                            control={
+                                                <Radio
+                                                    color='primary'
+                                                    checked={this.state.scheduleType === 'appointment'}
+                                                />
+                                            }
+                                        />
+                                        <FormControlLabel
+                                            value='amendment'
+                                            label='Amendment'
+                                            control={
+                                                <Radio
+                                                    color='primary'
+                                                    checked={this.state.scheduleType === 'amendment'}
+                                                />
+                                            }
+                                        />
                                     </RadioGroup>
                                 </FormControl>
                                 <Collapse in={Boolean(this.state.scheduleType)}>
@@ -390,7 +415,8 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                                         <Step key={0}>
                                             <StepLabel StepIconComponent={SubStepIcon('A')}>Select Staff</StepLabel>
                                             <StepContent>
-                                            <p>{`Select the staff member for the ${this.state.scheduleType === 'amendment' ? 'Amendment' : 'Appointment'}.`}</p>
+                                                {/* tslint:disable-next-line: max-line-length} */}
+                                                <p>{`Select the staff member for the ${this.state.scheduleType === 'amendment' ? 'Amendment' : 'Appointment'}.`}</p>
                                                 <EnhancedTable
                                                     title='Staff'
                                                     loading={this.state.loadingStaff}
@@ -402,7 +428,10 @@ class CreatePowerSchedule extends React.Component<IProps, IState> {
                                                     radio
                                                 />
                                                 <div className='stepper-actions'>
-                                                    <Button variant='text' onClick={() => this.handlePreviousStep()}>Back</Button>
+                                                    <Button
+                                                        variant='text'
+                                                        onClick={() => this.handlePreviousStep()}
+                                                    >Back</Button>
                                                     <Button
                                                         disabled={this.state.selectedStaff.length === 0}
                                                         variant='contained'

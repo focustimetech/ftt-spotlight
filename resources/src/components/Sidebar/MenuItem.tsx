@@ -1,9 +1,11 @@
-import * as React from 'react'
-
-import Icon from '@material-ui/core/Icon'
-import IconButton from '@material-ui/core/IconButton'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
+
+import {
+	Icon,
+	IconButton,
+	ListItemIcon
+} from '@material-ui/core'
 
 interface IProps {
 	to: string

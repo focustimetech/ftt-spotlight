@@ -1,5 +1,5 @@
-import { QUEUE_SNACKBAR, DEQUEUE_SNACKBAR } from './types'
 import { IAction } from '../reducers/snackbarReducer'
+import { DEQUEUE_SNACKBAR, QUEUE_SNACKBAR } from './types'
 
 export interface ISnackbarLink {
     value: string

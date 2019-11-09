@@ -1,6 +1,6 @@
-import { FETCH_STUDENTS, NEW_STUDENT, DELETE_STUDENT, UPDATE_STUDENT } from '../actions/types'
-import { IStudent } from '../types/student'
+import { DELETE_STUDENT, FETCH_STUDENTS, NEW_STUDENT, UPDATE_STUDENT } from '../actions/types'
 import { ReduxAction } from '../types/app'
+import { IStudent } from '../types/student'
 
 interface IState {
     items: IStudent[],

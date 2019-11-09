@@ -11,6 +11,7 @@ use App\BlockSchedule;
 use App\Course;
 use App\Topic;
 use App\TopicSchedule;
+use App\LedgerEntry;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Amendment as AmendmentResource;
 use App\Http\Resources\Appointment as AppointmentResource;
@@ -48,7 +49,6 @@ class StaffScheduleController extends Controller
         $staff_block_schedule = $staff->getBlockSchedule();
         $appointments = $staff->appointments();
         $amendments = $staff->amendments();
-        $ledger_entries = $staff->ledgerEntries();
         $plans = $staff->plans();
         $topic_schedules = TopicSchedule::whereIn('topic_id', $staff->getTopics()->pluck('id')->toArray());
         
@@ -78,7 +78,7 @@ class StaffScheduleController extends Controller
                     'date' => Utils::getFullDate($time),
                     'events' => []
                 ];
-                $blocks_of_day->each(function($block_schedule) use ($amendments, $appointments, $blocks, $date, $ledger_entries, $plans, $topic_schedules, &$schedule_day, $year_start, $year_end) {
+                $blocks_of_day->each(function($block_schedule) use ($amendments, $appointments, $blocks, $date, $staff, $plans, $topic_schedules, &$schedule_day, $year_start, $year_end) {
                     if (strtotime($date. ' '. $block_schedule->end) < $year_start || strtotime("$date $block_schedule->start") > $year_end) {
                         // Only include blocks within school year
                         return;
@@ -95,7 +95,7 @@ class StaffScheduleController extends Controller
                         ];
                         $day_block['amendments'] = AmendmentResource::collection($amendments->get()->where('block_id', $block->id)->where('date', $date));
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
-                        $day_block['logs'] = LedgerEntryResource::collection($ledger_entries->get()->whereDate('checked_in_at', '=', $date)->where('block_id', $block->id));
+                        $day_block['logs'] = LedgerEntryResource::collection(LedgerEntry::where('staff_id', $staff->id)->whereRaw('DATE(checked_in_at) = DATE(?)', $date)->where('block_id', $block->id)->get());
                         $day_block['planned'] = SchedulePlanResource::collection($plans->get()->where('date', $date)->where('block_id', $block->id));
                         if ($block->flex) {
                             $topic_schedule = $topic_schedules->get()->where('block_id', $block_schedule->block_id)->where('date', $date)->first();

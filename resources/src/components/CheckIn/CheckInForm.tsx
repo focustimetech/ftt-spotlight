@@ -150,6 +150,9 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleRemoveChip = (chip: CheckInChip) => {
+        if (this.state.uploading) {
+            return
+        }
         const removeIndex: number = this.findChip(chip)
         this.setState((state: IState) => ({
             chips: state.chips.filter((existingChip: CheckInChip, index: number) => index !== removeIndex),
@@ -370,7 +373,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                     'chip_avatar', `--${chip.value.color}`
                                 )}>{chip.value.initials}</Avatar>
                             }
-                            return (
+                            const chipComponent = (
                                 <Chip
                                     key={index}
                                     avatar={avatar}
@@ -378,6 +381,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                     onDelete={() => this.handleRemoveChip(chip)}
                                 />
                             )
+                            return chip.time ? <Tooltip placement='bottom-start' title={chip.time}>{chipComponent}</Tooltip> : chipComponent
                         })}
                         <div className='chip-textfield__actions'>
                             <InputBase

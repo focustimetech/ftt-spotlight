@@ -9,7 +9,7 @@ class LedgerEntry extends Model
     protected $table = "ledger";
     public $timestamps = false;
     protected $fillable = [
-        'date', 'time', 'block_id', 'staff_id', 'student_id', 'method'
+        'date', 'checked_in_at', 'block_id', 'staff_id', 'student_id', 'method'
     ];
 
     public function block()
@@ -20,7 +20,7 @@ class LedgerEntry extends Model
     public function getAppointments()
     {
         return App\Appointment::where('student_id', $this->student_id)
-            ->where('date', strtotime('Y-m-d', strtotime($this->checked_in_at)))
+            ->where('date', $this->date)
             ->where('block_id', $this->block_id)
             ->get();
     }

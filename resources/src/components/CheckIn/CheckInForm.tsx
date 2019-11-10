@@ -22,7 +22,7 @@ import {
 import { checkIn } from '../../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { ILedgerEntry } from '../../types/calendar'
-import { CheckInChip, ICheckInRequest, ICheckInResponse } from '../../types/checkin'
+import { CheckInChip, ICheckInError, ICheckInRequest, ICheckInResponse } from '../../types/checkin'
 import {
     appendToLocalStorageArray,
     AUTO_SUBMIT,
@@ -31,7 +31,7 @@ import {
     getObjectFromLocalStorage,
     writeObjectToLocalStorage,
 } from '../../utils/storage'
-import { makeArray } from '../../utils/utils'
+import { getCurrentTimestamp, makeArray } from '../../utils/utils'
 
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
@@ -128,7 +128,9 @@ class CheckInForm extends React.Component<IProps, IState> {
             const newChip: CheckInChip = {
                 type: 'student_number',
                 value: chipValue,
-                loading: this.state.nameFetchState !== 'skip'
+                loading: this.state.nameFetchState !== 'skip',
+                time: getCurrentTimestamp(),
+                date_time: this.props.dateTime
             }
             const index = this.findChip(newChip)
             if (index === -1) {
@@ -149,6 +151,9 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleRemoveChip = (chip: CheckInChip) => {
+        if (this.state.uploading) {
+            return
+        }
         const removeIndex: number = this.findChip(chip)
         this.setState((state: IState) => ({
             chips: state.chips.filter((existingChip: CheckInChip, index: number) => index !== removeIndex),
@@ -197,7 +202,13 @@ class CheckInForm extends React.Component<IProps, IState> {
         if (this.state.nameFetchState !== 'skip') {
             axios.get(`/api/students/student-number/${chip.value}`, { timeout: 2500 })
                 .then((res: any) => {
-                    replacementChip = { type: 'id', value: res.data, loading: false }
+                    replacementChip = {
+                        type: 'id',
+                        time: chip.time,
+                        date_time: chip.date_time,
+                        value: res.data,
+                        loading: false
+                    }
                     this.replaceChip(replacementChip, index)
                 })
                 .catch((error: any) => {
@@ -222,9 +233,12 @@ class CheckInForm extends React.Component<IProps, IState> {
     showResults = () => {
         const success: ILedgerEntry[] = this.props.checkInResponse.success
         const errors: string[] = this.props.checkInResponse.errors
-        const timestamp_string: string = this.props.checkInResponse.timestamp_string
+        const checkInError: ICheckInError = {
+            timestamp_string: this.props.checkInResponse.timestamp_string,
+            errors
+        }
         if (errors.length > 0) {
-            appendToLocalStorageArray(CHECK_IN_ERRORS, { errors, timestamp_string })
+            appendToLocalStorageArray(CHECK_IN_ERRORS, checkInError)
         }
         const message: string = success.length > 0
             ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0
@@ -256,17 +270,9 @@ class CheckInForm extends React.Component<IProps, IState> {
         }
 
         const request: ICheckInRequest = {
-            student_numbers: [],
-            student_ids: [],
-            date_time: this.props.dateTime
+            chips: this.state.chips,
         }
-        this.state.chips.forEach((chip: CheckInChip) => {
-            if (chip.type === 'student_number') {
-                request.student_numbers.push(chip.value)
-            } else {
-                request.student_ids.push(chip.value.id)
-            }
-        })
+
         this.props.checkIn(request)
             .then(() => {
                 if (this.props.didCheckIn) {
@@ -343,6 +349,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     render() {
+        console.log(this.state.chips)
         return (
             <ModalSection
                 icon='keyboard'
@@ -375,7 +382,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                     'chip_avatar', `--${chip.value.color}`
                                 )}>{chip.value.initials}</Avatar>
                             }
-                            return (
+                            const chipComponent = (
                                 <Chip
                                     key={index}
                                     avatar={avatar}
@@ -383,6 +390,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                     onDelete={() => this.handleRemoveChip(chip)}
                                 />
                             )
+                            return chip.time ? <Tooltip placement='bottom-start' title={chip.time}>{chipComponent}</Tooltip> : chipComponent
                         })}
                         <div className='chip-textfield__actions'>
                             <InputBase

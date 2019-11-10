@@ -20,7 +20,7 @@ class AppointmentsTableSeeder extends Seeder
                     'student_id' => $student->id,
                     'staff_id' => $ledger_entry->staff_id,
                     'block_id' => $ledger_entry->block_id,
-                    'date' => date('Y-m-d', strtotime($ledger_entry->date))
+                    'date' => $ledger_entry->date
                 ]);
             });
 

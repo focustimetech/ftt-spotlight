@@ -43,48 +43,57 @@ class LedgerController extends Controller
     public function checkIn(Request $request)
     {
         $staff = auth()->user()->staff();
-        $time = $request->input('date_time') ? strtotime($request->input('date_time')) : time();
-        $week_day = date('w', $time) + 1;
-        $block = Block::atTime($time);
+        $date_time = $request->input('date_time') ? strtotime($request->input('date_time')) : time();
+        $date = date('Y-m-d', $date_time);
+        $block = Block::atTime($date_time);
+        $ledger_entries = collect();
 
-        $student_numbers = $request->input('student_numbers') ?? [];
         $scheduled_ids = $request->input('scheduled_ids') ?? [];
         foreach ($scheduled_ids as $student_id) {
-            LedgerEntry::create([
-                'checked_in_at' => date('Y-m-d H:i:s', $time),
+            $ledger_entry = LedgerEntry::create([
+                'date' => $date,
+                'checked_in_at' => date('Y-m-d H:i:s'),
                 'block_id' => $block->id,
                 'staff_id' => $staff->id,
                 'student_id' => $student_id,
                 'method' => 2
             ]);
+            $ledger_entries->push($ledger_entry);
         }
-        $student_ids = $request->input('student_ids') ?? [];
+
         $error = [];
-        if (count($student_numbers) > 0) {
-            foreach ($student_numbers as $student_number) {
-                $student = Student::findBySN($student_number);
+        foreach ($request->input('chips') as $chip) {
+            $check_in_time = $chip['time'] ? strtotime($chip['time']) : time();
+            $check_in_date = $chip['date_time'] ? date('Y-m-d', strtotime($chip['date_time'])) : $date;
+            $student_id = null;
+            $method = 0;
+            if ($chip['type'] === 'id') {
+                $student_id = $chip['value']['id'];
+            } else {
+                $student = Student::findBySN($chip['value']);
                 if ($student) {
-                    array_push($student_ids, $student->id);
+                    $student_id = $student->id;
                 } else {
-                    array_push($error, $student_number);
+                    array_push($error, $chip['value']);
                 }
-                // dd($error);
             }
-        }
+            if (date('Y-m-d', $check_in_time) > $date) {
+                $method = 3; // retroactive
+            } else if (date('Y-m-d', $check_in_time) < $date) {
+                $method = 4; // proactive
+            }
 
-        $ledger_entries = collect();
-        foreach ($student_ids as $student_id) {
-            $entry = new LedgerEntry;
-            $entry->checked_in_at = date('Y-m-d H:i:s', $time);
-            $entry->block_id = $block->id;
-            $entry->staff_id = $staff->id;
-            $entry->student_id = $student_id;
-            $entry->method = 0;
-
-            if ($entry->save())
-                $ledger_entries->push($entry);
-            else
-                throw new Exception("Students could not be checked in.");
+            if ($student_id) {
+                $ledger_entry = LedgerEntry::create([
+                    'date' => $check_in_date,
+                    'checked_in_at' => date('Y-m-d H:i:s', $check_in_time),
+                    'block_id' => $block->id,
+                    'staff_id' => $staff->id,
+                    'student_id' => $student_id,
+                    'method' => $method
+                ]);
+                $ledger_entries->push($ledger_entry);
+            }
         }
 
         return [
@@ -108,7 +117,7 @@ class LedgerController extends Controller
         $status_blocks = [];
         $blocks_of_day->each(function ($block_schedule) use ($date, &$status_blocks, $staff) {
             $ledger_entries = LedgerEntry::where('staff_id', $staff->id)
-                ->whereDate('checked_in_at', '=', $date)
+                ->where('date', $date)
                 ->where('block_id', $block_schedule->block_id)
                 ->get();
             $ledger_student_ids = $ledger_entries->pluck('student_id')->toArray();

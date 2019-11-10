@@ -95,7 +95,7 @@ class StudentScheduleController extends Controller
                         ];
                         $day_block['amendments'] = AmendmentResource::collection($amendments->get()->where('block_id', $block->id)->where('date', $date));
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
-                        $day_block['logs'] = LedgerEntryResource::collection(LedgerEntry::where('student_id', $student->id)->whereRaw('DATE(checked_in_at) = DATE(?)', $date)->where('block_id', $block->id)->get());
+                        $day_block['logs'] = LedgerEntryResource::collection(LedgerEntry::where('student_id', $student->id)->where('date', $date)->where('block_id', $block->id)->get());
                         if ($block->flex) {
                             $plan = $plans->get()->where('date', $date)->where('block_id', $block->id)->flatten()->first();
                             if ($plan) {

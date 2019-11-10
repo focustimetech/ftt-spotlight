@@ -73,7 +73,7 @@ class LedgerController extends Controller
                 if ($student) {
                     $student_id = $student->id;
                 } else {
-                    array_push($error, $student_number);
+                    array_push($error, $chip['value']);
                 }
             }
             if (date('Y-m-d', $check_in_time) > $date) {

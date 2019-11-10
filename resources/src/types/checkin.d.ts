@@ -44,5 +44,6 @@ interface StudentIDChip {
 
 export type CheckInChip = (StudentNumberChip | StudentIDChip) & {
     time: string
+    date_time: string
     loading: boolean
 }

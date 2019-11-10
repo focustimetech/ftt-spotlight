@@ -64,6 +64,7 @@ class LedgerController extends Controller
         $error = [];
         foreach ($request->input('chips') as $chip) {
             $check_in_time = $chip['time'] ? strtotime($chip['time']) : time();
+            $check_in_date = $chip['date_time'] ? date('Y-m-d', strtotime($chip['date_time'])) : $date;
             $student_id = null;
             $method = 0;
             if ($chip['type'] === 'id') {
@@ -84,7 +85,7 @@ class LedgerController extends Controller
 
             if ($student_id) {
                 $ledger_entry = LedgerEntry::create([
-                    'date' => $date,
+                    'date' => $check_in_date,
                     'checked_in_at' => date('Y-m-d H:i:s', $check_in_time),
                     'block_id' => $block->id,
                     'staff_id' => $staff->id,

@@ -129,7 +129,8 @@ class CheckInForm extends React.Component<IProps, IState> {
                 type: 'student_number',
                 value: chipValue,
                 loading: this.state.nameFetchState !== 'skip',
-                time: getCurrentTimestamp()
+                time: getCurrentTimestamp(),
+                date_time: this.props.dateTime
             }
             const index = this.findChip(newChip)
             if (index === -1) {
@@ -201,7 +202,13 @@ class CheckInForm extends React.Component<IProps, IState> {
         if (this.state.nameFetchState !== 'skip') {
             axios.get(`/api/students/student-number/${chip.value}`, { timeout: 2500 })
                 .then((res: any) => {
-                    replacementChip = { type: 'id', time: chip.time, value: res.data, loading: false }
+                    replacementChip = {
+                        type: 'id',
+                        time: chip.time,
+                        date_time: chip.date_time,
+                        value: res.data,
+                        loading: false
+                    }
                     this.replaceChip(replacementChip, index)
                 })
                 .catch((error: any) => {
@@ -264,7 +271,6 @@ class CheckInForm extends React.Component<IProps, IState> {
 
         const request: ICheckInRequest = {
             chips: this.state.chips,
-            date_time: this.props.dateTime
         }
 
         this.props.checkIn(request)

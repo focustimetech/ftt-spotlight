@@ -95,7 +95,7 @@ class StaffScheduleController extends Controller
                         ];
                         $day_block['amendments'] = AmendmentResource::collection($amendments->get()->where('block_id', $block->id)->where('date', $date));
                         $day_block['appointments'] = AppointmentResource::collection($appointments->get()->where('block_id', $block->id)->where('date', $date));                        
-                        $day_block['logs'] = LedgerEntryResource::collection(LedgerEntry::where('staff_id', $staff->id)->whereRaw('DATE(checked_in_at) = DATE(?)', $date)->where('block_id', $block->id)->get());
+                        $day_block['logs'] = LedgerEntryResource::collection(LedgerEntry::where('staff_id', $staff->id)->where('date', $date)->where('block_id', $block->id)->get());
                         $day_block['planned'] = SchedulePlanResource::collection($plans->get()->where('date', $date)->where('block_id', $block->id));
                         if ($block->flex) {
                             $topic_schedule = $topic_schedules->get()->where('block_id', $block_schedule->block_id)->where('date', $date)->first();

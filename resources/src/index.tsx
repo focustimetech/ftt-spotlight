@@ -6,8 +6,7 @@ import { ThemeProvider } from '@material-ui/styles'
 
 import { store } from './store'
 import { theme } from './theme'
-import { setJsonHeaders } from './utils/api'
-import { setAuthorizationToken } from './utils/setAuthorizationToken'
+import { setAuthorizationToken, setJsonHeaders } from './utils/api'
 import { ACCESS_TOKEN } from './utils/storage'
 
 import AppWithAuth from './components/App/AppWithAuth'

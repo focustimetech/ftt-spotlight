@@ -31,7 +31,7 @@ import {
     getObjectFromLocalStorage,
     writeObjectToLocalStorage,
 } from '../../utils/storage'
-import { makeArray } from '../../utils/utils'
+import { getCurrentTimestamp, makeArray } from '../../utils/utils'
 
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
@@ -125,12 +125,11 @@ class CheckInForm extends React.Component<IProps, IState> {
         this.refreshAutoSubmit()
         const chipValues: string[] = value ? value.split(/[\s,]+/) : [this.state.inputValue]
         chipValues.forEach((chipValue: string) => {
-            const now: Date = new Date()
             const newChip: CheckInChip = {
                 type: 'student_number',
                 value: chipValue,
                 loading: this.state.nameFetchState !== 'skip',
-                time: `${now.toLocaleDateString()}T${now.toLocaleTimeString()}`
+                time: getCurrentTimestamp()
             }
             const index = this.findChip(newChip)
             if (index === -1) {
@@ -197,10 +196,9 @@ class CheckInForm extends React.Component<IProps, IState> {
         const index: number = this.findChip(chip)
         let replacementChip: CheckInChip = { ...chip, loading: false }
         if (this.state.nameFetchState !== 'skip') {
-            axios.get(`/api/check-in/student-number/${chip.value}`, { timeout: 2500 })
+            axios.get(`/api/students/student-number/${chip.value}`, { timeout: 2500 })
                 .then((res: any) => {
-                    const { student, datetime } = res.data
-                    replacementChip = { type: 'id', value: student, time: datetime, loading: false }
+                    replacementChip = { type: 'id', time: chip.time, value: res.data, loading: false }
                     this.replaceChip(replacementChip, index)
                 })
                 .catch((error: any) => {
@@ -259,17 +257,10 @@ class CheckInForm extends React.Component<IProps, IState> {
         }
 
         const request: ICheckInRequest = {
-            student_numbers: [],
-            student_ids: [],
+            chips: this.state.chips,
             date_time: this.props.dateTime
         }
-        this.state.chips.forEach((chip: CheckInChip) => {
-            if (chip.type === 'student_number') {
-                request.student_numbers.push(chip.value)
-            } else {
-                request.student_ids.push(chip.value.id)
-            }
-        })
+
         this.props.checkIn(request)
             .then(() => {
                 if (this.props.didCheckIn) {
@@ -346,6 +337,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     render() {
+        console.log(this.state.chips)
         return (
             <ModalSection
                 icon='keyboard'

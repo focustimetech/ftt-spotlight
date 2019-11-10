@@ -16,8 +16,7 @@ export interface CheckInStatus {
 }
 
 export interface ICheckInRequest {
-    student_numbers?: string[]
-    student_ids?: number[]
+    chips?: CheckInChip[]
     scheduled_ids?: number[]
     date_time?: string    
 }

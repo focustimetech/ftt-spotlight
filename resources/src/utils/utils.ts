@@ -86,3 +86,12 @@ export const getMethodDetailsFromName = (method: ICheckInMethod): ICheckInMethod
             }
     }
 }
+
+/**
+ * Determines the user's local time and returns it as a string.
+ * @return The local timestamp
+ */
+export const getCurrentTimestamp = (): string => {
+    const now: Date = new Date()
+    return `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`
+}

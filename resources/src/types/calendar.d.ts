@@ -80,7 +80,6 @@ export interface ICheckInMethodDetails {
 
 export interface ILedgerEntry {
     id: number
-    date: string
     time: string
     staff: IStaff
     student: IStudent

@@ -84,6 +84,16 @@ export const getMethodDetailsFromName = (method: ICheckInMethod): ICheckInMethod
                 icon: 'assignment_turned_in',
                 title: 'Amended',
             }
+        case 'proactive':
+            return {
+                icon: 'access_time',
+                title: 'Proactive check-in'
+            }
+        case 'retroactive':
+            return {
+                icon: 'access_time',
+                title: 'Retroactive check-in'
+            }
     }
 }
 

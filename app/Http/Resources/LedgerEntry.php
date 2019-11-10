@@ -22,6 +22,12 @@ class LedgerEntry extends JsonResource
     public function toArray($request)
     {
         switch ($this->method) {
+            case 4:
+                $method = 'proactive';
+                break;
+            case 3:
+                $method = 'retroactive';
+                break;
             case 2:
                 $method = 'roll-call';
                 break;

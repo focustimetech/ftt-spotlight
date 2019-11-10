@@ -65,6 +65,7 @@ class LedgerController extends Controller
         foreach ($request->input('chips') as $chip) {
             $check_in_time = $chip['time'] ? strtotime($chip['time']) : time();
             $student_id = null;
+            $method = 0;
             if ($chip['type'] === 'id') {
                 $student_id = $chip['value']['id'];
             } else {
@@ -75,6 +76,12 @@ class LedgerController extends Controller
                     array_push($error, $student_number);
                 }
             }
+            if (date('Y-m-d', $check_in_time) > $date) {
+                $method = 3; // retroactive
+            } else if (date('Y-m-d', $check_in_time) < $date) {
+                $method = 4; // proactive
+            }
+
             if ($student_id) {
                 $ledger_entry = LedgerEntry::create([
                     'date' => $date,
@@ -82,7 +89,7 @@ class LedgerController extends Controller
                     'block_id' => $block->id,
                     'staff_id' => $staff->id,
                     'student_id' => $student_id,
-                    'method' => 0
+                    'method' => $method
                 ]);
                 $ledger_entries->push($ledger_entry);
             }

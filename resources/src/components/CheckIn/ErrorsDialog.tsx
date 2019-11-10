@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core'
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { ICheckInError } from '../../types/checkin'
 import { CHECK_IN_ERRORS, getObjectFromLocalStorage } from '../../utils/storage'
 import { makeArray } from '../../utils/utils'
 
@@ -32,24 +33,20 @@ class ErrorsDialog extends React.Component<IProps> {
     }
 
     render() {
-        const errors: any[] = makeArray(getObjectFromLocalStorage(CHECK_IN_ERRORS))
-        const hasErrors: boolean = errors && errors.length > 0
+        const checkInErrors: ICheckInError[] = makeArray(getObjectFromLocalStorage(CHECK_IN_ERRORS))
+        const hasErrors: boolean = checkInErrors && checkInErrors.length > 0
         return (
             <Dialog open={this.props.open}>
                 <DialogTitle>Check-in Errors</DialogTitle>
                 <DialogContent>
                     {hasErrors ? (
                         <>
-                            {/* tslint:disable-next-line: max-line-length */}
                             <DialogContentText>The following check-in entries could not be resolved. This may be because the entry was mistyped, or the entry is not associated with an existing student account.</DialogContentText>
-                            {errors.map((error: any, index: number) => (
-                                <div key={index}>
-                                    <Typography className='check-in_error_header'>{error.timestamp_string}</Typography>
+                            {checkInErrors.map((checkInError: ICheckInError) => (
+                                <div key={checkInError.timestamp_string}>
+                                    <Typography className='check-in_error_header'>{checkInError.timestamp_string}</Typography>
                                     <Typography>
-                                        {error.errors
-                                            .map((errorString: string) => (<span key={errorString} className='check-in_error'>{errorString}</span>))
-                                            .reduce((prev: string, curr: string) => [prev, ', ', curr], [])
-                                        }
+                                        <span className='check-in_error'>{checkInError.errors.join(', ')}</span>
                                     </Typography>
                                 </div>
                             ))}

@@ -22,7 +22,7 @@ import {
 import { checkIn } from '../../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { ILedgerEntry } from '../../types/calendar'
-import { CheckInChip, ICheckInRequest, ICheckInResponse } from '../../types/checkin'
+import { CheckInChip, ICheckInError, ICheckInRequest, ICheckInResponse } from '../../types/checkin'
 import {
     appendToLocalStorageArray,
     AUTO_SUBMIT,
@@ -226,9 +226,12 @@ class CheckInForm extends React.Component<IProps, IState> {
     showResults = () => {
         const success: ILedgerEntry[] = this.props.checkInResponse.success
         const errors: string[] = this.props.checkInResponse.errors
-        const timestamp_string: string = this.props.checkInResponse.timestamp_string
+        const checkInError: ICheckInError = {
+            timestamp_string: this.props.checkInResponse.timestamp_string,
+            errors
+        }
         if (errors.length > 0) {
-            appendToLocalStorageArray(CHECK_IN_ERRORS, { errors, timestamp_string })
+            appendToLocalStorageArray(CHECK_IN_ERRORS, checkInError)
         }
         const message: string = success.length > 0
             ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0

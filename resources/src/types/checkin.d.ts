@@ -27,6 +27,11 @@ export interface ICheckInResponse {
     errors?: string[]
 }
 
+export interface ICheckInError {
+    timestamp_string: string
+    errors: string[]
+}
+
 interface StudentNumberChip {
     type: 'student_number'
     value: string

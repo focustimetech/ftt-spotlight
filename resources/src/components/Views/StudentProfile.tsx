@@ -578,6 +578,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						dialogOpen={this.state.calendarDialogOpen}
 						onDialogOpen={this.handleCalendarDialogOpen}
 						onDialogClose={this.handleCalendarDialogClose}
+						onRefresh={() => this.fetchSchedule()}
 					/>
 				</div>
 			</div>

@@ -49,6 +49,7 @@ interface IProps {
 	onDialogOpen?: () => void
 	onDialogClose?: () => void
 	onBlockClick?: (blockDetails: IBlockDetails) => void
+	onRefresh?: () => void
 }
 
 export const Calendar = (props: IProps) => {
@@ -171,6 +172,13 @@ export const Calendar = (props: IProps) => {
 								</Tooltip>
 							)}
 						</li>
+						{props.onRefresh && (
+							<li>
+								<Tooltip title='Refresh' placement='top'>
+									<IconButton onClick={() => props.onRefresh()}><Icon>refresh</Icon></IconButton>
+								</Tooltip>
+							</li>
+						)}
 					</ul>
 					<div className='calendar'>
 						<div className='calendar_row'>

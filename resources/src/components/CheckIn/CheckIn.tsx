@@ -63,6 +63,7 @@ interface IState {
     datePickerOpen: boolean
     errorsDialogOpen: boolean
     loadingStatus: boolean
+    refreshing: boolean
     scheduledSelected: number[]
 }
 
@@ -74,6 +75,7 @@ class CheckIn extends React.Component<IProps, IState> {
         datePickerOpen: false,
         errorsDialogOpen: false,
         loadingStatus: false,
+        refreshing: false,
         scheduledSelected: []
     }
 
@@ -96,6 +98,12 @@ class CheckIn extends React.Component<IProps, IState> {
             .then(() => {
                 this.setState({ loadingStatus: false })
             })
+    }
+
+    refreshStatus = () => {
+        this.setState({ refreshing: true })
+        this.props.fetchCheckInStatus(this.state.date.toISOString())
+            .then(() => this.setState({ refreshing: false }))
     }
 
     fetchPrevious = () => {
@@ -283,6 +291,13 @@ class CheckIn extends React.Component<IProps, IState> {
                                     onClick={() => this.fetchToday()}
                                     disabled={this.props.checkInStatus.date && this.props.checkInStatus.date.is_today}
                                 >Today</Button>
+                            </li>
+                            <li>
+                                <Tooltip title='Refresh' placement='top'>
+                                    <IconButton onClick={() => this.refreshStatus()} disabled={this.state.refreshing}>
+                                        <Icon>refresh</Icon>
+                                    </IconButton>
+                                </Tooltip>
                             </li>
                         </ul>
                         <CheckInForm

@@ -1,8 +1,7 @@
-import * as React from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { Icon, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
-
 
 interface IProps {
 	icon: string
@@ -18,7 +17,7 @@ const MenuItem = (props: IProps) => {
 			<ListItemText>{props.label}</ListItemText>
 		</li>
 	)
-	
+
 	return props.to ? (
 		<NavLink className='menu_list__link' activeClassName={props.inactive ? undefined : '--selected'} to={props.to}>
 			<MenuItemContent />

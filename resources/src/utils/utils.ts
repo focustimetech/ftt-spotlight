@@ -1,7 +1,7 @@
-import { ICheckInMethod, ICheckInMethodDetails } from "../types/calendar"
+import { ICheckInMethod, ICheckInMethodDetails } from '../types/calendar'
 
 /**
- * 
+ *
  * @param list A list of string items to truncate
  * @param objectName The kind of objects in the list
  * Example input: (['Red', 'Green', 'Blue'], 'Group')
@@ -28,11 +28,12 @@ export const listToTruncatedString = (list: string[], objectName?: string): stri
  * @param obj The object.
  * @return `true` if the object is empty, `false` otherwise.
  */
-export const isEmpty = (obj: Object): boolean => {
-    if (!obj)
+export const isEmpty = (obj: any): boolean => {
+    if (!obj) {
         return true
-    else
+    } else {
         return Object.keys(obj).length === 0 && obj.constructor === Object
+    }
 }
 
 /**
@@ -51,36 +52,56 @@ export const isArray = (object: any): boolean => {
  * @return An array containing either the object, or all original array entries
  */
 export const makeArray = (object: any): any[] => {
-    if (!object)
+    if (!object) {
         return []
-    else
+    } else {
         return isArray(object) ? object : [object]
+    }
 }
 
 /**
- * 
+ *
  */
 export const getMethodDetailsFromName = (method: ICheckInMethod): ICheckInMethodDetails => {
     switch (method) {
         case 'manual':
             return {
                 icon: 'keyboard',
-                title: 'Via manual check-in'
+                title: 'Via manual check-in',
             }
         case 'air':
             return {
                 icon: 'wifi',
-                title: 'Via Air Check-in'
+                title: 'Via Air Check-in',
             }
         case 'roll-call':
             return {
                 icon: 'assignment',
-                title: 'Via roll call'
+                title: 'Via roll call',
             }
         case 'amendment':
             return {
                 icon: 'assignment_turned_in',
-                title: 'Amended'
+                title: 'Amended',
+            }
+        case 'proactive':
+            return {
+                icon: 'access_time',
+                title: 'Proactive check-in'
+            }
+        case 'retroactive':
+            return {
+                icon: 'access_time',
+                title: 'Retroactive check-in'
             }
     }
+}
+
+/**
+ * Determines the user's local time and returns it as a string.
+ * @return The local timestamp
+ */
+export const getCurrentTimestamp = (): string => {
+    const now: Date = new Date()
+    return `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`
 }

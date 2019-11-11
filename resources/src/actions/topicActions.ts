@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-import { FETCH_TOPICS, NEW_TOPIC_SCHEDULE, NEW_TOPIC, DELETE_TOPIC, DELETE_TOPIC_SCHEDULE } from './types'
 import { TopicColor } from '../theme'
-import { ITopic, ITopicSchedule } from '../types/calendar'
 import { ReduxAction } from '../types/app'
+import { ITopic, ITopicSchedule } from '../types/calendar'
+import { DELETE_TOPIC, DELETE_TOPIC_SCHEDULE, FETCH_TOPICS, NEW_TOPIC, NEW_TOPIC_SCHEDULE } from './types'
 
 export interface ITopicRequest {
     memo: string
@@ -20,7 +20,7 @@ export interface ITopicScheduleRequest {
 export const fetchTopics = () => {
     return (dispatch: (action: ReduxAction<ITopic[]>) => void) => {
         return axios.get('/api/topics')
-            .then(res => {
+            .then((res: any) => {
                 const topics: ITopic[] = res.data
                 dispatch({
                     type: FETCH_TOPICS,
@@ -33,11 +33,11 @@ export const fetchTopics = () => {
 export const createTopic = (topic: ITopicRequest) => {
     return (dispatch: (action: ReduxAction<ITopic>) => void) => {
         return axios.post('/api/topics', topic)
-            .then(res => {
-                const topic: ITopic = res.data
+            .then((res: any) => {
+                const newTopic: ITopic = res.data
                 dispatch({
                     type: NEW_TOPIC,
-                    payload: topic
+                    payload: newTopic
                 })
             })
     }
@@ -46,11 +46,11 @@ export const createTopic = (topic: ITopicRequest) => {
 export const deleteTopic = (topicID: number) => {
     return (dispatch: (action: ReduxAction<ITopic>) => void) => {
         return axios.delete(`/api/topics/${topicID}`)
-            .then(res => {
-                const topic: ITopic = res.data
+            .then((res: any) => {
+                const deletedTopic: ITopic = res.data
                 dispatch({
                     type: DELETE_TOPIC,
-                    payload: topic
+                    payload: deletedTopic
                 })
             })
     }
@@ -58,12 +58,12 @@ export const deleteTopic = (topicID: number) => {
 
 export const createTopicSchedule = (topicSchedule: ITopicScheduleRequest) => {
     return (dispatch: (action: ReduxAction<ITopicSchedule>) => void): Promise<any> => {
-        return axios.post(`/api/topics/schedule`, topicSchedule)
-            .then(res => {
-                const topicSchedule: ITopicSchedule = res.data
+        return axios.post('/api/topics/schedule', topicSchedule)
+            .then((res: any) => {
+                const newTopicSchedule: ITopicSchedule = res.data
                 dispatch({
                     type: NEW_TOPIC_SCHEDULE,
-                    payload: topicSchedule
+                    payload: newTopicSchedule
                 })
             })
     }
@@ -72,7 +72,7 @@ export const createTopicSchedule = (topicSchedule: ITopicScheduleRequest) => {
 export const deleteTopicSchedule = (topicScheduleID: number) => {
     return (dispatch: (action: ReduxAction<ITopicSchedule>) => void): Promise<any> => {
         return axios.delete(`/api/topics/schedule/${topicScheduleID}`)
-            .then(res => {
+            .then((res: any) => {
                 const topicSchedule: ITopicSchedule = res.data
                 dispatch({
                     type: DELETE_TOPIC_SCHEDULE,

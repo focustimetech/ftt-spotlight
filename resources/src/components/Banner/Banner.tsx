@@ -1,5 +1,5 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 
 import {
     Button,
@@ -8,9 +8,9 @@ import {
     Slide,
     Typography
 } from '@material-ui/core'
-import { BannerContent, BannerProps } from './BannerContent'
+import { BannerContent, IBannerProps } from './BannerContent'
 
-export interface IProps extends BannerProps {
+export interface IProps extends IBannerProps {
     variant: 'static' | 'dynamic'
     open: boolean
     mountOnEnter?: boolean
@@ -20,7 +20,7 @@ export interface IProps extends BannerProps {
     onEntering?: () => void
     onExit?: () => void
     onExited?: () => void
-    onExiting?: () => void    
+    onExiting?: () => void
 }
 
 class Banner extends React.Component<IProps> {

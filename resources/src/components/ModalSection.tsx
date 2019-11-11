@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import {
     Button,
@@ -6,6 +6,7 @@ import {
     Icon,
     Typography
 } from '@material-ui/core'
+
 import { SetState } from '../types/app'
 
 interface IProps {
@@ -26,12 +27,14 @@ export const ModalSection = (props: IProps) => {
     const isOpen: boolean = props.open !== false && (props.open || open)
 
     const handleHeaderClick = () => {
-        if (props.collapsible === false)
+        if (props.collapsible === false) {
             return
-        if (open && props.onClose)
+        }
+        if (open && props.onClose) {
             props.onClose()
-        else if (!open && props.onOpen)
+        } else if (!open && props.onOpen) {
             props.onOpen()
+        }
         setOpen(!open)
     }
 

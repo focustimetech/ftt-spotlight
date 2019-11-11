@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-import { FETCH_STUDENT_SCHEDULE, FETCH_STAFF_LIST } from '../actions/types'
-import { IStaff } from '../types/staff'
+import { FETCH_STAFF_LIST, FETCH_STUDENT_SCHEDULE } from '../actions/types'
 import { ITopic } from '../types/calendar'
+import { IStaff } from '../types/staff'
 
 export interface IAppointmentRequest {
     student_id: number
@@ -43,10 +43,11 @@ export const deleteAppointment = (appointmentID: number): Promise<any> => {
 
 export const fetchStudentSchedule = (studentID?: number, dateTime?: string) => {
     let baseURL: string
-    if (studentID)
+    if (studentID) {
         baseURL = `/api/students/${studentID}/schedule`
-    else
+    } else {
         baseURL = '/api/students/self/schedule'
+    }
     return (dispatch: any) => {
         return axios.get(`${baseURL}${dateTime ? `/${dateTime}` : ''}`)
             .then((res: any) => {

@@ -1,7 +1,7 @@
-import * as React from 'react'
-import classNames from 'classnames'
-import ContentLoader from 'react-content-loader'
 import DateFnsUtils from '@date-io/date-fns'
+import classNames from 'classnames'
+import React from 'react'
+import ContentLoader from 'react-content-loader'
 
 import {
     Button,
@@ -9,17 +9,18 @@ import {
     IconButton,
     Tooltip
 } from '@material-ui/core'
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
-import { CalendarDialog } from './CalendarDialog'
-import { CalendarBlock } from './CalendarBlock'
 import {
-	ICalendarDay,
-	ICalendarEvent,
 	IBlockDetails,
 	ICalendarBlock,
-	ICalendarDialogGroup
+	ICalendarDay,
+	ICalendarDialogGroup,
+	ICalendarEvent
 } from '../../types/calendar'
+
+import { CalendarBlock } from './CalendarBlock'
+import { CalendarDialog } from './CalendarDialog'
 
 const emptyIBlockDetails: IBlockDetails = {
 	block_id: 0,
@@ -48,6 +49,7 @@ interface IProps {
 	onDialogOpen?: () => void
 	onDialogClose?: () => void
 	onBlockClick?: (blockDetails: IBlockDetails) => void
+	onRefresh?: () => void
 }
 
 export const Calendar = (props: IProps) => {
@@ -109,12 +111,12 @@ export const Calendar = (props: IProps) => {
 		</IconButton>
 	)
 
-	const handleBlockClick = (blockDetails: IBlockDetails) => {
-		setBlockDetails(blockDetails)
+	const handleBlockClick = (details: IBlockDetails) => {
+		setBlockDetails(details)
 		props.onDialogOpen()
 		setDialogOpen(true)
 		if (props.onBlockClick) {
-			props.onBlockClick(blockDetails)
+			props.onBlockClick(details)
 		}
 	}
 
@@ -170,6 +172,13 @@ export const Calendar = (props: IProps) => {
 								</Tooltip>
 							)}
 						</li>
+						{props.onRefresh && (
+							<li>
+								<Tooltip title='Refresh' placement='top'>
+									<IconButton onClick={() => props.onRefresh()}><Icon>refresh</Icon></IconButton>
+								</Tooltip>
+							</li>
+						)}
 					</ul>
 					<div className='calendar'>
 						<div className='calendar_row'>
@@ -181,17 +190,17 @@ export const Calendar = (props: IProps) => {
 							))}
 						</div>
 						<div className='calendar_row'>
-							{props.calendar.map((calendarDay: ICalendarDay, index: number) => (
-								<div className='calendar_events' key={index}>
-									{calendarDay.events.map((event: ICalendarEvent, index: number) => (
-										<div className='event' key={index}>{event.name || 'event'}</div>
+							{props.calendar.map((calendarDay: ICalendarDay, dayIndex: number) => (
+								<div className='calendar_events' key={dayIndex}>
+									{calendarDay.events.map((event: ICalendarEvent, eventIndex: number) => (
+										<div className='event' key={eventIndex}>{event.name || 'event'}</div>
 									))}
 								</div>
 							))}
 						</div>
 						<div className='calendar_row'>
-							{props.calendar.map((calendarDay: ICalendarDay, index: number) => (
-								<div className='calendar_blocks' key={index}>
+							{props.calendar.map((calendarDay: ICalendarDay, dayIndex: number) => (
+								<div className='calendar_blocks' key={dayIndex}>
 									{calendarDay.blocks.map((block: ICalendarBlock, blockIndex: number) => {
 										return <CalendarBlock
 											key={blockIndex}

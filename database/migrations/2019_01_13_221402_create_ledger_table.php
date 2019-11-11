@@ -18,8 +18,8 @@ class CreateLedgerTable extends Migration
     {
         Schema::create('ledger', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('date'); // Date checked in
-            $table->time('time'); // Time checked in
+            $table->timestamp('checked_in_at'); // Timestamp checked in
+            $table->date('date'); // Date of the check-in
             $table->unsignedInteger('method')
                 ->default(0);
             $table->unsignedInteger('block_id'); // Block checked into

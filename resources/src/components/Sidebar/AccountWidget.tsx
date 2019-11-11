@@ -1,5 +1,5 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -10,17 +10,18 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { LoadingMenuItem } from '../Form/LoadingMenuItem'
-import { NavItem } from '../Sidebar/NavItem'
 import { logout } from '../../actions/authActions'
 import { IUser } from '../../types/auth'
 
-interface ReduxProps {
+import { LoadingMenuItem } from '../Form/LoadingMenuItem'
+import { NavItem } from '../Sidebar/NavItem'
+
+interface IReduxProps {
     currentUser: IUser
     logout: () => Promise<any>
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     onSignOut: (callback?: () => void) => void
 }
 

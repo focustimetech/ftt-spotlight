@@ -71,7 +71,7 @@ class StudentsController extends Controller
         if ($student)
             return new StudentResource($student);
         else
-            return response()->json('Student couldn\'t be found', 404);
+            return response()->json(['message' => "Student couldn't be found"], 404);
     }
 
     /**

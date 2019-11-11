@@ -1,8 +1,8 @@
-import * as React from 'react'
 import classNames from 'classnames'
+import React from 'react'
 import ContentLoader from 'react-content-loader'
-import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router-dom'
 
 import {
 	Avatar,
@@ -15,51 +15,51 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { isEmpty, makeArray } from '../../utils/utils'
-import { StarredItem } from '../../reducers/starReducer'
-import { listToTruncatedString } from '../../utils/utils'
-import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
-import { StudentInfoDialog } from '../Modals/StudentInfoDialog'
-import { Calendar } from '../Calendar/Calendar'
-import { NewAppointment } from '../Calendar/NewAppointment'
-import NewAmendment from '../Calendar/NewAmendment'
-import { CancelAppointment } from '../Calendar/CancelAppointment'
-import { LoadingIconButton } from '../Form/LoadingIconButton'
-import { TopNav } from '../TopNav'
-import { StarButton } from '../StarButton'
-import { IUser } from '../../types/auth'
-import { IStudent } from '../../types/student';
-import {
-	IAmendment,
-	IAppointment,
-	ICalendarDay,
-	ICalendarBlock,
-	IBlockDetails,
-	ICalendarDialogGroup,
-	ILedgerEntry,
-	IScheduled,
-	ICalendarBlockVariant
-} from '../../types/calendar'
+import { logout } from '../../actions/authActions'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { starItem, unstarItem } from '../../actions/starActions'
 import { fetchStudentProfile } from '../../actions/studentProfileActions'
 import {
-	IAppointmentRequest,
 	createAppointment,
 	deleteAppointment,
-	fetchStudentSchedule
+	fetchStudentSchedule,
+	IAppointmentRequest
 } from '../../actions/studentScheduleActions'
-import { logout } from '../../actions/authActions'
+import { IStarredItem } from '../../reducers/starReducer'
+import { IUser } from '../../types/auth'
+import {
+	IAmendment,
+	IAppointment,
+	IBlockDetails,
+	ICalendarBlock,
+	ICalendarBlockVariant,
+	ICalendarDay,
+	ICalendarDialogGroup,
+	ILedgerEntry,
+	IScheduled,
+} from '../../types/calendar'
+import { IStudent } from '../../types/student'
+import { isEmpty, listToTruncatedString, makeArray } from '../../utils/utils'
+
+import { Calendar } from '../Calendar/Calendar'
+import { CancelAppointment } from '../Calendar/CancelAppointment'
+import NewAmendment from '../Calendar/NewAmendment'
+import { NewAppointment } from '../Calendar/NewAppointment'
+import { LoadingIconButton } from '../Form/LoadingIconButton'
+import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
 import PlanDialog from '../Modals/PlanDialog'
-import { queueSnackbar, ISnackbar } from '../../actions/snackbarActions'
+import { StudentInfoDialog } from '../Modals/StudentInfoDialog'
+import { StarButton } from '../StarButton'
+import { TopNav } from '../TopNav'
 
 interface IReduxProps {
 	currentUser: IUser
 	student: any
 	schedule: any
-	newStarred: StarredItem
+	newStarred: IStarredItem
 	fetchStudentProfile: (studentID: number) => any
-	starItem: (item: StarredItem) => any
-	unstarItem: (item: StarredItem) => any
+	starItem: (item: IStarredItem) => any
+	unstarItem: (item: IStarredItem) => any
 	fetchStudentSchedule: (studentID: number, dateTime?: string) => any
 	logout: () => Promise<any>
 	queueSnackbar: (snackbar: ISnackbar) => void
@@ -99,9 +99,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 	}
 
 	toggleStarred = (isStarred: boolean) => {
-		if (this.props.currentUser.account_type !== 'staff')
+		if (this.props.currentUser.account_type !== 'staff') {
 			return
-		const starredItem: StarredItem = {
+		}
+		const starredItem: IStarredItem = {
 			item_id: this.props.student.id,
 			item_type: 'student'
 		}
@@ -143,8 +144,9 @@ class StudentProfile extends React.Component<IProps, IState> {
 
 	fetchSchedule = (dateTime?: string) => {
 		this.setState({ loadingSchedule: true })
-		if (!this.props.currentUser)
+		if (!this.props.currentUser) {
 			return
+		}
 		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
 		this.props.fetchStudentSchedule(studentID, dateTime || this.getURLDateTime()).then(
 			(res: any) => {
@@ -221,10 +223,11 @@ class StudentProfile extends React.Component<IProps, IState> {
 			})
 			.catch((error: any) => {
 				const { response } = error
-				if (response && response.data.message)
+				if (response && response.data.message) {
 					this.props.queueSnackbar({ message: response.data.message })
-				else
+				} else {
 					this.props.queueSnackbar({ message: 'The appointment could not be created.' })
+				}
 			})
 	}
 
@@ -289,8 +292,10 @@ class StudentProfile extends React.Component<IProps, IState> {
 		)
 	}
 
-	render () {
-		const starred: boolean = this.props.newStarred && this.props.newStarred.item_id === this.props.student.id && this.props.newStarred.item_type === 'student' ? (
+	render() {
+		const starred: boolean = this.props.newStarred
+		&& this.props.newStarred.item_id === this.props.student.id
+		&& this.props.newStarred.item_type === 'student' ? (
 			this.props.newStarred.isStarred !== false
 		) : this.props.student.starred
 
@@ -321,7 +326,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						) : (
 							block.flex ? (
 								block.logs[0] ? (
-									block.logs[0].staff.name 
+									block.logs[0].staff.name
 								) : (
 									block.scheduled ? block.scheduled.name : 'No Schedule'
 								)
@@ -430,10 +435,16 @@ class StudentProfile extends React.Component<IProps, IState> {
 				actions: (appointment: IAppointment, blockDetails: IBlockDetails) => {
 					return !isEmpty(appointment)
 					&& this.props.currentUser.account_type === 'staff'
-					&& (this.props.currentUser.details.administrator === true || this.props.currentUser.details.id === appointment.staff.id)
+					&& (
+						this.props.currentUser.details.administrator === true
+						|| this.props.currentUser.details.id === appointment.staff.id
+					)
 					&& blockDetails.pending ?
 					[
-						{ value: 'Cancel Appointment', callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment)) }
+						{
+							value: 'Cancel Appointment',
+							callback: () => Promise.resolve(this.handleCancelAppointmentDialogOpen(appointment))
+						}
 					] : undefined
 				}
 			},
@@ -501,7 +512,11 @@ class StudentProfile extends React.Component<IProps, IState> {
 									</div>
 								) : (
 									<>
-										<Avatar className={classNames('profile_avatar', `--${avatarColor}`)}>{this.props.student.initials}</Avatar>
+										<Avatar
+											className={classNames('profile_avatar', `--${avatarColor}`)}
+										>
+											{this.props.student.initials}
+										</Avatar>
 										<div>
 											<h3 className='name'>
 												{`${this.props.student.first_name} ${this.props.student.last_name}`}
@@ -514,7 +529,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 											</a>
 										</div>
 									</>
-								)}	
+								)}
 							</li>
 						</ul>
 						{this.state.loadingProfile ? (
@@ -563,6 +578,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 						dialogOpen={this.state.calendarDialogOpen}
 						onDialogOpen={this.handleCalendarDialogOpen}
 						onDialogClose={this.handleCalendarDialogClose}
+						onRefresh={() => this.fetchSchedule()}
 					/>
 				</div>
 			</div>

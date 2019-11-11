@@ -39,10 +39,10 @@ export const COLORS: IColor[] = [
     { name: 'orange', label: 'Orange' },
     { name: 'deep-orange', label: 'Deep Orange' },
     { name: 'brown', label: 'Brown' },
-    { name: 'blue-grey', label: 'Blue Grey' }    
+    { name: 'blue-grey', label: 'Blue Grey' }
 ]
 
-export type TopicColor = 
+export type TopicColor =
     | 'red'
     | 'pink'
     | 'purple'

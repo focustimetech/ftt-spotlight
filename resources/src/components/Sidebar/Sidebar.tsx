@@ -1,22 +1,22 @@
-import * as React from 'react'
+import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
 import { Icon, IconButton } from '@material-ui/core'
 import { Theme, withTheme } from '@material-ui/core/styles'
 
-import SidebarMenu from './SidebarMenu'
-import AccountWidget from './AccountWidget'
-import NotificationsWidget from '../Modals/NotificationsWidget'
 import { CheckInWidget } from '../CheckIn/CheckInWidget'
+import NotificationsWidget from '../Modals/NotificationsWidget'
 import { SearchWidget } from '../Modals/SearchWidget'
 import StarredWidget from '../Modals/StarredWidget'
+import AccountWidget from './AccountWidget'
 import { HelpWidget } from './HelpWidget'
+import SidebarMenu from './SidebarMenu'
 
-interface StyleProps {
+interface IStyleProps {
 	theme: Theme
 }
 
-interface IProps extends StyleProps {
+interface IProps extends IStyleProps {
 	routeComponentProps: RouteComponentProps
 	onSignOut: () => void
 	onToggleMenuOpen: () => void
@@ -42,7 +42,7 @@ class Sidebar extends React.Component<IProps> {
 					<div className='nav_bottom'>
 						<NotificationsWidget />
 						<HelpWidget />
-						<AccountWidget onSignOut={this.props.onSignOut} />								
+						<AccountWidget onSignOut={this.props.onSignOut} />
 					</div>
 				</nav>
 				<SidebarMenu routeComponentProps={this.props.routeComponentProps} />

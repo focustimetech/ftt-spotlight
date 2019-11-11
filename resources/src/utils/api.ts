@@ -11,3 +11,8 @@ export const setAuthorizationToken = (token: string) => {
         delete axios.defaults.headers.common['Authorization']
     }
 }
+
+export const setJsonHeaders = () => {
+    axios.defaults.headers.common['Accept'] = 'application/json'
+    axios.defaults.headers.common['Content-Type'] = 'application/json'
+}

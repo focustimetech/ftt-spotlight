@@ -1,9 +1,9 @@
-import * as React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-import classNames from 'classnames'
-import { connect } from 'react-redux'
-import ContentLoader from 'react-content-loader'
 import DateFnsUtils from '@date-io/date-fns'
+import classNames from 'classnames'
+import React from 'react'
+import ContentLoader from 'react-content-loader'
+import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router-dom'
 
 import {
     Avatar,
@@ -17,20 +17,20 @@ import {
     Tooltip,
     Typography
 } from '@material-ui/core'
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
 import { checkIn, fetchCheckInStatus } from '../../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { ICheckInMethodDetails, ILedgerEntry, ISchedulePlan } from '../../types/calendar'
+import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
 import { getMethodDetailsFromName } from '../../utils/utils'
-import { ICheckInMethodDetails } from '../../types/calendar'
-import { ISelectableListItem, ISelectableListAction, SelectableList } from '../SelectableList'
+
 import { Banner, IProps as BannerProps } from '../Banner/Banner'
+import { ModalSection } from '../ModalSection'
+import { ISelectableListAction, ISelectableListItem, SelectableList } from '../SelectableList'
+import { TopNav } from '../TopNav'
 import CheckInForm from './CheckInForm'
 import ErrorsDialog from './ErrorsDialog'
-import { TopNav } from '../TopNav'
-import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
-import { ModalSection } from '../ModalSection'
-import { ISchedulePlan, ILedgerEntry } from '../../types/calendar'
 
 type BannerPropsIndex =
     | 'RECEIVED_CHIPS'
@@ -47,14 +47,14 @@ const BANNERS: Record<BannerPropsIndex, Partial<BannerProps>> = {
     }
 }
 
-interface ReduxProps {
+interface IReduxProps {
     checkInStatus: CheckInStatus
     checkIn: (request: ICheckInRequest) => Promise<any>
     fetchCheckInStatus: (dateTime?: string) => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps, RouteComponentProps {}
+interface IProps extends IReduxProps, RouteComponentProps {}
 
 interface IState {
     bannerOpen: boolean
@@ -63,6 +63,7 @@ interface IState {
     datePickerOpen: boolean
     errorsDialogOpen: boolean
     loadingStatus: boolean
+    refreshing: boolean
     scheduledSelected: number[]
 }
 
@@ -74,6 +75,7 @@ class CheckIn extends React.Component<IProps, IState> {
         datePickerOpen: false,
         errorsDialogOpen: false,
         loadingStatus: false,
+        refreshing: false,
         scheduledSelected: []
     }
 
@@ -97,7 +99,13 @@ class CheckIn extends React.Component<IProps, IState> {
                 this.setState({ loadingStatus: false })
             })
     }
-    
+
+    refreshStatus = () => {
+        this.setState({ refreshing: true })
+        this.props.fetchCheckInStatus(this.state.date.toISOString())
+            .then(() => this.setState({ refreshing: false }))
+    }
+
     fetchPrevious = () => {
         this.fetchStatus(this.props.checkInStatus.previous)
     }
@@ -110,12 +118,12 @@ class CheckIn extends React.Component<IProps, IState> {
         this.fetchStatus(this.props.checkInStatus.today)
     }
 
-    handleScheduledCheckIn = (selected: (string | number)[]): Promise<any> => {
+    handleScheduledCheckIn = (selected: Array<string | number>): Promise<any> => {
         const request: ICheckInRequest = {
             scheduled_ids: this.state.scheduledSelected,
             date_time: this.props.checkInStatus.date.full_date
         }
-        return this.props.checkIn(request) 
+        return this.props.checkIn(request)
             .then(() => {
                 return this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date)
                     .then(() => {
@@ -125,9 +133,11 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     handleSelectAllScheduled = () => {
-        if (!this.props.checkInStatus.blocks || !this.props.checkInStatus.blocks[0].planned)
+        if (!this.props.checkInStatus.blocks || !this.props.checkInStatus.blocks[0].planned) {
             return
-        const allSelected: boolean = this.state.scheduledSelected.length === this.props.checkInStatus.blocks[0].planned.length
+        }
+        const allSelected: boolean
+            = this.state.scheduledSelected.length === this.props.checkInStatus.blocks[0].planned.length
         this.setState({
             scheduledSelected: allSelected
                 ? []
@@ -135,9 +145,9 @@ class CheckIn extends React.Component<IProps, IState> {
         })
     }
 
-    handleSelectScheduled = (id: number, selected: boolean) => {
+    handleSelectScheduled = (id: number, newSelected: boolean) => {
         this.setState((state: IState) => ({
-            scheduledSelected: selected ? (
+            scheduledSelected: newSelected ? (
                 [...state.scheduledSelected, id]
             ) : (
                 state.scheduledSelected.filter((selected: number) => selected !== id)
@@ -162,8 +172,9 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        if (this.props.location.hash === '#errors')
+        if (this.props.location.hash === '#errors') {
             this.setState({ errorsDialogOpen: true })
+        }
         this.fetchStatus()
     }
 
@@ -177,7 +188,7 @@ class CheckIn extends React.Component<IProps, IState> {
         const checkedIn: ILedgerEntry[] = this.props.checkInStatus.blocks.length > 0 ? (
             this.props.checkInStatus.blocks[0].ledger_entries
         ) : []
-        
+
         const actions: ISelectableListAction[] = [
             { icon: 'check', title: 'Check In', callback: this.handleScheduledCheckIn }
         ]
@@ -229,7 +240,9 @@ class CheckIn extends React.Component<IProps, IState> {
                     breadcrumbs={[{ value: 'Check-in' }]}
                     actions={(
                         <Tooltip title='List Errors'>
-                            <IconButton onClick={() => this.handleOpenErrorsDialog()}><Icon>error_outline</Icon></IconButton>
+                            <IconButton onClick={() => this.handleOpenErrorsDialog()}>
+                                <Icon>error_outline</Icon>
+                            </IconButton>
                         </Tooltip>
                     )}
                 />
@@ -279,6 +292,13 @@ class CheckIn extends React.Component<IProps, IState> {
                                     disabled={this.props.checkInStatus.date && this.props.checkInStatus.date.is_today}
                                 >Today</Button>
                             </li>
+                            <li>
+                                <Tooltip title='Refresh' placement='top'>
+                                    <IconButton onClick={() => this.refreshStatus()} disabled={this.state.refreshing}>
+                                        <Icon>refresh</Icon>
+                                    </IconButton>
+                                </Tooltip>
+                            </li>
                         </ul>
                         <CheckInForm
                             dateTime={this.props.checkInStatus.date.full_date}
@@ -313,11 +333,14 @@ class CheckIn extends React.Component<IProps, IState> {
                         >
                             <List dense>
                                 {checkedIn.map((ledgerEntry: ILedgerEntry) => {
-                                    const methodDetails: ICheckInMethodDetails = getMethodDetailsFromName(ledgerEntry.method)
+                                    const methodDetails: ICheckInMethodDetails
+                                        = getMethodDetailsFromName(ledgerEntry.method)
                                     return (
                                         <ListItem key={ledgerEntry.id}>
                                             <ListItemAvatar>
-                                                <Avatar className={classNames('student_avatar', `--${ledgerEntry.student.color}`)}>
+                                                <Avatar className={classNames(
+                                                    'student_avatar', `--${ledgerEntry.student.color}`
+                                                )}>
                                                     {ledgerEntry.student.initials}
                                                 </Avatar>
                                             </ListItemAvatar>
@@ -326,7 +349,9 @@ class CheckIn extends React.Component<IProps, IState> {
                                                 secondary={
                                                     <span className='--flex-row'>
                                                         <Typography variant='overline'>{ledgerEntry.time}</Typography>
-                                                        <Tooltip title={methodDetails.title}><Icon>{methodDetails.icon}</Icon></Tooltip>
+                                                        <Tooltip title={methodDetails.title}>
+                                                            <Icon>{methodDetails.icon}</Icon>
+                                                        </Tooltip>
                                                     </span>
                                                 }
                                             />

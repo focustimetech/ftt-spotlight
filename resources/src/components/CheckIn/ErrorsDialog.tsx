@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 
 import {
@@ -12,14 +12,15 @@ import {
 } from '@material-ui/core'
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
+import { ICheckInError } from '../../types/checkin'
+import { CHECK_IN_ERRORS, getObjectFromLocalStorage } from '../../utils/storage'
 import { makeArray } from '../../utils/utils'
-import { getObjectFromLocalStorage, CHECK_IN_ERRORS } from '../../utils/storage'
 
-interface ReduxProps {
+interface IReduxProps {
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
-interface IProps extends ReduxProps {
+interface IProps extends IReduxProps {
     open: boolean
     onClose: () => void
 }
@@ -32,8 +33,8 @@ class ErrorsDialog extends React.Component<IProps> {
     }
 
     render() {
-        const errors: any[] = makeArray(getObjectFromLocalStorage(CHECK_IN_ERRORS))
-        const hasErrors: boolean = errors && errors.length > 0
+        const checkInErrors: ICheckInError[] = makeArray(getObjectFromLocalStorage(CHECK_IN_ERRORS))
+        const hasErrors: boolean = checkInErrors && checkInErrors.length > 0
         return (
             <Dialog open={this.props.open}>
                 <DialogTitle>Check-in Errors</DialogTitle>
@@ -41,24 +42,28 @@ class ErrorsDialog extends React.Component<IProps> {
                     {hasErrors ? (
                         <>
                             <DialogContentText>The following check-in entries could not be resolved. This may be because the entry was mistyped, or the entry is not associated with an existing student account.</DialogContentText>
-                            {errors.map((error: any, index: number) => (
-                                <div key={index}>
-                                    <Typography className='check-in_error_header'>{error.timestamp_string}</Typography>
+                            {checkInErrors.map((checkInError: ICheckInError) => (
+                                <div key={checkInError.timestamp_string}>
+                                    <Typography className='check-in_error_header'>{checkInError.timestamp_string}</Typography>
                                     <Typography>
-                                        {error.errors
-                                            .map((errorString: string) => (<span key={errorString} className='check-in_error'>{errorString}</span>))
-                                            .reduce((prev: string, curr: string) => [prev, ', ', curr], [])
-                                        }
+                                        <span className='check-in_error'>{checkInError.errors.join(', ')}</span>
                                     </Typography>
                                 </div>
                             ))}
                         </>
                     ) : (
-                        <DialogContentText>No errors yet. Student numbers you enter but don't resolve will appear here.</DialogContentText>
+                        <>
+                            {/* tslint:disable-next-line: max-line-length */}
+                            <DialogContentText>No errors yet. Student numbers you enter but don't resolve will appear here.</DialogContentText>
+                        </>
                     )}
                     <DialogActions>
                         {hasErrors && (
-                            <Button variant='text' color='primary' onClick={() => this.handleClearErrors()}>Clear All</Button>
+                            <Button
+                                variant='text'
+                                color='primary'
+                                onClick={() => this.handleClearErrors()}
+                            >Clear All</Button>
                         )}
                         <Button variant='text' onClick={() => this.props.onClose()}>Close</Button>
                     </DialogActions>

@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { ReduxAction } from '../types/app'
+import { INotification } from '../types/staff'
 import {
     ARCHIVE_ALL_NOTIFICATIONS,
     ARCHIVE_NOTIFICATION,
@@ -9,8 +11,6 @@ import {
     MARK_NOTIFICATION_UNREAD,
     UNARCHIVE_NOTIFICATION
 } from './types'
-import { ReduxAction } from '../types/app'
-import { INotification } from '../types/staff';
 
 export const archiveAllNotifications = () => {
     return (dispatch: (action: ReduxAction<void>) => void) => {

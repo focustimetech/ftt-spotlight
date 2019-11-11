@@ -15,17 +15,18 @@ export const uploadCSV = (
         files: File[],
         headers: string[],
         userType: 'staff' | 'student',
-        password: string
+        password: string,
     ): Promise<void> => {
-    if (files.length === 0)
+    if (files.length === 0) {
         return
+    }
 
     const url = userType === 'student'
         ? '/api/students/upload'
         : '/api/staff/upload'
 
     const file = files.pop()
-    const formData = new FormData
+    const formData = new FormData()
     formData.append('file', file)
     formData.append('headers', headers.join(','))
     formData.append('password', password)

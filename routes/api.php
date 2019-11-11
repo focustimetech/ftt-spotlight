@@ -132,6 +132,11 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     // Users
     Route::get('users', 'UsersController@getAllUsers');
     Route::get('users/administrators', 'UsersController@getAllAdministrators');
+
+    // Wiki
+    Route::get('wiki/groups', 'BlogController@getGroups');
+    Route::get('wiki/group/{id}', 'BlogController@getPostsByGroup');
+    Route::get('wiki/{id}', 'BlogController@getPostById');
 });
 
 // Administrator Routes

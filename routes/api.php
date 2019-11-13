@@ -149,6 +149,11 @@ Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(funct
     Route::put('settings', 'SettingsController@update');
 });
 
+// SysAdmin Routes
+Route::middleware(['auth:api', 'expired-password', 'scopes:sysadmin'])->group(function() {
+    Route::post('sysadmins', 'SysAdminController@create');
+});
+
 // Incomplete
 // Clusters
 Route::post('clusters/students', 'ClustersController@attach');

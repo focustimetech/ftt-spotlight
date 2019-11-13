@@ -82,7 +82,7 @@ class AccountWidget extends React.Component<IProps, IState> {
                         <h3>{this.props.currentUser.display_name}</h3>
                         <h5>{this.props.currentUser.display_role}</h5>
                     </div>
-                    <Link to={profileLink}><MenuItem>Profile</MenuItem></Link>
+                    <Link to={profileLink}><MenuItem onClick={() => this.handleClose()}>Profile</MenuItem></Link>
                     <LoadingMenuItem
                         onClick={() => this.handleSignOut()}
                         loading={this.state.loadingSignOut}

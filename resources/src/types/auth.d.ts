@@ -46,4 +46,8 @@ export interface IStudentUser {
     account_type: 'student'
 }
 
-export type IUser = (IStaffUser | IStudentUser) & IUserProperties
+export interface ISysAdminUser {
+    account_type: 'sysadmin'
+}
+
+export type IUser = (IStaffUser | IStudentUser | ISysAdminUser) & IUserProperties

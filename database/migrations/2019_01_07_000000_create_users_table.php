@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->boolean('password_expired')
                 ->default(true);
-            $table->enum('account_type', ['staff', 'student']);
+            $table->enum('account_type', ['staff', 'student', 'sysadmin']);
             $table->unsignedInteger('user_id');
             $table->boolean('reenable')
                 ->default(false);

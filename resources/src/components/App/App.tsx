@@ -66,7 +66,7 @@ export default class App extends React.Component<IProps, IState> {
 				<Router>
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
 						{
-							this.props.currentUser.account_type === 'staff' ? <>
+							['staff', 'sysadmin'].includes(this.props.currentUser.account_type) ? <>
 								<Sidebar
 									onSignOut={this.props.onSignOut}
 									schoolName={this.props.settings.values['school_name'].value || undefined}

@@ -29,3 +29,24 @@
 		margin-left: 8px !important;
 	}
 }
+
+.sysadmin_badge {
+	width: 24px;
+	height: 24px;
+	padding: 4px;
+	box-sizing: border-box;
+	display: inline-block;
+	margin: 0 8px;
+	background: #EEE;
+    border-radius: 50%;
+
+	&::after {
+		content: "";
+		background: url('/static/images/ft-badge.png') no-repeat;
+		background-position: center;
+		background-size: cover;
+		width: 16px;
+		height: 16px;
+		display: block;
+	}
+}

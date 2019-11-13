@@ -1,14 +1,15 @@
 import React from 'react'
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
-import { Route, Switch } from 'react-router-dom'
+import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom'
 
 import {
     CircularProgress,
     Icon,
     IconButton,
     List,
-    ListItem
+    ListItem,
+    Typography
 } from '@material-ui/core'
 
 import {
@@ -25,7 +26,9 @@ import {
     IBlogPostRequest
 } from '../../types/wiki'
 
-import { TopNav } from '../TopNav'
+import { TopNav, INavLink } from '../TopNav'
+
+type WikiRoute = 'none' | 'group' | 'post'
 
 interface IReduxProps {
     wikiGroups: IBlogGroup[]
@@ -34,24 +37,36 @@ interface IReduxProps {
     wikiPost: IBlogPost
     createWikiGroup: (group: IBlogGroupRequest) => Promise<any>
     createWikiPost: (post: IBlogPostRequest) => Promise<any>
-    fetchWikiGroupPosts: () => Promise<any>
+    fetchWikiGroupPosts: (groupId: number) => Promise<any>
     fetchWikiGroups: () => Promise<any>
-    fetchWikiPost: () => Promise<any>
+    fetchWikiPost: (postId: number) => Promise<any>
+}
+
+interface IProps extends IReduxProps, RouteComponentProps {
+    wikiRoute: WikiRoute
 }
 
 interface IState {
-    groupId: string
+    group: IBlogGroup
     loadingGroups: boolean
     loadingPosts: boolean
-    postId: string
+    post: IBlogPost
 }
 
-class Wiki extends React.Component<IReduxProps, IState> {
+class Wiki extends React.Component<IProps, IState> {
     state: IState = {
-        groupId: null,
+        group: null,
         loadingGroups: false,
         loadingPosts: false,
-        postId: null
+        post: null
+    }
+
+    handleSelectGroup = (group: IBlogGroup) => {
+        this.setState({ loadingPosts: true, group })
+        this.props.fetchWikiGroupPosts(group.id)
+            .then(() => {
+                this.setState({ loadingPosts: false })
+            })
     }
 
     componentDidMount() {
@@ -63,11 +78,32 @@ class Wiki extends React.Component<IReduxProps, IState> {
     }
 
     render() {
+        const breadcrumbs: INavLink[] = [{ value: 'Spotlight Help', to: '/wiki' }]
+        if (this.props.wikiRoute !== 'none' && this.state.group) {
+            breadcrumbs.push({ value: this.state.group.title, to: `/wiki/groups/${this.state.group.id}` })
+        }
         return (
             <div className='content' id='content'>
-                <TopNav breadcrumbs={[{ value: 'Spotlight Help', to: '/wiki' }]} />
-                {this.state.loadingGroups && (
+                <TopNav breadcrumbs={breadcrumbs} />
+                {this.state.loadingGroups ? (
                     <CircularProgress size={48} />
+                ) : (
+                    this.props.wikiGroups && this.props.wikiGroups.length > 0 ? (
+                        <List>
+                            {this.props.wikiGroups.map((group: IBlogGroup) => (
+                                <Link to={`wiki/groups/${group.id}`} onClick={() => this.handleSelectGroup(group)} key={group.id}>
+                                    <ListItem>
+                                        <div>
+                                            <Typography variant='h6' color='primary'>{group.title}</Typography>
+                                            <Typography variant='subtitle1'>{group.subtitle}</Typography>
+                                        </div>
+                                    </ListItem>
+                                </Link>
+                            ))}
+                        </List>
+                    ) : (
+                        <p>No Wiki groups were found.</p>
+                    )
                 )}
             </div>
         )

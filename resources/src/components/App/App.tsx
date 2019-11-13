@@ -87,7 +87,18 @@ export default class App extends React.Component<IProps, IState> {
 									<StudentProfile {...props} />
 								)}/>
 								<Route path='/students' component={Students} />
-								<Route path='/wiki' component={Wiki} />
+								<Route
+									exact path='/wiki'
+									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='none' />}
+								/>
+								<Route
+									exact path='/wiki/groups/:groupId'
+									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='group' />}
+								/>
+								<Route
+									exact path='/wiki/posts/:postId'
+									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='post' />}
+								/>
 								<Route component={NotFound} />
 							</Switch>
 						) : (

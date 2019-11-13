@@ -12,6 +12,16 @@ class SysAdmin extends Model
         'name', 'email', 'initials', 'color'
     ];
 
+    public function getDisplayName()
+	{
+		return $this->getName();
+    }
+    
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function user()
 	{
 		return $this->hasOne('App\User', 'user_id')->where('account_type', 'sysadmin')->first();

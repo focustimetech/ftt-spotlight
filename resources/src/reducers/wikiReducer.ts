@@ -36,11 +36,11 @@ export const wikiReducer = (state = initialSate, action: IReduxAction<any>): ISt
         case CREATE_WIKI_POST:
             return { ...state, posts: [...state.posts, action.payload], post: action.payload }
         case FETCH_WIKI_GROUP_POSTS:
-            return state
+            return { ...state, posts: action.payload }
         case FETCH_WIKI_GROUPS:
-            return state
+            return { ...state, groups: action.payload }
         case FETCH_WIKI_POST:
-            return state
+            return { ...state, post: action.payload }
         case UPDATE_WIKI_GROUP:
             return state
         case UPDATE_WIKI_POST:

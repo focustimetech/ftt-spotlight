@@ -7,7 +7,7 @@ import {
     Avatar,
     Menu,
     MenuItem,
-    Typography
+    Tooltip
 } from '@material-ui/core'
 
 import { logout } from '../../actions/authActions'
@@ -64,9 +64,12 @@ class AccountWidget extends React.Component<IProps, IState> {
         const { menuRef } = this.state
         const menuOpen = Boolean(menuRef)
         const { initials, color } = this.props.currentUser.details
-        const profileLink = this.props.currentUser.account_type === 'staff'
-            ? `/staff/${this.props.currentUser.details.id}`
-            : `/students/${this.props.currentUser.details.id}`
+        let profileLink: string
+        if (this.props.currentUser.account_type === 'staff') {
+            profileLink = `/staff/${this.props.currentUser.details.id}`
+        } else if (this.props.currentUser.account_type === 'student') {
+            profileLink = `/students/${this.props.currentUser.details.id}`
+        }
 
         return (
             <>
@@ -79,10 +82,19 @@ class AccountWidget extends React.Component<IProps, IState> {
                     onClose={this.handleClose}
                 >
                     <div className='nav_account_details'>
-                        <h3>{this.props.currentUser.display_name}</h3>
+                        <h3>
+                            {this.props.currentUser.display_name}
+                            {this.props.currentUser.account_type === 'sysadmin' && (
+                                <Tooltip title='Systems Admin' placement='left'>
+                                    <span className='sysadmin_badge' />
+                                </Tooltip>
+                            )}
+                        </h3>
                         <h5>{this.props.currentUser.display_role}</h5>
                     </div>
-                    <Link to={profileLink}><MenuItem>Profile</MenuItem></Link>
+                    {profileLink && (
+                        <Link to={profileLink}><MenuItem onClick={() => this.handleClose()}>Profile</MenuItem></Link>
+                    )}
                     <LoadingMenuItem
                         onClick={() => this.handleSignOut()}
                         loading={this.state.loadingSignOut}

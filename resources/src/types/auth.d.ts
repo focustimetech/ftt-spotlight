@@ -27,6 +27,14 @@ export interface ILoginError {
     message: string
 }
 
+interface ISysAdmin {
+    id?: number
+    name?: string
+    email: string
+    initials: string
+    color: TopicColor
+}
+
 interface IUserProperties {
     id: number
     username: string
@@ -46,4 +54,9 @@ export interface IStudentUser {
     account_type: 'student'
 }
 
-export type IUser = (IStaffUser | IStudentUser) & IUserProperties
+export interface ISysAdminUser {
+    details: ISysAdmin
+    account_type: 'sysadmin'
+}
+
+export type IUser = (IStaffUser | IStudentUser | ISysAdminUser) & IUserProperties

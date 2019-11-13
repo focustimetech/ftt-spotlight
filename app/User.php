@@ -84,6 +84,11 @@ class User extends Authenticatable
         return $this->account_type === 'student';
     }
 
+    public function isSysAdmin()
+    {
+        return $this->account_type === 'sysadmin';
+    }
+
     public function staff()
     {
         if ($this->isStaff())
@@ -101,15 +106,27 @@ class User extends Authenticatable
         
     }
 
+    public function sysadmin()
+    {
+        if ($this->isSysAdmin()) {
+            return SysAdmin::findOrFail($this->user_id);
+        } else {
+            abort(403, 'User is not a sysadmin.');
+        }
+    }
+
     public function getRole()
     {
         if ($this->account_type === 'staff') {
             $staff = $this->staff();
             return $staff->administrator == true ? 'admin' : 'teacher';
-        } else if ($this->account_type === 'student')
+        } else if ($this->account_type === 'student') {
             return 'student';
-        else
-            return null;            
+        } else if ($this->account_type === 'sysadmin') {
+            return 'sysadmin';
+        } else {
+            return null;
+        }       
     }
 
     public function getDisplayRole()
@@ -122,6 +139,8 @@ class User extends Authenticatable
                 return 'Teacher';
             case 'admin':
                 return 'Administrator';
+            case 'sysadmin':
+                return 'Systems Admin';
             default:
                 return 'User';
         }

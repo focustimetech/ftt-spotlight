@@ -72,7 +72,7 @@ export default class App extends React.Component<IProps, IState> {
 								onToggleMenuOpen={this.handleToggleMenuOpen}
 							/>
 						)} />
-						{this.props.currentUser.account_type === 'staff' ? (
+						{['staff', 'sysadmin'].includes(this.props.currentUser.account_type) ? (
 							<Switch>
 								<Route path='/' exact render={() => <Redirect to='/check-in' />} />
 								<Route path='/check-in' render={(props: RouteComponentProps) => (<CheckIn {...props}/>)} />

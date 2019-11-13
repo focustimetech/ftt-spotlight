@@ -19,12 +19,14 @@ class BlogPost extends JsonResource
      */
     public function toArray($request)
     {
+        $blog_post = \App\BlogPost::find($this->id);
         return [
             'id' => $this->id,
             'title' => $this->title,
             'body' => $this->body,
             'author' => new BlogAuthorResource(BlogAuthor::find($this->author_id)),
-            'groups' => BlogGroupResource::collection(\App\BlogPost::find($this->id)->blogGroups()->get()),
+            'groups' => BlogGroupResource::collection($blog_post->blogGroups()->get()),
+            'new' => $blog_post->isNew(),
             'date_created' => date('M j, Y', strtotime($this->created_at)),
             'date_modified' => date('M j, Y', strtotime($this->updated_at)),
         ];

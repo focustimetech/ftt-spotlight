@@ -27,7 +27,7 @@ class BlogController extends Controller
         $blog_group = BlogGroup::find($group_id);
 
         if ($blog_group) {
-            return BlockPostResource::collection($blog_group->blogPosts()->get());
+            return BlogPostResource::collection($blog_group->blogPosts()->get());
         } else {
             return response()->json([
                 'message' => 'The blog post group with this ID could not be found.'

@@ -135,7 +135,7 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
 
     // Wiki
     Route::get('wiki/groups', 'BlogController@getGroups');
-    Route::get('wiki/group/{id}', 'BlogController@getPostsByGroup');
+    Route::get('wiki/groups/{id}', 'BlogController@getPostsByGroup');
     Route::get('wiki/{id}', 'BlogController@getPostById');
 });
 

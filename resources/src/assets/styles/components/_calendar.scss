@@ -121,6 +121,11 @@
 						background: $blue-grey;
 						color: $on-color;
 					}
+
+					&.--black {
+						background: $black;
+						color: $on-color;
+					}
 				}
 
 				&__content {
@@ -449,6 +454,10 @@
 	&.--blue-grey::after {
 		background: $blue-grey;
 	}
+
+	&.--black::after {
+        background: $black;
+    }
 }
 
 .calendar_widget {

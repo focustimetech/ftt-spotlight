@@ -8,6 +8,8 @@ use App\Staff;
 use App\Observers\StaffObserver;
 use App\Student;
 use App\Observers\StudentsObserver;
+use App\SysAdmin;
+use App\Observers\SysAdminObserver;
 
 class EloquentEventServiceProvider extends ServiceProvider
 {
@@ -30,5 +32,6 @@ class EloquentEventServiceProvider extends ServiceProvider
     {
         Staff::observe(StaffObserver::class);
         Student::observe(StudentsObserver::class);
+        SysAdmin::observe(SysAdminObserver::class);
     }
 }

@@ -24,7 +24,7 @@ import Staff from '../Views/Staff'
 import StaffProfile from '../Views/StaffProfile'
 import StudentProfile from '../Views/StudentProfile'
 import Students from '../Views/Students'
-import Wiki from '../Views/Wiki'
+import Wiki from '../Wiki/Wiki'
 
 interface IProps {
 	currentUser: IUser

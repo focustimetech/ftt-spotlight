@@ -13,7 +13,7 @@ class BlogPost extends Model
 
     public function blogGroups()
     {
-        return $this->belongsToMany('App\BlogGroup', 'blog_posts_blog_groups', 'blog_post_id', 'blog_group_id');
+        return $this->hasOne('App\BlogGroup');
     }
 
     public function blogVideos()

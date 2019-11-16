@@ -18,9 +18,11 @@ class CreateBlogPostsTable extends Migration
             $table->string('title');
             $table->text('body');
             $table->unsignedInteger('author_id');
+            $table->unsignedInteger('group_id');
             $table->timestamps();
             // Foreign keys
             $table->foreign('author_id')->references('id')->on('blog_authors');
+            $table->foreign('group_id')->references('id')->on('blog_groups');
         });
     }
 

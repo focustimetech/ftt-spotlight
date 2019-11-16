@@ -107,7 +107,7 @@ class Wiki extends React.Component<IProps, IState> {
         switch (this.props.wikiRoute) {
             case 'none':
                 this.fetchWikiGroups()
-                break;
+                break
             case 'group':
                 this.fetchWikiGroupPosts(groupId)
                 break

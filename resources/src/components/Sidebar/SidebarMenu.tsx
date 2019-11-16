@@ -20,8 +20,8 @@ interface IProps extends IReduxProps {
 
 class SidebarMenu extends React.Component<IProps> {
     render() {
-        const schoolName: string = this.props.settings.values['school_name'].value || null
-        const schoolLogo: string = this.props.settings.values['school_logo'].value || null
+        const schoolName: string = this.props.settings.values['school_name'] ? this.props.settings.values['school_name'].value : null
+        const schoolLogo: string = this.props.settings.values['school_logo'] ? this.props.settings.values['school_logo'].value : null
         const isAdministrator: boolean = this.props.currentUser && this.props.currentUser.details.administrator === true
         return (
             <div className='sidebar__menu'>

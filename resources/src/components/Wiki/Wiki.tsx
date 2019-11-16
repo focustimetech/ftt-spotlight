@@ -26,7 +26,7 @@ import {
     IBlogPostRequest
 } from '../../types/wiki'
 
-import { INavLink, TopNav } from '../TopNav'
+import { INavLink, INavMenuItem, TopNav } from '../TopNav'
 import WikiPost from './WikiPost'
 
 type WikiRoute = 'none' | 'group' | 'post'
@@ -100,17 +100,29 @@ class Wiki extends React.Component<IProps, IState> {
     componentDidMount() {
         const params: any = this.props.match.params
         const { groupId, postId } = params
+        const searchParams: any = new URLSearchParams(this.props.location.search)
+        // console.log('searchParams:', searchParams)
+        const searchGroupId: number = parseInt(searchParams.get('groupId'), 10)
+        console.log('searchGroupId:', searchGroupId)
         switch (this.props.wikiRoute) {
             case 'none':
                 this.fetchWikiGroups()
-                break
+                break;
             case 'group':
                 this.fetchWikiGroupPosts(groupId)
                 break
             case 'post':
+                console.log("case 'post'")
                 this.fetchWikiPost(postId)
                     .then(() => {
-                        //if (this.props.location.search)
+                        console.log('.THEN()')
+                        console.log('this.props.wikiPost:', this.props.wikiPost)
+                        if (searchGroupId) {
+                            this.setState({
+                                post: this.props.wikiPost,
+                                group: this.props.wikiPost.groups.find((wikiGroup: IBlogGroup) => wikiGroup.id === searchGroupId)
+                            })
+                        }
                         this.handleSelectPost(this.props.wikiPost)
                     })
                 break
@@ -120,10 +132,37 @@ class Wiki extends React.Component<IProps, IState> {
     render() {
         console.log('STATE:', this.state)
         console.log('PROPS:', this.props)
-        const breadcrumbs: INavLink[] = [{ value: 'Spotlight Help', to: '/wiki' }]
+        const breadcrumbs: INavLink[] = [{
+            value: 'Spotlight Help',
+            to: '/wiki',
+            onClick: () => this.fetchWikiGroups()
+        }]
         if (this.props.wikiRoute !== 'none' && this.state.group) {
-            breadcrumbs.push({ value: this.state.group.title, to: `/wiki/groups/${this.state.group.id}` })
+            breadcrumbs.push({
+                value: this.state.group.title,
+                to: `/wiki/groups/${this.state.group.id}`,
+                onClick: () => this.fetchWikiGroupPosts(this.state.group.id)
+            })
         }
+        if (this.props.wikiRoute === 'post' && this.state.post) {
+            let postUrl: string = `/wiki/posts/${this.state.post.id}`
+            if (this.state.group) {
+                postUrl = `${postUrl}?groupId=${this.state.group.id}`
+            } else {
+                console.log('initializing menuItems')
+                console.log('this.state.post:', this.state.post)
+                const menuItems: INavMenuItem[] = this.state.post.groups.map((group: IBlogGroup) => {
+                    return { value: group.title, onClick: () => {
+                        this.setState({ group })
+                        this.props.fetchWikiGroupPosts(group.id)
+                        this.props.history.push(`/wiki/groups/${group.id}`)
+                    }}
+                })
+                breadcrumbs.push({ value: '...', menuItems })
+            }
+            breadcrumbs.push({ value: this.state.post.title, to: postUrl })
+        }
+        const loading: boolean = this.state.loadingGroupPosts || this.state.loadingGroupPosts || this.state.loadingGroupPosts
         return (
             <div className='content' id='content'>
                 <TopNav breadcrumbs={breadcrumbs} />
@@ -134,7 +173,7 @@ class Wiki extends React.Component<IProps, IState> {
                         this.props.wikiGroups && this.props.wikiGroups.length > 0 ? (
                             <List>
                                 {this.props.wikiGroups.map((group: IBlogGroup) => (
-                                    <Link to={`/wiki/groups/${group.id}`} onClick={() => this.handleSelectGroup(group)} key={group.id}>
+                                    <Link key={group.id} to={`/wiki/groups/${group.id}`} onClick={() => this.handleSelectGroup(group)}>
                                         <ListItem>
                                             <div>
                                                 <Typography variant='h6' color='primary'>{group.title}</Typography>
@@ -156,7 +195,7 @@ class Wiki extends React.Component<IProps, IState> {
                         this.props.wikiPosts && this.props.wikiPosts.length > 0 ? (
                             <List>
                                 {this.props.wikiPosts.map((post: IBlogPost) => (
-                                    <Link to={`/wiki/posts/${post.id}?groupId=${this.state.group.id}`} onClick={() => this.handleSelectPost(post)} key={post.id}>
+                                    <Link key={post.id} to={`/wiki/posts/${post.id}?groupId=${this.state.group.id}`} onClick={() => this.handleSelectPost(post)}>
                                         <ListItem>
                                             <div>
                                                 <Typography variant='h6' color='primary'>{post.title}</Typography>

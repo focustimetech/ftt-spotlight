@@ -4,6 +4,7 @@ export interface IBlogPost {
     body: string
     author: IBlogAuthor
     new: boolean
+    groups: IBlogGroup[]
     date_created: string
     date_modified: string
 }

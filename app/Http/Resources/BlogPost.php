@@ -25,7 +25,7 @@ class BlogPost extends JsonResource
             'title' => $this->title,
             'body' => $this->body,
             'author' => new BlogAuthorResource(BlogAuthor::find($this->author_id)),
-            'groups' => BlogGroupResource::collection($blog_post->blogGroups()->get()),
+            'group_id' => $this->group_id,
             'new' => $blog_post->isNew(),
             'date_created' => date('M j, Y', strtotime($this->created_at)),
             'date_modified' => date('M j, Y', strtotime($this->updated_at)),

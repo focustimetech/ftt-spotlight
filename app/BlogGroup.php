@@ -8,7 +8,7 @@ class BlogGroup extends Model
 {
     public function blogPosts()
     {
-        return $this->belongsToMany('App\BlogPost', 'blog_posts_blog_groups', 'blog_group_id', 'blog_post_id');
+        return $this->hasMany('App\BlogPost', 'group_id');
     }
 
     public function isNew()

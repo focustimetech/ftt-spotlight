@@ -92,11 +92,11 @@ export default class App extends React.Component<IProps, IState> {
 									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='none' />}
 								/>
 								<Route
-									exact path='/wiki/groups/:groupId'
+									exact path='/wiki/:groupId'
 									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='group' />}
 								/>
 								<Route
-									exact path='/wiki/posts/:postId'
+									exact path='/wiki/post/:postId'
 									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='post' />}
 								/>
 								<Route component={NotFound} />

@@ -4,7 +4,7 @@ export interface IBlogPost {
     body: string
     author: IBlogAuthor
     new: boolean
-    groups: IBlogGroup[]
+    group_id: number
     date_created: string
     date_modified: string
 }
@@ -37,4 +37,6 @@ export interface IBlogAuthorRequest {
 export interface IBlogPostRequest {
     title: string
     body: string
+    group_id: number,
+    author_id: number
 }

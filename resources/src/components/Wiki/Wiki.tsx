@@ -48,20 +48,16 @@ interface IProps extends IReduxProps, RouteComponentProps {
 }
 
 interface IState {
-    group: IBlogGroup
     loadingGroups: boolean
     loadingGroupPosts: boolean
     loadingPost: boolean
-    post: IBlogPost
 }
 
 class Wiki extends React.Component<IProps, IState> {
     state: IState = {
-        group: null,
         loadingGroups: false,
         loadingGroupPosts: false,
         loadingPost: false,
-        post: null
     }
 
     fetchWikiGroupPosts = (groupId: number): Promise<any> => {
@@ -88,92 +84,78 @@ class Wiki extends React.Component<IProps, IState> {
             })
     }
 
-    handleSelectGroup = (group: IBlogGroup) => {
-        this.setState({ group })
-        this.fetchWikiGroupPosts(group.id)
-    }
-
-    handleSelectPost = (post: IBlogPost) => {
-        this.setState({ post })
-    }
-
     componentDidMount() {
+        this.fetchWikiGroups()
         const params: any = this.props.match.params
-        const { groupId, postId } = params
+        const groupId: number = parseInt(params.groupId, 10) || null
+        const postId: number = parseInt(params.postId, 10) || null
+        console.log('Params:', params)
         const searchParams: any = new URLSearchParams(this.props.location.search)
-        // console.log('searchParams:', searchParams)
-        const searchGroupId: number = parseInt(searchParams.get('groupId'), 10)
-        console.log('searchGroupId:', searchGroupId)
-        switch (this.props.wikiRoute) {
-            case 'none':
-                this.fetchWikiGroups()
-                break
-            case 'group':
-                this.fetchWikiGroupPosts(groupId)
-                break
-            case 'post':
-                console.log("case 'post'")
-                this.fetchWikiPost(postId)
-                    .then(() => {
-                        console.log('.THEN()')
-                        console.log('this.props.wikiPost:', this.props.wikiPost)
-                        if (searchGroupId) {
-                            this.setState({
-                                post: this.props.wikiPost,
-                                group: this.props.wikiPost.groups.find((wikiGroup: IBlogGroup) => wikiGroup.id === searchGroupId)
-                            })
-                        }
-                        this.handleSelectPost(this.props.wikiPost)
-                    })
-                break
+
+        if (this.props.wikiRoute === 'group') {
+            this.fetchWikiGroupPosts(groupId)
+        } else if (this.props.wikiRoute === 'post') {
+            this.fetchWikiPost(postId)
         }
     }
 
     render() {
-        console.log('STATE:', this.state)
-        console.log('PROPS:', this.props)
+        const params: any = this.props.match.params
+        const urlGroupId: number = parseInt(params.groupId, 10) || null
+        const loadingGroupPosts: boolean = this.state.loadingGroups || this.state.loadingGroupPosts
+        const loadingPost: boolean = this.state.loadingGroups || this.state.loadingPost
+        const wikiGroup = this.props.wikiGroups.find((group: IBlogGroup) => {
+            return this.props.wikiRoute === 'group'
+                ? group.id === urlGroupId
+                : this.props.wikiPost && group.id === this.props.wikiPost.group_id
+        })
         const breadcrumbs: INavLink[] = [{
             value: 'Spotlight Help',
-            to: '/wiki',
-            onClick: () => this.fetchWikiGroups()
+            to: '/wiki'
         }]
-        if (this.props.wikiRoute !== 'none' && this.state.group) {
-            breadcrumbs.push({
-                value: this.state.group.title,
-                to: `/wiki/groups/${this.state.group.id}`,
-                onClick: () => this.fetchWikiGroupPosts(this.state.group.id)
-            })
-        }
-        if (this.props.wikiRoute === 'post' && this.state.post) {
-            let postUrl: string = `/wiki/posts/${this.state.post.id}`
-            if (this.state.group) {
-                postUrl = `${postUrl}?groupId=${this.state.group.id}`
-            } else {
-                console.log('initializing menuItems')
-                console.log('this.state.post:', this.state.post)
-                const menuItems: INavMenuItem[] = this.state.post.groups.map((group: IBlogGroup) => {
-                    return { value: group.title, onClick: () => {
-                        this.setState({ group })
-                        this.props.fetchWikiGroupPosts(group.id)
-                        this.props.history.push(`/wiki/groups/${group.id}`)
-                    }}
+        if (this.props.wikiRoute !== 'none' ) {
+            if (wikiGroup && !this.state.loadingGroups) {
+                breadcrumbs.push({
+                    value: wikiGroup.title,
+                    to: `/wiki/${wikiGroup.id}`,
+                    onClick: this.props.wikiPosts
+                        ? undefined
+                        : () => this.fetchWikiGroupPosts(wikiGroup.id)
                 })
-                breadcrumbs.push({ value: '...', menuItems })
             }
-            breadcrumbs.push({ value: this.state.post.title, to: postUrl })
         }
-        const loading: boolean = this.state.loadingGroupPosts || this.state.loadingGroupPosts || this.state.loadingGroupPosts
+        if (this.props.wikiRoute === 'post') {
+            if (this.props.wikiPost && !loadingPost && !this.state.loadingGroups) {
+                breadcrumbs.push({
+                    value: this.props.wikiPost.title,
+                    to: `/wiki/post/${this.props.wikiPost.id}`
+                })
+            }
+        }
         return (
             <div className='content' id='content'>
                 <TopNav breadcrumbs={breadcrumbs} />
                 {this.props.wikiRoute === 'none' && (
                     this.state.loadingGroups ? (
-                        <h6>Loading groups...</h6>
+                        <div style={{ width: 800, height: 800 }}>
+                            <ContentLoader width={800} height={800}>
+                                <rect rx={4} ry={4} y={32} x={16} height={28} width={250} />
+                                <rect rx={4} ry={4} y={68} x={16} height={18} width={320} />
+                                <rect rx={4} ry={4} y={104} x={16} height={28} width={220} />
+                                <rect rx={4} ry={4} y={140} x={16} height={18} width={120} />
+                                <rect rx={4} ry={4} y={176} x={16} height={28} width={320} />
+                                <rect rx={4} ry={4} y={212} x={16} height={18} width={160} />
+                                <rect rx={4} ry={4} y={248} x={16} height={28} width={165} />
+                                <rect rx={4} ry={4} y={284} x={16} height={18} width={365} />
+                                <rect rx={4} ry={4} y={320} x={16} height={28} width={195} />
+                                <rect rx={4} ry={4} y={356} x={16} height={18} width={435} />
+                            </ContentLoader>
+                        </div>
                     ) : (
                         this.props.wikiGroups && this.props.wikiGroups.length > 0 ? (
                             <List>
                                 {this.props.wikiGroups.map((group: IBlogGroup) => (
-                                    <Link key={group.id} to={`/wiki/groups/${group.id}`} onClick={() => this.handleSelectGroup(group)}>
+                                    <Link key={group.id} to={`/wiki/${group.id}`} onClick={() => this.fetchWikiGroupPosts(group.id)}>
                                         <ListItem>
                                             <div>
                                                 <Typography variant='h6' color='primary'>{group.title}</Typography>
@@ -190,12 +172,25 @@ class Wiki extends React.Component<IProps, IState> {
                 )}
                 {this.props.wikiRoute === 'group' && (
                     this.state.loadingGroupPosts ? (
-                        <h6>Loading posts...</h6>
+                        <div style={{ width: 800, height: 800 }}>
+                            <ContentLoader width={800} height={800}>
+                                <rect rx={4} ry={4} y={32} x={16} height={28} width={250} />
+                                <rect rx={4} ry={4} y={68} x={16} height={18} width={320} />
+                                <rect rx={4} ry={4} y={104} x={16} height={28} width={220} />
+                                <rect rx={4} ry={4} y={140} x={16} height={18} width={120} />
+                                <rect rx={4} ry={4} y={176} x={16} height={28} width={320} />
+                                <rect rx={4} ry={4} y={212} x={16} height={18} width={160} />
+                                <rect rx={4} ry={4} y={248} x={16} height={28} width={165} />
+                                <rect rx={4} ry={4} y={284} x={16} height={18} width={365} />
+                                <rect rx={4} ry={4} y={320} x={16} height={28} width={195} />
+                                <rect rx={4} ry={4} y={356} x={16} height={18} width={435} />
+                            </ContentLoader>
+                        </div>
                     ) : (
                         this.props.wikiPosts && this.props.wikiPosts.length > 0 ? (
                             <List>
                                 {this.props.wikiPosts.map((post: IBlogPost) => (
-                                    <Link key={post.id} to={`/wiki/posts/${post.id}?groupId=${this.state.group.id}`} onClick={() => this.handleSelectPost(post)}>
+                                    <Link key={post.id} to={`/wiki/post/${post.id}`} onClick={() => this.fetchWikiPost(post.id)}>
                                         <ListItem>
                                             <div>
                                                 <Typography variant='h6' color='primary'>{post.title}</Typography>
@@ -211,11 +206,26 @@ class Wiki extends React.Component<IProps, IState> {
                     )
                 )}
                 {this.props.wikiRoute === 'post' && (
-                    this.state.loadingPost ? (
-                        <h6>Loading posts...</h6>
+                    loadingPost ? (
+                        <div style={{ width: 800, height: 800 }}>
+                            <ContentLoader width={800} height={800}>
+                                <rect rx={4} ry={4} y={32} x={16} height={36} width={320} />
+                                <rect rx={4} ry={4} y={118} x={16} height={18} width={220} />
+                                <rect rx={4} ry={4} y={144} x={48} height={18} width={300} />
+                                <rect rx={4} ry={4} y={170} x={16} height={18} width={220} />
+                                <rect rx={4} ry={4} y={196} x={56} height={18} width={120} />
+                                <rect rx={4} ry={4} y={196} x={200} height={18} width={48} />
+                                <rect rx={4} ry={4} y={222} x={16} height={18} width={300} />
+                                <rect rx={4} ry={4} y={248} x={16} height={18} width={500} />
+                                <rect rx={4} ry={4} y={274} x={16} height={18} width={470} />
+                                <rect rx={4} ry={4} y={300} x={70} height={18} width={450} />
+                                <rect rx={4} ry={4} y={326} x={32} height={18} width={300} />
+                                <rect rx={4} ry={4} y={352} x={16} height={18} width={250} />
+                            </ContentLoader>
+                        </div>
                     ) : (
-                        this.state.post ? (
-                            <WikiPost post={this.state.post} />
+                        this.props.wikiPost ? (
+                            <WikiPost post={this.props.wikiPost} />
                         ) : (
                             <p>No Wiki post selected.</p>
                         )

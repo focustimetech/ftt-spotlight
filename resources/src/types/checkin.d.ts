@@ -16,8 +16,7 @@ export interface CheckInStatus {
 }
 
 export interface ICheckInRequest {
-    student_numbers?: string[]
-    student_ids?: number[]
+    chips?: CheckInChip[]
     scheduled_ids?: number[]
     date_time?: string    
 }
@@ -26,6 +25,11 @@ export interface ICheckInResponse {
     success: ILedgerEntry[]
     timestamp_string: string
     errors?: string[]
+}
+
+export interface ICheckInError {
+    timestamp_string: string
+    errors: string[]
 }
 
 interface StudentNumberChip {
@@ -39,5 +43,7 @@ interface StudentIDChip {
 }
 
 export type CheckInChip = (StudentNumberChip | StudentIDChip) & {
+    time: string
+    date_time: string
     loading: boolean
 }

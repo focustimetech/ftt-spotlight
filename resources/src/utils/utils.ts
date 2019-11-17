@@ -84,5 +84,24 @@ export const getMethodDetailsFromName = (method: ICheckInMethod): ICheckInMethod
                 icon: 'assignment_turned_in',
                 title: 'Amended',
             }
+        case 'proactive':
+            return {
+                icon: 'access_time',
+                title: 'Proactive check-in'
+            }
+        case 'retroactive':
+            return {
+                icon: 'access_time',
+                title: 'Retroactive check-in'
+            }
     }
+}
+
+/**
+ * Determines the user's local time and returns it as a string.
+ * @return The local timestamp
+ */
+export const getCurrentTimestamp = (): string => {
+    const now: Date = new Date()
+    return `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`
 }

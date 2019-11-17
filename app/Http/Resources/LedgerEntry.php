@@ -22,6 +22,12 @@ class LedgerEntry extends JsonResource
     public function toArray($request)
     {
         switch ($this->method) {
+            case 4:
+                $method = 'proactive';
+                break;
+            case 3:
+                $method = 'retroactive';
+                break;
             case 2:
                 $method = 'roll-call';
                 break;
@@ -36,8 +42,7 @@ class LedgerEntry extends JsonResource
 
         $params = [
             'id' => $this->id,
-            'date' => date('M j, Y', strtotime($this->date)),
-            'time' => date('g:i A', strtotime($this->date. ' '. $this->time)),
+            'time' => date('g:i A', strtotime($this->checked_in_at)),
             'staff' => new StaffResource(Staff::find($this->staff_id)),
             'student' => new StudentResource(Student::find($this->student_id)),
             'method' => $method

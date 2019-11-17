@@ -17,9 +17,16 @@ export interface INavTabs {
 	tabs: string[]
 }
 
+export interface INavMenuItem {
+	value: string
+	onClick: () => void
+}
+
 export interface INavLink {
 	value: string
 	to?: string
+	onClick?: () => void
+	menuItems?: INavMenuItem[]
 }
 
 interface IProps {

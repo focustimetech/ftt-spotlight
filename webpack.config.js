@@ -22,7 +22,7 @@ module.exports = (env, argv) => {
             publicPath: 'js/'
         },
 
-        devtool: devMode ? 'cheap-module-eval-source-map' : 'source-map',
+        devtool: /*devMode ? 'cheap-module-eval-source-map' :*/ 'source-map',
 
         resolve: {
             extensions: ['.ts', '.tsx', '.js', '.json'],

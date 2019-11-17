@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { IUser } from '../types/auth'
-import { setAuthorizationToken } from '../utils/setAuthorizationToken'
+import { setAuthorizationToken } from '../utils/api'
 import { SET_CURRENT_USER } from './types'
 
 interface ICredentials {

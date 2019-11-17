@@ -6,8 +6,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Staff;
 use App\Student;
+use App\SysAdmin;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Student as StudentResource;
+use App\Http\Resources\SysAdmin as SysAdminResource;
 use App\Http\Utils;
 
 class User extends JsonResource
@@ -29,6 +31,9 @@ class User extends JsonResource
                 break;
             case 'student':
                 $details = new StudentResource(Student::findOrFail($this->user_id));
+                break;
+            case 'sysadmin':
+                $details = new SysAdminResource(SysAdmin::findOrFail($this->user_id));
                 break;
         }
 

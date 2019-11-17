@@ -1,5 +1,5 @@
-import axios from 'axios'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {
     Menu,
@@ -51,6 +51,7 @@ export const HelpWidget = () => {
             >
                 <MenuItem onClick={handleFeedbackDialogOpen}>Provide Feedback</MenuItem>
                 <MenuItem onClick={handleAboutDialogOpen}>About Spotlight</MenuItem>
+                <Link to='/wiki'><MenuItem>Spotlight Wiki</MenuItem></Link>
             </Menu>
             <FeedbackDialog open={feedbackDialogOpen} onClose={() => setFeedbackDialogOpen(false)}/>
             <AboutSpotlight open={aboutDialogOpen} onClose={() => setAboutDialogOpen(false)} />

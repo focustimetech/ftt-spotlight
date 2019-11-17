@@ -11,7 +11,7 @@ import {
 import { getCurrentUser, logout } from '../../actions/authActions'
 import { fetchSettings, fetchUnauthenticatedSettings } from '../../actions/settingsActions'
 import { AuthState, IUser } from '../../types/auth'
-import { setAuthorizationToken } from '../../utils/setAuthorizationToken'
+import { setAuthorizationToken } from '../../utils/api'
 import { ACCESS_TOKEN } from '../../utils/storage'
 
 import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
@@ -185,7 +185,6 @@ class AppWithAuth extends React.Component<IReduxProps, IState> {
 									<App
 										onSignOut={this.handleSignOut}
 										currentUser={this.props.currentUser}
-										settings={this.props.settings}
 										didMount={this.handleLoginImageLoaded}
 									/>
 								) : (

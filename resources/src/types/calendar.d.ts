@@ -71,7 +71,7 @@ export interface ICalendarItemAction {
 }
 
 
-export type ICheckInMethod = 'air' | 'manual' | 'roll-call' | 'amendment'
+export type ICheckInMethod = 'air' | 'manual' | 'roll-call' | 'amendment' | 'retroactive' | 'proactive'
 
 export interface ICheckInMethodDetails {
     title: string
@@ -80,7 +80,6 @@ export interface ICheckInMethodDetails {
 
 export interface ILedgerEntry {
     id: number
-    date: string
     time: string
     staff: IStaff
     student: IStudent

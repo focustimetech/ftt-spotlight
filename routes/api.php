@@ -67,17 +67,24 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::post('amendment', 'AmendmentsController@create');
 
     // Appointments
-    Route::get('appointments/{id}', 'AppointmentsController@find');
     Route::post('appointments/create', 'AppointmentsController@create');
-    Route::delete('appointments/{id}', 'AppointmentsController@delete');
- 
-    // Feedback
-    Route::post('feedback', 'FeedbackController@create');
+    
+    // Starred
+    Route::get('starred', 'StarController@index');
+    Route::post('star', 'StarController@star');
+    Route::post('unstar', 'StarController@unstar');
+
+    // Topics
+    Route::post('topics', 'TopicsController@store');
+    Route::delete('topics/{id}', 'TopicsController@destroy');
+    Route::post('topics/schedule', 'TopicsController@createTopicSchedule');
+    Route::delete('topics/schedule/{id}', 'TopicsController@deleteTopicSchedule');
 
     // Ledger
     Route::post('check-in', 'LedgerController@checkIn');
     Route::get('check-in/status', 'LedgerController@status');
     Route::get('check-in/status/{datetime}', 'LedgerController@status');
+    Route::get('check-in/student-number/{id}', 'StudentsController@getChipByStudentNumber');
     Route::post('check-in/air/enable', 'LedgerController@enableAir');
     Route::post('check-in/air/disable', 'LedgerController@disableAir');
  
@@ -105,6 +112,30 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
 
     // Staff Capacity
     Route::post('staff/capacity', 'StaffController@setCapacity');
+});
+
+// Teacher, Administrator and SysAdmin Routes
+Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin,sysadmin'])->group(function() {
+    
+    // Appointments
+    Route::get('appointments/{id}', 'AppointmentsController@find');
+    Route::delete('appointments/{id}', 'AppointmentsController@delete');
+ 
+    // Feedback
+    Route::post('feedback', 'FeedbackController@create');
+
+    // Staff
+    Route::post('staff', 'StaffController@create');
+
+    // Students
+    Route::get('students', 'StudentsController@index');
+    Route::get('students/{id}', 'StudentsController@show');
+    Route::get('students/student-number/{id}', 'StudentsController@getByStudentNumber');
+    Route::get('students/profile/{id}', 'StudentsController@profile');
+    Route::post('students', 'StudentsController@create');
+    Route::post('students/upload', 'StudentsController@upload');
+    Route::put('students', 'StudentsController@update');
+    Route::delete('students/{id}', 'StudentsController@destroy');
 
     // Staff Schedule
     Route::get('staff/{id}/schedule', 'StaffScheduleController@index');
@@ -138,10 +169,16 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     // Users
     Route::get('users', 'UsersController@getAllUsers');
     Route::get('users/administrators', 'UsersController@getAllAdministrators');
+
+    // Wiki
+    Route::get('wiki/groups', 'BlogController@getGroups');
+    Route::get('wiki/groups/{id}', 'BlogController@getPostsByGroup');
+    Route::get('wiki/posts/{id}', 'BlogController@getPostById');
+    Route::get('wiki/{id}', 'BlogController@getPostById');
 });
 
-// Administrator Routes
-Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(function() {
+// Administrator and SysAdmin Routes
+Route::middleware(['auth:api', 'expired-password', 'scope:admin,sysadmin'])->group(function() {
     // Auth
     Route::post('users/reset-passwords/', 'AuthController@resetPasswords');
     Route::post('users/invalidate-passwords/', 'AuthController@invalidatePasswords');
@@ -153,6 +190,11 @@ Route::middleware(['auth:api', 'expired-password', 'scopes:admin'])->group(funct
 
     // Settings
     Route::put('settings', 'SettingsController@update');
+});
+
+// SysAdmin Routes
+Route::middleware(['auth:api', 'expired-password', 'scopes:sysadmin'])->group(function() {
+    Route::post('sysadmins', 'SysAdminController@create');
 });
 
 // Incomplete

@@ -61,6 +61,7 @@ export type TopicColor =
     | 'deep-orange'
     | 'brown'
     | 'blue-grey'
+    | 'black'
 
 /**
  * Returns a random Color.

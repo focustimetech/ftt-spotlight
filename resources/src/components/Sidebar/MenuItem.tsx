@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom'
 import { Icon, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 
 interface IProps {
-	icon: string
 	label: string
+	icon?: string
 	inactive?: boolean
 	to?: string
 }
@@ -13,7 +13,11 @@ interface IProps {
 const MenuItem = (props: IProps) => {
 	const MenuItemContent = () => (
 		<li className='list_item'>
-			<ListItemIcon className='list_item__icon'><Icon>{props.icon}</Icon></ListItemIcon>
+			<ListItemIcon className='list_item__icon'>
+				{props.icon && (
+					<Icon>{props.icon}</Icon>
+				)}
+			</ListItemIcon>
 			<ListItemText>{props.label}</ListItemText>
 		</li>
 	)

@@ -6,12 +6,14 @@ import { Route, RouteComponentProps, Switch } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 
 import { IStaffUser } from '../../types/auth'
+import { IBlogGroup } from '../../types/wiki'
 import { WikiMenu } from '../Wiki/WikiMenu'
 import { MenuItem } from './MenuItem'
 
 interface IReduxProps {
     currentUser: IStaffUser
     settings: any
+    wikiGroups: IBlogGroup[]
 }
 
 interface IProps extends IReduxProps {
@@ -34,7 +36,7 @@ class SidebarMenu extends React.Component<IProps> {
                     </div>
                     <Switch location={this.props.routeComponentProps.location}>
                         <Route path='/wiki' component={() => (
-                            <WikiMenu />
+                            <WikiMenu wikiGroups={this.props.wikiGroups} />
                         )} />
                         <Route render={() => (
                             <ul className='menu_list'>
@@ -58,7 +60,8 @@ class SidebarMenu extends React.Component<IProps> {
 
 const mapStateToProps = (state: any) => ({
     currentUser: state.auth.user,
-    settings: state.settings.items
+    settings: state.settings.items,
+    wikiGroups: state.wiki.groups
 })
 
 export default connect(mapStateToProps, null)(SidebarMenu)

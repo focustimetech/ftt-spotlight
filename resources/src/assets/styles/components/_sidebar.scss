@@ -64,6 +64,7 @@
 		transition-property: width, box-shadow;
 
 		.menu_content {
+			position: relative;
 			width: 260px;
 		}
 
@@ -118,7 +119,8 @@
 					margin: 4px 0;
 					min-width: 128px;
 					max-width: 224px;
-					height: 32px;
+					height: 48px;
+					box-sizing: border-box;
 					line-height: 18px !important;
 					border-radius: 2px;
 					font-weight: 500;
@@ -153,6 +155,8 @@
 
 	h3 {
 		margin: 0;
+		line-height: 24px;
+		display: flex;
 		font-weight: 500;
 	}
 

@@ -6,8 +6,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Staff;
 use App\Student;
+use App\SysAdmin;
 use App\Http\Resources\Staff as StaffResource;
 use App\Http\Resources\Student as StudentResource;
+use App\Http\Resources\SysAdmin as SysAdminResource;
 
 class Username extends JsonResource
 {
@@ -19,6 +21,7 @@ class Username extends JsonResource
      */
     public function toArray($request)
     {
+        $details = null;
         switch($this->account_type) {
             case 'staff':
                 $details = new StaffResource(Staff::findOrFail($this->user_id));
@@ -26,12 +29,15 @@ class Username extends JsonResource
             case 'student':
                 $details = new StudentResource(Student::findOrFail($this->user_id));
                 break;
+            case 'sysadmin':
+                $details = new SysAdminResource(SysAdmin::findOrFail($this->user_id));
+                break;
         }
 
         return [
             'username' => $this->username,
-            'initials' => $details['initials'],
-            'color' => $details['color']
+            'initials' => $details === null ? null : $details['initials'],
+            'color' => $details === null ? null : $details['color']
         ];
     }
 }

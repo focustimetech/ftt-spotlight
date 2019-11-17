@@ -1,0 +1,29 @@
+.router_page {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+.slide-appear,
+.slide-enter {
+    transform: translate(100%, 0);
+    z-index: 1;
+}
+
+.slide-appear-active,
+.slide-enter.slide-enter-active {
+        transform: translate(0, 0);
+        transition-duration: 300ms;
+        transition-property: transform;
+        transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+.slide-exit {
+    opacity: 1;
+}
+
+.slide-exit.slide-exit-active {
+        transform: translate(-100%, 0);
+        transition-duration: 300ms;
+        transition-property: transform;
+        transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}

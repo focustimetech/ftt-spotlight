@@ -106,8 +106,8 @@ class CredentialsManager extends React.Component<IReduxProps, IState> {
 			return {
 				id: index,
 				name: user.details.name,
-				first_name: user.details.first_name,
-				last_name: user.details.last_name,
+				first_name: user.account_type !== 'sysadmin' ? user.details.first_name : null,
+				last_name: user.account_type !== 'sysadmin' ? user.details.last_name : null,
 				status: user.status,
 				status_enum: user.status === 'Active' ? 'Active' : 'Disabled',
 				password_status: user.password_expired ? 'Expired' : 'Valid',

@@ -185,7 +185,6 @@ class AppWithAuth extends React.Component<IReduxProps, IState> {
 									<App
 										onSignOut={this.handleSignOut}
 										currentUser={this.props.currentUser}
-										settings={this.props.settings}
 										didMount={this.handleLoginImageLoaded}
 									/>
 								) : (

@@ -138,6 +138,12 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin,sysadmin
     // Users
     Route::get('users', 'UsersController@getAllUsers');
     Route::get('users/administrators', 'UsersController@getAllAdministrators');
+
+    // Wiki
+    Route::get('wiki/groups', 'BlogController@getGroups');
+    Route::get('wiki/groups/{id}', 'BlogController@getPostsByGroup');
+    Route::get('wiki/posts/{id}', 'BlogController@getPostById');
+    Route::get('wiki/{id}', 'BlogController@getPostById');
 });
 
 // Administrator and SysAdmin Routes

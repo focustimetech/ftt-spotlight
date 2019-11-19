@@ -1,6 +1,22 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.7 (2019-11-19)
+
+### Added
+ - Created the SysAdmin user account type (SPOT-163)
+ - Added Refresh buttons to Calendars and to the Check-in page (SPOT-161)
+ - Added default headers for `axios` requests (SPOT-150)
+ - Created the Spotlight Wiki (SPOT-155)
+ - Added `tslint` (SPOT-40)
+
+### Changed
+ - Check-ins are now encoded with local time, check-ins made in arrears will reflect the time the student was actually checked in (SPOT-130, SPOT-159)
+ - The Starred widget now refreshes every time it is opened (SPOT-43)
+
+### Fixed
+ - Fixed the Account widget not closing after selecting "My Profile" (SPOT-62)
+
 ## Version 1.2.6 (2019-10-28)
 
 ### Added

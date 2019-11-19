@@ -35,9 +35,11 @@ class SidebarMenu extends React.Component<IProps> {
                         <Typography variant='subtitle1'>{schoolName}</Typography>
                     </div>
                     <Switch location={this.props.routeComponentProps.location}>
+                        {/*
                         <Route path='/wiki' component={() => (
                             <WikiMenu wikiGroups={this.props.wikiGroups} />
                         )} />
+                        */}
                         <Route render={() => (
                             <ul className='menu_list'>
                                 <MenuItem to='/check-in' icon='how_to_vote' label='Check-in' />

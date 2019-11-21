@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 
 import { fetchSettings } from '../../actions/settingsActions'
-import { ISetting, ISettingsGroup } from '../../types/appSettings'
+import { ISetting, ISettingsGroup } from '../../types/settings'
 
 import { TopNav } from '../TopNav'
 

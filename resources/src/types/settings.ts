@@ -4,7 +4,7 @@ export interface ISettingsGroup {
     settings: ISetting[]
 }
 
-type ISettingType = 
+type ISettingType =
     | 'string'
     | 'boolean'
     | 'number'

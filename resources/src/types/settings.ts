@@ -8,8 +8,7 @@ export type SettingType =
     | 'string'
     | 'boolean'
     | 'numeric'
-    // | 'weekdays'
-    // | 'datetime'
+    | 'datetime'
 
 export type SettingKey =
     | 'school_name'
@@ -42,9 +41,15 @@ export interface IBooleanSetting {
     value: boolean
 }
 
+export interface IDateTimeSetting {
+    type: 'datetime'
+    value: string
+}
+
 export type SettingVariant =
     | IStringSetting
     | INumericSetting
     | IBooleanSetting
+    | IDateTimeSetting
 
 export type ISetting = ISettingDetails & SettingVariant

@@ -76,7 +76,7 @@ class Settings extends React.Component<IReduxProps, IState> {
                                                                 <Switch id={setting.key} checked={setting.value} />
                                                             )
                                                             break
-                                                        case 'number':
+                                                        case 'numeric':
                                                             control = (
                                                                 <TextField
                                                                     value={setting.value}

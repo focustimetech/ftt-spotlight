@@ -39,7 +39,7 @@ interface IState {
     uploading: boolean
 }
 
-class PlanDialog extends React.Component<IProps, IState> {
+class PlanWidget extends React.Component<IProps, IState> {
     state: IState = {
         loadingStaffList: false,
         open: false,
@@ -137,4 +137,4 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = { fetchStaffList, setStudentPlan }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlanDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(PlanWidget)

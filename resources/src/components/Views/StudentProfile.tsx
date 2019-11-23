@@ -47,7 +47,7 @@ import NewAmendment from '../Calendar/NewAmendment'
 import { NewAppointment } from '../Calendar/NewAppointment'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
-import PlanDialog from '../Modals/PlanDialog'
+import PlanWidget from '../Modals/PlanWidget'
 import { StudentInfoDialog } from '../Modals/StudentInfoDialog'
 import { StarButton } from '../StarButton'
 import { TopNav } from '../TopNav'
@@ -473,7 +473,7 @@ class StudentProfile extends React.Component<IProps, IState> {
 				),
 				child: (blockDetails: IBlockDetails) => (
 					blockDetails.pending && this.isOwnProfile() ? (
-						<PlanDialog
+						<PlanWidget
 							blockDetails={blockDetails}
 							onSubmit={this.onSetStudentPlan}
 						/>

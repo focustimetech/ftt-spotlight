@@ -256,9 +256,8 @@ class TopicsDialog extends React.Component<IProps, IState> {
                                             </div>
                                             <FormControlLabel
                                                 label={
-                                                    <div className='topic_unavailable_label'>
+                                                    <div className='info_tooltip'>
                                                         <Typography>Unavailable</Typography>
-                                                        {/* tslint:disable-next-line: max-line-length */}
                                                         <Tooltip title='Student will not be able to join Unavailable blocks.'>
                                                             <Icon>help</Icon>
                                                         </Tooltip>

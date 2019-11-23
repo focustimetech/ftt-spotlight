@@ -4,11 +4,8 @@ import { FETCH_STAFF_LIST, FETCH_STUDENT_SCHEDULE } from '../actions/types'
 import { ITopic } from '../types/calendar'
 import { IStaff } from '../types/staff'
 
-export interface IAppointmentRequest {
-    student_id: number
-    block_id: number
-    date: string
-    memo: string
+export interface IAppointmentRequest extends IAmendmentRequest {
+    clear_schedule: boolean
 }
 
 export interface IStaffTopic {
@@ -24,7 +21,12 @@ export interface ISchedulePlanRequest {
     date: string
 }
 
-export type IAmendmentRequest = IAppointmentRequest
+export interface IAmendmentRequest {
+    student_id: number
+    block_id: number
+    date: string
+    memo: string
+}
 
 export const createAppointment = (appointment: IAppointmentRequest): Promise<any> => {
     return axios.post('/api/appointments/create', appointment)

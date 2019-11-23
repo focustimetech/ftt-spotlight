@@ -15,16 +15,6 @@
                 }
             }
         }
-
-        .topic_unavailable_label {
-            display: flex;
-            flex-flow: row wrap;
-            align-items: center;
-
-            & > * + * {
-                margin: 0 8px;
-            }
-        }
     }
 }
 

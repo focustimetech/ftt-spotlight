@@ -44,7 +44,7 @@ import { isEmpty, listToTruncatedString, makeArray } from '../../utils/utils'
 import { Calendar } from '../Calendar/Calendar'
 import { CancelAppointment } from '../Calendar/CancelAppointment'
 import NewAmendment from '../Calendar/NewAmendment'
-import { NewAppointment } from '../Calendar/NewAppointment'
+import { ICreateAppointment, NewAppointment } from '../Calendar/NewAppointment'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import ChangePasswordWidget from '../Modals/ChangePasswordWidget'
 import PlanWidget from '../Modals/PlanWidget'
@@ -209,11 +209,12 @@ class StudentProfile extends React.Component<IProps, IState> {
 			})
 	}
 
-	handleCreateAppointment = (memo: string): Promise<any> => {
+	handleCreateAppointment = (newAppointment: ICreateAppointment): Promise<any> => {
 		const studentID: number = this.isOwnProfile() ? undefined : this.state.studentID
 		const appointment: IAppointmentRequest = {
 			student_id: studentID,
-			memo,
+			memo: newAppointment.memo,
+			clear_schedule: newAppointment.clearSchedule,
 			block_id: this.state.blockDetails.block_id,
 			date: this.state.blockDetails.date
 		}

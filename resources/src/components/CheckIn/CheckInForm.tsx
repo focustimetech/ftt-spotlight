@@ -349,7 +349,6 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log(this.state.chips)
         return (
             <ModalSection
                 icon='keyboard'

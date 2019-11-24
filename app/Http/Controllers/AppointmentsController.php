@@ -40,6 +40,14 @@ class AppointmentsController extends Controller
             'memo' => $request->input('memo')
         ]);
 
+        // Clear student's schedule by removing all SchedulePlans
+        if ($request->input('clear_schedule')) {
+            $plans = $student->plans()->get()->where('date', $date)->where('block_id', $block_id);
+            $plans->each(function($plan) {
+                $plan->delete();
+            });
+        }
+
         return new AppointmentResource($appointment);
     }
 

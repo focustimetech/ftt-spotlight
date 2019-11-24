@@ -145,3 +145,17 @@
     list-style: initial;
     margin-bottom: 8px;
 }
+
+.info_tooltip {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+
+	& > * + * {
+		margin: 0 8px;
+	}
+
+	span {
+		color: rgba(0,0,0,0.3);
+	}
+}

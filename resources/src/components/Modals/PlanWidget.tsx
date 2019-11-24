@@ -39,7 +39,7 @@ interface IState {
     uploading: boolean
 }
 
-class PlanDialog extends React.Component<IProps, IState> {
+class PlanWidget extends React.Component<IProps, IState> {
     state: IState = {
         loadingStaffList: false,
         open: false,
@@ -87,6 +87,8 @@ class PlanDialog extends React.Component<IProps, IState> {
     }
 
     render() {
+        const disabled: boolean = this.props.blockDetails.data.appointments && this.props.blockDetails.data.appointments.length
+
         return (
             <>
                 <LoadingButton
@@ -94,6 +96,7 @@ class PlanDialog extends React.Component<IProps, IState> {
                     variant='text'
                     color='primary'
                     onClick={() => this.handleOpen()}
+                    disabled={disabled}
                 >Set Plan</LoadingButton>
                 <Dialog open={this.state.open}>
                     <EnhancedDialogTitle title='Plan Schedule' onClose={this.handleClose}/>
@@ -134,4 +137,4 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = { fetchStaffList, setStudentPlan }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlanDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(PlanWidget)

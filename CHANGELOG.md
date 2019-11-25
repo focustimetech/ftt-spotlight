@@ -1,6 +1,15 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.8 (2019-11-25)
+
+### Changed
+ - Students can no longer schedule themselves if they have an appointment (SPOT-178)
+
+### Fixed
+ - Fixed error where Sidebar was displayed on student profiles (SPOT-181)
+ - Fixed server error with scheduled check-ins (SPOT-183)
+
 ## Version 1.2.7 (2019-11-19)
 
 ### Added

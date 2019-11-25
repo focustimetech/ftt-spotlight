@@ -47,7 +47,7 @@ class LedgerController extends Controller
         $date = date('Y-m-d', $date_time);
         $block = Block::atTime($date_time);
         $ledger_entries = collect();
-
+        $chips = $request->input('chips') ?? [];
         $scheduled_ids = $request->input('scheduled_ids') ?? [];
         foreach ($scheduled_ids as $student_id) {
             $ledger_entry = LedgerEntry::create([
@@ -62,7 +62,7 @@ class LedgerController extends Controller
         }
 
         $error = [];
-        foreach ($request->input('chips') as $chip) {
+        foreach ($chips as $chip) {
             $check_in_time = $chip['time'] ? strtotime($chip['time']) : time();
             $check_in_date = $chip['date_time'] ? date('Y-m-d', strtotime($chip['date_time'])) : $date;
             $student_id = null;

@@ -13,7 +13,10 @@ import {
     Fade,
     Grow,
     Icon,
-    IconButton
+    IconButton,
+    Tab,
+    Tabs,
+    withStyles
 } from '@material-ui/core'
 
 import {
@@ -33,12 +36,17 @@ import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
 import { ConfirmationDialog } from './ConfirmationDialog'
 
+const NotificationsTab = withStyles({
+    root: { minWidth: 'unset' }
+})(Tab)
+
 interface IState {
     archiveAllDialogOpen: boolean
     loading: boolean
     open: boolean
     openNotifications: number[]
     snackbars: ISnackbar[]
+    tab: number
 }
 
 interface IReduxProps {
@@ -62,7 +70,8 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         loading: false,
         open: false,
         openNotifications: [],
-        snackbars: []
+        snackbars: [],
+        tab: 0
     }
 
     contentLoader = (
@@ -186,6 +195,10 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         this.props.markAllNotificationsAsRead()
     }
 
+    handleTabChange = (tab: number) => {
+        this.setState({ tab })
+    }
+
     componentDidMount() {
         // Add event listener for escape key press
         document.addEventListener('keydown', this.escFunction, false)
@@ -266,10 +279,16 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                 <Drawer open={this.state.open}>
 					<div className='sidebar_modal notifications_modal items_modal'>
                         <div className='sidebar_modal__header'>
-                            <IconButton className='button_back' onClick={this.handleClose}>
-                                <Icon>arrow_back</Icon>
-                            </IconButton>
-                            <h3>Notifications</h3>
+                            <div>
+                                <IconButton className='button_back' onClick={this.handleClose}>
+                                    <Icon>arrow_back</Icon>
+                                </IconButton>
+                                <h3>Notifications</h3>
+                            </div>
+                            <Tabs value={this.state.tab} indicatorColor='primary' onChange={(event: any, value: number) => this.handleTabChange(value)}>
+                                <NotificationsTab label='Inbox' value={0} />
+                                <NotificationsTab label='Sent' value={1} />
+                            </Tabs>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
                             <div className='notifications_modal__actions'>

@@ -13,7 +13,7 @@ class NotificationRecipientsTable extends Migration
      */
     public function up()
     {
-        Schema::create('notification_recepients', function (Blueprint $table) {
+        Schema::create('notification_recipients', function (Blueprint $table) {
             $table->unsignedInteger('notification_id');
             $table->unsignedInteger('staff_id');
             $table->boolean('read')
@@ -30,6 +30,6 @@ class NotificationRecipientsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notification_recepients');
+        Schema::dropIfExists('notification_recipients');
     }
 }

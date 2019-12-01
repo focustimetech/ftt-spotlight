@@ -6,32 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
 {
-    public function archive()
+    public $fillable = [
+        'staff_id', 'initials', 'color', 'body'
+    ];
+
+    public function recipients()
     {
-        $this->attributes['archived'] = true;
-        $this->save();
+        return $this->hasMany('App\NotificationRecipient');
     }
 
-    public function markRead()
-    {
-        $this->attributes['read'] = true;
-        $this->save();
-    }
-
-    public function markUnread()
-    {
-        $this->attributes['read'] = false;
-        $this->save();
-    }
-
-    public function staff()
+    public function sender()
     {
         return $this->belongsTo('App\Staff');
-    }
-
-    public function unarchive()
-    {
-        $this->attributes['archived'] = false;
-        $this->save();
     }
 }

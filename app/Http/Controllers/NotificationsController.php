@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Notification;
+use App\Staff;
 use App\Http\Resources\Notification as NotificationResource;
+use App\Http\Resources\Staff as StaffResource;
 
 class NotificationsController extends Controller
 {
@@ -47,14 +50,35 @@ class NotificationsController extends Controller
 
     /**
      * Returns all of the authorized user's Notifications.
-     * @return NotificationResource All the user's notifications.
      */
-    public function index()
+    public function inbox()
     {
-        $notifications = auth()->user()->staff()
-            ->notifications()->orderBy('created_at', 'desc')->get();
+        $staff = auth()->user()->staff();
+        $inbox = $staff->notificationInbox()->get()->map(function($notification_recipient) {
+            return [
+                'read' => $notification_recipient->read,
+                'notification' => new NotificationResource(Notification::findOrFail($notification_recipient->notification_id))
+            ];
+        });
         
-        return NotificationResource::collection($notifications);
+        return $inbox;
+    }
+
+    /**
+     * Returns all of the authorized user's outgoing Notifications,
+     */
+    public function outbox()
+    {
+        $staff = auth()->user()->staff();
+        $outbox = $staff->notificationOutbox()->get()->map(function($notification) {
+            $recipient_ids = $notification->recipients()->get()->pluck('staff_id');
+            return [
+                'recipients' => StaffResource::collection(Staff::find($recipient_ids)),
+                'notification' => new NotificationResource($notification)
+            ];
+        });
+
+        return $outbox;
     }
 
     /**

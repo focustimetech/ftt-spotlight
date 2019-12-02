@@ -41,8 +41,8 @@ import {
 } from '../../types/staff'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
+import { ConfirmationDialog } from '../Modals/ConfirmationDialog'
 import { NavItem } from '../Sidebar/NavItem'
-import { ConfirmationDialog } from './ConfirmationDialog'
 
 const NotificationsTab = withStyles({
     root: { minWidth: 'unset' }

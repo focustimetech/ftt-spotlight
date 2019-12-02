@@ -54,6 +54,7 @@ interface IState {
     loadingOutbox: boolean
     open: boolean
     openNotifications: number[]
+    sendDialogOpen: boolean
     snackbars: ISnackbar[]
     tab: number
 }
@@ -83,6 +84,7 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         loadingOutbox: false,
         open: false,
         openNotifications: [],
+        sendDialogOpen: false,
         snackbars: [],
         tab: 0
     }
@@ -214,6 +216,14 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
 
     handleTabChange = (tab: number) => {
         this.setState({ tab })
+    }
+
+    handleOpenSendDialog = () => {
+        this.setState({ sendDialogOpen: true })
+    }
+
+    handleCloseSendDialog = () => {
+        this.setState({ sendDialogOpen: false })
     }
 
     componentDidMount() {
@@ -436,7 +446,7 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                                 variant='contained'
                                                 color='primary'
                                                 disabled={false}
-                                                onClick={() => handleOpenSendDialog()}
+                                                onClick={() => this.handleOpenSendDialog()}
                                             >Send Notification</Button>
                                         </EmptyStateIcon>
                                     )}

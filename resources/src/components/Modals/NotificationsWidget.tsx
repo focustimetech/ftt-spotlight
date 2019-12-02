@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import React from 'react'
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
+import SwipableViews from 'react-swipeable-views'
 
 import {
     Button,
@@ -22,15 +23,22 @@ import {
 import {
     archiveAllNotifications,
     archiveNotification,
-    fetchNotifications,
+    fetchNotificationInbox,
+    fetchNotificationOutbox,
     markAllNotificationsAsRead,
     markNotificationAsRead,
     markNotificationAsUnread,
+    sendNotification,
     unarchiveNotification
 } from '../../actions/notificationsActions'
 import { ISnackbar, ISnackbarButton, queueSnackbar } from '../../actions/snackbarActions'
 import { IStaffUser } from '../../types/auth'
-import { INotification } from '../../types/staff'
+import {
+    INotification,
+    INotificationRecieved,
+    INotificationRequest,
+    INotificationSent
+} from '../../types/staff'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { NavItem } from '../Sidebar/NavItem'
@@ -42,7 +50,8 @@ const NotificationsTab = withStyles({
 
 interface IState {
     archiveAllDialogOpen: boolean
-    loading: boolean
+    loadingInbox: boolean
+    loadingOutbox: boolean
     open: boolean
     openNotifications: number[]
     snackbars: ISnackbar[]
@@ -51,13 +60,16 @@ interface IState {
 
 interface IReduxProps {
     currentUser: IStaffUser
-    notifications: INotification[]
+    inbox: INotificationRecieved[]
+    outbox: INotificationSent[]
     archiveAllNotifications: () => void
     archiveNotification: (notification: INotification) => void
-    fetchNotifications: () => Promise<any>
+    fetchNotificationInbox: () => Promise<any>
+    fetchNotificationOutbox: () => Promise<any>
     markAllNotificationsAsRead: () => void
     markNotificationAsRead: (notification: INotification) => void
     markNotificationAsUnread: (notification: INotification) => void
+    sendNotification: (request: INotificationRequest) => Promise<any>
     unarchiveNotification: (notification: INotification) => void
     queueSnackbar: (snackbar: ISnackbar) => void
 }
@@ -67,7 +79,8 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
 
     state: IState = {
         archiveAllDialogOpen: false,
-        loading: false,
+        loadingInbox: false,
+        loadingOutbox: false,
         open: false,
         openNotifications: [],
         snackbars: [],
@@ -109,17 +122,21 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         }
     }
 
-    handleClick = (notification: INotification) => {
-        const { id, read } = notification
-        if (this.state.openNotifications.indexOf(id) >= 0) {
-            // Notification is open
-            this.handleCloseNotification(id)
-        } else {
-            // Notification is closed
-            this.handleOpenNotification(id)
-        }
+    handleInboxClick = (item: INotificationRecieved) => {
+        const { notification, read } = item
+        this.handleToggleNotificationOpen(notification)
         if (!read) {
             this.handleMarkRead(notification)
+        }
+    }
+
+    handleToggleNotificationOpen = (notification: INotification) => {
+        if (this.state.openNotifications.indexOf(notification.id) >= 0) {
+            // Notification is open
+            this.handleCloseNotification(notification.id)
+        } else {
+            // Notification is closed
+            this.handleOpenNotification(notification.id)
         }
     }
 
@@ -143,8 +160,8 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         })
     }
 
-    refreshNotifications = () => {
-        this.props.fetchNotifications()
+    refreshInbox = () => {
+        this.props.fetchNotificationInbox()
     }
 
     handleArchive = (notification: INotification) => {
@@ -205,17 +222,18 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
 
         // Create polling interval (10 seconds for administrators, 30 seconds otherwise)
         this.timer = window.setInterval(
-            () => this.refreshNotifications(),
+            () => this.refreshInbox(),
             this.props.currentUser && this.props.currentUser.details.administrator ? 10000 : 30000
         )
 
         // Fetch Notifications
-        this.setState({ loading: true })
-        this.props.fetchNotifications().then(
-            (res: any) => {
-                this.setState({ loading: false })
-            }
-        )
+        this.setState({ loadingInbox: true, loadingOutbox: true })
+        this.props.fetchNotificationInbox().then((res: any) => {
+            this.setState({ loadingInbox: false })
+        })
+        this.props.fetchNotificationOutbox().then((res: any) => {
+            this.setState({ loadingOutbox: false })
+        })
     }
 
     componentWillUnmount() {
@@ -227,14 +245,14 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
     }
 
     componentDidUpdate(previousProps: IReduxProps) {
-        if (this.state.loading || !this.props.notifications || !previousProps.notifications) {
+        if (this.state.loadingInbox || this.state.loadingOutbox || !this.props.inbox || !previousProps.inbox) {
             return
         }
-        const currentNotifications: INotification[] = previousProps.notifications
-        const newNotifications: INotification[] = this.props.notifications.filter((notification: INotification) => {
+        const currentNotifications: INotificationRecieved[] = previousProps.inbox
+        const newNotifications: INotificationRecieved[] = this.props.inbox.filter((item: INotificationRecieved) => {
             // Collect all notifications that aren't in previous props
-            return currentNotifications.every((currentNotification: INotification) => {
-                return currentNotification.id !== notification.id && notification.read === false
+            return currentNotifications.every((currentNotification: INotificationRecieved) => {
+                return currentNotification.notification.id !== item.notification.id && item.read === false
             })
         })
         if (newNotifications.length === 0) {
@@ -254,8 +272,8 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         })
 
         this.props.queueSnackbar(newNotifications.length === 1 ? ({
-            message: newNotifications[0].body,
-            buttons: [showNotificationButton(newNotifications[0].id)]
+            message: newNotifications[0].notification.body,
+            buttons: [showNotificationButton(newNotifications[0].notification.id)]
         }) : ({
             message: `You have ${newNotifications.length} new notifications.`,
             buttons: [showNotificationButton()]
@@ -263,11 +281,11 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
     }
 
     render() {
-        const unreadCount: number = this.props.notifications.filter((notification: INotification) => {
+        const unreadCount: number = this.props.inbox.filter((notification: INotificationRecieved) => {
             return notification.read === false
         }).length
 
-        const disableActions: boolean = !(this.props.notifications && this.props.notifications.length > 0)
+        const disableActions: boolean = !(this.props.inbox && this.props.inbox.length > 0)
         return (
             <>
                 <NavItem
@@ -291,73 +309,139 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                             </Tabs>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
-                            <div className='notifications_modal__actions'>
-                                <Button
-                                    disabled={disableActions || unreadCount === 0}
-                                    onClick={() => this.handleMarkAllRead()}
-                                >{`Mark ${unreadCount > 0 ? unreadCount : 'all'} as read`}
-                                </Button>
-                                <Button
-                                    disabled={disableActions}
-                                    onClick={() => this.handleArchiveAll()}
-                                >Archive all</Button>
-                            </div>
-                            <Grow in={this.props.notifications && this.props.notifications.length > 0}>
-                                <div className='content-inner'>
-                                    {this.props.notifications.map((notification: INotification) => {
-                                        const expanded: boolean
-                                            = this.state.openNotifications.indexOf(notification.id) >= 0
-                                        const read: boolean = expanded || notification.read
-                                        return (
-                                            <ExpansionPanel
-                                                className={classNames('notification', {['--read']: read})}
-                                                expanded={expanded}
-                                                key={notification.id}
-                                            >
-                                                <ExpansionPanelSummary
-                                                    expandIcon={<Icon>expand_more</Icon>}
-                                                    onClick={() => this.handleClick(notification)}
-                                                >
-                                                    <div className='notification__info'>
-                                                        {expanded ? (
-                                                            <>
-                                                                <p className='header'>{notification.date}</p>
-                                                                <p className='time'>{notification.time}</p>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <p className='header'>
-                                                                    {!read && <span className='unread-badge' />}
-                                                                    {notification.body}
-                                                                </p>
-                                                                <p className='time'>{notification.approximateTime}</p>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                </ExpansionPanelSummary>
-                                                <ExpansionPanelDetails>
-                                                    <p>{notification.body}</p>
-                                                </ExpansionPanelDetails>
-                                                <ExpansionPanelActions>
-                                                    <Button
-                                                        onClick={() => this.handleMarkUnread(notification)}
-                                                    >Mark Unread</Button>
-                                                    <Button
-                                                        onClick={() => this.handleArchive(notification)}
-                                                    >Archive</Button>
-                                                </ExpansionPanelActions>
-                                            </ExpansionPanel>
-                                        )
-                                    })}
+                            <SwipableViews index={this.state.tab}>
+                                <div>
+                                    <div className='notifications_modal__actions'>
+                                        <Button
+                                            disabled={disableActions || unreadCount === 0}
+                                            onClick={() => this.handleMarkAllRead()}
+                                        >{`Mark ${unreadCount > 0 ? unreadCount : 'all'} as read`}
+                                        </Button>
+                                        <Button
+                                            disabled={disableActions}
+                                            onClick={() => this.handleArchiveAll()}
+                                        >Archive all</Button>
+                                    </div>
+                                    <Fade in={this.state.loadingInbox}>{this.contentLoader}</Fade>
+                                    <Grow in={this.props.inbox && this.props.inbox.length > 0}>
+                                        <div className='content-inner'>
+                                            {this.props.inbox.map((item: INotificationRecieved) => {
+                                                const notification: INotification = item.notification
+                                                const expanded: boolean = this.state.openNotifications.indexOf(notification.id) !== -1
+                                                const read: boolean = expanded || item.read
+                                                return (
+                                                    <ExpansionPanel
+                                                        className={classNames('notification', {['--read']: read})}
+                                                        expanded={expanded}
+                                                        key={notification.id}
+                                                    >
+                                                        <ExpansionPanelSummary
+                                                            expandIcon={<Icon>expand_more</Icon>}
+                                                            onClick={() => this.handleInboxClick(item)}
+                                                        >
+                                                            <div className='notification__info'>
+                                                                {expanded ? (
+                                                                    <>
+                                                                        <p className='header'>{notification.date}</p>
+                                                                        <p className='time'>{notification.time}</p>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <p className='header'>
+                                                                            {!read && <span className='unread-badge' />}
+                                                                            {notification.body}
+                                                                        </p>
+                                                                        <p className='time'>{notification.approximateTime}</p>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </ExpansionPanelSummary>
+                                                        <ExpansionPanelDetails>
+                                                            <p>{notification.body}</p>
+                                                        </ExpansionPanelDetails>
+                                                        <ExpansionPanelActions>
+                                                            <Button
+                                                                onClick={() => this.handleMarkUnread(notification)}
+                                                            >Mark Unread</Button>
+                                                            <Button
+                                                                onClick={() => this.handleArchive(notification)}
+                                                            >Archive</Button>
+                                                        </ExpansionPanelActions>
+                                                    </ExpansionPanel>
+                                                )
+                                            })}
+                                        </div>
+                                    </Grow>
+                                    {(!this.state.loadingInbox && this.props.inbox.length === 0) && (
+                                        <EmptyStateIcon variant='notifications'>
+                                            <h2>Your inbox is empty</h2>
+                                            <h3>Notifications that you receive from Spotlight will appear here.</h3>
+                                        </EmptyStateIcon>
+                                    )}
                                 </div>
-                            </Grow>
-                            <Fade in={this.state.loading}>{this.contentLoader}</Fade>
-                            {(!this.state.loading && this.props.notifications.length === 0) && (
-                                <EmptyStateIcon variant='notifications'>
-                                    <h2>Your inbox is empty</h2>
-                                    <h3>Notifications that you receive from Spotlight will appear here.</h3>
-                                </EmptyStateIcon>
-                            )}
+                                <div>
+                                    <Fade in={this.state.loadingInbox}>{this.contentLoader}</Fade>
+                                    <Grow in={this.props.outbox && this.props.outbox.length > 0}>
+                                        <div className='content-inner'>
+                                            {this.props.outbox.map((item: INotificationSent) => {
+                                                const notification: INotification = item.notification
+                                                const expanded: boolean = this.state.openNotifications.indexOf(notification.id) >= 0
+                                                return (
+                                                    <ExpansionPanel
+                                                        className={classNames('notification', '--read')}
+                                                        expanded={expanded}
+                                                        key={notification.id}
+                                                    >
+                                                        <ExpansionPanelSummary
+                                                            expandIcon={<Icon>expand_more</Icon>}
+                                                            onClick={() => this.handleToggleNotificationOpen(notification)}
+                                                        >
+                                                            <div className='notification__info'>
+                                                                {expanded ? (
+                                                                    <>
+                                                                        <p className='header'>{notification.date}</p>
+                                                                        <p className='time'>{notification.time}</p>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <p className='header'>
+                                                                            {notification.body}
+                                                                        </p>
+                                                                        <p className='time'>{notification.approximateTime}</p>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </ExpansionPanelSummary>
+                                                        <ExpansionPanelDetails>
+                                                            <p>{notification.body}</p>
+                                                        </ExpansionPanelDetails>
+                                                        <ExpansionPanelActions>
+                                                            <Button
+                                                                onClick={() => this.handleMarkUnread(notification)}
+                                                            >Mark Unread</Button>
+                                                            <Button
+                                                                onClick={() => this.handleArchive(notification)}
+                                                            >Archive</Button>
+                                                        </ExpansionPanelActions>
+                                                    </ExpansionPanel>
+                                                )
+                                            })}
+                                        </div>
+                                    </Grow>
+                                    {(!this.state.loadingOutbox && this.props.outbox.length === 0) && (
+                                        <EmptyStateIcon variant='notifications'>
+                                            <h2>Your outbox is empty</h2>
+                                            <h3>Notifications that you send from Spotlight will appear here.</h3>
+                                            <Button
+                                                variant='contained'
+                                                color='primary'
+                                                disabled={false}
+                                                onClick={() => handleOpenSendDialog()}
+                                            >Send Notification</Button>
+                                        </EmptyStateIcon>
+                                    )}
+                                </div>
+                            </SwipableViews>
                         </div>
 					</div>
 				</Drawer>
@@ -375,16 +459,19 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
 
 const mapStateToProps = (state: any) => ({
     currentUser: state.auth.user,
-    notifications: state.notifications.items
+    inbox: state.notifications.inbox,
+    outbox: state.notifications.outbox
 })
 
 const mapDispatchToProps = {
     archiveAllNotifications,
     archiveNotification,
-    fetchNotifications,
+    fetchNotificationInbox,
+    fetchNotificationOutbox,
     markAllNotificationsAsRead,
     markNotificationAsRead,
     markNotificationAsUnread,
+    sendNotification,
     unarchiveNotification,
     queueSnackbar
 }

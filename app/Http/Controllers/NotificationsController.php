@@ -133,4 +133,13 @@ class NotificationsController extends Controller
     {
         return $this->archiveNotification($id, false);
     }
+
+    /**
+     * Allows the authorized user to send notifications to other users.
+     */
+    public function sendNotification($id)
+    {
+        $recipient_ids = $request->input('recipient_ids');
+        $body = $request->input('body');
+    }
 }

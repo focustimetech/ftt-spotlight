@@ -27,10 +27,25 @@ export type IStaffTitle =
 export type IStaffAccountType = 'teacher' | 'admin'
 
 export interface INotification {
-    id: number,
-    date: string,
-    time: string,
-    approximateTime: string,
-    body: string,
+    id: number
+    date: string
+    time: string
+    approximateTime: string
+    body: string
+    sender: IStaff
+}
+
+export interface INotificationRecieved {
     read: boolean
+    notification: INotification
+}
+
+export interface INotificationSent {
+    recipients: IStaff[]
+    notification: INotification
+}
+
+export interface INotificationRequest {
+    recipient_ids: number[]
+    body: string
 }

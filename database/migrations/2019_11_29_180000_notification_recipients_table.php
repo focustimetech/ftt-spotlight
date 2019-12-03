@@ -14,6 +14,7 @@ class NotificationRecipientsTable extends Migration
     public function up()
     {
         Schema::create('notification_recipients', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('notification_id');
             $table->unsignedInteger('staff_id');
             $table->boolean('read')

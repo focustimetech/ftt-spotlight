@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Notification;
+use App\NotificationRecipient;
 use App\Staff;
 use App\Http\Resources\Notification as NotificationResource;
 use App\Http\Resources\Staff as StaffResource;
@@ -18,8 +19,8 @@ class NotificationsController extends Controller
      */
     public function archiveAllNotifications()
     {
-        $notifications = auth()->user()->staff()
-            ->notifications()->get();
+        $staff = auth()->user()->staff();
+        $notifications = $staff->notificationInbox()->get();
 
         $notifications->map(function($notification) {
             $notification->archive();
@@ -37,11 +38,14 @@ class NotificationsController extends Controller
      */
     public function archiveNotification($id, $archived = true)
     {
-        $notification = Notification::findOrFail($id);
-        if (auth()->user()->staff()->id === $notification->staff_id) {
-            $notification->archived = $archived;
-            if ($notification->save())
-                return new NotificationResource($notification);
+        $staff = auth()->user()->staff();
+        $notification = NotificationRecipient::where('staff_id', $staff->id)->where('notification_id', $id)->first();
+        if (!$notification) {
+            return response()->json('Cannot find Notification.', 404);
+        }
+        $notification->archived = $archived;
+        if ($notification->save()) {
+            return new NotificationResource($notification->notification()->first());
         }
         else {
             return response()->json('Cannot archive Notification.', 403);
@@ -56,7 +60,7 @@ class NotificationsController extends Controller
         $staff = auth()->user()->staff();
         $inbox = $staff->notificationInbox()->get()->map(function($notification_recipient) {
             return [
-                'read' => $notification_recipient->read,
+                'read' => $notification_recipient->read == true,
                 'notification' => new NotificationResource(Notification::findOrFail($notification_recipient->notification_id))
             ];
         });
@@ -87,14 +91,16 @@ class NotificationsController extends Controller
      */
     public function markAllNotificationsRead()
     {
-        $notifications = auth()->user()->staff()
-            ->notifications()->get();
+        $staff = auth()->user()->staff();
+        $notifications = $staff->notificationInbox()->get();
         $notifications->map(function($notification) {
             $notification->markRead();
             return $notification;
         });
 
-        return NotificationResource::collection($notifications);
+        return NotificationResource::collection($notifications->map(function($notification) {
+            return $notification->notification()->first();
+        }));
     }
 
     /**
@@ -105,11 +111,14 @@ class NotificationsController extends Controller
      */
     public function markNotificationRead($id, $read = true)
     {
-        $notification = Notification::findOrFail($id);
-        if (auth()->user()->staff()->id === $notification->staff_id) {
-            $notification->read = $read;
-            if ($notification->save())
-                return new NotificationResource($notification);
+        $staff = auth()->user()->staff();
+        $notification = $staff->notificationInbox()->where('notification_id', $id)->first();
+        if (!$notification) {
+            return response()->json('Cannot find Notification.', 404);
+        }
+        $notification->read = $read;
+        if ($notification->save()) {
+            return new NotificationResource($notification->notification()->first());
         }
         else {
             return response()->json('Cannot mark Notification as read.', 403);

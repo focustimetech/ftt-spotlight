@@ -40,6 +40,6 @@ class NotificationRecipient extends Model
 
     public function notification()
     {
-        return $this->hasOne('App\Notification');
+        return $this->belongsTo('App\Notification');
     }
 }

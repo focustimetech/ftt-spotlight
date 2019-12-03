@@ -54,7 +54,7 @@ interface IState {
     loadingOutbox: boolean
     open: boolean
     openNotifications: number[]
-    sendDialogOpen: boolean
+    sendFormOpen: boolean
     snackbars: ISnackbar[]
     tab: number
 }
@@ -84,7 +84,7 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         loadingOutbox: false,
         open: false,
         openNotifications: [],
-        sendDialogOpen: false,
+        sendFormOpen: false,
         snackbars: [],
         tab: 0
     }
@@ -218,12 +218,12 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         this.setState({ tab })
     }
 
-    handleOpenSendDialog = () => {
-        this.setState({ sendDialogOpen: true })
+    handleOpenSendForm = () => {
+        this.setState({ sendFormOpen: true })
     }
 
-    handleCloseSendDialog = () => {
-        this.setState({ sendDialogOpen: false })
+    handleCloseSendForm = () => {
+        this.setState({ sendFormOpen: false })
     }
 
     componentDidMount() {
@@ -291,9 +291,12 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
     }
 
     render() {
-        const unreadCount: number = this.props.inbox.filter((notification: INotificationRecieved) => {
+        const unreadCount: number = this.props.inbox ? this.props.inbox.filter((notification: INotificationRecieved) => {
             return notification.read === false
-        }).length
+        }).length : 0
+
+        console.log('PROPS.inbox:', this.props.inbox)
+        console.log('unread count:', unreadCount)
 
         const disableActions: boolean = !(this.props.inbox && this.props.inbox.length > 0)
         return (
@@ -319,8 +322,9 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                             </Tabs>
                         </div>
                         <div className='sidebar_modal__content items_modal__content'>
-                            <SwipableViews index={this.state.tab}>
-                                <div>
+
+                            {this.state.tab === 0 && (
+                                <>
                                     <div className='notifications_modal__actions'>
                                         <Button
                                             disabled={disableActions || unreadCount === 0}
@@ -388,8 +392,18 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                             <h3>Notifications that you receive from Spotlight will appear here.</h3>
                                         </EmptyStateIcon>
                                     )}
-                                </div>
-                                <div>
+                                </>
+                            )}
+                            {this.state.tab === 1 && (
+                                <>
+                                    <div className='notifications_modal__actions'>
+                                        <Button
+                                            variant='contained'
+                                            color='primary'
+                                            disabled={false}
+                                            onClick={() => this.handleOpenSendForm()}
+                                        >Compose</Button>
+                                    </div>
                                     <Fade in={this.state.loadingInbox}>{this.contentLoader}</Fade>
                                     <Grow in={this.props.outbox && this.props.outbox.length > 0}>
                                         <div className='content-inner'>
@@ -442,16 +456,10 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                         <EmptyStateIcon variant='notifications'>
                                             <h2>Your outbox is empty</h2>
                                             <h3>Notifications that you send from Spotlight will appear here.</h3>
-                                            <Button
-                                                variant='contained'
-                                                color='primary'
-                                                disabled={false}
-                                                onClick={() => this.handleOpenSendDialog()}
-                                            >Send Notification</Button>
                                         </EmptyStateIcon>
                                     )}
-                                </div>
-                            </SwipableViews>
+                                </>
+                            )}
                         </div>
 					</div>
 				</Drawer>

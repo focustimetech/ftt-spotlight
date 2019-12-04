@@ -17,7 +17,9 @@ import {
     IconButton,
     Tab,
     Tabs,
-    withStyles
+    withStyles,
+    TextField,
+    Typography
 } from '@material-ui/core'
 
 import {
@@ -52,6 +54,7 @@ interface IState {
     archiveAllDialogOpen: boolean
     loadingInbox: boolean
     loadingOutbox: boolean
+    message: string
     open: boolean
     openNotifications: number[]
     sendFormOpen: boolean
@@ -82,6 +85,7 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         archiveAllDialogOpen: false,
         loadingInbox: false,
         loadingOutbox: false,
+        message: '',
         open: false,
         openNotifications: [],
         sendFormOpen: false,
@@ -226,6 +230,14 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         this.setState({ sendFormOpen: false })
     }
 
+    handleChangeMessage = (event: any) => {
+        this.setState({ message: event.target.value })
+    }
+
+    handleSendNotification = () => {
+        //
+    }
+
     componentDidMount() {
         // Add event listener for escape key press
         document.addEventListener('keydown', this.escFunction, false)
@@ -294,11 +306,8 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         const unreadCount: number = this.props.inbox ? this.props.inbox.filter((notification: INotificationRecieved) => {
             return notification.read === false
         }).length : 0
-
-        console.log('PROPS.inbox:', this.props.inbox)
-        console.log('unread count:', unreadCount)
-
         const disableActions: boolean = !(this.props.inbox && this.props.inbox.length > 0)
+
         return (
             <>
                 <NavItem
@@ -398,9 +407,9 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                 <>
                                     <div className='notifications_modal__actions'>
                                         <Button
-                                            variant='contained'
+                                            variant='text'
                                             color='primary'
-                                            disabled={false}
+                                            disabled={this.state.sendFormOpen}
                                             onClick={() => this.handleOpenSendForm()}
                                         >Compose</Button>
                                     </div>
@@ -452,7 +461,33 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                             })}
                                         </div>
                                     </Grow>
-                                    {(!this.state.loadingOutbox && this.props.outbox.length === 0) && (
+                                    <Grow in={this.state.sendFormOpen}>
+                                        <div>
+                                            <Typography>Your Notification will be sent to all staff members. </Typography>
+                                            <div className='notifications_modal__textfield'>
+                                                <TextField
+                                                    value={this.state.message}
+                                                    onChange={this.handleChangeMessage}
+                                                    variant='filled'
+                                                    color='primary'
+                                                    multiline
+                                                    fullWidth
+                                                    placeholder='Compose your Notification'
+                                                    label='Message'
+                                                />
+                                            </div>
+                                            <div className='notifications_modal__actions'>
+                                                <Button
+                                                    color='primary'
+                                                    variant='text'
+                                                    disabled={this.state.message.length === 0}
+                                                    onClick={() => this.handleSendNotification()}
+                                                >Send</Button>
+                                                <Button onClick={() => this.setState({ sendFormOpen: false })}>Cancel</Button>
+                                            </div>
+                                        </div>
+                                    </Grow>
+                                    {(!this.state.loadingOutbox && this.props.outbox.length === 0 && !this.state.sendFormOpen) && (
                                         <EmptyStateIcon variant='notifications'>
                                             <h2>Your outbox is empty</h2>
                                             <h3>Notifications that you send from Spotlight will appear here.</h3>

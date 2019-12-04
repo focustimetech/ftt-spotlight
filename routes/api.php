@@ -89,13 +89,15 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::post('check-in/air/disable', 'LedgerController@disableAir');
 
     // Notifications
-    Route::get('notifications', 'NotificationsController@index');
+    Route::get('notifications/inbox', 'NotificationsController@inbox');
+    Route::get('notifications/outbox', 'NotificationsController@outbox');
     Route::put('notifications/archive/all', 'NotificationsController@archiveAllNotifications');
     Route::put('notifications/read/all', 'NotificationsController@markAllNotificationsRead');
     Route::put('notifications/archive/{id}', 'NotificationsController@archiveNotification');
     Route::put('notifications/unarchive/{id}', 'NotificationsController@unarchiveNotification');
     Route::put('notifications/read/{id}', 'NotificationsController@markNotificationRead');
     Route::put('notifications/unread/{id}', 'NotificationsController@markNotificationUnread');
+    Route::post('notifications', 'NotificationsController@sendNotification');
 
     // Power Scheduler
     Route::post('power-scheduler', 'PowerSchedulerController@schedule');

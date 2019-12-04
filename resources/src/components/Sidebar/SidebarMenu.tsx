@@ -12,7 +12,6 @@ import { SettingsHelper } from '../../utils/SettingsHelper'
 import { WikiMenu } from '../Wiki/WikiMenu'
 import { MenuItem } from './MenuItem'
 
-
 interface IAppSettings {
     values: Record<SettingKey, ISetting>
     groups: ISettingsGroup[]

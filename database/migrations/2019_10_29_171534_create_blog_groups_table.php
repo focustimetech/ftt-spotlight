@@ -28,6 +28,6 @@ class CreateBlogGroupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('blog_post_groups');
+        Schema::dropIfExists('blog_groups');
     }
 }

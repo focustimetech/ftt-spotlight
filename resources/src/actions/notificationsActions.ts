@@ -1,14 +1,16 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 import { ReduxAction } from '../types/app'
-import { INotification } from '../types/staff'
+import { INotification, INotificationRequest, INotificationSent } from '../types/staff'
 import {
     ARCHIVE_ALL_NOTIFICATIONS,
     ARCHIVE_NOTIFICATION,
-    FETCH_NOTIFICATIONS,
+    FETCH_NOTIFICATION_INBOX,
+    FETCH_NOTIFICATION_OUTBOX,
     MARK_ALL_NOTIFICATIONS_READ,
     MARK_NOTIFICATION_READ,
     MARK_NOTIFICATION_UNREAD,
+    SEND_NOTIFICATION,
     UNARCHIVE_NOTIFICATION
 } from './types'
 
@@ -32,13 +34,26 @@ export const archiveNotification = (notification: INotification) => {
     }
 }
 
-export const fetchNotifications = () => {
+export const fetchNotificationInbox = () => {
     return (dispatch: any) => {
-        return axios.get('/api/notifications')
+        return axios.get('/api/notifications/inbox')
             .then((res: any) => {
                 const notifications = res.data
                 dispatch({
-                    type: FETCH_NOTIFICATIONS,
+                    type: FETCH_NOTIFICATION_INBOX,
+                    payload: notifications
+                })
+            })
+    }
+}
+
+export const fetchNotificationOutbox = () => {
+    return (dispatch: any) => {
+        return axios.get('/api/notifications/outbox')
+            .then((res: any) => {
+                const notifications = res.data
+                dispatch({
+                    type: FETCH_NOTIFICATION_OUTBOX,
                     payload: notifications
                 })
             })
@@ -82,5 +97,18 @@ export const unarchiveNotification = (notification: INotification) => {
             type: UNARCHIVE_NOTIFICATION,
             payload: notification
         })
+    }
+}
+
+export const sendNotification = (request: INotificationRequest) => {
+    return (dispatch: (action: ReduxAction<INotificationSent>) => void) => {
+        axios.post('/api/notifications', request)
+            .then((response: AxiosResponse<any>) => {
+                const notification: INotificationSent = response.data
+                return dispatch({
+                    type: SEND_NOTIFICATION,
+                    payload: notification
+                })
+            })
     }
 }

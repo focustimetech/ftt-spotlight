@@ -1,7 +1,8 @@
 import {
     ARCHIVE_ALL_NOTIFICATIONS,
     ARCHIVE_NOTIFICATION,
-    FETCH_NOTIFICATIONS,
+    FETCH_NOTIFICATION_INBOX,
+    FETCH_NOTIFICATION_OUTBOX,
     MARK_ALL_NOTIFICATIONS_READ,
     MARK_NOTIFICATION_READ,
     MARK_NOTIFICATION_UNREAD,
@@ -9,48 +10,61 @@ import {
 } from '../actions/types'
 
 import { ReduxAction } from '../types/app'
-import { INotification } from '../types/staff'
+import { INotification, INotificationRecieved, INotificationSent } from '../types/staff'
 
 interface IState {
-    items: INotification[]
+    inbox: INotificationRecieved[]
+    outbox: INotificationSent[]
 }
 
 const initialState: IState = {
-    items: []
+    inbox: [],
+    outbox: []
 }
 
-export const notificationReducer = (state = initialState, action: ReduxAction<INotification>) => {
+export const notificationReducer = (state = initialState, action: ReduxAction<any>): IState => {
     switch (action.type) {
         case ARCHIVE_ALL_NOTIFICATIONS:
             return {
-                items: []
+                ...state,
+                inbox: []
             }
         case ARCHIVE_NOTIFICATION:
             return {
-                items: state.items.filter((item: INotification) => {
-                    return item.id !== action.payload.id
+                ...state,
+                inbox: state.inbox.filter((item: INotificationRecieved) => {
+                    return item.notification.id !== action.payload.id
                 })
             }
-        case FETCH_NOTIFICATIONS:
+        case FETCH_NOTIFICATION_INBOX:
             return {
-                items: action.payload
+                ...state,
+                inbox: action.payload
             }
+        case FETCH_NOTIFICATION_OUTBOX:
+                return {
+                    ...state,
+                    outbox: action.payload
+                }
         case MARK_ALL_NOTIFICATIONS_READ:
             return {
-                items: state.items.map((item: INotification) => {
+                ...state,
+                inbox: state.inbox.map((item: INotificationRecieved) => {
                     return { ...item, read: true }
                 })
             }
         case MARK_NOTIFICATION_READ:
             return {
-                items: state.items.map((item: INotification) => {
-                    return item.id === action.payload.id ?  { ...item, read: true } : item
+                ...state,
+                inbox: state.inbox.map((item: INotificationRecieved) => {
+                    return item.notification.id === action.payload.id ?  { ...item, read: true } : item
                 })
             }
         case MARK_NOTIFICATION_UNREAD:
             return {
-                items: state.items.map((item: INotification) => {
-                    return item.id === action.payload.id ?  { ...item, read: false } : item
+                ...state,
+                inbox: state.inbox.map((item: INotificationRecieved) => {
+                    return item.notification.id === action.payload.id ?  { ...item, read: false } : item
                 })
             }
         case UNARCHIVE_NOTIFICATION:

@@ -5,12 +5,12 @@ import { Icon, IconButton } from '@material-ui/core'
 import { Theme, withTheme } from '@material-ui/core/styles'
 
 import { CheckInWidget } from '../CheckIn/CheckInWidget'
-import NotificationsWidget from '../Modals/NotificationsWidget'
-import { SearchWidget } from '../Modals/SearchWidget'
-import StarredWidget from '../Modals/StarredWidget'
 import AccountWidget from './AccountWidget'
 import { HelpWidget } from './HelpWidget'
+import NotificationsWidget from './NotificationsWidget'
+import { SearchWidget } from './SearchWidget'
 import SidebarMenu from './SidebarMenu'
+import StarredWidget from './StarredWidget'
 
 interface IStyleProps {
 	theme: Theme

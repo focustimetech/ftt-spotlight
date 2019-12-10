@@ -69,6 +69,7 @@ interface IState {
 class CheckInForm extends React.Component<IProps, IState> {
     keyBuffer: number[]
     timer: number
+    inputRef: any
 
     state: IState = {
         autoSubmit: false,
@@ -160,6 +161,7 @@ class CheckInForm extends React.Component<IProps, IState> {
             duplicateIndex: -1
         }), () => {
             writeObjectToLocalStorage(CHECK_IN_CHIPS, this.state.chips)
+            this.inputRef.focus()
         })
     }
 
@@ -401,6 +403,9 @@ class CheckInForm extends React.Component<IProps, IState> {
                                 onKeyDown={this.onKeyDown}
                                 onPaste={this.onPaste}
                                 autoFocus
+                                inputRef={(input) => {
+                                    this.inputRef = input
+                                }}
                             />
                             <Tooltip title='Add (Enter)'>
                                 <IconButton disabled={this.state.uploading} onClick={() => this.handleCreateChip()}>

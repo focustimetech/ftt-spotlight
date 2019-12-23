@@ -13,6 +13,6 @@ class AttendanceController extends Controller
      */
     public function getTotalAttendance($student_id)
     {
-        return $this->attendance($student_id);
+        return $this->attendance([$student_id], app('settings')['start_datetime'], date('Y-m-d H:i:s'));
     }
 }

@@ -32,10 +32,10 @@ trait Attendance
         if (!in_array($segment, ['day', 'week', 'month'])) {
             $segment = 'day';
         }
-        // dd("\$start = $start\n\$end = $end");
+
         /**
          * A dictionary is constructed which uses the day of the week as the key. i.e.:
-         * { [ day_of_week ] => [ block1, block2, ... ], ... }
+         * [ day_of_week => [ block1, block2, ... ], ... ]
          */
         $block_schedule = BlockSchedule::flexBlocks()->sortBy('start')->groupBy('day_of_week');
 
@@ -54,7 +54,6 @@ trait Attendance
 
         // Set up time iterator
         $time = $start;
-        //dd("time initial = $time");
         $date = date('Y-m-d', $time);
         $day_of_week = date('w', $start) + 1;
 
@@ -75,6 +74,8 @@ trait Attendance
             'segments' => [],
             'num_segments' => 0
         ];
+
+        $attendance_segments = [];
 
         $segment_end = $start;
         $TEST_COUNTER = 0;
@@ -102,8 +103,10 @@ trait Attendance
                         $time = $time_next;
                         if ($time_diff > 0) {
                             $block_count ++;
+                            array_push($attendance_segments, [$date, $block_schedule[$day_of_week][$block_pointer]['block_id']]);
                         }
                         $block_pointer ++; // Increment the block pointer
+
                         $TEST_COUNTER ++;
                     }
                 }
@@ -120,11 +123,10 @@ trait Attendance
             $segment_start_datetime = date('Y-m-d H:i:s', $segment_start);
             $segment_end_datetime = date('Y-m-d H:i:s', $segment_end);
             $total = $block_count * $num_students;
-            $attended = $ledger_entries
-                ->where('checked_in_at', '>=', $segment_start_datetime)
-                ->where('checked_in_at', '<', $segment_end_datetime)
-                ->get()
-                ->count();
+            $attendance_query_string = implode('OR WHERE ', array_map(function($segment) {
+                return "(date = '". $segment[0]. "' AND block_id = ". $segment[1]. ') ';
+            }, $attendance_segments));
+            $attended = $ledger_entries->whereRaw($attendance_query_string)->get()->count(); 
 
             array_push($attendance['segments'], [
                 'start' => $segment_start_datetime,

@@ -4,7 +4,6 @@ import { RouteComponentProps } from 'react-router-dom'
 import { Icon, IconButton } from '@material-ui/core'
 import { Theme, withTheme } from '@material-ui/core/styles'
 
-import { CheckInWidget } from '../CheckIn/CheckInWidget'
 import AccountWidget from './AccountWidget'
 import { HelpWidget } from './HelpWidget'
 import { NavItem } from './NavItem'

@@ -52,6 +52,7 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		searchOpen: false,
 		menuRef: null
 	}
+	searchInput: any
 
 	handleMenuOpen = (event: any) => {
 		this.setState({ menuRef: event.currentTarget })
@@ -62,7 +63,9 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 	}
 
 	handleOpenSearch = () => {
-		this.setState({ searchOpen: true })
+		this.setState({ searchOpen: true }, () => {
+			this.searchInput.focus()
+		})
 	}
 
 	handleCloseSearch = () => {
@@ -153,6 +156,9 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 												variant='standard'
 												margin='none'
 												autoFocus
+												inputRef={(input) => {
+													this.searchInput = input
+												}}
 											/>
 										</li>
 									</Grow>

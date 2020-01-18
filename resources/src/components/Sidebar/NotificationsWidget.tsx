@@ -42,6 +42,7 @@ import {
     INotificationSent
 } from '../../types/staff'
 
+import ChipSelect from '../ChipSelect'
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import { ConfirmationDialog } from '../Modals/ConfirmationDialog'
 import { NavItem } from '../Sidebar/NavItem'
@@ -60,6 +61,7 @@ interface IState {
     sendFormOpen: boolean
     snackbars: ISnackbar[]
     tab: number
+    recipientIds: number[]
 }
 
 interface IReduxProps {
@@ -90,7 +92,8 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         openNotifications: [],
         sendFormOpen: false,
         snackbars: [],
-        tab: 0
+        tab: 0,
+        recipientIds: []
     }
 
     contentLoader = (
@@ -461,9 +464,15 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                             })}
                                         </div>
                                     </Grow>
-                                    <Grow in={this.state.sendFormOpen}>
+                                    {this.state.sendFormOpen && (
                                         <div>
-                                            <Typography>Your Notification will be sent to all staff members. </Typography>
+                                            <ChipSelect<number>
+                                                chips={[]}
+
+                                                queryResults={[]}
+                                                placeholder='Recipients'
+                                                searchable
+                                            />
                                             <div className='notifications_modal__textfield'>
                                                 <TextField
                                                     value={this.state.message}
@@ -486,7 +495,7 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                                 <Button onClick={() => this.setState({ sendFormOpen: false })}>Cancel</Button>
                                             </div>
                                         </div>
-                                    </Grow>
+                                    )}
                                     {(!this.state.loadingOutbox && this.props.outbox.length === 0 && !this.state.sendFormOpen) && (
                                         <EmptyStateIcon variant='notifications'>
                                             <h2>Your outbox is empty</h2>

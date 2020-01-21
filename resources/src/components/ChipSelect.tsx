@@ -145,9 +145,9 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
 
     render() {
         const searchable: boolean = Boolean(this.props.onSearch)
-        const resultsOpen: boolean = searchable && Boolean(this.state.resultsRef) && this.state.inputValue.length > 0
-        console.log('STATE:', this.state)
-        console.log('resultsOpen:', resultsOpen)
+        const disabled: boolean = this.props.disabled || this.props.loading
+        const resultsOpen: boolean = !disabled && searchable && Boolean(this.state.resultsRef) && this.state.inputValue.length > 0
+
         return (
             <ClickAwayListener onClickAway={this.handleCloseResults}>
                 <div className='chip_select'>
@@ -187,18 +187,23 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                                     value={this.state.inputValue}
                                     onChange={this.handleInputChange}
                                     onFocus={this.handleInputFocus}
-                                    // onBlur={this.handleInputBlur}
                                     placeholder={this.props.placeholder}
-                                    disabled={this.props.disabled}
+                                    disabled={disabled}
                                     onKeyDown={this.onKeyDown}
                                     onPaste={this.onPaste}
                                     autoFocus
                                 />
-                                <Tooltip title='Add (Enter)'>
-                                    <IconButton disabled={this.props.disabled} onClick={() => this.handleCreateChip()}>
-                                        <Icon>keyboard_return</Icon>
-                                    </IconButton>
-                                </Tooltip>
+                                {searchable ? (
+                                    this.props.loading && (
+                                        <div className='chip_select__loading'><CircularProgress size={24} /></div>
+                                    )
+                                ) : (
+                                    <Tooltip title='Add (Enter)'>
+                                        <LoadingIconButton loading={this.props.loading} disabled={this.props.disabled} onClick={() => this.handleCreateChip()}>
+                                            <Icon>keyboard_return</Icon>
+                                        </LoadingIconButton>
+                                    </Tooltip>
+                                )}
                             </div>
                         </div>
                     </Paper>
@@ -209,7 +214,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                                     <MenuList>
                                         {this.props.queryResults.length > 0 ? (
                                             this.props.queryResults.map((queryResult: ISelectChipBase<T>, index: number) => (
-                                                <MenuItem key={index} onClick={() => this.handleSelectQueryResult(index)}>
+                                                <MenuItem selected key={index} onClick={() => this.handleSelectQueryResult(index)}>
                                                     {queryResult.avatar && (
                                                         <Avatar className={classNames('chip_avatar', `--${queryResult.avatar.color}`)}>
                                                             {queryResult.avatar.initials}

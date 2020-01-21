@@ -4,7 +4,8 @@
         display: flex;
         justify-content: flex-start;
         flex-wrap: wrap;
-        align-items: center;
+		align-items: center;
+		height: 48px;
         padding: 4px;
 
         & > * {
@@ -34,7 +35,11 @@
 	&__divider {
 		height: 24px !important;
     }
-    
+	
+	&__loading {
+		padding: 8px;
+	}
+
     &__popper {
         z-index: 1;
 

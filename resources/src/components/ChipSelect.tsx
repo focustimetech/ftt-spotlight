@@ -5,15 +5,19 @@ import {
     Avatar,
     Chip,
     CircularProgress,
-    Collapse,
-    Divider,
+    ClickAwayListener,
+    Grow,
     Icon,
     IconButton,
     InputBase,
+    MenuItem,
+    MenuList,
     Paper,
-    Slide,
-    Tooltip
+    Popper,
+    Tooltip,
+    Typography
 } from '@material-ui/core'
+import { PopperProps } from '@material-ui/core/Popper'
 
 import { IAvatar } from '../types/app'
 
@@ -43,27 +47,37 @@ interface IProps<T> {
     formatChipLabel?: (label: string) => string
     loadNewChips?: boolean
     icon?: string
-    queryResults?: ISelectChipBase<T[]>
-    searchable?: boolean
+    queryResults?: Array<ISelectChipBase<T>>
     disabled?: boolean
     loading?: boolean
 }
 
 interface IState {
     inputValue: string
+    resultsRef: PopperProps['anchorEl']
 }
 
 class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     state: IState = {
         inputValue: '',
+        resultsRef: null
     }
 
     handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const inputValue: string = event.target.value
+        const searchable: boolean = Boolean(this.props.onSearch)
         this.setState({ inputValue })
-        if (this.props.searchable) {
+        if (searchable) {
             this.props.onSearch(inputValue)
         }
+    }
+
+    handleInputFocus = (event?: React.FocusEvent<HTMLDivElement>) => {
+        console.log('handleInputFocus()')
+        if (this.props.onSearch) {
+            this.setState({ resultsRef: event.currentTarget })
+        }
+        // this.setState({ menuRef: event.currentTarget })
     }
 
     onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -115,63 +129,98 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
         }
         this.props.onRemoveChip(index)
     }
+/*
+    handleOpenResults = () => {
+        this.setState({ showResults: true })
+    }
+*/
+    handleCloseResults = () => {
+        console.log('Close results')
+        this.setState({ resultsRef: null })
+    }
+
+    handleSelectQueryResult = (index: number) => {
+        return
+    }
 
     render() {
+        const searchable: boolean = Boolean(this.props.onSearch)
+        const resultsOpen: boolean = searchable && Boolean(this.state.resultsRef) && this.state.inputValue.length > 0
+        console.log('STATE:', this.state)
+        console.log('resultsOpen:', resultsOpen)
         return (
-            <>
-                <div className='chips_container'>
-                    {this.props.chips.map((chip: ISelectChip<T>, index: number) => {
-                        const isDuplicate: boolean = false
-                        const avatar: JSX.Element = chip.avatar ? (
-                            chip.loading ? (
-                                <Avatar><CircularProgress size={24} /></Avatar>
-                            ) : (
-                                <Avatar className={classNames('chip_avatar', {[`--${chip.avatar.color}`]: chip.avatar.color })}>
-                                    {chip.avatar.initials}
-                                </Avatar>
-                            )
-                        ) : undefined
+            <ClickAwayListener onClickAway={this.handleCloseResults}>
+                <div className='chip_select'>
+                    <div className='chips_container'>
+                        {this.props.chips.map((chip: ISelectChip<T>, index: number) => {
+                            const isDuplicate: boolean = false
+                            const avatar: JSX.Element = chip.avatar ? (
+                                chip.loading ? (
+                                    <Avatar><CircularProgress size={24} /></Avatar>
+                                ) : (
+                                    <Avatar className={classNames('chip_avatar', {[`--${chip.avatar.color}`]: chip.avatar.color })}>
+                                        {chip.avatar.initials}
+                                    </Avatar>
+                                )
+                            ) : undefined
 
-                        const chipComponent: JSX.Element = (
-                            <Chip
-                                className={classNames({'--duplicate': isDuplicate})}
-                                key={index}
-                                avatar={avatar}
-                                label={chip.label}
-                                onDelete={() => this.handleRemoveChip(index)}
-                            />
-                        )
-                        return chip.title ? <Tooltip placement='bottom-start' title={chip.title}>{chipComponent}</Tooltip> : chipComponent
-                    })}
-                </div>
-                <Paper>
-                    <div className='chip-textfield'>
-                        <div className='chip-textfield__actions'>
-                            <Slide direction='left' in={this.props.loading}>
-                                <CircularProgress size={24} />
-                            </Slide>
-                            {this.props.searchable && (
-                                <span><Icon>search</Icon></span>
-                            )}
-                            <InputBase
-                                className='chip-textfield__input'
-                                value={this.state.inputValue}
-                                onChange={this.handleInputChange}
-                                placeholder={this.props.placeholder}
-                                disabled={this.props.disabled}
-                                onKeyDown={this.onKeyDown}
-                                onPaste={this.onPaste}
-                                autoFocus
-                            />
-                            <Tooltip title='Add (Enter)'>
-                                <IconButton disabled={this.props.disabled} onClick={() => this.handleCreateChip()}>
-                                    <Icon>keyboard_return</Icon>
-                                </IconButton>
-                            </Tooltip>
-                        </div>
+                            const chipComponent: JSX.Element = (
+                                <Chip
+                                    className={classNames({'--duplicate': isDuplicate})}
+                                    key={index}
+                                    avatar={avatar}
+                                    label={chip.label}
+                                    onDelete={() => this.handleRemoveChip(index)}
+                                />
+                            )
+                            return chip.title ? <Tooltip placement='bottom-start' title={chip.title}>{chipComponent}</Tooltip> : chipComponent
+                        })}
                     </div>
-                </Paper>
-            </>
+                    <Paper>
+                        <div className='chip_select__textfield'>
+                            <div className='chip_select__actions'>
+                                {this.props.onSearch && (
+                                    <span><Icon>search</Icon></span>
+                                )}
+                                <InputBase
+                                    className='chip_select__input'
+                                    value={this.state.inputValue}
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    // onBlur={this.handleInputBlur}
+                                    placeholder={this.props.placeholder}
+                                    disabled={this.props.disabled}
+                                    onKeyDown={this.onKeyDown}
+                                    onPaste={this.onPaste}
+                                    autoFocus
+                                />
+                                <Tooltip title='Add (Enter)'>
+                                    <IconButton disabled={this.props.disabled} onClick={() => this.handleCreateChip()}>
+                                        <Icon>keyboard_return</Icon>
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        </div>
+                    </Paper>
+                    <Popper className='chip_select__popper' anchorEl={this.state.resultsRef} open={resultsOpen} disablePortal transition>
+                        {({ TransitionProps }) => (
+                            <Grow {...TransitionProps}>
+                                <Paper>
+                                    <MenuList>
+                                        {this.props.queryResults.length > 0 ? (
+                                            this.props.queryResults.map((queryResult: ISelectChipBase<T>, index: number) => (
+                                                <MenuItem key={index} onClick={() => this.handleSelectQueryResult(index)}>Item</MenuItem>
+                                            ))
+                                        ) : (
+                                            <Typography className='no_results'>No results found.</Typography>
+                                        )}
+                                    </MenuList>
+                                </Paper>
+                            </Grow>
+                        )}
+                    </Popper>
+                </div>
+            </ClickAwayListener>
         )
     }
 }

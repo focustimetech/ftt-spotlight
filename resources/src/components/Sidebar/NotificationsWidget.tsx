@@ -17,9 +17,9 @@ import {
     IconButton,
     Tab,
     Tabs,
-    withStyles,
     TextField,
-    Typography
+    Typography,
+    withStyles
 } from '@material-ui/core'
 
 import {
@@ -408,14 +408,15 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                             )}
                             {this.state.tab === 1 && (
                                 <>
-                                    <div className='notifications_modal__actions'>
-                                        <Button
-                                            variant='text'
-                                            color='primary'
-                                            disabled={this.state.sendFormOpen}
-                                            onClick={() => this.handleOpenSendForm()}
-                                        >Compose</Button>
-                                    </div>
+                                    {!this.state.sendFormOpen && (
+                                        <div className='notifications_modal__actions'>
+                                            <Button
+                                                variant='text'
+                                                color='primary'
+                                                onClick={() => this.handleOpenSendForm()}
+                                            >Compose</Button>
+                                        </div>
+                                    )}
                                     <Fade in={this.state.loadingInbox}>{this.contentLoader}</Fade>
                                     <Grow in={this.props.outbox && this.props.outbox.length > 0}>
                                         <div className='content-inner'>
@@ -468,16 +469,17 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                         <div>
                                             <ChipSelect<number>
                                                 chips={[]}
-
+                                                onCreateChip={null}
+                                                onRemoveChip={null}
                                                 queryResults={[]}
                                                 placeholder='Recipients'
-                                                searchable
+                                                onSearch={(query) => {console.log("onSearch(" + query + ")")}}
                                             />
                                             <div className='notifications_modal__textfield'>
                                                 <TextField
                                                     value={this.state.message}
                                                     onChange={this.handleChangeMessage}
-                                                    variant='filled'
+                                                    variant='outlined'
                                                     color='primary'
                                                     multiline
                                                     fullWidth

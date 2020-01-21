@@ -209,7 +209,14 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                                     <MenuList>
                                         {this.props.queryResults.length > 0 ? (
                                             this.props.queryResults.map((queryResult: ISelectChipBase<T>, index: number) => (
-                                                <MenuItem key={index} onClick={() => this.handleSelectQueryResult(index)}>Item</MenuItem>
+                                                <MenuItem key={index} onClick={() => this.handleSelectQueryResult(index)}>
+                                                    {queryResult.avatar && (
+                                                        <Avatar className={classNames('chip_avatar', `--${queryResult.avatar.color}`)}>
+                                                            {queryResult.avatar.initials}
+                                                        </Avatar>
+                                                    )}
+                                                    <span>{queryResult.label}</span>
+                                                </MenuItem>
                                             ))
                                         ) : (
                                             <Typography className='no_results'>No results found.</Typography>

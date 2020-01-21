@@ -471,7 +471,13 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                                 chips={[]}
                                                 onCreateChip={null}
                                                 onRemoveChip={null}
-                                                queryResults={[]}
+                                                queryResults={[
+                                                    {
+                                                        label: 'Jeff Laird',
+                                                        avatar: { color: 'red', initials: 'JL' },
+                                                        value: 1551
+                                                    }
+                                                ]}
                                                 placeholder='Recipients'
                                                 onSearch={(query) => {console.log("onSearch(" + query + ")")}}
                                             />

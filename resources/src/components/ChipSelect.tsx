@@ -35,13 +35,18 @@ export interface ISelectChip<T> extends ISelectChipBase<T> {
     icon?: string
 }
 
+export interface ISelectItem<T> extends ISelectChipBase<T> {
+    selected: boolean
+}
+
 interface IProps<T> {
     chips: Array<ISelectChip<T>>
     helperText?: string
     placeholder: string
-    onCreateChip: (chip: ISelectChip<T>) => void
+    onCreateChip?: (chip: ISelectChip<T>) => void
     onRemoveChip: (index: number) => void
     onSearch?: (query: string) => void
+    onSelect?: (value: T) => void
     onSubmit?: () => void
     validateChip?: (chip: ISelectChip<T>) => boolean
     formatChipLabel?: (label: string) => string
@@ -95,10 +100,11 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         event.preventDefault()
         const clipboard: string = event.clipboardData.getData('Text')
-        clipboard.split(',').forEach((stringValue: string) => {
-            this.handleCreateChip(stringValue)
+        this.setState({ inputValue: clipboard }, () => {
+            clipboard.split(',').forEach((stringValue: string) => {
+                this.handleCreateChip(stringValue)
+            })
         })
-        this.setState({ inputValue: '' })
     }
 
     handleSubmit = () => {
@@ -109,7 +115,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     }
 
     handleCreateChip = (label: string = null, value: T = null) => {
-        if (this.props.disabled) {
+        if (this.props.disabled || !this.props.onCreateChip) {
             return
         }
         if (label === null) {
@@ -140,7 +146,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     }
 
     handleSelectQueryResult = (index: number) => {
-        return
+        // this.props.onSelect(index)
     }
 
     render() {
@@ -193,7 +199,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                                     onPaste={this.onPaste}
                                     autoFocus
                                 />
-                                {searchable ? (
+                                {searchable || !this.props.onCreateChip ? (
                                     this.props.loading && (
                                         <div className='chip_select__loading'><CircularProgress size={24} /></div>
                                     )
@@ -213,8 +219,8 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                                 <Paper>
                                     <MenuList>
                                         {this.props.queryResults.length > 0 ? (
-                                            this.props.queryResults.map((queryResult: ISelectChipBase<T>, index: number) => (
-                                                <MenuItem selected key={index} onClick={() => this.handleSelectQueryResult(index)}>
+                                            this.props.queryResults.map((queryResult: ISelectItem<T>, index: number) => (
+                                                <MenuItem selected={queryResult.selected} key={index} onClick={() => this.handleSelectQueryResult(index)}>
                                                     {queryResult.avatar && (
                                                         <Avatar className={classNames('chip_avatar', `--${queryResult.avatar.color}`)}>
                                                             {queryResult.avatar.initials}

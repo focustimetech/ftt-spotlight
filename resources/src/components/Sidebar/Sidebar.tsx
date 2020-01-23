@@ -6,6 +6,7 @@ import { Theme, withTheme } from '@material-ui/core/styles'
 
 import AccountWidget from './AccountWidget'
 import { HelpWidget } from './HelpWidget'
+import { NavItem } from './NavItem'
 import NotificationsWidget from './NotificationsWidget/NotificationsWidget'
 import { SearchWidget } from './SearchWidget'
 import SidebarMenu from './SidebarMenu'

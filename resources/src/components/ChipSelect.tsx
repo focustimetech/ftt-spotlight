@@ -6,6 +6,7 @@ import {
     Chip,
     CircularProgress,
     ClickAwayListener,
+    FormHelperText,
     Grow,
     Icon,
     IconButton,
@@ -41,8 +42,8 @@ export interface ISelectItem<T> extends ISelectChipBase<T> {
 }
 
 interface IProps<T> {
+    allowDuplicates?: boolean
     chips: Array<ISelectChip<T>>
-    helperText?: string
     placeholder: string
     onCreateChip?: (chip: ISelectChip<T>) => void
     onRemoveChip: (index: number) => void
@@ -56,6 +57,7 @@ interface IProps<T> {
     queryResults?: Array<ISelectChipBase<T>>
     disabled?: boolean
     loading?: boolean
+    helperText?: string
 }
 
 interface IState {
@@ -114,6 +116,10 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     }
 
     handleCreateChip = (chip?: ISelectChip<T>) => {
+        if (!chip) {
+            chip = { value: null, label: this.state.inputValue }
+            this.setState({ inputValue: '' })
+        }
         let { label } = chip
         if (this.props.disabled || !this.props.onCreateChip) {
             return
@@ -194,6 +200,9 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                             </div>
                         </div>
                     </Paper>
+                    {this.props.helperText && (
+                        <FormHelperText>{this.props.helperText}</FormHelperText>
+                    )}
                     <div className='chips_container'>
                         {this.props.chips.map((chip: ISelectChip<T>, index: number) => {
                             const isDuplicate: boolean = false

@@ -139,11 +139,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
             onRemove()
         }
     }
-/*
-    handleOpenResults = () => {
-        this.setState({ showResults: true })
-    }
-*/
+
     handleCloseResults = () => {
         this.setState({ resultsRef: null })
     }

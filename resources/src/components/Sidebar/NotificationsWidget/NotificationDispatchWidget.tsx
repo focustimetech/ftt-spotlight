@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 
 import {
     Button,
-    TextField
+    TextField,
+    Typography
 } from '@material-ui/core'
 
 import { fetchStaff } from '../../../actions/staffActions'
@@ -55,16 +56,16 @@ class NotificationDispatchWidget extends React.Component<IProps, IState> {
         }))
     }
 
-    handleSelectRecipient = (id: number) => {
-        //
+    handleSelectRecipient = (chip: ISelectChip<number>) => {
+        this.setState((state: IState) => ({
+            recipients: [...state.recipients, chip]
+        }))
     }
 
     handleQueryChange = (query: string) => {
         if (!query) {
             return
         }
-        // console.log('query:', query)
-        // console.log('FILTER:', this.props.staff.filter((staff: IStaff) => ))
         if (this.props.staff && this.props.staff.length > 0) {
             this.setState({
                 queryResults: this.props.staff
@@ -74,14 +75,13 @@ class NotificationDispatchWidget extends React.Component<IProps, IState> {
                         || staff.first_name.includes(query)
                         || staff.last_name.includes(query)
                     ))
-                    .slice(0, 5)
+                    .slice(0, 15)
                     .map((staff: IStaff) => ({
                         avatar: { color: staff.color, initials: staff.initials },
                         label: staff.name,
                         value: staff.id,
                         selected: this.state.recipients.some((recipient: ISelectChip<number>) => recipient.value === staff.id)
                     }))
-                    
             })
         }
     }
@@ -94,17 +94,18 @@ class NotificationDispatchWidget extends React.Component<IProps, IState> {
     }
 
     render() {
-        console.log('STAFF:', this.props.staff)
         return (
-            <div>
+            <>
+                <Typography variant='h6'>Recipients</Typography>
                 <ChipSelect<number>
-                    chips={[]}
+                    chips={this.state.recipients}
                     onRemoveChip={this.handleRemoveRecipient}
-                    onSelect={this.handleSelectRecipient}
+                    onCreateChip={this.handleSelectRecipient}
                     queryResults={this.state.queryResults}
                     placeholder='Recipients'
                     onSearch={this.handleQueryChange}
                 />
+                <Typography variant='h6'>Your Message</Typography>
                 <div className='notifications_modal__textfield'>
                     <TextField
                         value={this.state.message}
@@ -126,7 +127,7 @@ class NotificationDispatchWidget extends React.Component<IProps, IState> {
                     >Send</Button>
                     <Button onClick={() => this.handleCancel()}>Cancel</Button>
                 </div>
-            </div>
+            </>
         )
     }
 }

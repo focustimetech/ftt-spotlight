@@ -33,6 +33,7 @@ export interface ISelectChip<T> extends ISelectChipBase<T> {
     loading?: boolean
     title?: string
     icon?: string
+    onRemove?: () => void
 }
 
 export interface ISelectItem<T> extends ISelectChipBase<T> {
@@ -46,7 +47,7 @@ interface IProps<T> {
     onCreateChip?: (chip: ISelectChip<T>) => void
     onRemoveChip: (index: number) => void
     onSearch?: (query: string) => void
-    onSelect?: (value: T) => void
+    onSelect?: (item: ISelectItem<T>) => void
     onSubmit?: () => void
     validateChip?: (chip: ISelectChip<T>) => boolean
     formatChipLabel?: (label: string) => string
@@ -78,11 +79,9 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     }
 
     handleInputFocus = (event?: React.FocusEvent<HTMLDivElement>) => {
-        console.log('handleInputFocus()')
         if (this.props.onSearch) {
             this.setState({ resultsRef: event.currentTarget })
         }
-        // this.setState({ menuRef: event.currentTarget })
     }
 
     onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -102,7 +101,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
         const clipboard: string = event.clipboardData.getData('Text')
         this.setState({ inputValue: clipboard }, () => {
             clipboard.split(',').forEach((stringValue: string) => {
-                this.handleCreateChip(stringValue)
+                this.handleCreateChip({ value: null, label: stringValue })
             })
         })
     }
@@ -114,7 +113,8 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
         this.props.onSubmit()
     }
 
-    handleCreateChip = (label: string = null, value: T = null) => {
+    handleCreateChip = (chip?: ISelectChip<T>) => {
+        let { label } = chip
         if (this.props.disabled || !this.props.onCreateChip) {
             return
         }
@@ -122,18 +122,22 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
             label = this.state.inputValue
         }
         const newChip: ISelectChip<T> = {
-            value,
+            avatar: chip.avatar,
+            value: chip.value,
             loading: this.props.loadNewChips,
             label: this.props.formatChipLabel ? this.props.formatChipLabel(label) : label
         }
         this.props.onCreateChip(newChip)
     }
 
-    handleRemoveChip = (index: number) => {
+    handleRemoveChip = (index: number, onRemove?: () => void) => {
         if (this.props.disabled) {
             return
         }
         this.props.onRemoveChip(index)
+        if (onRemove) {
+            onRemove()
+        }
     }
 /*
     handleOpenResults = () => {
@@ -141,12 +145,18 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     }
 */
     handleCloseResults = () => {
-        console.log('Close results')
         this.setState({ resultsRef: null })
     }
 
-    handleSelectQueryResult = (index: number) => {
-        // this.props.onSelect(index)
+    handleSelectQueryResult = (item: ISelectItem<T>) => {
+        this.handleCreateChip({
+            avatar: item.avatar,
+            value: item.value,
+            label: item.label
+        })
+        if (this.props.onSelect) {
+            this.props.onSelect(item)
+        }
     }
 
     render() {
@@ -157,31 +167,6 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
         return (
             <ClickAwayListener onClickAway={this.handleCloseResults}>
                 <div className='chip_select'>
-                    <div className='chips_container'>
-                        {this.props.chips.map((chip: ISelectChip<T>, index: number) => {
-                            const isDuplicate: boolean = false
-                            const avatar: JSX.Element = chip.avatar ? (
-                                chip.loading ? (
-                                    <Avatar><CircularProgress size={24} /></Avatar>
-                                ) : (
-                                    <Avatar className={classNames('chip_avatar', {[`--${chip.avatar.color}`]: chip.avatar.color })}>
-                                        {chip.avatar.initials}
-                                    </Avatar>
-                                )
-                            ) : undefined
-
-                            const chipComponent: JSX.Element = (
-                                <Chip
-                                    className={classNames({'--duplicate': isDuplicate})}
-                                    key={index}
-                                    avatar={avatar}
-                                    label={chip.label}
-                                    onDelete={() => this.handleRemoveChip(index)}
-                                />
-                            )
-                            return chip.title ? <Tooltip placement='bottom-start' title={chip.title}>{chipComponent}</Tooltip> : chipComponent
-                        })}
-                    </div>
                     <Paper>
                         <div className='chip_select__textfield'>
                             <div className='chip_select__actions'>
@@ -213,14 +198,46 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                             </div>
                         </div>
                     </Paper>
-                    <Popper className='chip_select__popper' anchorEl={this.state.resultsRef} open={resultsOpen} disablePortal transition>
+                    <div className='chips_container'>
+                        {this.props.chips.map((chip: ISelectChip<T>, index: number) => {
+                            const isDuplicate: boolean = false
+                            const avatar: JSX.Element = chip.avatar ? (
+                                chip.loading ? (
+                                    <Avatar><CircularProgress size={24} /></Avatar>
+                                ) : (
+                                    <Avatar className={classNames('chip_avatar', {[`--${chip.avatar.color}`]: chip.avatar.color })}>
+                                        {chip.avatar.initials}
+                                    </Avatar>
+                                )
+                            ) : undefined
+
+                            const chipComponent: JSX.Element = (
+                                <Chip
+                                    className={classNames({'--duplicate': isDuplicate})}
+                                    key={index}
+                                    avatar={avatar}
+                                    label={chip.label}
+                                    onDelete={() => this.handleRemoveChip(index, chip.onRemove)}
+                                />
+                            )
+                            return chip.title ? <Tooltip placement='bottom-start' title={chip.title}>{chipComponent}</Tooltip> : chipComponent
+                        })}
+                    </div>
+                    <Popper
+                        className='chip_select__popper'
+                        anchorEl={this.state.resultsRef}
+                        open={resultsOpen}
+                        disablePortal
+                        transition
+                        placement='bottom'
+                    >
                         {({ TransitionProps }) => (
                             <Grow {...TransitionProps}>
                                 <Paper>
                                     <MenuList>
                                         {this.props.queryResults.length > 0 ? (
                                             this.props.queryResults.map((queryResult: ISelectItem<T>, index: number) => (
-                                                <MenuItem selected={queryResult.selected} key={index} onClick={() => this.handleSelectQueryResult(index)}>
+                                                <MenuItem selected={queryResult.selected} key={index} onClick={() => this.handleSelectQueryResult(queryResult)}>
                                                     {queryResult.avatar && (
                                                         <Avatar className={classNames('chip_avatar', `--${queryResult.avatar.color}`)}>
                                                             {queryResult.avatar.initials}

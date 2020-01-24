@@ -35,7 +35,7 @@ import {
     getObjectFromLocalStorage,
     writeObjectToLocalStorage,
 } from '../../utils/storage'
-import { getCurrentTimestamp, makeArray } from '../../utils/utils'
+import { getCurrentTimestamp, makeArray, downloadCsv } from '../../utils/utils'
 
 import ChipSelect, { ISelectChip } from '../ChipSelect'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
@@ -272,23 +272,30 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 */
 
+    handleMenuClick = (callback: () => void) => {
+        this.handleMenuClose()
+        callback()
+    }
+
     handleCopyChips = () => {
         const clipboardData: string = this.state.chips
             .map((chip: ISelectChip<number>) => chip.label.trim())
             .join(', ')
         copyToClipboard(clipboardData)
         this.props.queueSnackbar({ message: 'Copied Student Numbers to clipboard.' })
-        this.handleMenuClose()
     }
 
     handleDownloadChips = () => {
-        this.handleMenuClose()
+        const rows: string[][] = this.state.chips.map((chip: ISelectChip<number>): string[] => [chip.label])
+        const dateString: string = new Date().toISOString()
+        const filename: string = `SpotlightStudentNumbers - ${dateString}`
+        downloadCsv(rows, filename)
+        this.props.queueSnackbar({ message: 'Downloaded Student Numbers.' })
     }
 
     handleRemoveAllChips = () => {
         this.setState({ chips: [] })
         this.props.queueSnackbar({ message: 'Removed all Student Numbers.' })
-        this.handleMenuClose()
     }
 
     handleMenuOpen = (event: any) => {
@@ -363,10 +370,11 @@ class CheckInForm extends React.Component<IProps, IState> {
                                 onClose={this.handleMenuClose}
                                 anchorEl={this.state.menuRef}
                                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                             >
-                                <MenuItem onClick={() => this.setState({ confirmDeleteDialogOpen: true })}>Remove All</MenuItem>
-                                <MenuItem onClick={() => this.handleCopyChips()}>Copy to Clipboard</MenuItem>
-                                <MenuItem onClick={() => this.handleDownloadChips()}>Download Student Numbers</MenuItem>
+                                <MenuItem onClick={() => this.handleMenuClick(() => this.setState({ confirmDeleteDialogOpen: true }))}>Remove All</MenuItem>
+                                <MenuItem onClick={() => this.handleMenuClick(this.handleCopyChips)}>Copy to Clipboard</MenuItem>
+                                <MenuItem onClick={() => this.handleMenuClick(this.handleDownloadChips)}>Download Student Numbers</MenuItem>
                             </Menu>
                         </div>
                     </div>

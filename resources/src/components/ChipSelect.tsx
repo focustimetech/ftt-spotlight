@@ -6,6 +6,7 @@ import {
     Chip,
     CircularProgress,
     ClickAwayListener,
+    Collapse,
     FormHelperText,
     Grow,
     Icon,
@@ -16,8 +17,7 @@ import {
     Paper,
     Popper,
     Tooltip,
-    Typography,
-    Collapse
+    Typography
 } from '@material-ui/core'
 import { PopperProps } from '@material-ui/core/Popper'
 
@@ -233,7 +233,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                                         onDelete={() => this.handleRemoveChip(index, chip.onRemove)}
                                     />
                                 )
-                                return chip.title ? <Tooltip placement='bottom-start' title={chip.title}>{chipComponent}</Tooltip> : chipComponent
+                                return chip.title ? <Tooltip placement='bottom-start' key={index} title={chip.title}>{chipComponent}</Tooltip> : chipComponent
                             })}
                         </div>
                     </Collapse>

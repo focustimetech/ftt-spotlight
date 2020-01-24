@@ -35,9 +35,10 @@ import {
     getObjectFromLocalStorage,
     writeObjectToLocalStorage,
 } from '../../utils/storage'
-import { getCurrentTimestamp, makeArray, downloadCsv } from '../../utils/utils'
+import { downloadCsv, getCurrentTimestamp, makeArray } from '../../utils/utils'
 
 import ChipSelect, { ISelectChip } from '../ChipSelect'
+import { LoadingButton } from '../Form/LoadingButton'
 import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
 import ConfirmDeleteDialog from './ConfirmDeleteDialog'
@@ -62,7 +63,7 @@ interface IProps extends IReduxProps {
 }
 
 interface IState {
-    chips: Array<ISelectChip<number>>
+    chips: Array<ISelectChip<Date>>
     confirmDeleteDialogOpen: boolean
     errored: boolean
     menuRef: any
@@ -80,10 +81,12 @@ class CheckInForm extends React.Component<IProps, IState> {
         uploading: false
     }
 
-    handleCreateChip = (chip: ISelectChip<number>) => {
+    handleCreateChip = (chip: ISelectChip<Date>) => {
         if (!chip) {
             return
         }
+        chip.value = new Date()
+        chip.title = chip.value.toString()
         this.setState((state: IState) => ({
             chips: [...state.chips, chip]
         }))
@@ -279,14 +282,17 @@ class CheckInForm extends React.Component<IProps, IState> {
 
     handleCopyChips = () => {
         const clipboardData: string = this.state.chips
-            .map((chip: ISelectChip<number>) => chip.label.trim())
+            .map((chip: ISelectChip<Date>) => chip.label.trim())
             .join(', ')
         copyToClipboard(clipboardData)
         this.props.queueSnackbar({ message: 'Copied Student Numbers to clipboard.' })
     }
 
     handleDownloadChips = () => {
-        const rows: string[][] = this.state.chips.map((chip: ISelectChip<number>): string[] => [chip.label])
+        const rows: string[][] = [
+            ['Student Number', 'Timestmap'],
+            ...this.state.chips.map((chip: ISelectChip<Date>): string[] => [chip.label, chip.value.toISOString()])
+        ]
         const dateString: string = new Date().toISOString()
         const filename: string = `SpotlightStudentNumbers - ${dateString}`
         downloadCsv(rows, filename)
@@ -357,11 +363,12 @@ class CheckInForm extends React.Component<IProps, IState> {
                     />
                     <div className='check_in_actions'>
                         <div>
-                            <Button
+                            <LoadingButton
                                 variant='contained'
                                 color='primary'
                                 disabled={!hasChips}
-                            >Check In</Button>
+                                loading={this.state.uploading}
+                            >Check In</LoadingButton>
                         </div>
                         <div>
                             <IconButton onClick={this.handleMenuOpen} disabled={this.state.chips.length === 0}><Icon>more_horiz</Icon></IconButton>
@@ -370,6 +377,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                 onClose={this.handleMenuClose}
                                 anchorEl={this.state.menuRef}
                                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                getContentAnchorEl={undefined}
                                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                             >
                                 <MenuItem onClick={() => this.handleMenuClick(() => this.setState({ confirmDeleteDialogOpen: true }))}>Remove All</MenuItem>

@@ -16,7 +16,8 @@ import {
     Paper,
     Popper,
     Tooltip,
-    Typography
+    Typography,
+    Collapse
 } from '@material-ui/core'
 import { PopperProps } from '@material-ui/core/Popper'
 
@@ -117,6 +118,9 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
 
     handleCreateChip = (chip?: ISelectChip<T>) => {
         if (!chip) {
+            if (this.state.inputValue.length === 0) {
+                return
+            }
             chip = { value: null, label: this.state.inputValue }
             this.setState({ inputValue: '' })
         }
@@ -137,6 +141,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     }
 
     handleRemoveChip = (index: number, onRemove?: () => void) => {
+        console.log('ChipSelect::handleRemoveChip()')
         if (this.props.disabled) {
             return
         }
@@ -164,7 +169,9 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
     render() {
         const searchable: boolean = Boolean(this.props.onSearch)
         const disabled: boolean = this.props.disabled || this.props.loading
+        const createDisabled: boolean = disabled || this.state.inputValue.length === 0
         const resultsOpen: boolean = !disabled && searchable && Boolean(this.state.resultsRef) && this.state.inputValue.length > 0
+        const hasChips: boolean = this.props.chips.length > 0
 
         return (
             <ClickAwayListener onClickAway={this.handleCloseResults}>
@@ -192,7 +199,7 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                                     )
                                 ) : (
                                     <Tooltip title='Add (Enter)'>
-                                        <LoadingIconButton loading={this.props.loading} disabled={this.props.disabled} onClick={() => this.handleCreateChip()}>
+                                        <LoadingIconButton loading={this.props.loading} disabled={createDisabled} onClick={() => this.handleCreateChip()}>
                                             <Icon>keyboard_return</Icon>
                                         </LoadingIconButton>
                                     </Tooltip>
@@ -203,31 +210,33 @@ class ChipSelect<T> extends React.Component<IProps<T>, IState> {
                     {this.props.helperText && (
                         <FormHelperText>{this.props.helperText}</FormHelperText>
                     )}
-                    <div className='chips_container'>
-                        {this.props.chips.map((chip: ISelectChip<T>, index: number) => {
-                            const isDuplicate: boolean = false
-                            const avatar: JSX.Element = chip.avatar ? (
-                                chip.loading ? (
-                                    <Avatar><CircularProgress size={24} /></Avatar>
-                                ) : (
-                                    <Avatar className={classNames('chip_avatar', {[`--${chip.avatar.color}`]: chip.avatar.color })}>
-                                        {chip.avatar.initials}
-                                    </Avatar>
-                                )
-                            ) : undefined
+                    <Collapse in={hasChips}>
+                        <div className={classNames('chips_container', { '--has_chips': hasChips })}>
+                            {this.props.chips.map((chip: ISelectChip<T>, index: number) => {
+                                const isDuplicate: boolean = false
+                                const avatar: JSX.Element = chip.avatar ? (
+                                    chip.loading ? (
+                                        <Avatar><CircularProgress size={24} /></Avatar>
+                                    ) : (
+                                        <Avatar className={classNames('chip_avatar', {[`--${chip.avatar.color}`]: chip.avatar.color })}>
+                                            {chip.avatar.initials}
+                                        </Avatar>
+                                    )
+                                ) : undefined
 
-                            const chipComponent: JSX.Element = (
-                                <Chip
-                                    className={classNames({'--duplicate': isDuplicate})}
-                                    key={index}
-                                    avatar={avatar}
-                                    label={chip.label}
-                                    onDelete={() => this.handleRemoveChip(index, chip.onRemove)}
-                                />
-                            )
-                            return chip.title ? <Tooltip placement='bottom-start' title={chip.title}>{chipComponent}</Tooltip> : chipComponent
-                        })}
-                    </div>
+                                const chipComponent: JSX.Element = (
+                                    <Chip
+                                        className={classNames({'--duplicate': isDuplicate})}
+                                        key={index}
+                                        avatar={avatar}
+                                        label={chip.label}
+                                        onDelete={() => this.handleRemoveChip(index, chip.onRemove)}
+                                    />
+                                )
+                                return chip.title ? <Tooltip placement='bottom-start' title={chip.title}>{chipComponent}</Tooltip> : chipComponent
+                            })}
+                        </div>
+                    </Collapse>
                     <Popper
                         className='chip_select__popper'
                         anchorEl={this.state.resultsRef}

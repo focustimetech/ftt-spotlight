@@ -1,10 +1,12 @@
 import axios from 'axios'
 import classNames from 'classnames'
+import copyToClipboard from 'copy-to-clipboard'
 import React from 'react'
 import { connect } from 'react-redux'
 
 import {
     Avatar,
+    Button,
     Chip,
     CircularProgress,
     Divider,
@@ -13,6 +15,8 @@ import {
     Icon,
     IconButton,
     InputBase,
+    Menu,
+    MenuItem,
     Paper,
     Switch,
     Tooltip,
@@ -33,9 +37,10 @@ import {
 } from '../../utils/storage'
 import { getCurrentTimestamp, makeArray } from '../../utils/utils'
 
-import { LoadingIconButton } from '../Form/LoadingIconButton'
 import ChipSelect, { ISelectChip } from '../ChipSelect'
+import { LoadingIconButton } from '../Form/LoadingIconButton'
 import { ModalSection } from '../ModalSection'
+import ConfirmDeleteDialog from './ConfirmDeleteDialog'
 
 // const AUTO_TIMEOUT = 300000 // 5 minutes
 
@@ -58,18 +63,20 @@ interface IProps extends IReduxProps {
 
 interface IState {
     chips: Array<ISelectChip<number>>
+    confirmDeleteDialogOpen: boolean
     errored: boolean
+    menuRef: any
     uploading: boolean
 }
 
 class CheckInForm extends React.Component<IProps, IState> {
     keyBuffer: number[]
-    timer: number
-    inputRef: any
 
     state: IState = {
         chips: [],
+        confirmDeleteDialogOpen: false,
         errored: false,
+        menuRef: null,
         uploading: false
     }
 
@@ -84,9 +91,11 @@ class CheckInForm extends React.Component<IProps, IState> {
 
     handleRemoveChip = (index: number) => {
         // const removeIndex: number = this.findChip(chip)
-        this.setState((state: IState) => ({ chips: state.chips.splice(index, 1) }), () => {
+        this.setState((state: IState) => {
+            state.chips.splice(index, 1)
+            return { chips: state.chips }
+        }, () => {
             writeObjectToLocalStorage(CHECK_IN_CHIPS, this.state.chips)
-            this.inputRef.focus()
         })
     }
 
@@ -262,6 +271,34 @@ class CheckInForm extends React.Component<IProps, IState> {
         this.timer = null
     }
 */
+
+    handleCopyChips = () => {
+        const clipboardData: string = this.state.chips
+            .map((chip: ISelectChip<number>) => chip.label.trim())
+            .join(', ')
+        copyToClipboard(clipboardData)
+        this.props.queueSnackbar({ message: 'Copied Student Numbers to clipboard.' })
+        this.handleMenuClose()
+    }
+
+    handleDownloadChips = () => {
+        this.handleMenuClose()
+    }
+
+    handleRemoveAllChips = () => {
+        this.setState({ chips: [] })
+        this.props.queueSnackbar({ message: 'Removed all Student Numbers.' })
+        this.handleMenuClose()
+    }
+
+    handleMenuOpen = (event: any) => {
+        this.setState({ menuRef: event.currentTarget })
+    }
+
+    handleMenuClose = () => {
+        this.setState({ menuRef: null })
+    }
+
     componentDidMount() {
         // const autoSubmit: boolean = Boolean(getObjectFromLocalStorage(AUTO_SUBMIT))
         // this.setState({ autoSubmit })
@@ -278,36 +315,68 @@ class CheckInForm extends React.Component<IProps, IState> {
         */
     }
 
-
     render() {
+        const hasChips: boolean = this.state.chips.length > 0
+        const menuOpen: boolean = Boolean(this.state.menuRef)
+
         return (
-            <ModalSection
-                icon='keyboard'
-                title='Scan or Enter'
-                labelAdornment={
-                    <>{/*
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={this.state.autoSubmit}
+            <>
+                <ModalSection
+                    badgeCount={this.state.chips.length}
+                    icon='keyboard'
+                    title='Scan or Enter'
+                    labelAdornment={
+                        <>{/*
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={this.state.autoSubmit}
+                                    color='primary'
+                                    onChange={() => this.toggleAutoSubmit()}
+                                />
+                            }
+                            label={<Typography>Auto-Submit</Typography>}
+                        />*/}
+                        </>
+                    }
+                >
+                    <ChipSelect
+                        chips={this.state.chips}
+                        onCreateChip={this.handleCreateChip}
+                        onRemoveChip={this.handleRemoveChip}
+                        loading={this.state.uploading}
+                        placeholder='Enter Student Numbers'
+                        helperText={undefined}
+                    />
+                    <div className='check_in_actions'>
+                        <div>
+                            <Button
+                                variant='contained'
                                 color='primary'
-                                onChange={() => this.toggleAutoSubmit()}
-                            />
-                        }
-                        label={<Typography>Auto-Submit</Typography>}
-                    />*/}
-                    </>
-                }
-            >
-                <ChipSelect
-                    chips={[]}
-                    onCreateChip={this.handleCreateChip}
-                    onRemoveChip={() => null}
-                    loading={this.state.uploading}
-                    placeholder='Enter Student Numbers'
-                    helperText={undefined}
+                                disabled={!hasChips}
+                            >Check In</Button>
+                        </div>
+                        <div>
+                            <IconButton onClick={this.handleMenuOpen} disabled={this.state.chips.length === 0}><Icon>more_horiz</Icon></IconButton>
+                            <Menu
+                                open={menuOpen}
+                                onClose={this.handleMenuClose}
+                                anchorEl={this.state.menuRef}
+                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            >
+                                <MenuItem onClick={() => this.setState({ confirmDeleteDialogOpen: true })}>Remove All</MenuItem>
+                                <MenuItem onClick={() => this.handleCopyChips()}>Copy to Clipboard</MenuItem>
+                                <MenuItem onClick={() => this.handleDownloadChips()}>Download Student Numbers</MenuItem>
+                            </Menu>
+                        </div>
+                    </div>
+                </ModalSection>
+                <ConfirmDeleteDialog
+                    open={this.state.confirmDeleteDialogOpen}
+                    onClose={() => this.setState({ confirmDeleteDialogOpen: false })}
+                    onSubmit={() => this.handleRemoveAllChips()}
                 />
-            </ModalSection>
+            </>
         )
     }
 }

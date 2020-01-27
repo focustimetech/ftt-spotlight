@@ -119,9 +119,11 @@ class CheckIn extends React.Component<IProps, IState> {
     }
 
     handleScheduledCheckIn = (selected: Array<string | number>): Promise<any> => {
+        const timestamp: string = new Date().toISOString()
         const request: ICheckInRequest = {
-            scheduled_ids: this.state.scheduledSelected,
-            date_time: this.props.checkInStatus.date.full_date
+            chips: selected.map((value: string | number) => ({ value, timestamp })),
+            type: 'student_id',
+            date: this.props.checkInStatus.date.full_date
         }
         return this.props.checkIn(request)
             .then(() => {

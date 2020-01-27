@@ -12,7 +12,7 @@ import {
 import { checkIn } from '../../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { ILedgerEntry } from '../../types/calendar'
-import { ICheckInChip, ICheckInError, ICheckInRequest, ICheckInResponse } from '../../types/checkin'
+import { ICheckInRequest, ICheckInChip, ICheckInError, ICheckInResponse } from '../../types/checkin'
 import {
     appendToLocalStorageArray,
     CHECK_IN_ERRORS,
@@ -112,6 +112,18 @@ class CheckInForm extends React.Component<IProps, IState> {
         if (this.props.didSubmit) {
             this.props.didSubmit()
         }
+        const request: ICheckInRequest = {
+            chips: this.state.chips.map((chip: ISelectChip<Date>) => ({ value: chip.label, timestamp: chip.value.toISOString() })),
+            type: 'student_number',
+            date: this.props.dateTime
+        }
+        this.props.checkIn(request)
+            .then(() => {
+                this.setState({ uploading: false, chips: [] })
+                this.showResults()
+            }, () => {
+                this.setState({ uploading: false })
+            })
     }
 
     handleMenuClick = (callback: () => void) => {
@@ -166,7 +178,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                         chips={this.state.chips}
                         onCreateChip={this.handleCreateChip}
                         onRemoveChip={this.handleRemoveChip}
-                        loading={this.state.uploading}
+                        disabled={this.state.uploading}
                         placeholder='Enter Student Numbers'
                         helperText={undefined}
                     />
@@ -177,6 +189,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                                 color='primary'
                                 disabled={!hasChips}
                                 loading={this.state.uploading}
+                                onClick={() => this.handleSubmit()}
                             >Check In</LoadingButton>
                         </div>
                         <div>

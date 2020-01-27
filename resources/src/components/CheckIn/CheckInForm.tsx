@@ -99,7 +99,7 @@ class CheckInForm extends React.Component<IProps, IState> {
             ? `Checked in ${success.length} ${success.length === 1 ? 'student' : 'students'}${errors && errors.length > 0
                 ? `, but ${errors.length} ${errors.length === 1 ? 'entry' : 'entries'} could not be resolved` : ''
             }.`
-            : 'No students could be checked in.'
+            : 'No students where checked in.'
         this.props.queueSnackbar({
             message,
             buttons: errors && errors.length > 0 && this.props.handleOpenErrorsDialog ? [{

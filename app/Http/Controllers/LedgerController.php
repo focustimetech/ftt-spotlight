@@ -44,7 +44,7 @@ class LedgerController extends Controller
     {
         $staff = auth()->user()->staff();
         $date_time = $request->input('date') ? strtotime($request->input('date')) : time();
-        $date = date('Y-m-d', strtotime($date_time));
+        $date = date('Y-m-d', $date_time);
         $block = Block::atTime($date_time);
         $ledger_entries = collect();
         $type = $request->input('type');

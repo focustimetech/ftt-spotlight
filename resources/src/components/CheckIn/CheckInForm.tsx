@@ -12,7 +12,7 @@ import {
 import { checkIn } from '../../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { ILedgerEntry } from '../../types/calendar'
-import { ICheckInRequest, ICheckInChip, ICheckInError, ICheckInResponse } from '../../types/checkin'
+import { ICheckInChip, ICheckInError, ICheckInRequest, ICheckInResponse } from '../../types/checkin'
 import {
     appendToLocalStorageArray,
     CHECK_IN_ERRORS,
@@ -38,6 +38,8 @@ interface IProps extends IReduxProps {
     didReceivedChips?: () => void
     didSubmit?: () => void
     onExceedTimeouts?: () => void
+    onPreventNavigation: () => void
+    onAllowNavigation: () => void
 }
 
 interface IState {
@@ -68,6 +70,7 @@ class CheckInForm extends React.Component<IProps, IState> {
         this.setState((state: IState) => ({
             chips: [...state.chips, chip]
         }))
+        this.props.onPreventNavigation()
     }
 
     handleRemoveChip = (index: number) => {
@@ -75,6 +78,10 @@ class CheckInForm extends React.Component<IProps, IState> {
         this.setState((state: IState) => {
             state.chips.splice(index, 1)
             return { chips: state.chips }
+        }, () => {
+            if (this.state.chips.length === 0) {
+                this.props.onAllowNavigation()
+            }
         })
     }
 
@@ -122,6 +129,7 @@ class CheckInForm extends React.Component<IProps, IState> {
             .then(() => {
                 this.setState({ uploading: false, chips: [] })
                 this.showResults()
+                this.props.onAllowNavigation()
             }, () => {
                 this.setState({ uploading: false })
             })

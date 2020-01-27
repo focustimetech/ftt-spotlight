@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import React from 'react'
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
-import { RouteComponentProps } from 'react-router-dom'
+import { Prompt, RouteComponentProps } from 'react-router-dom'
 
 import {
     Avatar,
@@ -65,6 +65,7 @@ interface IState {
     datePickerOpen: boolean
     errorsDialogOpen: boolean
     loadingStatus: boolean
+    preventNavigation: boolean
     refreshing: boolean
     scheduledSelected: number[]
 }
@@ -77,6 +78,7 @@ class CheckIn extends React.Component<IProps, IState> {
         datePickerOpen: false,
         errorsDialogOpen: false,
         loadingStatus: false,
+        preventNavigation: false,
         refreshing: false,
         scheduledSelected: []
     }
@@ -175,11 +177,27 @@ class CheckIn extends React.Component<IProps, IState> {
         this.setState({ bannerOpen: true, bannerPropsIndex })
     }
 
+    handleAllowNavigation = () => {
+        this.setState({ preventNavigation: false })
+    }
+
+    handlePreventNavigation = () => {
+        this.setState({ preventNavigation: true })
+    }
+
     componentDidMount() {
         if (this.props.location.hash === '#errors') {
             this.setState({ errorsDialogOpen: true })
         }
         this.fetchStatus()
+    }
+
+    componentDidUpdate() {
+        if (this.state.preventNavigation) {
+            window.onbeforeunload = () => true
+        } else {
+            window.onbeforeunload = undefined
+        }
     }
 
     render() {
@@ -231,155 +249,163 @@ class CheckIn extends React.Component<IProps, IState> {
         )
 
         return (
-            <div className='content' id='content'>
-                <Banner
-                    variant='static'
-                    message={BANNERS['RECEIVED_CHIPS'].message}
-                    open={this.state.bannerOpen}
-                    onClose={this.handleBannerClose}
-                    {...BANNERS[this.state.bannerPropsIndex]}
+            <>
+                <Prompt
+                    when={this.state.preventNavigation}
+                    message='All unsubmitted student numbers will be lost. Are you sure you want to exit?'
                 />
-                <ErrorsDialog open={this.state.errorsDialogOpen} onClose={this.handleCloseErrorsDialog} />
-                <TopNav
-                    breadcrumbs={[{ value: 'Check-in' }]}
-                    actions={(
-                        <Tooltip title='List Errors'>
-                            <IconButton onClick={() => this.handleOpenErrorsDialog()}>
-                                <Icon>error_outline</Icon>
-                            </IconButton>
-                        </Tooltip>
-                    )}
-                />
-                {(this.state.loadingStatus && this.props.checkInStatus) ? (
-                    <CheckInLoader />
-                ) : (
-                    <>
-                        <ul className='calendar_header'>
-                            <li>
-                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                    <DatePicker
-                                        variant='dialog'
-                                        open={this.state.datePickerOpen}
-                                        onClose={this.handleDatePickerClose}
-                                        value={this.state.date}
-                                        onChange={this.handleDatePickerSelect}
-                                        TextFieldComponent={() => null}
-                                    />
-                                </MuiPickersUtilsProvider>
-                                <Button onClick={() => this.handleDatePickerOpen()} variant='outlined'>
-                                    <Typography variant='button' color={this.props.checkInStatus.date.is_today ? 'inherit' : 'error'}>
-                                        {this.props.checkInStatus.date ? (
-                                            `${this.props.checkInStatus.date.day} ${this.props.checkInStatus.date.full_date}`
-                                        ) : 'Select Date'}
-                                    </Typography>
-                                </Button>
-                            </li>
-                            <li>
-                                <Tooltip title='Back' placement='top'>
-                                    <IconButton onClick={() => this.fetchPrevious()}>
-                                        <Icon>chevron_left</Icon>
-                                    </IconButton>
-                                </Tooltip>
-                            </li>
-                            <li>
-                                <Tooltip title='Next' placement='top'>
-                                    <IconButton onClick={() => this.fetchNext()}>
-                                        <Icon>chevron_right</Icon>
-                                    </IconButton>
-                                </Tooltip>
-                            </li>
-                            <li>
-                                <Button
-                                    variant='outlined'
-                                    color='primary'
-                                    onClick={() => this.fetchToday()}
-                                    disabled={this.props.checkInStatus.date && this.props.checkInStatus.date.is_today}
-                                >Today</Button>
-                            </li>
-                            <li>
-                                <Tooltip title='Refresh' placement='top'>
-                                    <IconButton onClick={() => this.refreshStatus()} disabled={this.state.refreshing}>
-                                        <Icon>refresh</Icon>
-                                    </IconButton>
-                                </Tooltip>
-                            </li>
-                        </ul>
-                        <TextField
-                            select
-                            variant='outlined'
-                            value='focus-block'
-                            onChange={() => null}
-                            margin='dense'
-                            label='Block'
-                            disabled
-                        >
-                            <MenuItem value='focus-block'>Focus Block</MenuItem>
-                        </TextField>
-                        <CheckInForm
-                            disabled={false}
-                            dateTime={this.props.checkInStatus.date.full_date}
-                            didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
-                            didReceivedChips={() => this.handleBannerOpen('RECEIVED_CHIPS')}
-                            didSubmit={() => this.handleBannerClose()}
-                            onExceedTimeouts={() => this.handleBannerOpen('EXCEEDED_TIMEOUT')}
-                            handleOpenErrorsDialog={this.handleOpenErrorsDialog}
-                        />
-                        <ModalSection
-                            icon='event'
-                            title='Scheduled'
-                            count={scheduled.length}
-                            emptyState={<Typography>No students scheduled.</Typography>}
-                        >
-                            <SelectableList
-                                title='Scheduled Students'
-                                selected={this.state.scheduledSelected}
-                                items={scheduled}
-                                actions={actions}
-                                sortable={true}
-                                sortLabel='Name'
-                                onSelectAll={this.handleSelectAllScheduled}
-                                onToggleSelected={this.handleSelectScheduled}
+                <div className='content' id='content'>
+                    <Banner
+                        variant='static'
+                        message={BANNERS['RECEIVED_CHIPS'].message}
+                        open={this.state.bannerOpen}
+                        onClose={this.handleBannerClose}
+                        {...BANNERS[this.state.bannerPropsIndex]}
+                    />
+                    <ErrorsDialog open={this.state.errorsDialogOpen} onClose={this.handleCloseErrorsDialog} />
+                    <TopNav
+                        breadcrumbs={[{ value: 'Check-in' }]}
+                        actions={(
+                            <Tooltip title='List Errors'>
+                                <IconButton onClick={() => this.handleOpenErrorsDialog()}>
+                                    <Icon>error_outline</Icon>
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    />
+                    {(this.state.loadingStatus && this.props.checkInStatus) ? (
+                        <CheckInLoader />
+                    ) : (
+                        <>
+                            <ul className='calendar_header'>
+                                <li>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <DatePicker
+                                            variant='dialog'
+                                            open={this.state.datePickerOpen}
+                                            onClose={this.handleDatePickerClose}
+                                            value={this.state.date}
+                                            onChange={this.handleDatePickerSelect}
+                                            TextFieldComponent={() => null}
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                    <Button onClick={() => this.handleDatePickerOpen()} variant='outlined'>
+                                        <Typography variant='button' color={this.props.checkInStatus.date.is_today ? 'inherit' : 'error'}>
+                                            {this.props.checkInStatus.date ? (
+                                                `${this.props.checkInStatus.date.day} ${this.props.checkInStatus.date.full_date}`
+                                            ) : 'Select Date'}
+                                        </Typography>
+                                    </Button>
+                                </li>
+                                <li>
+                                    <Tooltip title='Back' placement='top'>
+                                        <IconButton onClick={() => this.fetchPrevious()}>
+                                            <Icon>chevron_left</Icon>
+                                        </IconButton>
+                                    </Tooltip>
+                                </li>
+                                <li>
+                                    <Tooltip title='Next' placement='top'>
+                                        <IconButton onClick={() => this.fetchNext()}>
+                                            <Icon>chevron_right</Icon>
+                                        </IconButton>
+                                    </Tooltip>
+                                </li>
+                                <li>
+                                    <Button
+                                        variant='outlined'
+                                        color='primary'
+                                        onClick={() => this.fetchToday()}
+                                        disabled={this.props.checkInStatus.date && this.props.checkInStatus.date.is_today}
+                                    >Today</Button>
+                                </li>
+                                <li>
+                                    <Tooltip title='Refresh' placement='top'>
+                                        <IconButton onClick={() => this.refreshStatus()} disabled={this.state.refreshing}>
+                                            <Icon>refresh</Icon>
+                                        </IconButton>
+                                    </Tooltip>
+                                </li>
+                            </ul>
+                            <TextField
+                                select
+                                variant='outlined'
+                                value='focus-block'
+                                onChange={() => null}
+                                margin='dense'
+                                label='Block'
+                                disabled
+                            >
+                                <MenuItem value='focus-block'>Focus Block</MenuItem>
+                            </TextField>
+                            <CheckInForm
+                                disabled={false}
+                                dateTime={this.props.checkInStatus.date.full_date}
+                                didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
+                                didReceivedChips={() => this.handleBannerOpen('RECEIVED_CHIPS')}
+                                didSubmit={() => this.handleBannerClose()}
+                                onExceedTimeouts={() => this.handleBannerOpen('EXCEEDED_TIMEOUT')}
+                                onPreventNavigation={this.handlePreventNavigation}
+                                onAllowNavigation={this.handleAllowNavigation}
+                                handleOpenErrorsDialog={this.handleOpenErrorsDialog}
                             />
-                        </ModalSection>
-                        <ModalSection
-                            icon='how_to_reg'
-                            title='Checked In'
-                            count={checkedIn.length}
-                            emptyState={<Typography>No students checked in.</Typography>}
-                        >
-                            <List dense>
-                                {checkedIn.map((ledgerEntry: ILedgerEntry) => {
-                                    const methodDetails: ICheckInMethodDetails
-                                        = getMethodDetailsFromName(ledgerEntry.method)
-                                    return (
-                                        <ListItem key={ledgerEntry.id}>
-                                            <ListItemAvatar>
-                                                <Avatar className={classNames(
-                                                    'student_avatar', `--${ledgerEntry.student.color}`
-                                                )}>
-                                                    {ledgerEntry.student.initials}
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText
-                                                primary={ledgerEntry.student.name}
-                                                secondary={
-                                                    <span className='--flex-row'>
-                                                        <Typography variant='overline'>{ledgerEntry.time}</Typography>
-                                                        <Tooltip title={methodDetails.title}>
-                                                            <Icon>{methodDetails.icon}</Icon>
-                                                        </Tooltip>
-                                                    </span>
-                                                }
-                                            />
-                                        </ListItem>
-                                    )
-                                })}
-                            </List>
-                        </ModalSection>
+                            <ModalSection
+                                icon='event'
+                                title='Scheduled'
+                                count={scheduled.length}
+                                emptyState={<Typography>No students scheduled.</Typography>}
+                            >
+                                <SelectableList
+                                    title='Scheduled Students'
+                                    selected={this.state.scheduledSelected}
+                                    items={scheduled}
+                                    actions={actions}
+                                    sortable={true}
+                                    sortLabel='Name'
+                                    onSelectAll={this.handleSelectAllScheduled}
+                                    onToggleSelected={this.handleSelectScheduled}
+                                />
+                            </ModalSection>
+                            <ModalSection
+                                icon='how_to_reg'
+                                title='Checked In'
+                                count={checkedIn.length}
+                                emptyState={<Typography>No students checked in.</Typography>}
+                            >
+                                <List dense>
+                                    {checkedIn.map((ledgerEntry: ILedgerEntry) => {
+                                        const methodDetails: ICheckInMethodDetails
+                                            = getMethodDetailsFromName(ledgerEntry.method)
+                                        return (
+                                            <ListItem key={ledgerEntry.id}>
+                                                <ListItemAvatar>
+                                                    <Avatar className={classNames(
+                                                        'student_avatar', `--${ledgerEntry.student.color}`
+                                                    )}>
+                                                        {ledgerEntry.student.initials}
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={ledgerEntry.student.name}
+                                                    secondary={
+                                                        <span className='--flex-row'>
+                                                            <Typography variant='overline'>{ledgerEntry.time}</Typography>
+                                                            <Tooltip title={methodDetails.title}>
+                                                                <Icon>{methodDetails.icon}</Icon>
+                                                            </Tooltip>
+                                                        </span>
+                                                    }
+                                                />
+                                            </ListItem>
+                                        )
+                                    })}
+                                </List>
+                            </ModalSection>
 
-                    </>
-                )}
-            </div>
+                        </>
+                    )}
+                </div>
+            </>
         )
     }
 }

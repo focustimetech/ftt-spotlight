@@ -14,6 +14,8 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
+    MenuItem,
+    TextField,
     Tooltip,
     Typography
 } from '@material-ui/core'
@@ -264,7 +266,7 @@ class CheckIn extends React.Component<IProps, IState> {
                                         TextFieldComponent={() => null}
                                     />
                                 </MuiPickersUtilsProvider>
-                                <Button onClick={() => this.handleDatePickerOpen()}>
+                                <Button onClick={() => this.handleDatePickerOpen()} variant='outlined'>
                                     <Typography variant='button' color={this.props.checkInStatus.date.is_today ? 'inherit' : 'error'}>
                                         {this.props.checkInStatus.date ? (
                                             `${this.props.checkInStatus.date.day} ${this.props.checkInStatus.date.full_date}`
@@ -288,7 +290,7 @@ class CheckIn extends React.Component<IProps, IState> {
                             </li>
                             <li>
                                 <Button
-                                    variant='text'
+                                    variant='outlined'
                                     color='primary'
                                     onClick={() => this.fetchToday()}
                                     disabled={this.props.checkInStatus.date && this.props.checkInStatus.date.is_today}
@@ -302,7 +304,19 @@ class CheckIn extends React.Component<IProps, IState> {
                                 </Tooltip>
                             </li>
                         </ul>
+                        <TextField
+                            select
+                            variant='outlined'
+                            value='focus-block'
+                            onChange={() => null}
+                            margin='dense'
+                            label='Block'
+                            disabled
+                        >
+                            <MenuItem value='focus-block'>Focus Block</MenuItem>
+                        </TextField>
                         <CheckInForm
+                            disabled={false}
                             dateTime={this.props.checkInStatus.date.full_date}
                             didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
                             didReceivedChips={() => this.handleBannerOpen('RECEIVED_CHIPS')}

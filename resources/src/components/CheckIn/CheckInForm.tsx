@@ -31,6 +31,7 @@ interface IReduxProps {
 }
 
 interface IProps extends IReduxProps {
+    disabled: boolean
     dateTime?: string
     didCheckIn?: () => Promise<any>
     handleOpenErrorsDialog?: () => void
@@ -166,6 +167,7 @@ class CheckInForm extends React.Component<IProps, IState> {
     render() {
         const hasChips: boolean = this.state.chips.length > 0
         const menuOpen: boolean = Boolean(this.state.menuRef)
+        const disabled: boolean = this.props.disabled || this.state.uploading
 
         return (
             <>
@@ -178,7 +180,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                         chips={this.state.chips}
                         onCreateChip={this.handleCreateChip}
                         onRemoveChip={this.handleRemoveChip}
-                        disabled={this.state.uploading}
+                        disabled={disabled}
                         placeholder='Enter Student Numbers'
                         helperText={undefined}
                     />

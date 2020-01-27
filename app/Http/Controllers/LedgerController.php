@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use DB;
 
@@ -50,6 +51,7 @@ class LedgerController extends Controller
         $type = $request->input('type');
         $chips = $request->input('chips') ?? [];
         $error = [];
+        $duplicates = [];
 
         foreach ($chips as $chip) {
             if ($type === 'student_id') {
@@ -66,15 +68,19 @@ class LedgerController extends Controller
                 } else if (date('Y-m-d', $check_in_time) < $date) {
                     $method = 4; // proactive
                 }
-                $ledger_entry = LedgerEntry::create([
-                    'date' => $check_in_date,
-                    'checked_in_at' => date('Y-m-d H:i:s', $check_in_time),
-                    'block_id' => $block->id,
-                    'staff_id' => $staff->id,
-                    'student_id' => $student->id,
-                    'method' => $method
-                ]);
-                $ledger_entries->push($ledger_entry);
+                try {
+                    $ledger_entry = LedgerEntry::create([
+                        'date' => $check_in_date,
+                        'checked_in_at' => date('Y-m-d H:i:s', $check_in_time),
+                        'block_id' => $block->id,
+                        'staff_id' => $staff->id,
+                        'student_id' => $student->id,
+                        'method' => $method
+                    ]);
+                    $ledger_entries->push($ledger_entry);
+                } catch (QueryException $e) {
+                    array_push($duplicates, $student);
+                }
             } else {
                 array_push($error, $chip['value']);
             }

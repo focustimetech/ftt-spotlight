@@ -27,27 +27,11 @@ import { ICheckInMethodDetails, ILedgerEntry, ISchedulePlan } from '../../types/
 import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
 import { getMethodDetailsFromName } from '../../utils/utils'
 
-import { Banner, IProps as BannerProps } from '../Banner/Banner'
 import { ModalSection } from '../ModalSection'
 import { ISelectableListAction, ISelectableListItem, SelectableList } from '../SelectableList'
 import { TopNav } from '../TopNav'
 import CheckInForm from './CheckInForm'
 import ErrorsDialog from './ErrorsDialog'
-
-type BannerPropsIndex =
-    | 'RECEIVED_CHIPS'
-    | 'EXCEEDED_TIMEOUT'
-
-const BANNERS: Record<BannerPropsIndex, Partial<BannerProps>> = {
-    RECEIVED_CHIPS: {
-        message: "You have students that still need to be checked in. Click the Upload button as soon as you're ready to submit.",
-        icon: 'cloud'
-    },
-    EXCEEDED_TIMEOUT: {
-        message: "Due to connectivity issues, we've stopped fetching student names. We'll keep collecting student numbers until you're ready to submit them.",
-        icon: 'warning'
-    }
-}
 
 interface IReduxProps {
     checkInStatus: CheckInStatus
@@ -59,8 +43,6 @@ interface IReduxProps {
 interface IProps extends IReduxProps, RouteComponentProps {}
 
 interface IState {
-    bannerOpen: boolean
-    bannerPropsIndex: BannerPropsIndex
     date: Date
     datePickerOpen: boolean
     errorsDialogOpen: boolean
@@ -72,8 +54,6 @@ interface IState {
 
 class CheckIn extends React.Component<IProps, IState> {
     state: IState = {
-        bannerOpen: false,
-        bannerPropsIndex: 'RECEIVED_CHIPS',
         date: new Date(),
         datePickerOpen: false,
         errorsDialogOpen: false,
@@ -169,14 +149,6 @@ class CheckIn extends React.Component<IProps, IState> {
         this.setState({ errorsDialogOpen: false })
     }
 
-    handleBannerClose = () => {
-        this.setState({ bannerOpen: false })
-    }
-
-    handleBannerOpen = (bannerPropsIndex: BannerPropsIndex) => {
-        this.setState({ bannerOpen: true, bannerPropsIndex })
-    }
-
     handleAllowNavigation = () => {
         this.setState({ preventNavigation: false })
     }
@@ -255,13 +227,6 @@ class CheckIn extends React.Component<IProps, IState> {
                     message='All unsubmitted student numbers will be lost. Are you sure you want to exit?'
                 />
                 <div className='content' id='content'>
-                    <Banner
-                        variant='static'
-                        message={BANNERS['RECEIVED_CHIPS'].message}
-                        open={this.state.bannerOpen}
-                        onClose={this.handleBannerClose}
-                        {...BANNERS[this.state.bannerPropsIndex]}
-                    />
                     <ErrorsDialog open={this.state.errorsDialogOpen} onClose={this.handleCloseErrorsDialog} />
                     <TopNav
                         breadcrumbs={[{ value: 'Check-in' }]}
@@ -289,7 +254,7 @@ class CheckIn extends React.Component<IProps, IState> {
                                             TextFieldComponent={() => null}
                                         />
                                     </MuiPickersUtilsProvider>
-                                    <Button onClick={() => this.handleDatePickerOpen()} variant='outlined'>
+                                    <Button disabled={this.state.preventNavigation} onClick={() => this.handleDatePickerOpen()} variant='outlined'>
                                         <Typography variant='button' color={this.props.checkInStatus.date.is_today ? 'inherit' : 'error'}>
                                             {this.props.checkInStatus.date ? (
                                                 `${this.props.checkInStatus.date.day} ${this.props.checkInStatus.date.full_date}`
@@ -299,14 +264,14 @@ class CheckIn extends React.Component<IProps, IState> {
                                 </li>
                                 <li>
                                     <Tooltip title='Back' placement='top'>
-                                        <IconButton onClick={() => this.fetchPrevious()}>
+                                        <IconButton onClick={() => this.fetchPrevious()} disabled={this.state.preventNavigation}>
                                             <Icon>chevron_left</Icon>
                                         </IconButton>
                                     </Tooltip>
                                 </li>
                                 <li>
                                     <Tooltip title='Next' placement='top'>
-                                        <IconButton onClick={() => this.fetchNext()}>
+                                        <IconButton onClick={() => this.fetchNext()} disabled={this.state.preventNavigation}>
                                             <Icon>chevron_right</Icon>
                                         </IconButton>
                                     </Tooltip>
@@ -316,12 +281,12 @@ class CheckIn extends React.Component<IProps, IState> {
                                         variant='outlined'
                                         color='primary'
                                         onClick={() => this.fetchToday()}
-                                        disabled={this.props.checkInStatus.date && this.props.checkInStatus.date.is_today}
+                                        disabled={(this.props.checkInStatus.date && this.props.checkInStatus.date.is_today) || this.state.preventNavigation}
                                     >Today</Button>
                                 </li>
                                 <li>
                                     <Tooltip title='Refresh' placement='top'>
-                                        <IconButton onClick={() => this.refreshStatus()} disabled={this.state.refreshing}>
+                                        <IconButton onClick={() => this.refreshStatus()} disabled={this.state.refreshing || this.state.preventNavigation}>
                                             <Icon>refresh</Icon>
                                         </IconButton>
                                     </Tooltip>
@@ -341,10 +306,7 @@ class CheckIn extends React.Component<IProps, IState> {
                             <CheckInForm
                                 disabled={false}
                                 dateTime={this.props.checkInStatus.date.full_date}
-                                didCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
-                                didReceivedChips={() => this.handleBannerOpen('RECEIVED_CHIPS')}
-                                didSubmit={() => this.handleBannerClose()}
-                                onExceedTimeouts={() => this.handleBannerOpen('EXCEEDED_TIMEOUT')}
+                                onCheckIn={() => this.props.fetchCheckInStatus(this.props.checkInStatus.date.full_date) }
                                 onPreventNavigation={this.handlePreventNavigation}
                                 onAllowNavigation={this.handleAllowNavigation}
                                 handleOpenErrorsDialog={this.handleOpenErrorsDialog}

@@ -33,11 +33,9 @@ interface IReduxProps {
 interface IProps extends IReduxProps {
     disabled: boolean
     dateTime?: string
-    didCheckIn?: () => Promise<any>
+    onCheckIn?: () => Promise<any>
+    onSubmit?: () => void
     handleOpenErrorsDialog?: () => void
-    didReceivedChips?: () => void
-    didSubmit?: () => void
-    onExceedTimeouts?: () => void
     onPreventNavigation: () => void
     onAllowNavigation: () => void
 }
@@ -117,8 +115,8 @@ class CheckInForm extends React.Component<IProps, IState> {
             return
         }
         this.setState({ uploading: true })
-        if (this.props.didSubmit) {
-            this.props.didSubmit()
+        if (this.props.onSubmit) {
+            this.props.onSubmit()
         }
         const request: ICheckInRequest = {
             chips: this.state.chips.map((chip: ISelectChip<Date>) => ({ value: chip.label, timestamp: chip.value.toISOString() })),
@@ -127,12 +125,20 @@ class CheckInForm extends React.Component<IProps, IState> {
         }
         this.props.checkIn(request)
             .then(() => {
-                this.setState({ uploading: false, chips: [] })
-                this.showResults()
-                this.props.onAllowNavigation()
+                if (this.props.onCheckIn) {
+                    this.props.onCheckIn().then(() => this.finishCheckIn())
+                } else {
+                    this.finishCheckIn()
+                }
             }, () => {
                 this.setState({ uploading: false })
             })
+    }
+
+    finishCheckIn = () => {
+        this.setState({ uploading: false, chips: [] })
+        this.showResults()
+        this.props.onAllowNavigation()
     }
 
     handleMenuClick = (callback: () => void) => {
@@ -160,7 +166,9 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleRemoveAllChips = () => {
-        this.setState({ chips: [] })
+        this.setState({ chips: [] }, () => {
+            this.props.onAllowNavigation()
+        })
         this.props.queueSnackbar({ message: 'Removed all Student Numbers.' })
     }
 
@@ -190,7 +198,7 @@ class CheckInForm extends React.Component<IProps, IState> {
                         onRemoveChip={this.handleRemoveChip}
                         disabled={disabled}
                         placeholder='Enter Student Numbers'
-                        helperText={undefined}
+                        helperText={hasChips ? "Ensure all students have entered their Student Numbers, then press 'Check In.'" : undefined}
                     />
                     <div className='check_in_actions'>
                         <div>

@@ -166,10 +166,15 @@ class CheckInForm extends React.Component<IProps, IState> {
     }
 
     handleRemoveAllChips = () => {
-        this.setState({ chips: [] }, () => {
+        this.setState((state: IState) => {
+            this.props.queueSnackbar({
+                message: 'Removed all Student Numbers.',
+                buttons: [{ value: 'Undo', callback: () => this.setState({ chips: state.chips }) }]
+            })
+            return { chips: [] }
+        }, () => {
             this.props.onAllowNavigation()
         })
-        this.props.queueSnackbar({ message: 'Removed all Student Numbers.' })
     }
 
     handleMenuOpen = (event: any) => {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use DB;
 
@@ -43,56 +44,45 @@ class LedgerController extends Controller
     public function checkIn(Request $request)
     {
         $staff = auth()->user()->staff();
-        $date_time = $request->input('date_time') ? strtotime($request->input('date_time')) : time();
+        $date_time = $request->input('date') ? strtotime($request->input('date')) : time();
         $date = date('Y-m-d', $date_time);
         $block = Block::atTime($date_time);
         $ledger_entries = collect();
+        $type = $request->input('type');
         $chips = $request->input('chips') ?? [];
-        $scheduled_ids = $request->input('scheduled_ids') ?? [];
-        foreach ($scheduled_ids as $student_id) {
-            $ledger_entry = LedgerEntry::create([
-                'date' => $date,
-                'checked_in_at' => date('Y-m-d H:i:s'),
-                'block_id' => $block->id,
-                'staff_id' => $staff->id,
-                'student_id' => $student_id,
-                'method' => 2
-            ]);
-            $ledger_entries->push($ledger_entry);
-        }
-
         $error = [];
-        foreach ($chips as $chip) {
-            $check_in_time = $chip['time'] ? strtotime($chip['time']) : time();
-            $check_in_date = $chip['date_time'] ? date('Y-m-d', strtotime($chip['date_time'])) : $date;
-            $student_id = null;
-            $method = 0;
-            if ($chip['type'] === 'id') {
-                $student_id = $chip['value']['id'];
-            } else {
-                $student = Student::findBySN($chip['value']);
-                if ($student) {
-                    $student_id = $student->id;
-                } else {
-                    array_push($error, $chip['value']);
-                }
-            }
-            if (date('Y-m-d', $check_in_time) > $date) {
-                $method = 3; // retroactive
-            } else if (date('Y-m-d', $check_in_time) < $date) {
-                $method = 4; // proactive
-            }
+        $duplicates = [];
 
-            if ($student_id) {
-                $ledger_entry = LedgerEntry::create([
-                    'date' => $check_in_date,
-                    'checked_in_at' => date('Y-m-d H:i:s', $check_in_time),
-                    'block_id' => $block->id,
-                    'staff_id' => $staff->id,
-                    'student_id' => $student_id,
-                    'method' => $method
-                ]);
-                $ledger_entries->push($ledger_entry);
+        foreach ($chips as $chip) {
+            if ($type === 'student_id') {
+                $method = 2; // roll-call
+            } else {
+                $method = 0;
+            }
+            $student = $type === 'student_number' ? Student::findBySN($chip['value']) : Student::find($chip['value']);
+            if ($student) {
+                $check_in_time = $chip['timestamp'] ? strtotime($chip['timestamp']) : time();
+                $check_in_date = $date;
+                if (date('Y-m-d', $check_in_time) > $date) {
+                    $method = 3; // retroactive
+                } else if (date('Y-m-d', $check_in_time) < $date) {
+                    $method = 4; // proactive
+                }
+                try {
+                    $ledger_entry = LedgerEntry::create([
+                        'date' => $check_in_date,
+                        'checked_in_at' => date('Y-m-d H:i:s', $check_in_time),
+                        'block_id' => $block->id,
+                        'staff_id' => $staff->id,
+                        'student_id' => $student->id,
+                        'method' => $method
+                    ]);
+                    $ledger_entries->push($ledger_entry);
+                } catch (QueryException $e) {
+                    array_push($duplicates, $student);
+                }
+            } else {
+                array_push($error, $chip['value']);
             }
         }
 

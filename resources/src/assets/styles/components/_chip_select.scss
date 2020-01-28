@@ -1,5 +1,7 @@
 
 .chip_select {
+	margin-bottom: 8px;
+
     &__textfield {
         display: flex;
         justify-content: flex-start;
@@ -62,7 +64,7 @@
 	}
 
 	.chips_container {
-		margin-top: 8px;
-		padding-bottom: 8px;
+		margin-top: 16px;
+		margin-bottom: 0;
 	}
 }

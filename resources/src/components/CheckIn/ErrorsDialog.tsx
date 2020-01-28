@@ -27,9 +27,13 @@ interface IProps extends IReduxProps {
 
 class ErrorsDialog extends React.Component<IProps> {
     handleClearErrors = () => {
-        localStorage.removeItem(CHECK_IN_ERRORS)
         this.props.onClose()
-        this.props.queueSnackbar({ message: 'Cleared check-in errors.' })
+        const checkInErrors: string = localStorage.getItem(CHECK_IN_ERRORS)
+        this.props.queueSnackbar({
+            message: 'Cleared check-in errors.',
+            buttons: [{ value: 'Undo', callback: () => localStorage.setItem(CHECK_IN_ERRORS, checkInErrors) }]
+        })
+        localStorage.removeItem(CHECK_IN_ERRORS)
     }
 
     render() {

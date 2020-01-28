@@ -17,6 +17,9 @@ export const fetchCheckInStatus = (dateTime?: string) => {
 }
 
 export const checkIn = (request: ICheckInRequest) => {
+    if (!request.date) {
+        request.date = new Date().toISOString()
+    }
     return (dispatch: any) => {
         return axios.post('/api/check-in', request)
             .then((res: any) => {

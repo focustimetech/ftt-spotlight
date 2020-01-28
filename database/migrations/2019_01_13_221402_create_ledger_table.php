@@ -32,6 +32,8 @@ class CreateLedgerTable extends Migration
             $table->foreign('block_id')->references('id')->on('blocks');
             $table->foreign('staff_id')->references('id')->on('staff');
             $table->foreign('student_id')->references('id')->on('students');
+            // Unique keys
+            $table->unique(['student_id', 'block_id', 'date']);
         });
     }
 

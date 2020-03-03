@@ -1,6 +1,14 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.9 (2020-03-03)
+
+### Changed
+ - Redesigned the Check-in page to no longer search for student names upon entering student numbers (SPOT-196)
+ - Add focus to Search bar when clicking search button in tables (SPOT-157)
+ - Redirect users to Check-in page when using the Check-in sidenav button (SPOT-188)
+ - Remove password from password input when switching user accounts (SPOT-151)
+
 ## Version 1.2.8 (2019-11-25)
 
 ### Changed

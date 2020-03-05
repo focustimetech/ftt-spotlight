@@ -291,9 +291,9 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 										onChange={(event: any) => {this.handleChangeFilterID(event, idx)}}
 										disabled={this.state.disabled}
 									>
-										{this.props.columns.map((tableColumn: ITableHeaderColumn, columnIndex: number) => {
+										{this.props.columns.map((tableColumn: ITableHeaderColumn) => {
 											return (
-												<MenuItem key={columnIndex} value={column.id}>
+												<MenuItem key={tableColumn.id} value={tableColumn.id}>
 													{tableColumn.label}
 												</MenuItem>
 											)

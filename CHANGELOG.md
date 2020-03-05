@@ -9,6 +9,9 @@ All notable changes to Spotlight will be documented here.
  - Redirect users to Check-in page when using the Check-in sidenav button (SPOT-188)
  - Remove password from password input when switching user accounts (SPOT-151)
 
+### Fixed
+ - Fixed a bug where Table filter columns couldn't be selected (SPOT-201)
+
 ## Version 1.2.8 (2019-11-25)
 
 ### Changed

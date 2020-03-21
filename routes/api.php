@@ -87,7 +87,7 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
     Route::get('check-in/student-number/{id}', 'StudentsController@getChipByStudentNumber');
     Route::post('check-in/air/enable', 'LedgerController@enableAir');
     Route::post('check-in/air/disable', 'LedgerController@disableAir');
-
+ 
     // Notifications
     Route::get('notifications/inbox', 'NotificationsController@inbox');
     Route::get('notifications/outbox', 'NotificationsController@outbox');
@@ -101,6 +101,16 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin'])->grou
 
     // Power Scheduler
     Route::post('power-scheduler', 'PowerSchedulerController@schedule');
+
+    // Reports
+    Route::get('reports/self', 'ReportsController@index');
+    Route::get('reports/{id}', 'ReportsController@find');
+    Route::post('reports', 'ReportsController@create');
+    Route::put('reports', 'ReportsController@update');
+    Route::delete('reports/{id}', 'ReportsController@destroy');
+
+    // Staff
+    Route::post('staff', 'StaffController@create');
 
     // Staff Capacity
     Route::post('staff/capacity', 'StaffController@setCapacity');
@@ -133,9 +143,30 @@ Route::middleware(['auth:api', 'expired-password', 'scope:teacher,admin,sysadmin
     Route::get('staff/{id}/schedule', 'StaffScheduleController@index');
     Route::get('staff/{id}/schedule/{timestamp}', 'StaffScheduleController@index');
 
+    // Starred
+    Route::get('starred', 'StarController@index');
+    Route::post('star', 'StarController@star');
+    Route::post('unstar', 'StarController@unstar');
+
+    // Students
+    Route::get('students', 'StudentsController@index');
+    Route::get('students/{id}', 'StudentsController@show');
+    Route::get('students/student-number/{id}', 'StudentsController@getByStudentNumber');
+    Route::get('students/profile/{id}', 'StudentsController@profile');
+    Route::post('students', 'StudentsController@create');
+    Route::post('students/upload', 'StudentsController@upload');
+    Route::put('students', 'StudentsController@update');
+    Route::delete('students/{id}', 'StudentsController@destroy');
+
     // Student Schedule
     Route::get('students/{id}/schedule', 'StudentScheduleController@index');
     Route::get('students/{id}/schedule/{timestamp}', 'StudentScheduleController@index');
+
+    // Topics
+    Route::post('topics', 'TopicsController@store');
+    Route::delete('topics/{id}', 'TopicsController@destroy');
+    Route::post('topics/schedule', 'TopicsController@createTopicSchedule');
+    Route::delete('topics/schedule/{id}', 'TopicsController@deleteTopicSchedule');
 
     // Users
     Route::get('users', 'UsersController@getAllUsers');

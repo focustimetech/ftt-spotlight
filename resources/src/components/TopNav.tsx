@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import React from 'react'
+import ContentLoader from 'react-content-loader'
 import { Link } from 'react-router-dom'
 
 import {
@@ -29,10 +30,11 @@ export interface INavLink {
 }
 
 interface IProps {
-	breadcrumbs?: INavLink[]
 	actions?: React.ReactNode
+	breadcrumbs?: INavLink[]
 	children?: any
 	className?: string
+	loading?: boolean
 	tabs?: INavTabs
 }
 
@@ -45,17 +47,27 @@ export const TopNav = (props: IProps) => {
 						<Breadcrumbs>
 							{props.breadcrumbs.slice(0, props.breadcrumbs.length - 1)
 								.map((link: INavLink) => (
-									<Link to={link.to}>
+									<Link to={link.to} key={link.to}>
 										<Typography variant='h6' color='inherit'>{link.value}</Typography>
 									</Link>
 								))
 							}
-							<Typography variant='h6' color='textPrimary'>{props.breadcrumbs[props.breadcrumbs.length - 1].value}</Typography>
+							{props.loading ? (
+								<div style={{ width: 100, height: 32 }}>
+									<ContentLoader width={100} height={32}>
+										<rect x={0} y={0} rx={4} ry={4} height={32} width={100} />
+									</ContentLoader>
+								</div>
+							) : (
+								<Typography variant='h6' color='textPrimary'>
+									{props.breadcrumbs[props.breadcrumbs.length - 1].value}
+								</Typography>
+							)}
 						</Breadcrumbs>
 					)}
 					{props.children}
 					{props.actions && (
-						<div className='top-nav_actions'>{props.actions}</div>
+						<div className='top-nav__actions'>{props.actions}</div>
 					)}
 				</div>
 				{props.tabs && (

@@ -8,6 +8,7 @@ use App\Student;
 use App\Cluster;
 use App\Course;
 use App\Staff;
+use App\Report;
 use App\Http\Resources\Starred as StarredResource;
 
 class StarController extends Controller
@@ -26,6 +27,9 @@ class StarController extends Controller
             case 'staff':
                 $staff = Staff::findOrFail($id);
                 return $staff->getName();
+            case 'report':
+                $report = Report::findOrFail($id);
+                return $report->name;
         }
     }
 

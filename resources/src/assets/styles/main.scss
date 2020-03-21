@@ -5,6 +5,7 @@
 
 /* Layout */
 @import "layouts/app";
+@import "layouts/drawer";
 @import "layouts/form";
 @import "layouts/login";
 @import "layouts/router";
@@ -17,6 +18,7 @@
 @import "components/check-in";
 @import "components/chip_select";
 @import "components/content";
+@import "components/date_widget";
 @import "components/empty_state";
 @import "components/expansion_panel";
 @import "components/items_modal";
@@ -25,6 +27,7 @@
 @import "components/notifications_modal";
 @import "components/power_scheduler";
 @import "components/profile";
+@import "components/report";
 @import "components/search_modal";
 @import "components/selectable_list";
 @import "components/settings";

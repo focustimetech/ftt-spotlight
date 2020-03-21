@@ -17,6 +17,7 @@ export interface IStarredList {
 export const starredGroups: IStarredGroup[] = [
     { value: 'student', label: 'Students' },
     { value: 'staff', label: 'Staff' },
+    { value: 'report', label: 'Reports' },
     { value: 'course', label: 'Courses' },
     { value: 'cluster', label: 'Clusters' },
 ]

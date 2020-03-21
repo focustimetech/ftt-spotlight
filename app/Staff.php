@@ -167,6 +167,11 @@ class Staff extends Model
 		});
 	}
 
+	public function reports()
+	{
+		return $this->hasMany('App\Report');
+	}
+
 	public function starred()
 	{
 		return $this->hasMany('App\Starred');

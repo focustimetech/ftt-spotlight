@@ -52,6 +52,7 @@ class SidebarMenu extends React.Component<IProps> {
                                 <MenuItem to='/check-in' icon='how_to_vote' label='Check-in' />
                                 <MenuItem to='/staff' icon='supervisor_account' label='Staff' />
                                 <MenuItem to='/students' icon='face' label='Students' />
+                                <MenuItem to='/reporting' icon='assessment' label='Reporting' />
                                 <MenuItem to='/power-scheduler' icon='offline_bolt' label='Power Scheduler' />
                                 {isAdministrator && (
                                     <>

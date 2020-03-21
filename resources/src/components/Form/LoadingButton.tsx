@@ -8,13 +8,15 @@ interface IProps extends ButtonProps {
 }
 
 export const LoadingButton: React.SFC<IProps> = (props) => {
-    const { disabled, loading, ...rest } = props
+    const { children, disabled, loading, ...rest } = props
     return (
-        <div className='button-container'>
-            <Button {...rest} disabled={disabled || loading}/>
-            {loading && (
-                <CircularProgress size={24} className='button-progress' />
-            )}
-        </div>
+        <Button {...rest} disabled={disabled || loading}>
+            <div className='button-container'>
+                {loading && (
+                    <CircularProgress size={24} className='button-progress' />
+                )}
+                {children}
+            </div>
+        </Button>
     )
 }

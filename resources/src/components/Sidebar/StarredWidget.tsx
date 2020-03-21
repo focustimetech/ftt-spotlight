@@ -132,6 +132,9 @@ class IStarredWidget extends React.Component<IReduxProps, IState> {
                                                             case 'course':
                                                                 url = `/courses/${starredItem.item_id}`
                                                                 break
+                                                            case 'report':
+                                                                url = `/reporting/${starredItem.item_id}`
+                                                                break
                                                             case 'cluster':
                                                                 url = `/clusters/${starredItem.item_id}`
                                                                 break

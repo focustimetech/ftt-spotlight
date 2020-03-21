@@ -105,3 +105,26 @@ export const getCurrentTimestamp = (): string => {
     const now: Date = new Date()
     return `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`
 }
+
+/**
+ * Downloads a CSV file given a 2D array of rows.
+ * @param rows The CSV rows to download.
+ * @param filename The CSV's filename, without the CSV extension (optional).
+ */
+export const downloadCsv = (rows: Array<Array<string | number>>, filename?: string) => {
+    const csvContent: string = 'data:text/csv;charset=utf-8,'
+        + rows.map((row: Array<string | number>): string => row.join(',')).join('\n')
+    const encodedUri: string = encodeURI(csvContent)
+
+    if (filename) {
+        const link: HTMLAnchorElement = document.createElement('a')
+        link.setAttribute('href', encodedUri)
+        link.setAttribute('download', `${filename}.csv`)
+        document.body.appendChild(link)
+
+        // Download the CSV file with the given filename
+        link.click()
+    } else {
+        window.open(encodedUri)
+    }
+}

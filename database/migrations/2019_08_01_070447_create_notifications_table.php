@@ -16,12 +16,16 @@ class CreateNotificationsTable extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('staff_id');
+            $table->string('initials')
+                ->nullable()
+                ->default(null);
+            $table->string('color')
+                ->nullable()
+                ->default(null);
             $table->string('body');
-            $table->boolean('read')
-                ->default(false);
-            $table->boolean('archived')
-                ->default(false);
             $table->timestamps();
+            // Foreign keys
+            $table->foreign('staff_id')->references('id')->on('staff');
         });
     }
 

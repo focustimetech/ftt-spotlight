@@ -119,10 +119,15 @@ class Staff extends Model
 		return $this->hasMany('App\LedgerEntry');
 	}
 
-	public function notifications()
+	public function notificationInbox()
 	{
-		return $this->hasMany('App\Notification')
+		return $this->hasMany('App\NotificationRecipient')
 			->where('archived', false);
+	}
+
+	public function notificationOutbox()
+	{
+		return $this->hasMany('App\Notification');
 	}
 
 	public function scheduleEntries()
@@ -130,14 +135,22 @@ class Staff extends Model
 		return $this->hasMany('App\ScheduleEntry');
 	}
 
-	public function sendNotification($body = null)
+	public function sendNotification($staff_ids, $body)
 	{
-		$notification = new Notification;
-		$notification->staff_id = $this->id;
-		if ($body !== null) {
-			$notification->body = $body;
+		$notification = Notification::create([
+			'staff_id' => $this->id,
+			'initials' => $this->initials,
+			'color' => $this->color,
+			'body' => $body
+		]);
+
+		foreach($staff_ids as $staff_id) {
+			NotificationRecipient::create([
+				'notification_id' => $notification->id,
+				'staff_id' => $staff_id
+			]);
 		}
-		$notification->save();
+
 		return $notification;
 	}
 

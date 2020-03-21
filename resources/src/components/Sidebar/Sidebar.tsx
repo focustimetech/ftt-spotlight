@@ -4,13 +4,13 @@ import { RouteComponentProps } from 'react-router-dom'
 import { Icon, IconButton } from '@material-ui/core'
 import { Theme, withTheme } from '@material-ui/core/styles'
 
-import { CheckInWidget } from '../CheckIn/CheckInWidget'
-import NotificationsWidget from '../Modals/NotificationsWidget'
-import { SearchWidget } from '../Modals/SearchWidget'
-import StarredWidget from '../Modals/StarredWidget'
 import AccountWidget from './AccountWidget'
 import { HelpWidget } from './HelpWidget'
+import { NavItem } from './NavItem'
+import NotificationsWidget from './NotificationsWidget/NotificationsWidget'
+import { SearchWidget } from './SearchWidget'
 import SidebarMenu from './SidebarMenu'
+import StarredWidget from './StarredWidget'
 
 interface IStyleProps {
 	theme: Theme
@@ -37,7 +37,12 @@ class Sidebar extends React.Component<IProps> {
 						</IconButton>
 						<SearchWidget />
 						<StarredWidget />
-						<CheckInWidget />
+						<NavItem
+							title='Check-in'
+							icon='how_to_reg'
+							badgeCount={0}
+							to='check-in'
+						/>
 					</div>
 					<div className='nav_bottom'>
 						<NotificationsWidget />

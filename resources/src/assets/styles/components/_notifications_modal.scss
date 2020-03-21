@@ -18,6 +18,19 @@
 		}
 	}
 
+	&__textfield {
+		margin: 16px 0;
+	}
+
+	.sidebar_modal__header {
+		justify-content: space-between;
+
+		& > div:first-child {
+			display: flex;
+			align-items: center;
+		}
+	}
+
 	.notification {
 		.icon {
 			margin-right: 8px;

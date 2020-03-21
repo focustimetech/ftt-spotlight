@@ -66,54 +66,56 @@ export default class App extends React.Component<IProps, IState> {
 			<>
 				<Router>
 					<div className={classNames('site-wrap', {'--menu_open': this.state.menuOpen})}>
-						<Route render={(props: RouteComponentProps) => (
-							<Sidebar
-								routeComponentProps={props}
-								onSignOut={this.props.onSignOut}
-								onToggleMenuOpen={this.handleToggleMenuOpen}
-							/>
-						)} />
 						{['staff', 'sysadmin'].includes(this.props.currentUser.account_type) ? (
-							<Switch>
-								<Route path='/' exact render={() => <Redirect to='/check-in' />} />
-								<Route path='/check-in' render={(props: RouteComponentProps) => (<CheckIn {...props}/>)} />
-								<Route path='/credentials-manager' component={CredentialsManager} />
-								<Route path='/power-scheduler' component={PowerScheduler} />
-								<Route
-									exact path='/reporting'
-									render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='unselected' />}
-								/>
-								<Route
-									exact path='/reporting/new'
-									render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='new' />}
-								/>
-								<Route
-									exact path='/reporting/:reportID'
-									render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='saved' />}
-								/>
-								<Route path='/settings' component={Settings} />
-								<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
-									<StaffProfile {...props}/>
-								)}/>
-								<Route path='/staff' component={Staff} />
-								<Route path='/students/:studentID' render={(props: RouteComponentProps) => (
-									<StudentProfile {...props} />
-								)}/>
-								<Route path='/students' component={Students} />
-								<Route
-									exact path='/wiki'
-									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='none' />}
-								/>
-								<Route
-									exact path='/wiki/:groupId'
-									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='group' />}
-								/>
-								<Route
-									exact path='/wiki/post/:postId'
-									render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='post' />}
-								/>
-								<Route component={NotFound} />
-							</Switch>
+							<>
+								<Route render={(props: RouteComponentProps) => (
+									<Sidebar
+										routeComponentProps={props}
+										onSignOut={this.props.onSignOut}
+										onToggleMenuOpen={this.handleToggleMenuOpen}
+									/>
+								)} />
+								<Switch>
+									<Route path='/' exact render={() => <Redirect to='/check-in' />} />
+									<Route path='/check-in' render={(props: RouteComponentProps) => (<CheckIn {...props}/>)} />
+									<Route path='/credentials-manager' component={CredentialsManager} />
+									<Route path='/power-scheduler' component={PowerScheduler} />
+									<Route
+										exact path='/reporting'
+										render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='unselected' />}
+									/>
+									<Route
+										exact path='/reporting/new'
+										render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='new' />}
+									/>
+									<Route
+										exact path='/reporting/:reportID'
+										render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='saved' />}
+									/>
+									<Route path='/settings' component={Settings} />
+									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
+										<StaffProfile {...props}/>
+									)}/>
+									<Route path='/staff' component={Staff} />
+									<Route path='/students/:studentID' render={(props: RouteComponentProps) => (
+										<StudentProfile {...props} />
+									)}/>
+									<Route path='/students' component={Students} />
+									<Route
+										exact path='/wiki'
+										render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='none' />}
+									/>
+									<Route
+										exact path='/wiki/:groupId'
+										render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='group' />}
+									/>
+									<Route
+										exact path='/wiki/post/:postId'
+										render={(props: RouteComponentProps) => <Wiki {...props} wikiRoute='post' />}
+									/>
+									<Route component={NotFound} />
+								</Switch>
+							</>
 						) : (
 							<Switch>
 								<Route path='/profile' render={(props: RouteComponentProps) => (

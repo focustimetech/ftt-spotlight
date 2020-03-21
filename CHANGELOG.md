@@ -1,6 +1,42 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.2.9 (2020-03-03)
+
+### Changed
+ - Redesigned the Check-in page to no longer search for student names upon entering student numbers (SPOT-196)
+ - Add focus to Search bar when clicking search button in tables (SPOT-157)
+ - Redirect users to Check-in page when using the Check-in sidenav button (SPOT-188)
+ - Remove password from password input when switching user accounts (SPOT-151)
+
+### Fixed
+ - Fixed a bug where Table filter columns couldn't be selected (SPOT-201)
+
+## Version 1.2.8 (2019-11-25)
+
+### Changed
+ - Students can no longer schedule themselves if they have an appointment (SPOT-178)
+
+### Fixed
+ - Fixed error where Sidebar was displayed on student profiles (SPOT-181)
+ - Fixed server error with scheduled check-ins (SPOT-183)
+
+## Version 1.2.7 (2019-11-19)
+
+### Added
+ - Created the SysAdmin user account type (SPOT-163)
+ - Added Refresh buttons to Calendars and to the Check-in page (SPOT-161)
+ - Added default headers for `axios` requests (SPOT-150)
+ - Created the Spotlight Wiki (SPOT-155)
+ - Added `tslint` (SPOT-40)
+
+### Changed
+ - Check-ins are now encoded with local time, check-ins made in arrears will reflect the time the student was actually checked in (SPOT-130, SPOT-159)
+ - The Starred widget now refreshes every time it is opened (SPOT-43)
+
+### Fixed
+ - Fixed the Account widget not closing after selecting "My Profile" (SPOT-62)
+
 ## Version 1.2.6 (2019-10-28)
 
 ### Added

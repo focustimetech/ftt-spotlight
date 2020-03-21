@@ -2,26 +2,33 @@ import React from 'react'
 
 import {
     Button,
+    Checkbox,
+    FormControlLabel,
     Icon,
-    IconButton,
     TextField,
+    Tooltip,
+    Typography
 } from '@material-ui/core'
+
+import { SetState } from '../../types/app'
 import { LoadingButton } from '../Form/LoadingButton'
 
+export interface ICreateAppointment {
+    memo: string
+    clearSchedule: boolean
+}
+
 interface IProps {
-    onSubmit: (memo: string) => any
+    onSubmit: (NewAppointment: ICreateAppointment) => any
     onClose: () => void
 }
 
 export const NewAppointment = (props: IProps) => {
-    const [open, setOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-        = React.useState(false)
-    const [errored, setErrored]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-        = React.useState(false)
-    const [inputValue, setInputValue]: [string, React.Dispatch<React.SetStateAction<string>>]
-        = React.useState('')
-    const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-    = React.useState(false)
+    const [open, setOpen]: [boolean, SetState<boolean>] = React.useState(false)
+    const [errored, setErrored]: [boolean, SetState<boolean>] = React.useState(false)
+    const [inputValue, setInputValue]: [string, SetState<string>] = React.useState('')
+    const [loading, setLoading]: [boolean, SetState<boolean>] = React.useState(false)
+    const [clearSchedule, setClearSchedule]: [boolean, SetState<boolean>] = React.useState(false)
 
     const handleChange = (event: any) => {
         if (loading) {
@@ -46,7 +53,11 @@ export const NewAppointment = (props: IProps) => {
     const handleSubmit = () => {
         setLoading(true)
         setErrored(false)
-        props.onSubmit(inputValue).then(
+        const appointment: ICreateAppointment = {
+            memo: inputValue,
+            clearSchedule
+        }
+        props.onSubmit(appointment).then(
             (res: any) => {
                 handleClose()
             }
@@ -73,6 +84,23 @@ export const NewAppointment = (props: IProps) => {
                     autoFocus
                     fullWidth
                     multiline
+                />
+                <FormControlLabel
+                    label={
+                        <div className='info_tooltip'>
+                            <Typography>Clear schedule</Typography>
+                            <Tooltip title="Student's schedule will be cleared for the Appointment.">
+                                <Icon>help</Icon>
+                            </Tooltip>
+                        </div>
+                    }
+                    control={
+                        <Checkbox
+                            checked={clearSchedule}
+                            onChange={() => setClearSchedule(!clearSchedule)}
+                            color='primary'
+                        />
+                    }
                 />
                 <div className='calendar_widget__actions'>
                     <LoadingButton

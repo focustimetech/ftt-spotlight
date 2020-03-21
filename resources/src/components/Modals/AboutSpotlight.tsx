@@ -23,7 +23,7 @@ export const AboutSpotlight = (props: IProps) => {
                     <Typography
                         variant='subtitle1'
                         className='about-spotlight__version'
-                    ><span>Version </span>1.2.6</Typography>
+                    ><span>Version </span>1.2.9</Typography>
                     <Typography variant='subtitle2'>By Focustime Technologies</Typography>
                 </div>
             </DialogContent>

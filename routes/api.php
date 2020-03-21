@@ -216,4 +216,4 @@ Route::put('blocks', 'BlockController@store');
 Route::delete('block/{id}', 'BlockController@destroy');
 
 // Attendance
-Route::get('attendance/{id}', 'AttendanceController@attendance');
+Route::get('attendance/{id}', 'AttendanceController@getTotalAttendance');

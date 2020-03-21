@@ -1,6 +1,13 @@
 # Spotlight Changelog
 All notable changes to Spotlight will be documented here.
 
+## Version 1.3.0-alpha
+
+### Changed
+ - Merged the following work-in-progress tickets:
+   - SPOT-142
+   - SPOT-153
+
 ## Version 1.2.9 (2020-03-03)
 
 ### Changed

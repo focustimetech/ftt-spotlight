@@ -5,10 +5,10 @@ public/views
 storage/*.key
 vendor
 .env
+.editorconfig
 .phpunit.result.cache
 npm-debug.log
 yarn-error.log
 node_modules
 .editorconfig
-resources/src/assets/school.json
 .vscode

@@ -91,7 +91,7 @@ module.exports = (env, argv) => {
                 filename: __dirname + '/public/views/index.html',
             }),
             new ForkTsCheckerWebpackPlugin({
-                workers: devMode ? 4 : 2,
+                workers: devMode ? 3 : 2,
                 useTypescriptIncrementalApi: false
             }),
             new MiniCssExtractPlugin({

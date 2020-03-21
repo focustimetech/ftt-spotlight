@@ -34,4 +34,14 @@
 			margin: 0;
 		}
 	}
+
+	&__actions {
+		display: flex;
+		align-items: center;
+		flex-flow: row nowrap;
+
+		& > div + div {
+			margin-left: 8px;
+		}
+	}
 }

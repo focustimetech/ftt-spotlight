@@ -14,6 +14,7 @@ import { IUser } from '../../types/auth'
 import { getObjectFromLocalStorage, MENU_OPEN, writeObjectToLocalStorage } from '../../utils/storage'
 
 import CheckIn from '../CheckIn/CheckIn'
+import Reporting from '../Reporting/Reporting'
 import Sidebar from '../Sidebar/Sidebar'
 import Snackbar from '../Snackbar'
 import CredentialsManager from '../Views/CredentialsManager'
@@ -79,6 +80,18 @@ export default class App extends React.Component<IProps, IState> {
 									<Route path='/check-in' render={(props: RouteComponentProps) => (<CheckIn {...props}/>)} />
 									<Route path='/credentials-manager' component={CredentialsManager} />
 									<Route path='/power-scheduler' component={PowerScheduler} />
+									<Route
+										exact path='/reporting'
+										render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='unselected' />}
+									/>
+									<Route
+										exact path='/reporting/new'
+										render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='new' />}
+									/>
+									<Route
+										exact path='/reporting/:reportID'
+										render={(props: RouteComponentProps) => <Reporting {...props} reportingRoute='saved' />}
+									/>
 									<Route path='/settings' component={Settings} />
 									<Route path='/staff/:staffID' render={(props: RouteComponentProps) => (
 										<StaffProfile {...props}/>

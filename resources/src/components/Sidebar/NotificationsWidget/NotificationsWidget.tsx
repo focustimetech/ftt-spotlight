@@ -2,7 +2,6 @@ import classNames from 'classnames'
 import React from 'react'
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux'
-import SwipableViews from 'react-swipeable-views'
 
 import {
     Button,
@@ -17,9 +16,9 @@ import {
     IconButton,
     Tab,
     Tabs,
-    withStyles,
     TextField,
-    Typography
+    Typography,
+    withStyles
 } from '@material-ui/core'
 
 import {
@@ -32,19 +31,21 @@ import {
     markNotificationAsUnread,
     sendNotification,
     unarchiveNotification
-} from '../../actions/notificationsActions'
-import { ISnackbar, ISnackbarButton, queueSnackbar } from '../../actions/snackbarActions'
-import { IStaffUser } from '../../types/auth'
+} from '../../../actions/notificationsActions'
+import { ISnackbar, ISnackbarButton, queueSnackbar } from '../../../actions/snackbarActions'
+import { IStaffUser } from '../../../types/auth'
 import {
     INotification,
     INotificationRecieved,
     INotificationRequest,
     INotificationSent
-} from '../../types/staff'
+} from '../../../types/staff'
 
-import { EmptyStateIcon } from '../EmptyStateIcon'
-import { ConfirmationDialog } from '../Modals/ConfirmationDialog'
-import { NavItem } from '../Sidebar/NavItem'
+import ChipSelect from '../../ChipSelect'
+import { EmptyStateIcon } from '../../EmptyStateIcon'
+import { ConfirmationDialog } from '../../Modals/ConfirmationDialog'
+import { NavItem } from '../../Sidebar/NavItem'
+import NotificationDispatchWidget from './NotificationDispatchWidget'
 
 const NotificationsTab = withStyles({
     root: { minWidth: 'unset' }
@@ -54,7 +55,6 @@ interface IState {
     archiveAllDialogOpen: boolean
     loadingInbox: boolean
     loadingOutbox: boolean
-    message: string
     open: boolean
     openNotifications: number[]
     sendFormOpen: boolean
@@ -85,7 +85,6 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
         archiveAllDialogOpen: false,
         loadingInbox: false,
         loadingOutbox: false,
-        message: '',
         open: false,
         openNotifications: [],
         sendFormOpen: false,
@@ -228,10 +227,6 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
 
     handleCloseSendForm = () => {
         this.setState({ sendFormOpen: false })
-    }
-
-    handleChangeMessage = (event: any) => {
-        this.setState({ message: event.target.value })
     }
 
     handleSendNotification = () => {
@@ -405,14 +400,15 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                             )}
                             {this.state.tab === 1 && (
                                 <>
-                                    <div className='notifications_modal__actions'>
-                                        <Button
-                                            variant='text'
-                                            color='primary'
-                                            disabled={this.state.sendFormOpen}
-                                            onClick={() => this.handleOpenSendForm()}
-                                        >Compose</Button>
-                                    </div>
+                                    {!this.state.sendFormOpen && (
+                                        <div className='notifications_modal__actions'>
+                                            <Button
+                                                variant='text'
+                                                color='primary'
+                                                onClick={() => this.handleOpenSendForm()}
+                                            >Compose</Button>
+                                        </div>
+                                    )}
                                     <Fade in={this.state.loadingInbox}>{this.contentLoader}</Fade>
                                     <Grow in={this.props.outbox && this.props.outbox.length > 0}>
                                         <div className='content-inner'>
@@ -461,32 +457,12 @@ class NotificationsWidget extends React.Component<IReduxProps, IState> {
                                             })}
                                         </div>
                                     </Grow>
-                                    <Grow in={this.state.sendFormOpen}>
-                                        <div>
-                                            <Typography>Your Notification will be sent to all staff members. </Typography>
-                                            <div className='notifications_modal__textfield'>
-                                                <TextField
-                                                    value={this.state.message}
-                                                    onChange={this.handleChangeMessage}
-                                                    variant='filled'
-                                                    color='primary'
-                                                    multiline
-                                                    fullWidth
-                                                    placeholder='Compose your Notification'
-                                                    label='Message'
-                                                />
-                                            </div>
-                                            <div className='notifications_modal__actions'>
-                                                <Button
-                                                    color='primary'
-                                                    variant='text'
-                                                    disabled={this.state.message.length === 0}
-                                                    onClick={() => this.handleSendNotification()}
-                                                >Send</Button>
-                                                <Button onClick={() => this.setState({ sendFormOpen: false })}>Cancel</Button>
-                                            </div>
-                                        </div>
-                                    </Grow>
+                                    {this.state.sendFormOpen && (
+                                        <NotificationDispatchWidget
+                                            onCancel={this.handleCloseSendForm}
+                                            onSubmit={this.handleSendNotification}
+                                        />
+                                    )}
                                     {(!this.state.loadingOutbox && this.props.outbox.length === 0 && !this.state.sendFormOpen) && (
                                         <EmptyStateIcon variant='notifications'>
                                             <h2>Your outbox is empty</h2>

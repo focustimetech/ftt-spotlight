@@ -1,0 +1,29 @@
+.modal-section {
+    &__button {
+        .button_text {
+            margin-left: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            font-size: inherit;
+
+            & + * {
+                margin-left: 8px;
+            }
+        }
+    }
+
+    &__header {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        margin-bottom: 8px;
+
+        & > * + * {
+            margin-left: 8px;
+        }
+    }
+
+    &__content {
+        margin: 0 0 16px 40px;
+    }
+}

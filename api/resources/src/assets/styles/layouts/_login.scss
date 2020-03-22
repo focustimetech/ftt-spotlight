@@ -1,0 +1,150 @@
+.login {
+	width: 100%;
+	height: 100vh;
+	color: rgba(255, 255, 255, 0.87);
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+
+	&__image_container {
+		width: 100%;
+		position: relative;
+		overflow: hidden;
+
+		.login_image {
+			position: absolute;
+			height: 100%;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+
+			&.--vertical {
+				height: unset;
+				width: 100%;
+			}
+		}
+	}
+
+	&__panel {
+		background: $primary;
+		height: 100vh;
+		position: relative;
+		min-width: 490px;
+
+		.ft-logo {
+			height: 48px;
+			width: 48px;
+		}
+
+		.logos-container {
+			height: 48px;
+			margin: 0 auto 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.cross {
+				font-size: 32px;
+				line-height: 16px;
+				display: inline-table;
+				margin: 0 8px;
+				font-weight: 400;
+				color: #DDD;
+			}
+		}
+
+		.login_container {
+			width: 360px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+
+			h2 {
+				margin: 0 0 16px 0;
+			}
+
+			.school_logo {
+				display: flex;
+				flex-flow: row;
+				align-items: center;
+				justify-content: center;
+				line-height: 24px;
+
+				img {
+					margin-right: 8px;
+					height: 48px;
+				}
+				
+				h3 {
+					font-weight: 500;
+					margin: 0;
+				}
+			}
+	
+			.subtitle_link {
+				margin: 0 0 16px 0;
+				color: rgba(225,225,225,0.86);
+				font-weight: 700;
+	
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+	
+			.login_form {
+				padding: 32px;
+				margin: 32px 0 16px;
+	
+				h2 {
+					font-weight: 400;
+					text-align: center;
+				}
+			}
+		}
+
+		.links_list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: flex-end;
+
+			li {
+				margin: 0 0 0 16px;
+				font-weight: 500;
+			}
+		}
+	}
+
+	.auth-username {
+		display: block;
+		margin: 0 auto;
+		font-weight: 400 !important;
+		text-transform: unset !important;
+
+		&__inner {
+			display: flex;
+			align-items: center;
+			text-transform: inherit;
+
+			& > * + * {
+				margin-left: 8px;
+			}
+		}
+	}
+}
+
+.login_avatar {
+	width: 32px !important;
+	height: 32px !important;
+	font-size: 14px !important;
+}
+
+.auth-username__list-item {
+	display: flex;
+	align-items: center;
+
+	& > * + * {
+		margin-left: 4px !important;
+	}
+}

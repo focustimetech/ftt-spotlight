@@ -1,0 +1,9 @@
+{
+  "main.js": "js/main.js",
+  "main.js.map": "js/main.js.map",
+  "runtime.js": "js/runtime.js",
+  "runtime.js.map": "js/runtime.js.map",
+  "vendors.js": "js/vendors.js",
+  "vendors.js.map": "js/vendors.js.map",
+  "../views/index.html": "js/../views/index.html"
+}

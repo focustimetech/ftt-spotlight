@@ -23,13 +23,13 @@ import {
 	Typography
 } from '@material-ui/core'
 
-import { checkUsername, login} from '../../actions/authActions'
-import { AuthState, AuthUsername, ICredentials, ILoginError, LoginState } from '../../types/auth'
-import { getObjectFromLocalStorage, REMEMBER_USERS, writeObjectToLocalStorage } from '../../utils/storage'
-import { Banner } from '../Banner/Banner'
-import { IBannerContentProps } from '../Banner/BannerContent'
+import { checkUsername, login} from '../actions/authActions'
+import { AuthState, AuthUsername, ICredentials, ILoginError, LoginState } from '../types/auth'
+import { getObjectFromLocalStorage, REMEMBER_USERS, writeObjectToLocalStorage } from '../utils/storage'
+import { Banner } from '../components/Banner/Banner'
+import { IBannerContentProps } from '../components/Banner/BannerContent'
 
-import { LoadingButton } from '../Form/LoadingButton'
+import { LoadingButton } from '../components/Form/LoadingButton'
 
 const selectBackground = () => {
 	const imageList: string[] = [

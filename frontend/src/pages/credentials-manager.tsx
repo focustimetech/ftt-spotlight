@@ -2,17 +2,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
-import { disableUsers, invalidatePasswords, reenableUsers, resetPasswords } from '../../actions/authActions'
-import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { fetchUsers } from '../../actions/userActions'
-import { ITableAction, ITableHeaderColumn, ITableLink } from '../../types/table'
-import { EnhancedTable } from '../Table/EnhancedTable'
+import { disableUsers, invalidatePasswords, reenableUsers, resetPasswords } from '../actions/authActions'
+import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
+import { fetchUsers } from '../actions/userActions'
+import { ITableAction, ITableHeaderColumn, ITableLink } from '../types/table'
+import { EnhancedTable } from '../components/Table/EnhancedTable'
 
-import { IUser } from '../../types/auth'
-import { isEmpty } from '../../utils/utils'
+import { IUser } from '../types/auth'
+import { isEmpty } from '../utils/utils'
 
-import { ConfirmPasswordDialog } from '../Modals/ConfirmPasswordDialog'
-import { TopNav } from '../TopNav'
+import { ConfirmPasswordDialog } from '../components/Modals/ConfirmPasswordDialog'
+import { TopNav } from '../components/TopNav'
 
 type AuthAction = 'reset-passwords' | 'invalidate-passwords' | 'disable-users' | 'reenable-users'
 

@@ -21,17 +21,17 @@ import {
 } from '@material-ui/core'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
-import { checkIn, fetchCheckInStatus } from '../../actions/checkinActions'
-import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { ICheckInMethodDetails, ILedgerEntry, ISchedulePlan } from '../../types/calendar'
-import { CheckInStatus, ICheckInRequest } from '../../types/checkin'
-import { getMethodDetailsFromName } from '../../utils/utils'
+import { checkIn, fetchCheckInStatus } from '../actions/checkinActions'
+import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
+import { ICheckInMethodDetails, ILedgerEntry, ISchedulePlan } from '../types/calendar'
+import { CheckInStatus, ICheckInRequest } from '../types/checkin'
+import { getMethodDetailsFromName } from '../utils/utils'
 
-import { ModalSection } from '../ModalSection'
-import { ISelectableListAction, ISelectableListItem, SelectableList } from '../SelectableList'
-import { TopNav } from '../TopNav'
-import CheckInForm from './CheckInForm'
-import ErrorsDialog from './ErrorsDialog'
+import { ModalSection } from '../components/ModalSection'
+import { ISelectableListAction, ISelectableListItem, SelectableList } from '../components/SelectableList'
+import { TopNav } from '../components/TopNav'
+import CheckInForm from '../components/CheckIn/CheckInForm'
+import ErrorsDialog from '../components/CheckIn/ErrorsDialog'
 
 interface IReduxProps {
     checkInStatus: CheckInStatus

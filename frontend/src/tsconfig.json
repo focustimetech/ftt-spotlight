@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "outDir": "./public/js",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "esnext",
+    "lib": [
+      "es6",
+      "dom",
+      "es2017"
+    ],
+    "target": "es5",
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "./resources/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

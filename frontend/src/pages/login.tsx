@@ -339,10 +339,12 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	render() {
+		/*
 		const { from } = this.props.location.state || { from: { pathname: '/' } }
 		if (this.state.redirectToReferrer) {
 			return <Redirect to={from} />
 		}
+		*/
 
 		const schoolName: string = this.props.settings.values && this.props.settings.values['school_name']
 			? this.props.settings.values['school_name'].value
@@ -369,16 +371,6 @@ class Login extends React.Component<IProps, IState> {
 
 		return (
 			<>
-				{/*
-				<Dialog open={this.state.helpDialogOpen}>
-					<DialogContent>
-
-					</DialogContent>
-					<DialogActions>
-						<Button onClick={() => this.setState({ helpDialogOpen: false })}>Cancel</Button>
-					</DialogActions>
-				</Dialog>
-				*/}
 				{bannerProps && (
 					<Banner
 						{...bannerProps}
@@ -406,12 +398,12 @@ class Login extends React.Component<IProps, IState> {
 							<Paper className='login_form'>
 								<form>
 									<div className='logos-container'>
-										<img className='ft-logo' src='/static/images/ft-badge.png' />
+										<img className='ft-logo' src='/images/ft-badge.png' />
 										{(schoolName && schoolLogo) && (
 											<>
 												<span className='cross'>×</span>
 												<div className='school_logo'>
-													<img src={`/static/images/logos/${schoolLogo}`} />
+													<img src={`/images/logos/${schoolLogo}`} />
 													<h3>{schoolName}</h3>
 												</div>
 											</>

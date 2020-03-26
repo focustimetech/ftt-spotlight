@@ -35,7 +35,7 @@ class Carousel extends React.Component<IProps, IState> {
     componentDidMount() {
         this.timeout = this.props.timeout || DEFAULT_TIMEOUT
         if (this.timeout > 0 ) {
-            this.timer = window.setInterval(() => this.onNext(), this.timeout)
+            this.resetTimer()
         }
         console.log(this.props.children.length)
     }
@@ -48,19 +48,30 @@ class Carousel extends React.Component<IProps, IState> {
     onPrevious = () => {
         this.setState((state: IState) => ({
             index: state.index > 0 ? state.index - 1 : this.numChildren() - 1
-        }))
+        }), () => {
+            this.resetTimer()
+        })
     }
 
     onNext = () => {
         this.setState((state: IState) => ({
             index: state.index >= this.numChildren() - 1 ? 0 : state.index + 1
-        }))
+        }), () => {
+            this.resetTimer()
+        })
     }
 
     onChangeIndex = (index: number) => {
-        if (index > 0 && index < this.numChildren()) {
+        if (index >= 0 && index < this.numChildren()) {
             this.setState({ index })
         }
+    }
+
+    resetTimer = () => {
+        if (this.timer) {
+            clearInterval(this.timer)
+        }
+        this.timer = window.setInterval(() => this.onNext(), this.timeout)
     }
 
     render() {

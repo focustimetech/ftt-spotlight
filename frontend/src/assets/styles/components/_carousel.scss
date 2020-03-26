@@ -25,6 +25,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 16px;
+        z-index: 2;
     }
 
     &__indecies {
@@ -35,6 +36,7 @@
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
+        z-index: 3;
 
         .carousel__index {
             box-sizing: border-box;

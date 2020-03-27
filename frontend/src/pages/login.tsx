@@ -1,15 +1,12 @@
 import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
 
 import {
 	Avatar,
 	Button,
 	Checkbox,
-	Dialog,
 	DialogActions,
-	DialogContent,
 	FormControlLabel,
 	Icon,
 	IconButton,
@@ -26,29 +23,8 @@ import {
 import { checkUsername, login} from '../actions/authActions'
 import { AuthState, AuthUsername, ICredentials, ILoginError, LoginState } from '../types/auth'
 import { getObjectFromLocalStorage, REMEMBER_USERS, writeObjectToLocalStorage } from '../utils/storage'
-import { Banner } from '../components/Banner/Banner'
-import { IBannerContentProps } from '../components/Banner/BannerContent'
-
+import Carousel, { ICarouselImage } from '../components/Carousel'
 import { LoadingButton } from '../components/Form/LoadingButton'
-
-const selectBackground = () => {
-	const imageList: string[] = [
-		'brooke-cagle-609873-unsplash.jpg',
-		'helloquence-61189-unsplash.jpg',
-		'john-schnobrich-520023-unsplash.jpg',
-		'mimi-thian-737711-unsplash.jpg',
-		'priscilla-du-preez-293218-unsplash.jpg',
-		'mika-korhonen-mKi1rfSQwVY-unsplash.jpg',
-		'neonbrand-zFSo6bnZJTw-unsplash.jpg'
-	]
-	const arrayIndex: number = Math.floor(Math.random() * imageList.length)
-	return `static/images/splash/${imageList[arrayIndex]}`
-}
-
-interface IDimensions {
-	height: number
-	width: number
-}
 
 interface IReduxProps {
 	settings: any
@@ -56,7 +32,7 @@ interface IReduxProps {
 	login: (credentials: ICredentials) => Promise<any>
 }
 
-interface IProps extends IReduxProps, RouteComponentProps {
+interface IProps extends IReduxProps {
 	authState: AuthState
 	failedSettings: boolean
 	onSignIn: () => Promise<any>
@@ -64,16 +40,11 @@ interface IProps extends IReduxProps, RouteComponentProps {
 }
 
 interface IState {
-	bannerOpen: boolean
-	boundingBoxDimension: IDimensions
 	error: ILoginError | null
 	helpDialogOpen: boolean
 	redirectToReferrer: boolean
 	loadingUsername: boolean
 	loadingPassword: boolean
-	imageURL: string
-	imageStatus: 'loading' | 'loaded'
-	imageDimensions: IDimensions
 	loginState: LoginState
 	rememberUser: boolean
 	authUsername: AuthUsername
@@ -87,16 +58,9 @@ class Login extends React.Component<IProps, IState> {
 	boundingBox: any
 	rememberUsers: AuthUsername[]
 	state: IState = {
-		bannerOpen: true,
-		boundingBoxDimension: { height: 0, width: 0 },
 		error: null,
-		helpDialogOpen: false,
-		redirectToReferrer: false,
 		loadingUsername: false,
 		loadingPassword: false,
-		imageURL: selectBackground(),
-		imageStatus: 'loading',
-		imageDimensions: { height: 0, width: 0 },
 		loginState: 'password',
 		rememberUser: false,
 		authUsername: null,
@@ -105,24 +69,12 @@ class Login extends React.Component<IProps, IState> {
 		password: ''
 	}
 
-	handleBannerClose = () => {
-		this.setState({ bannerOpen: false })
-	}
-
 	handleChange = (event: any) => {
 		event.preventDefault()
 		this.setState({
 			[event.target.name]: event.target.value,
 			error: null
 		} as IState)
-	}
-
-	handleHelpDialogOpen = () => {
-		this.setState({ helpDialogOpen: true })
-	}
-
-	handleHelpDialogClose = () => {
-		this.setState({ helpDialogOpen: false })
 	}
 
 	handleErrorCode = (errorCode: number) => {
@@ -189,10 +141,7 @@ class Login extends React.Component<IProps, IState> {
 		if (!this.validateForm()) {
 			return
 		}
-		this.setState({
-			loadingPassword: true,
-			bannerOpen: false
-		})
+		this.setState({ loadingPassword: true })
 		const credentials: ICredentials = {
 			username: this.state.authUsername.username,
 			password: this.state.password
@@ -243,21 +192,6 @@ class Login extends React.Component<IProps, IState> {
 			loginState: 'username',
 			menuRef: null
 		})
-	}
-
-	handleImageLoad = () => {
-		this.setState({
-			imageStatus: 'loaded',
-			imageDimensions: {
-				height: this.image.clientHeight,
-				width: this.image.clientWidth
-			},
-			boundingBoxDimension: {
-				height: this.boundingBox.clientHeight,
-				width: this.boundingBox.clientWidth
-			}
-		})
-		this.props.onImageLoad()
 	}
 
 	toggleRememberUser = () => {
@@ -329,7 +263,6 @@ class Login extends React.Component<IProps, IState> {
 	)
 
 	componentDidMount() {
-		document.title = 'Spotlight - Login'
 		this.rememberUsers = getObjectFromLocalStorage(REMEMBER_USERS) as AuthUsername[]
 		if (this.rememberUsers && this.rememberUsers.length > 0) {
 			this.setState({ authUsername: this.rememberUsers[0] })
@@ -339,20 +272,18 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	render() {
-		/*
-		const { from } = this.props.location.state || { from: { pathname: '/' } }
-		if (this.state.redirectToReferrer) {
-			return <Redirect to={from} />
-		}
-		*/
-
+		const carouselImages: ICarouselImage[] = [
+			{ link: '/', src: '/images/splash/brooke-cagle-609873-unsplash.jpg' },
+			{ link: '/', src: '/images/splash/helloquence-61189-unsplash.jpg' },
+			{ link: '/', src: '/images/splash/john-schnobrich-520023-unsplash.jpg' }
+		]
 		const schoolName: string = this.props.settings.values && this.props.settings.values['school_name']
 			? this.props.settings.values['school_name'].value
 			: undefined
 		const schoolLogo: string = this.props.settings.values && this.props.settings.values['school_logo']
 			? this.props.settings.values['school_logo'].value
 			: undefined
-		const isVertical: boolean = this.state.imageDimensions.width < this.state.boundingBoxDimension.width
+
 		const isRemembered: boolean = this.rememberUsers && this.rememberUsers.some((rememberUser: AuthUsername) => {
 			return this.state.authUsername.username === rememberUser.username
 		})
@@ -370,168 +301,143 @@ class Login extends React.Component<IProps, IState> {
 		}
 
 		return (
-			<>
-				{bannerProps && (
-					<Banner
-						{...bannerProps}
-						variant='dynamic'
-						open={this.state.bannerOpen}
-						onClose={this.handleBannerClose}
-					/>
-				)}
-				<div className='login'>
-					<div className='login__image_container' ref={(boundingBox: any) => this.boundingBox = boundingBox}>
-						<img
-							className={classNames('login_image', {['--vertical']: isVertical})}
-							src={this.state.imageURL}
-							onLoad={this.handleImageLoad}
-							ref={(image: any) => this.image = image}
-						/>
-					</div>
-					<div className='login__panel'>
-						<div className='login_container'>
-							<h2>Smart attendance for the internet age.</h2>
-							<a
-								href='https://focustime.ca'
-								className='subtitle_link'
-							>Start using powerful tools that let your self directed study blocks succeed.</a>
-							<Paper className='login_form'>
-								<form>
-									<div className='logos-container'>
-										<img className='ft-logo' src='/images/ft-badge.png' />
-										{(schoolName && schoolLogo) && (
-											<>
-												<span className='cross'>×</span>
-												<div className='school_logo'>
-													<img src={`/images/logos/${schoolLogo}`} />
-													<h3>{schoolName}</h3>
-												</div>
-											</>
-										)}
-									</div>
-									<h2>Sign in to Spotlight</h2>
-									{(this.state.authUsername || (this.rememberUsers && this.rememberUsers.length > 0)) && (
-										<>
-											<Button className='auth-username' onClick={this.handleOpenMenu}>
-												<div className='auth-username__inner'>
-													{this.state.loginState === 'password' && this.state.authUsername ? (
-														<>
-															<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
-																{this.state.authUsername.initials}
-															</Avatar>
-															<Typography>{this.state.authUsername.username}</Typography>
-														</>
-													) : (
-														<Typography>Sign in with Username</Typography>
-													)}
-													<Icon>expand_more</Icon>
-												</div>
-											</Button>
-											{(this.state.loginState === 'password' || (this.rememberUsers && this.rememberUsers.length > 0)) && (
-												<Menu
-													open={Boolean(this.state.menuRef)}
-													anchorEl={this.state.menuRef}
-													anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-													transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-													onClose={this.handleCloseMenu}
-												>
-													{(!isRemembered && this.state.authUsername) && (
-														this.rememberUserListItem(this.state.authUsername, false)
-													)}
-													{(this.rememberUsers && this.rememberUsers.length) && (
-														this.rememberUsers.map((rememberUser: AuthUsername) => this.rememberUserListItem(rememberUser))
-													)}
-													<MenuItem onClick={() => this.resetLoginState()}>Sign in with Username</MenuItem>
-												</Menu>
+			<div className='login'>
+				<div className='login__container'>
+					<h2>Smart attendance for the internet age.</h2>
+					<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
+					<Paper className='login__paper'>
+						<Carousel images={carouselImages} />
+						<form className='login__form'>
+							<div className='logos-container'>
+								<img className='ft-logo' src='/images/ft-badge.png' />
+								{(schoolName && schoolLogo) && (
+									<>
+										<span className='cross'>×</span>
+										<div className='school_logo'>
+											<img src={`/images/logos/${schoolLogo}`} />
+											<h3>{schoolName}</h3>
+										</div>
+									</>
+								)}
+							</div>
+							<h2>Sign in to Spotlight</h2>
+							{(this.state.authUsername || (this.rememberUsers && this.rememberUsers.length > 0)) && (
+								<>
+									<Button className='auth-username' onClick={this.handleOpenMenu}>
+										<div className='auth-username__inner'>
+											{this.state.loginState === 'password' && this.state.authUsername ? (
+												<>
+													<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
+														{this.state.authUsername.initials}
+													</Avatar>
+													<Typography>{this.state.authUsername.username}</Typography>
+												</>
+											) : (
+												<Typography>Sign in with Username</Typography>
 											)}
-										</>
+											<Icon>expand_more</Icon>
+										</div>
+									</Button>
+									{(this.state.loginState === 'password' || (this.rememberUsers && this.rememberUsers.length > 0)) && (
+										<Menu
+											open={Boolean(this.state.menuRef)}
+											anchorEl={this.state.menuRef}
+											anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+											transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+											onClose={this.handleCloseMenu}
+										>
+											{(!isRemembered && this.state.authUsername) && (
+												this.rememberUserListItem(this.state.authUsername, false)
+											)}
+											{(this.rememberUsers && this.rememberUsers.length) && (
+												this.rememberUsers.map((rememberUser: AuthUsername) => this.rememberUserListItem(rememberUser))
+											)}
+											<MenuItem onClick={() => this.resetLoginState()}>Sign in with Username</MenuItem>
+										</Menu>
 									)}
-									{this.state.loginState === 'username' && (
-										<>
-											<TextField
-												name='user'
-												type='text'
-												label='Email or Student Number'
-												error={this.state.error && this.state.error.type === 'username'}
-												helperText={
-													this.state.error && this.state.error.type === 'username'
-														? this.state.error.message
-														: undefined
-												}
-												value={this.state.user}
-												onChange={this.handleChange}
-												margin='normal'
-												variant='filled'
-												autoFocus
-												fullWidth
+								</>
+							)}
+							{this.state.loginState === 'username' && (
+								<>
+									<TextField
+										name='user'
+										type='text'
+										label='Email or Student Number'
+										error={this.state.error && this.state.error.type === 'username'}
+										helperText={
+											this.state.error && this.state.error.type === 'username'
+												? this.state.error.message
+												: undefined
+										}
+										value={this.state.user}
+										onChange={this.handleChange}
+										margin='normal'
+										variant='filled'
+										autoFocus
+										fullWidth
+									/>
+									<FormControlLabel
+										label='Remember me'
+										control={
+											<Checkbox
+												onChange={() => this.toggleRememberUser()}
+												checked={this.state.rememberUser}
+												color='primary'
 											/>
-											<FormControlLabel
-												label='Remember me'
-												control={
-													<Checkbox
-														onChange={() => this.toggleRememberUser()}
-														checked={this.state.rememberUser}
-														color='primary'
-													/>
-												}
-											/>
-											<DialogActions>
-												<LoadingButton
-													type='submit'
-													onClick={this.handleCheckUsername}
-													color='primary'
-													variant='contained'
-													loading={this.state.loadingUsername}
-												>Next</LoadingButton>
-											</DialogActions>
-										</>
-									)}
-									{this.state.loginState === 'password' && (
-										<>
-											<TextField
-												name='password'
-												type='password'
-												label='Password'
-												error={this.state.error && this.state.error.type === 'password'}
-												helperText={
-													this.state.error && this.state.error.type === 'password'
-														? this.state.error.message
-														: undefined
-												}
-												value={this.state.password}
-												onChange={this.handleChange}
-												margin='normal'
-												variant='filled'
-												autoFocus
-												fullWidth
-											/>
-											<DialogActions>
-												{/*
-												<Button
-													variant='text'
-													color='primary'
-													onClick={() => this.handleHelpDialogOpen()}
-												>Can't Sign In</Button>
-												*/}
-												<LoadingButton
-													type='submit'
-													onClick={this.handleLogin}
-													color='primary'
-													variant='contained'
-													loading={this.state.loadingPassword}
-												>Sign In</LoadingButton>
-											</DialogActions>
-										</>
-									)}
-								</form>
-							</Paper>
-							<ul className='links_list'>
-								<a href='https://focustime.ca'><li>Learn More</li></a>
-							</ul>
-						</div>
-					</div>
+										}
+									/>
+									<DialogActions>
+										<LoadingButton
+											type='submit'
+											onClick={this.handleCheckUsername}
+											color='primary'
+											variant='contained'
+											loading={this.state.loadingUsername}
+										>Next</LoadingButton>
+									</DialogActions>
+								</>
+							)}
+							{this.state.loginState === 'password' && (
+								<>
+									<TextField
+										name='password'
+										type='password'
+										label='Password'
+										error={this.state.error && this.state.error.type === 'password'}
+										helperText={
+											this.state.error && this.state.error.type === 'password'
+												? this.state.error.message
+												: undefined
+										}
+										value={this.state.password}
+										onChange={this.handleChange}
+										margin='normal'
+										variant='filled'
+										autoFocus
+										fullWidth
+									/>
+									<DialogActions>
+										<Button
+											variant='text'
+											color='primary'
+										>Can't Sign In</Button>
+										<LoadingButton
+											type='submit'
+											onClick={this.handleLogin}
+											color='primary'
+											variant='contained'
+											loading={this.state.loadingPassword}
+										>Sign In</LoadingButton>
+									</DialogActions>
+								</>
+							)}
+						</form>
+					</Paper>
+					<ul className='login__links'>
+						<a href='https://focustime.ca'><li>Learn More</li></a>
+					</ul>
 				</div>
-			</>
+			</div>
 		)
 	}
 }

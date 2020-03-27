@@ -12,8 +12,13 @@ import {
  */
 const DEFAULT_TIMEOUT: number = 5000
 
+export interface ICarouselImage {
+    link: string
+    src: string
+}
+
 interface IProps {
-    children: any
+    images: ICarouselImage[]
     timeout?: number
 }
 
@@ -29,15 +34,15 @@ class Carousel extends React.Component<IProps, IState> {
     }
 
     numChildren = (): number => {
-        return this.props.children.length
+        return this.props.images.length
     }
 
     componentDidMount() {
-        this.timeout = this.props.timeout || DEFAULT_TIMEOUT
-        if (this.timeout > 0 ) {
-            this.resetTimer()
+        if (this.props.timeout === 0) {
+            return
         }
-        console.log(this.props.children.length)
+        this.timeout = this.props.timeout || DEFAULT_TIMEOUT
+        this.resetTimer()
     }
 
     componentWillUnmount() {
@@ -63,7 +68,9 @@ class Carousel extends React.Component<IProps, IState> {
 
     onChangeIndex = (index: number) => {
         if (index >= 0 && index < this.numChildren()) {
-            this.setState({ index })
+            this.setState({ index }, () => {
+                this.resetTimer()
+            })
         }
     }
 
@@ -71,13 +78,14 @@ class Carousel extends React.Component<IProps, IState> {
         if (this.timer) {
             clearInterval(this.timer)
         }
-        this.timer = window.setInterval(() => this.onNext(), this.timeout)
+        if (this.timeout) {
+            this.timer = window.setInterval(() => this.onNext(), this.timeout)
+        }
     }
 
     render() {
         const indecies: any[] = []
         for (let i: number = 0; i < this.numChildren(); i ++) {
-            console.log('i = ' + i)
             indecies.push(
                 <a
                     key={i}
@@ -105,7 +113,9 @@ class Carousel extends React.Component<IProps, IState> {
                     {indecies}
                 </div>
                 <SwipeableViews index={this.state.index}>
-                    {this.props.children}
+                    {this.props.images.map((image: ICarouselImage) => (
+                        <a key={image.src} href={image.link} target='_blank'><img src={image.src} /></a>
+                    ))}
                 </SwipeableViews>
             </div>
         )

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { AppProps } from 'next/app'
 import React from 'react'
 
@@ -11,6 +12,7 @@ import { setAuthorizationToken, setJsonHeaders } from '../utils/api'
 import { ACCESS_TOKEN } from '../utils/storage'
 
 import '../assets/styles/main.scss'
+axios.defaults.withCredentials = true
 
 // setAuthorizationToken(localStorage.getItem(ACCESS_TOKEN))
 // setJsonHeaders()

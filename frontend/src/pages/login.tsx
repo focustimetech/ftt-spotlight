@@ -41,8 +41,6 @@ interface IProps extends IReduxProps {
 
 interface IState {
 	error: ILoginError | null
-	helpDialogOpen: boolean
-	redirectToReferrer: boolean
 	loadingUsername: boolean
 	loadingPassword: boolean
 	loginState: LoginState
@@ -118,10 +116,7 @@ class Login extends React.Component<IProps, IState> {
 		if (!this.validateForm()) {
 			return
 		}
-		this.setState({
-			loadingUsername: true,
-			bannerOpen: false
-		})
+		this.setState({ loadingUsername: true })
 		this.props.checkUsername(this.state.user)
 			.then((res: any) => {
 				const authUsername: AuthUsername = res.data
@@ -151,7 +146,6 @@ class Login extends React.Component<IProps, IState> {
 				this.props.onSignIn()
 					.then(() => {
 						this.props.onSignIn()
-						this.setState({ redirectToReferrer: true })
 						if (this.state.rememberUser) {
 							this.rememberAuthUsername(this.state.authUsername)
 						}
@@ -287,18 +281,6 @@ class Login extends React.Component<IProps, IState> {
 		const isRemembered: boolean = this.rememberUsers && this.rememberUsers.some((rememberUser: AuthUsername) => {
 			return this.state.authUsername.username === rememberUser.username
 		})
-		let bannerProps: IBannerContentProps = null
-		if (this.props.authState === 'failed-settings') {
-			bannerProps = {
-				icon: 'warning',
-				message: 'The server encountered an error while signing in. Please try again.'
-			}
-		} else if (this.props.authState === 'unauthenticated') {
-			bannerProps = {
-				icon: 'lock',
-				message: 'Your session has expired. Please sign back in to continue.'
-			}
-		}
 
 		return (
 			<div className='login'>

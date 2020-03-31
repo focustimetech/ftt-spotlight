@@ -22,7 +22,7 @@ class CreateGuardiansStudentsTable extends Migration
             $table->foreignId('student_id');    // The associated student
             $table->timestamps();
             // Foreign keys
-            $table->foreign('guaridan_id')->references('id')->on('guardians');
+            $table->foreign('guardian_id')->references('id')->on('guardians');
             $table->foreign('student_id')->references('id')->on('students');
         });
     }

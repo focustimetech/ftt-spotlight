@@ -21,7 +21,7 @@ class CreateClassroomsTable extends Migration
             $table->string('name');                 // Name of the classroom. E.g. "Room 223"
             $table->unsignedInteger('capacity')     // The max number of students in the classroom (0 for no limit)
                 ->default(0);
-            $table->foriegnId('teacher_id');        // The teacher that created the classroom
+            $table->foreignId('teacher_id');        // The teacher that created the classroom
             $table->timestamps();
             // Foreign keys
             $table->foreign('teacher_id')->references('id')->on('teachers');

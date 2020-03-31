@@ -1,0 +1,25 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Classroom extends Model
+{
+    protected $table = 'classrooms';
+
+    public function teachers($date) {
+        return $this->belongsToMany('App\Teacher', 'teachers_classrooms')
+            ->withPivot('default')
+            ->withTimestamps();
+    }
+
+    public function appointments($date) {
+        return $this->hasMany('App\Appointment')
+            ->where('date', $date);
+    }
+
+    public function topics() {
+        return $this->hasMany('App\Topic');
+    }
+}

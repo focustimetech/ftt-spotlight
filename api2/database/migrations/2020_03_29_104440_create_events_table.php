@@ -19,9 +19,9 @@ class CreateEventsTable extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('memo');         // Memo for the event
-            $table->foriegnId('staff_id');  // The staff member that made the event
+            $table->foreignId('staff_id');  // The staff member that made the event
             $table->timestamps();
-            // Foriegn keys
+            // Foreign keys
             $table->foreign('staff_id')->references('id')->on('staff');
         });
     }

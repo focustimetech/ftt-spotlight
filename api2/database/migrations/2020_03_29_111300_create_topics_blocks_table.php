@@ -24,7 +24,7 @@ class CreateTopicsBlocksTable extends Migration
             $table->timestamps();
             // Foreign keys
             $table->foreign('block_id')->references('id')->on('blocks');
-            $table->foreign('topic_id')->references('id')->on('topcis');
+            $table->foreign('topic_id')->references('id')->on('topics');
         });
     }
 

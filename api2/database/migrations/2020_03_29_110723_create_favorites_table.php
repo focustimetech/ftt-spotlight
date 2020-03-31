@@ -19,11 +19,11 @@ class CreateFavoritesTable extends Migration
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
             $table->foreignId('favorited_id');  // The user being added to the favorite list
-            $table->foriegnId('user_id');       // The owner of the favorite list
+            $table->foreignId('user_id');       // The owner of the favorite list
             $table->timestamps();
             // Foreign keys
-            $table->foriegn('favorited_id')->references('id')->on('users');
-            $table->foriegn('user_id')->references('id')->on('users');
+            $table->foreign('favorited_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

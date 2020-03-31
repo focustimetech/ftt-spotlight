@@ -18,12 +18,14 @@ class CreateUsersTable extends Migration
          */
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username'); // Username used to sign in
-            $table->string('password'); // Encrypted password
-            // Potentially not used.
-            // $table->enum('account_type', ['staff', 'teacher', 'parent', 'student', 'sub']);
-            $table->string('initials'); // Initials used in user's avatar
-            $table->string('color');    // Color used in user's avatar
+            $table->string('first_name');   // First name of the user
+            $table->string('last_name');    // Surname name of the user
+            $table->string('title');        // Title. E.g. "Mr."
+            $table->string('username');     // Username used to sign in
+            $table->string('password');     // Encrypted password
+            $table->string('initials');     // Initials used in user's avatar
+            $table->string('color');        // Color used in user's avatar
+            $table->enum('account_type', ['student', 'staff', 'teacher', 'guardian']);
             $table->timestamps();
         });
     }

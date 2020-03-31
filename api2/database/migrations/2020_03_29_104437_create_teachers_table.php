@@ -21,7 +21,6 @@ class CreateTeachersTable extends Migration
             $table->unsignedInteger('unavailability_limit')     // The limit on the number of unavailabilities (0 if no limit)
                 ->default(0);
             $table->foreignId('user_id');                       // The associated user account
-            $table->foreignId('classroom_id');                  // The teacher's default classroom
             $table->timestamps();
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');

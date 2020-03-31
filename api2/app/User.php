@@ -1,0 +1,82 @@
+<?php
+
+namespace App;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable
+{
+    use Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'email', 'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', /* 'remember_token' */
+    ];
+
+    public function feedback() {
+        return $this->hasMany('App\Feedback');
+    }
+
+    public function sentMessages() {
+        return $this->hasMany('App\Message', 'sender_id');
+    }
+
+    public function messages() {
+        return $this->belongsToMany('App\Message', 'message_recipients', 'recipient_id', 'message_id')
+            ->withTimestamps();
+    }
+
+    public function reports() {
+        return $this->hasMany('App\Reports');
+    }
+
+    public function account() {
+        switch ($this->account_type) {
+            case 'student':
+                return $this->student();
+            case 'staff':
+                return $this->staff();
+            case 'teacher':
+                return $this->teacher();
+            case 'guardian':
+                return $this->guardian();
+        }
+    }
+
+    public function student() {
+        return $this->belongsTo('App\Student');
+    }
+
+    public function staff() {
+        return $this->belongsTo('App\Staff');
+    }
+
+    public function teacher() {
+        return $this->belongsTo('App\Teacher');
+    }
+
+    public function guardian() {
+        return $this->belongsTo('App\Guardian');
+    }
+
+    public function getName() {
+        return $this->title
+            ? "$this->title. $this->last_name, $this->first_name"
+            : "$this->first_name $this->last_name";
+    }
+}

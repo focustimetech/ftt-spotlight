@@ -22,8 +22,8 @@ class CreateAppointmentsTable extends Migration
             $table->date('date');               // Date of the appointment
             $table->foreignId('teacher_id');    // The teacher of the appointment
             $table->foreignId('student_id');    // The student being appointed
-            $table->foriegnId('block_id');      // The block the appointment occurs on
-            $table->foriegnId('classroom_id');  // The classroom the appointment takes place in
+            $table->foreignId('block_id');      // The block the appointment occurs on
+            $table->foreignId('classroom_id');  // The classroom the appointment takes place in
             $table->timestamps();               // Timestamp encodes when appointment was created (used for priority)
             // Foreign keys
             $table->foreign('teacher_id')->references('id')->on('teachers');

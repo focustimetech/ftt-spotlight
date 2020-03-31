@@ -21,10 +21,12 @@ class CreateAirRequestsTable extends Migration
             $table->string('memo')      // Optional memo on the purpose of the Air request
                 ->nullable()
                 ->default(null);
-            $table->date('plan_id');    // The associated plan
-            $table->timestamps();
+            $table->foreignId('plan_id');    // The associated plan
+            $table->timestamps();       // Timestamp of when it was sent
             // Foreign keys
-            $table->foreign('plan_id')->references('id')->on('plan');
+            $table->foreign('plan_id')->references('id')->on('plans');
+            // Unique keys
+            $table->unique(['plan_id']);
         });
     }
 

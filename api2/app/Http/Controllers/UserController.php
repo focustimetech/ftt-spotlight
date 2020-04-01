@@ -8,14 +8,13 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function avatar(Request $request) {
-        $username = $request->username;
+    public function findAvatar($username) {
         $user = User::findByUsername($username);
 
         if (!$user) {
             return response()->json(['message' => 'User not found.'], 404);
         }
-        
+
         return new AvatarResource($user);
     }
 }

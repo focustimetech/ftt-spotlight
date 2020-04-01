@@ -2,29 +2,9 @@ import { IStaff } from "./staff";
 import { IStudent } from './student'
 import { TopicColor } from "../theme";
 
-export type LoginState = 'username' | 'password'
-
-export type AuthState = 
-    | 'sign-in'
-    | 'signed-in'
-    | 'signed-out'
-    | 'unauthenticated'
-    | 'failed-settings'
-
-export interface AuthUsername {
-    username: string
-    initials: string
-    color: TopicColor
-}
-
 export interface ICredentials {
     username: string
     password: string
-}
-
-export interface ILoginError {
-    type: 'username' | 'password'
-    message: string
 }
 
 interface ISysAdmin {

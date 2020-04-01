@@ -1,50 +1,28 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
-import { IUser } from '../types/auth'
-import { setAuthorizationToken } from '../utils/api'
+import { IAvatar, ReduxAction } from '../types'
+import { ICredentials, IUser } from '../types/auth'
+import API from '../utils/api'
 import { SET_CURRENT_USER } from './types'
 
-interface ICredentials {
-    username: string
-    password: string
-}
-
-export const getCurrentUser = () => {
-    return (dispatch: any) => {
-        return axios.get('/api/user')
-            .then((res: any) => {
-                const user: IUser = res.data
+export const dispatchCurrentUser = () => {
+    return (dispatch: (action: ReduxAction<IUser>) => void) => {
+        return API.get('/user')
+            .then((res: AxiosResponse<IUser>) => {
                 dispatch({
                     type: SET_CURRENT_USER,
-                    payload: user
+                    payload: res.data
                 })
             })
     }
 }
 
-export const checkUsername = (username: string) => {
-    /*
-    const config = {
-        headers: [
-            { 'Content-Type': 'application/jon' },
-            { 'Accept': 'application/jon' },
-        ]
-    }
-    */
-    return (dispatch: any) => {
-        return axios.post('/api/check-user', { username })
-    }
+export const getAvatar = (username: string) => {
+    return API.get<IAvatar>(`/avatar/${username}`)
 }
 
 export const login = (credentials: ICredentials) => {
-    return (dispatch: any) => {
-        return axios.post('/api/login', credentials)
-            .then((res: any) => {
-                const token = res.data.access_token
-                setAuthorizationToken(token)
-                getCurrentUser()
-            })
-    }
+    return API.post('/login', credentials)
 }
 
 export const logout = () => {

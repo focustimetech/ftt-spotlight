@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -20,11 +21,27 @@ import {
 	Typography
 } from '@material-ui/core'
 
-import { checkUsername, login} from '../actions/authActions'
-import { AuthState, AuthUsername, ICredentials, ILoginError, LoginState } from '../types/auth'
-import { getObjectFromLocalStorage, REMEMBER_USERS, writeObjectToLocalStorage } from '../utils/storage'
+import { getAvatar, login} from '../actions/authActions'
+import { TopicColor } from '../theme'
+import { IAvatar } from '../types'
+import { ICredentials } from '../types/auth'
+
 import Carousel, { ICarouselImage } from '../components/Carousel'
 import { LoadingButton } from '../components/Form/LoadingButton'
+import API from '../utils/api'
+
+type LoginState = 'username' | 'password'
+
+interface ILoginError {
+    type: 'username' | 'password'
+    message: string
+}
+
+interface IRememberMe {
+    username: string
+    initials: string
+    color: TopicColor
+}
 
 interface IReduxProps {
 	settings: any
@@ -33,63 +50,58 @@ interface IReduxProps {
 }
 
 interface IProps extends IReduxProps {
-	authState: AuthState
 	failedSettings: boolean
 	onSignIn: () => Promise<any>
 	onImageLoad: () => void
 }
 
 interface IState {
-	error: ILoginError | null
+	avatar: IAvatar
+	error: ILoginError
 	loadingUsername: boolean
 	loadingPassword: boolean
 	loginState: LoginState
-	rememberUser: boolean
-	authUsername: AuthUsername
-	menuRef: any
+	rememberMe: boolean
+	menuRef: any /** @TODO Change from any */
 	user: string
 	password: string
 }
 
 class Login extends React.Component<IProps, IState> {
-	image: any
-	boundingBox: any
-	rememberUsers: AuthUsername[]
+	static getInitialProps = async () => {
+		API.get('/sanctum/csrf-cookie')
+		return {}
+	}
+
 	state: IState = {
+		avatar: null,
 		error: null,
 		loadingUsername: false,
 		loadingPassword: false,
-		loginState: 'password',
-		rememberUser: false,
-		authUsername: null,
+		loginState: 'username',
+		rememberMe: false,
 		menuRef: null,
 		user: '',
 		password: ''
 	}
 
-	handleChange = (event: any) => {
-		event.preventDefault()
-		this.setState({
-			[event.target.name]: event.target.value,
-			error: null
-		} as IState)
+	handleChangeUser = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+		if (this.state.loadingUsername) {
+			return
+		}
+		this.setState({ user: event.target.value, error: null })
+	}
+
+	handleChangePassword = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+		if (this.state.loadingPassword) {
+			return
+		}
+		this.setState({ password: event.target.value, error: null })
 	}
 
 	handleErrorCode = (errorCode: number) => {
 		let loginError: ILoginError = null
 		switch (errorCode) {
-			case 404:
-				loginError = {
-					type: 'username',
-					message: 'The user could not be found. Please check with your administrator.'
-				}
-				break
-			case 401:
-				loginError = {
-					type: 'password',
-					message: 'The given credentials were not correct.'
-				}
-				break
 			case 423:
 				loginError = {
 					type: 'password',
@@ -108,65 +120,51 @@ class Login extends React.Component<IProps, IState> {
 		}
 	}
 
-	/**
-	 * @TODO Combine these two handlers into one onSubmit function, captured by the <form onSubmit...>
-	 */
-	handleCheckUsername = (event: any) => {
+	onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		if (!this.validateForm()) {
 			return
 		}
-		this.setState({ loadingUsername: true })
-		this.props.checkUsername(this.state.user)
-			.then((res: any) => {
-				const authUsername: AuthUsername = res.data
-				this.setState({
-					authUsername,
-					loadingUsername: false,
-					loginState: 'password'
-				})
-			}, (error: any) => {
-				this.handleErrorCode(error.response.status)
-				this.setState({ loadingUsername: false })
-			})
-	}
-
-	handleLogin = (event: any) => {
-		event.preventDefault()
-		if (!this.validateForm()) {
-			return
-		}
-		this.setState({ loadingPassword: true })
-		const credentials: ICredentials = {
-			username: this.state.authUsername.username,
-			password: this.state.password
-		}
-		this.props.login(credentials)
-			.then(() => {
-				this.props.onSignIn()
-					.then(() => {
-						this.props.onSignIn()
-						if (this.state.rememberUser) {
-							this.rememberAuthUsername(this.state.authUsername)
-						}
-					}, () => {
-						const loginError: ILoginError = {
-							type: 'username',
-							message: 'Unable to download app settings. Please try again.'
-						}
-						this.setState({
-							error: loginError,
-							loadingPassword: false
-						})
+		switch (this.state.loginState) {
+			case 'username':
+				this.setState({ loadingUsername: true })
+				getAvatar(this.state.user).then((res: AxiosResponse<IAvatar>) => {
+					this.setState({
+						avatar: res.data,
+						loadingUsername: false,
+						loginState: 'password'
 					})
-			}, (error: any) => {
-				this.handleErrorCode(error.response.status)
-				this.setState({ loadingPassword: false })
-			})
+				}, () => {
+					this.setState({
+						loadingUsername: false,
+						error: {
+							type: 'username',
+							message: 'The user could not be found. Please check with your administrator.'
+						}
+					})
+				})
+				return
+			case 'password':
+				this.setState({ loadingPassword: true })
+				const credentials: ICredentials = { username: this.state.user, password: this.state.password }
+				login(credentials).then((res: AxiosResponse) => {
+					this.setState({ loadingPassword: false })
+					// redirect('/')
+				}, () => {
+					this.setState({
+						loadingPassword: false,
+						error: {
+							type: 'password',
+							message: 'The given credentials were not correct.'
+						}
+					})
+				})
+				return
+		}
 	}
 
 	validateForm = (): boolean => {
-		if (this.state.user.length === 0 && this.state.loginState === 'username') {
+		if (this.state.user.length === 0) {
 			this.setState({
 				error: { type: 'username', message: 'A username is required to log in.' }
 			})
@@ -190,36 +188,8 @@ class Login extends React.Component<IProps, IState> {
 
 	toggleRememberUser = () => {
 		this.setState((state: IState) => ({
-			rememberUser: !state.rememberUser
+			rememberMe: !state.rememberMe
 		}))
-	}
-
-	rememberAuthUsername = (authUsername: AuthUsername) => {
-		const otherAuthUsernames: AuthUsername[] = this.rememberUsers ? (
-			this.rememberUsers.filter((rememberUser: AuthUsername) => {
-				return rememberUser.username !== authUsername.username
-			})
-		) : []
-		const newAuthUsers: AuthUsername[] = [authUsername, ...otherAuthUsernames]
-		this.rememberUsers = newAuthUsers
-		writeObjectToLocalStorage(REMEMBER_USERS, newAuthUsers)
-	}
-
-	forgetAuthUsername = (authUsername: AuthUsername) => {
-		const otherAuthUsernames: AuthUsername[] = this.rememberUsers ? (
-			this.rememberUsers.filter((rememberUser: AuthUsername) => {
-				return rememberUser.username !== authUsername.username
-			})
-		) : []
-		this.rememberUsers = otherAuthUsernames
-		writeObjectToLocalStorage(REMEMBER_USERS, otherAuthUsernames)
-		if (!(this.rememberUsers && this.rememberUsers.length)) {
-			this.resetLoginState()
-		} else if (this.state.authUsername.username === authUsername.username) {
-			this.setState({ authUsername: otherAuthUsernames[0] })
-		} else {
-			this.forceUpdate()
-		}
 	}
 
 	handleOpenMenu = (event: any) => {
@@ -229,15 +199,7 @@ class Login extends React.Component<IProps, IState> {
 	handleCloseMenu = () => {
 		this.setState({ menuRef: null })
 	}
-
-	handleClickAuthUsername = (authUsername: AuthUsername) => {
-		this.setState({
-			authUsername,
-			loginState: 'password',
-			menuRef: null
-		})
-	}
-
+/*
 	rememberUserListItem = (rememberUser: AuthUsername, removable?: boolean) => (
 		<MenuItem
 			className='auth-username__list-item'
@@ -255,14 +217,17 @@ class Login extends React.Component<IProps, IState> {
 			)}
 		</MenuItem>
 	)
+*/
 
 	componentDidMount() {
+		/*
 		this.rememberUsers = getObjectFromLocalStorage(REMEMBER_USERS) as AuthUsername[]
 		if (this.rememberUsers && this.rememberUsers.length > 0) {
 			this.setState({ authUsername: this.rememberUsers[0] })
 		} else {
 			this.setState({ loginState: 'username' })
 		}
+		*/
 	}
 
 	render() {
@@ -271,16 +236,6 @@ class Login extends React.Component<IProps, IState> {
 			{ link: '/', src: '/images/splash/helloquence-61189-unsplash.jpg' },
 			{ link: '/', src: '/images/splash/john-schnobrich-520023-unsplash.jpg' }
 		]
-		const schoolName: string = this.props.settings.values && this.props.settings.values['school_name']
-			? this.props.settings.values['school_name'].value
-			: undefined
-		const schoolLogo: string = this.props.settings.values && this.props.settings.values['school_logo']
-			? this.props.settings.values['school_logo'].value
-			: undefined
-
-		const isRemembered: boolean = this.rememberUsers && this.rememberUsers.some((rememberUser: AuthUsername) => {
-			return this.state.authUsername.username === rememberUser.username
-		})
 
 		return (
 			<div className='login'>
@@ -289,10 +244,10 @@ class Login extends React.Component<IProps, IState> {
 					<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
 					<Paper className='login__paper'>
 						<Carousel images={carouselImages} />
-						<form className='login__form'>
+						<form className='login__form' onSubmit={this.onSubmit}>
 							<div className='logos-container'>
 								<img className='ft-logo' src='/images/ft-badge.png' />
-								{(schoolName && schoolLogo) && (
+								{/*
 									<>
 										<span className='cross'>×</span>
 										<div className='school_logo'>
@@ -300,10 +255,10 @@ class Login extends React.Component<IProps, IState> {
 											<h3>{schoolName}</h3>
 										</div>
 									</>
-								)}
+								*/}
 							</div>
 							<h2>Sign in to Spotlight</h2>
-							{(this.state.authUsername || (this.rememberUsers && this.rememberUsers.length > 0)) && (
+							{/*this.state.avatar && this.state.loginState  (
 								<>
 									<Button className='auth-username' onClick={this.handleOpenMenu}>
 										<div className='auth-username__inner'>
@@ -338,7 +293,7 @@ class Login extends React.Component<IProps, IState> {
 										</Menu>
 									)}
 								</>
-							)}
+							)*/}
 							{this.state.loginState === 'username' && (
 								<>
 									<TextField
@@ -352,18 +307,19 @@ class Login extends React.Component<IProps, IState> {
 												: undefined
 										}
 										value={this.state.user}
-										onChange={this.handleChange}
+										onChange={this.handleChangeUser}
 										margin='normal'
 										variant='filled'
 										autoFocus
 										fullWidth
+										disabled={this.state.loadingUsername}
 									/>
 									<FormControlLabel
 										label='Remember me'
 										control={
 											<Checkbox
 												onChange={() => this.toggleRememberUser()}
-												checked={this.state.rememberUser}
+												checked={this.state.rememberMe}
 												color='primary'
 											/>
 										}
@@ -371,7 +327,6 @@ class Login extends React.Component<IProps, IState> {
 									<DialogActions>
 										<LoadingButton
 											type='submit'
-											onClick={this.handleCheckUsername}
 											color='primary'
 											variant='contained'
 											loading={this.state.loadingUsername}
@@ -392,20 +347,15 @@ class Login extends React.Component<IProps, IState> {
 												: undefined
 										}
 										value={this.state.password}
-										onChange={this.handleChange}
+										onChange={this.handleChangePassword}
 										margin='normal'
 										variant='filled'
 										autoFocus
 										fullWidth
 									/>
 									<DialogActions>
-										<Button
-											variant='text'
-											color='primary'
-										>Can't Sign In</Button>
 										<LoadingButton
 											type='submit'
-											onClick={this.handleLogin}
 											color='primary'
 											variant='contained'
 											loading={this.state.loadingPassword}
@@ -427,6 +377,6 @@ class Login extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({
 	settings: state.settings.items
 })
-const mapDispatchToProps = { login, checkUsername }
+const mapDispatchToProps = {} // { login }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

@@ -22,7 +22,7 @@ export const getAvatar = (username: string) => {
 }
 
 export const login = (credentials: ICredentials) => {
-    return API.post('/login', credentials)
+    return API.get('/sanctum/csrf-cookie').then(() => API.post('/login', credentials))
 }
 
 export const logout = () => {

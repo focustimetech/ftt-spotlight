@@ -68,11 +68,6 @@ interface IState {
 }
 
 class Login extends React.Component<IProps, IState> {
-	static getInitialProps = async () => {
-		API.get('/sanctum/csrf-cookie')
-		return {}
-	}
-
 	state: IState = {
 		avatar: null,
 		error: null,

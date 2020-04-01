@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { AppProps } from 'next/app'
 import React from 'react'
 import { Provider } from 'react-redux'
@@ -10,12 +10,16 @@ import { theme } from '../theme'
 
 import '../assets/styles/main.scss'
 
+// Set up axios defaults
 axios.defaults.withCredentials = true
 axios.defaults.headers.common['Accept'] = 'application/json'
 axios.defaults.headers.common['Content-Type'] = 'application/json'
-
-// setAuthorizationToken(localStorage.getItem(ACCESS_TOKEN))
-// setJsonHeaders()
+axios.interceptors.response.use((response: AxiosResponse<any>) => response, (error: any) => {
+    if (error.response.status === 401) {
+        console.error('Your session has expired.')
+    }
+    return Promise.reject(error)
+})
 
 const App = ({ Component, pageProps }: AppProps) => {
     return (

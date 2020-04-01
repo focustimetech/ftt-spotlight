@@ -21,14 +21,14 @@ import {
 	Typography
 } from '@material-ui/core'
 
-import { getAvatar, login} from '../actions/authActions'
+import { getAvatar, getCsrfCookie, login } from '../actions/authActions'
 import { TopicColor } from '../theme'
 import { IAvatar } from '../types'
 import { ICredentials } from '../types/auth'
 
 import Carousel, { ICarouselImage } from '../components/Carousel'
 import { LoadingButton } from '../components/Form/LoadingButton'
-import API from '../utils/api'
+// import API from '../utils/api'
 
 type LoginState = 'username' | 'password'
 
@@ -215,6 +215,7 @@ class Login extends React.Component<IProps, IState> {
 */
 
 	componentDidMount() {
+		getCsrfCookie()
 		/*
 		this.rememberUsers = getObjectFromLocalStorage(REMEMBER_USERS) as AuthUsername[]
 		if (this.rememberUsers && this.rememberUsers.length > 0) {

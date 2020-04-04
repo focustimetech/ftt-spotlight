@@ -18,7 +18,7 @@ class CreateStudentsTable extends Migration
          */
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('student_number');   // Student's identification number, used for check-in and sign-in
+            $table->softDeletes();              // Use soft deletes.
             $table->foreignId('user_id');       // Student's associated user account
             $table->timestamps();
             // Foreign keys

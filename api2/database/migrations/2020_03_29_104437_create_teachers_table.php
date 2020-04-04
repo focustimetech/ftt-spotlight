@@ -20,6 +20,7 @@ class CreateTeachersTable extends Migration
             $table->id();
             $table->unsignedInteger('unavailability_limit')     // The limit on the number of unavailabilities (0 if no limit)
                 ->default(0);
+            $table->softDeletes();                              // Use soft deletes.
             $table->foreignId('user_id');                       // The associated user account
             $table->timestamps();
             // Foreign keys

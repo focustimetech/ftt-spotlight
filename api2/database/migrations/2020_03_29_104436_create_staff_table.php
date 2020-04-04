@@ -18,7 +18,10 @@ class CreateStaffTable extends Migration
          */
         Schema::create('staff', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');   // The associated user account
+            $table->boolean('administrator')    // Staff has admin privledges or not
+                ->default(false);
+            $table->softDeletes();              // Use soft deletes.
+            $table->foreignId('user_id');       // The associated user account
             $table->timestamps();
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');

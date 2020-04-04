@@ -18,6 +18,8 @@ class CreateTenantsTable extends Migration
             $table->string('slug');
             $table->string('name');
             $table->string('region');
+            $table->string('locale')
+                ->default('en');
             $table->timestamps();
         });
     }

@@ -8,15 +8,6 @@ class Student extends Model
 {
     protected $table = 'students';
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'student_number'
-    ];
-
     public function amendments() {
         return $this->hasMany('App\Amendment');
     }

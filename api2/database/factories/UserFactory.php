@@ -18,11 +18,21 @@ use Illuminate\Support\Str;
 */
 
 $factory->define(User::class, function (Faker $faker) {
+    $gender = $faker->randomElement(['male', 'female']);
+    $firstName = $faker->firstName($gender);
+    $lastName = $faker->lastName();
+    $accountType = $faker->randomElement(['guardian', 'staff', 'student', 'teacher']);
+    $isStaff = $accountType === 'staff' || $accountType === 'teacher';
+
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
+        'first_name' => $firstName,
+        'last_name' => $lastName,
+        'title' => $isStaff ? $faker->title($gender) : null,
+        'username' => $accountType === 'student' ? $faker->unique()->numberBetween(100000, 999999) : $faker->unique()->safeEmail(),
         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => Str::random(10),
+        'initials' => $firstName[0] . $lastName[0],
+        'color' => 'red',
+        'account_type' => $accountType,
+        // 'remember_token' => Str::random(10),
     ];
 });

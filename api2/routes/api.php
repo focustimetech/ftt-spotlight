@@ -15,8 +15,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('avatar/{username}', 'UserController@findAvatar');
-Route::post('login', 'LoginController@login');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('classrooms', 'ClassroomController@index');
+});
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

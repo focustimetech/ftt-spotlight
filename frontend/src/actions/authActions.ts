@@ -22,7 +22,7 @@ export const getAvatar = (username: string) => {
 }
 
 export const login = (credentials: ICredentials) => {
-    return axios.post(`${API.getBaseUrl()}/login`, credentials)
+    return getCsrfCookie().then(() => axios.post(`${API.getBaseUrl()}/login`, credentials))
 }
 
 export const getCsrfCookie = () => {

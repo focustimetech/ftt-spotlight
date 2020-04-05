@@ -1,16 +1,24 @@
+import { MakeStore } from 'next-redux-wrapper'
 import { applyMiddleware, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import { rootReducer } from './reducers'
 
-const initialState = {}
+export type RootState = ReturnType<typeof rootReducer>
+
 const middleware = [thunk]
 
-const composeEnhancers = /*(window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || */ compose
+const composeEnhancers = window
+    ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+    : compose
 
-export const store = createStore(
-    rootReducer,
-    // initialState,
-    composeEnhancers(
-        applyMiddleware(...middleware),
+const makeStore: MakeStore = (initialState: any = {}) => {
+    return createStore(
+        rootReducer,
+        initialState,
+        composeEnhancers(
+            applyMiddleware(...middleware),
+        )
     )
-)
+}
+
+export default makeStore

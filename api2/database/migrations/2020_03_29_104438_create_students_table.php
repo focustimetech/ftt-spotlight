@@ -18,8 +18,9 @@ class CreateStudentsTable extends Migration
          */
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->softDeletes();              // Use soft deletes.
+            $table->unsignedInteger('grade');   // The grade the student is in
             $table->foreignId('user_id');       // Student's associated user account
+            $table->softDeletes();              // Use soft deletes
             $table->timestamps();
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');

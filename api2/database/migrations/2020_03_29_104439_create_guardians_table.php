@@ -18,8 +18,8 @@ class CreateGuardiansTable extends Migration
          */
         Schema::create('guardians', function (Blueprint $table) {
             $table->id();
-            $table->softDeletes();          // Use soft deletes
             $table->foreignId('user_id');   // The associated user
+            $table->softDeletes();          // Use soft deletes
             $table->timestamps();
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');

@@ -20,8 +20,8 @@ class CreateStaffTable extends Migration
             $table->id();
             $table->boolean('administrator')    // Staff has admin privledges or not
                 ->default(false);
-            $table->softDeletes();              // Use soft deletes.
             $table->foreignId('user_id');       // The associated user account
+            $table->softDeletes();              // Use soft deletes
             $table->timestamps();
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');

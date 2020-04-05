@@ -2,6 +2,10 @@
 
 namespace App;
 
+use App\Guardian;
+use App\Staff;
+use App\Student;
+use App\Teacher;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -53,13 +57,13 @@ class User extends Authenticatable
     public function account() {
         switch ($this->account_type) {
             case 'student':
-                return $this->student();
+                return Student::firstWhere('user_id', $this->id);
             case 'staff':
-                return $this->staff();
+                return Staff::firstWhere('user_id', $this->id);
             case 'teacher':
-                return $this->teacher();
+                return Teacher::firstWhere('user_id', $this->id);
             case 'guardian':
-                return $this->guardian();
+                return Guardian::firstWhere('user_id', $this->id);
         }
     }
 
@@ -87,9 +91,20 @@ class User extends Authenticatable
 
     public function hasRole($role) {
         if ($role === 'staff') {
-            return in_array($this->account_type, 'staff', 'teacher');
+            return $this->isStaff();
         } else {
             return $role === $this->account_type;
         }
+    }
+
+    public function getAvatar() {
+        return [
+            'initials' => $this->initials,
+            'color' => $this->color
+        ];
+    }
+
+    public function isStaff() {
+        return in_array(['staff', 'teacher'], $this->account_type);
     }
 }

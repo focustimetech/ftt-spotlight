@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Avatar as AvatarResource;
+use App\Http\Resources\User as UserResource;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -16,5 +17,9 @@ class UserController extends Controller
         }
 
         return new AvatarResource($user);
+    }
+
+    public function currentUser(Request $request) {
+        return new UserResource($request->user());
     }
 }

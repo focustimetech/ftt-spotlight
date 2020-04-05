@@ -8,6 +8,10 @@ class Staff extends Model
 {
     protected $table = 'staff';
 
+    public static function findByUserId($userId) {
+        return Teacher::firstWhere('user_id', $userId);
+    }
+
     public function amendments() {
         return $this->hasMany('App\Amendment');
     }

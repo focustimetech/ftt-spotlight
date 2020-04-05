@@ -12,6 +12,10 @@ class Teacher extends Model
         'unavailability_limit' => 30 /** @TODO Use settings provider. */
     ];
 
+    public static function findByUserId($userId) {
+        return Teacher::firstWhere('user_id', $userId);
+    }
+
     public function appointments() {
         return $this->hasMany('App\Appointment');
     }
@@ -36,5 +40,9 @@ class Teacher extends Model
 
     public function unavailabilities() {
         return $this->hasMany('App\Unavailability');
+    }
+
+    public function staff() {
+        return Staff::findByUserId($this->user()->id);
     }
 }

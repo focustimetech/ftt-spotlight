@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Teacher as TeacherResource;
+use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Classroom extends JsonResource
+class Teacher extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +16,9 @@ class Classroom extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'capacity' => $this->capacity,
-            'name' => $this->name,
-            'owner' => new TeacherResource($this->teacher_id)
-        ];
+        return array_merge(
+            ['unavailabilityLimit' => $this->unavailability_limit],
+            new StaffResource($this->staff())
+        );
     }
 }

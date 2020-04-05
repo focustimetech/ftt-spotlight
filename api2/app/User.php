@@ -84,4 +84,12 @@ class User extends Authenticatable
             ? "$this->title. $this->last_name, $this->first_name"
             : "$this->first_name $this->last_name";
     }
+
+    public function hasRole($role) {
+        if ($role === 'staff') {
+            return in_array($this->account_type, 'staff', 'teacher');
+        } else {
+            return $role === $this->account_type;
+        }
+    }
 }

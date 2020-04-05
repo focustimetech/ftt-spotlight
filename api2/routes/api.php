@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('avatar/{username}', 'UserController@findAvatar');
 
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware(['auth:sanctum', 'scopes:teacher'])->group(function() {
     Route::get('classrooms', 'ClassroomController@index');
 });
 

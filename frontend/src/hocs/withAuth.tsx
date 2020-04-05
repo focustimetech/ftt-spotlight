@@ -1,6 +1,7 @@
 import cookies from 'js-cookie'
 import { NextPageContext } from 'next'
 import React from 'react'
+import connect from 'react-redux'
 
 import cookieParser from '../utils/cookieParser'
 import redirect from '../utils/redirect'
@@ -10,18 +11,31 @@ import redirect from '../utils/redirect'
  */
 const SESSION_COOKIE_NAME: string = 'spotlight_session'
 
-const withAuth = <T extends object>(C: React.ComponentType<T>) => {
-    return class AuthComponent extends React.Component<T> {
+interface IReduxProps {
+    currentUser: any
+    fetchCurrentUser: () => Promise<void>
+}
+
+const withAuth = <T extends IReduxProps>(C: React.ComponentType<T>) => {
+    class AuthComponent extends React.Component<T> {
         static async getInitialProps(context: NextPageContext) {
             const sessionCookie: string = context.req
                 ? cookieParser(context.req.headers.cookie)[SESSION_COOKIE_NAME]
                 : cookies.get(SESSION_COOKIE_NAME)
 
             if (!sessionCookie) {
-                redirect(context, 'login')
+                redirect('login', context)
             }
 
             return {}
+        }
+
+        componentDidMount() {
+            if (!this.props.currentUser) {
+                this.props.fetchCurrentUser().catch(() => {
+                    redirect('login')
+                })
+            }
         }
 
         render() {
@@ -30,6 +44,8 @@ const withAuth = <T extends object>(C: React.ComponentType<T>) => {
             )
         }
     }
+
+    return connect(mapStateToProps, mapDispatchToProps)(AuthComponent)
 }
 
 export default withAuth

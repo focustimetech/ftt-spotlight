@@ -1,7 +1,7 @@
 import cookies from 'js-cookie'
 import { NextPageContext } from 'next'
 import React from 'react'
-import connect from 'react-redux'
+import connect, { useDispatch, useSelector } from 'react-redux'
 
 import cookieParser from '../utils/cookieParser'
 import redirect from '../utils/redirect'
@@ -16,26 +16,12 @@ interface IReduxProps {
     fetchCurrentUser: () => Promise<void>
 }
 
-const withAuth = <T extends IReduxProps>(C: React.ComponentType<T>) => {
+const withAuth = <T extends object>(C: React.ComponentType<T>) => {
     class AuthComponent extends React.Component<T> {
         static async getInitialProps(context: NextPageContext) {
-            const sessionCookie: string = context.req
-                ? cookieParser(context.req.headers.cookie)[SESSION_COOKIE_NAME]
-                : cookies.get(SESSION_COOKIE_NAME)
-
-            if (!sessionCookie) {
-                redirect('login', context)
-            }
+            const currentUser = useSelector((state) => state.auth.currentUser)
 
             return {}
-        }
-
-        componentDidMount() {
-            if (!this.props.currentUser) {
-                this.props.fetchCurrentUser().catch(() => {
-                    redirect('login')
-                })
-            }
         }
 
         render() {

@@ -6,8 +6,3 @@ export interface ReduxAction<T = any> {
 }
 
 export type SetState<T> = React.Dispatch<React.SetStateAction<T>>
-
-export interface IAvatar {
-    initials: string
-    color: TopicColor
-}

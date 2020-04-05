@@ -25,6 +25,7 @@ import { getAvatar, getCsrfCookie, login } from '../actions/authActions'
 import { TopicColor } from '../theme'
 import { IAvatar } from '../types'
 import { ICredentials } from '../types/auth'
+import redirect from '../utils/redirect'
 
 import Carousel, { ICarouselImage } from '../components/Carousel'
 import { LoadingButton } from '../components/Form/LoadingButton'
@@ -144,7 +145,7 @@ class Login extends React.Component<IProps, IState> {
 				const credentials: ICredentials = { username: this.state.user, password: this.state.password }
 				login(credentials).then((res: AxiosResponse) => {
 					this.setState({ loadingPassword: false })
-					// redirect('/')
+					redirect('/classrooms')
 				}, () => {
 					this.setState({
 						loadingPassword: false,
@@ -215,7 +216,6 @@ class Login extends React.Component<IProps, IState> {
 */
 
 	componentDidMount() {
-		getCsrfCookie()
 		/*
 		this.rememberUsers = getObjectFromLocalStorage(REMEMBER_USERS) as AuthUsername[]
 		if (this.rememberUsers && this.rememberUsers.length > 0) {

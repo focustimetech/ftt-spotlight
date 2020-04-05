@@ -1,5 +1,5 @@
 import { SET_CURRENT_USER } from '../actions/types'
-import { ReduxAction } from '../types/app'
+import { ReduxAction } from '../types'
 import { IUser } from '../types/auth'
 
 interface IState {

@@ -7,11 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Classroom extends Model
 {
     protected $table = 'classrooms';
+    
+    protected $fillable = [
+        'name',
+        'teacher_id'
+    ];
 
     public function teachers($date) {
         return $this->belongsToMany('App\Teacher', 'teachers_classrooms')
             ->withPivot('default')
             ->withTimestamps();
+    }
+
+    public function teacher() {
+        return $this->belongsTo('App\Teacher');
     }
 
     public function appointments($date) {

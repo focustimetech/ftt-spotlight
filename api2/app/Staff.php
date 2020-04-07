@@ -8,8 +8,27 @@ class Staff extends Model
 {
     protected $table = 'staff';
 
-    public static function findByUserId($userId) {
-        return Teacher::firstWhere('user_id', $userId);
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'administrator'
+    ];
+
+    public static function create(array $attributes) {
+        $user = User::create([
+            'first_name' => $attributes['first_name'],
+            'last_name' => $attributes['last_name'],
+            'username' => $attributes['email'],
+            'account_type' => 'staff'
+        ]);
+
+        $staff = static::quere()->create([
+            'administrator' => $attributes['administrator'],
+            'user_id' => $user->id
+        ]);
+
+        return $staff;
     }
 
     public function amendments() {
@@ -21,6 +40,6 @@ class Staff extends Model
     }
 
     public function user() {
-        return $this->hasOne('App\User');
+        return $this->belongsTo('App\User');
     }
 }

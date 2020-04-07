@@ -9,6 +9,7 @@ use App\Teacher;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -21,7 +22,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name',
+        'last_name',
+        'username',
+        'account_type'
     ];
 
     /**
@@ -32,6 +36,18 @@ class User extends Authenticatable
     protected $hidden = [
         'password', /* 'remember_token' */
     ];
+
+    public static function create(array $attributes) {
+        static::query()->create([
+            'first_name' => $attributes['first_name'],
+            'last_name' => $attributes['last_name'],
+            'initials' => strtoupper($attributes['first_name'][0] . $attributes['last_name'][0]),
+            'username' => $attributes['username'],
+            'password' => Hash::make($attributes['username']),
+            'color' => 'red', /** @TODO Use a Utils class */
+            'account_type' => $attributes['account_type'],
+        ]);
+    }
 
     public static function findByUsername(String $username) {
         return User::firstWhere('username', $username);
@@ -105,6 +121,6 @@ class User extends Authenticatable
     }
 
     public function isStaff() {
-        return in_array(['staff', 'teacher'], $this->account_type);
+        return in_array($this->account_type, ['staff', 'teacher']);
     }
 }

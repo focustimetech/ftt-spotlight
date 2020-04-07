@@ -8,6 +8,27 @@ class Guardian extends Model
 {
     protected $table = 'guardians';
 
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email'
+    ];
+
+    public static function create(array $attributes) {
+        $user = User::create([
+            'first_name' => $attributes['first_name'],
+            'last_name' => $attributes['last_name'],
+            'username' => $attributes['email'],
+            'account_type' => 'guardian'
+        ]);
+
+        $guardian = static::quere()->create([
+            'user_id' => $user->id
+        ]);
+
+        return $teacher;
+    }
+
     public static function findByUserId($userId) {
         return Teacher::firstWhere('user_id', $userId);
     }
@@ -18,6 +39,6 @@ class Guardian extends Model
     }
 
     public function user() {
-        return $this->hasOne('App\User');
+        return $this->belongsTo('App\User');
     }
 }

@@ -18,6 +18,9 @@ class CreateTeachersTable extends Migration
          */
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
+            $table->string('title')                             // Title. E.g. "Mr."
+                ->nullable()
+                ->default(null);
             $table->unsignedInteger('unavailability_limit')     // The limit on the number of unavailabilities (0 if no limit)
                 ->default(0);
             $table->foreignId('user_id');                       // The associated user account

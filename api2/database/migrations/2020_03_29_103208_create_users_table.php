@@ -20,9 +20,6 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('first_name');   // First name of the user
             $table->string('last_name');    // Surname name of the user
-            $table->string('title')         // Title. E.g. "Mr."
-                ->nullable()
-                ->default(null);
             $table->string('username');     // Username used to sign in
             $table->string('password');     // Encrypted password
             $table->string('initials');     // Initials used in user's avatar

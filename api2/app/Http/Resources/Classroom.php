@@ -18,7 +18,7 @@ class Classroom extends JsonResource
         return [
             'capacity' => $this->capacity,
             'name' => $this->name,
-            'owner' => new TeacherResource($this->teacher_id)
+            'owner' => new TeacherResource($this->teacher()->first())
         ];
     }
 }

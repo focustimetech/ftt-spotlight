@@ -24,5 +24,7 @@ class User extends JsonResource
         if ($this->isStaff()) {
             $resource['email'] = $this->username;
         }
+
+        return $resource;
     }
 }

@@ -14,9 +14,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Unauthenticated routes
+ */
 Route::get('avatar/{username}', 'UserController@findAvatar');
 
-Route::middleware(['auth:sanctum', 'scopes:teacher'])->group(function() {
+/**
+ * Authenticates routes
+ */
+Route::middleware('auth:sanctum')->group(function() {
+    // Staff
+    Route::get('staff', 'StaffController@index');
+    Route::get('staff/{id}', 'StaffController@show');
+
+    // Teachers
+    Route::get('teacher', 'TeacherController@index');
+    Route::get('teacher/{id}', 'TeacherController@show');
+
+    // Classrooms
     Route::get('classrooms', 'ClassroomController@index');
 });
 

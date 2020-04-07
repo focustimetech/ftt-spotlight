@@ -15,9 +15,10 @@ class Staff extends JsonResource
      */
     public function toArray($request)
     {
+        $user = new UserResource($this->user()->first());
         return array_merge(
             ['administrator' => $this->administrator],
-            new UserResource($this->user())
+            $user->toArray($request)
         );
     }
 }

@@ -23,7 +23,7 @@ class Guardian extends Model
             'account_type' => 'guardian'
         ]);
 
-        $guardian = static::quere()->create([
+        $guardian = static::query()->create([
             'user_id' => $user->id
         ]);
 

@@ -8,7 +8,8 @@ class Cluster extends Model
 {
     protected $table = 'clusters';
 
-    public function students() {
+    public function students()
+    {
         return $this->belongsToMany('App\Student', 'clusters_students')
             ->withTimestamps();
     }

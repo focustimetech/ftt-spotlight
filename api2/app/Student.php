@@ -15,7 +15,8 @@ class Student extends Model
         'grade'
     ];
 
-    public static function create(array $attributes) {
+    public static function create(array $attributes)
+    {
         $user = User::create([
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
@@ -31,24 +32,29 @@ class Student extends Model
         return $student;
     }
 
-    public function amendments() {
+    public function amendments()
+    {
         return $this->hasMany('App\Amendment');
     }
 
-    public function appointments() {
+    public function appointments()
+    {
         return $this->hasMany('App\Appointments');
     }
 
-    public function clusters() {
+    public function clusters()
+    {
         return $this->belongsToMany('App\Cluster', 'clusters_students')
             ->withTimestamps();
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 
-    public function ledgerEntries() {
+    public function ledgerEntries()
+    {
         return $this->hasMany('App\LedgerEntry');
     }
 }

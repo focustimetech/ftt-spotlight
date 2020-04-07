@@ -8,11 +8,13 @@ class TicketEvent extends Model
 {
     protected $table = 'ticket_events';
 
-    public function ticket() {
+    public function ticket()
+    {
         return $this->belongsTo('App\Ticket');
     }
 
-    public function ticketEventFiles() {
+    public function ticketEventFiles()
+    {
         return $this->hasMany('App\TicketEventFile');
     }
 }

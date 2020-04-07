@@ -8,11 +8,13 @@ class Message extends Model
 {
     protected $table = 'messages';
 
-    public function sender() {
+    public function sender()
+    {
         return $this->belongsTo('App\User');
     }
 
-    public function recipients() {
+    public function recipients() 
+    {
         return $this->belongsToMany('App\User', 'message_recipients', 'message_id', 'recipient_id')
             ->withTimestamps();
     }

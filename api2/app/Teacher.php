@@ -20,7 +20,8 @@ class Teacher extends Model
         'unavailability_limit'
     ];
 
-    public static function create(array $attributes) {
+    public static function create(array $attributes)
+    {
         $user = User::create([
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
@@ -37,29 +38,35 @@ class Teacher extends Model
         return $teacher;
     }
 
-    public function appointments() {
+    public function appointments()
+    {
         return $this->hasMany('App\Appointment');
     }
 
-    public function classrooms() {
+    public function classrooms()
+    {
         return $this->belongsToMany('App\Classroom', 'teachers_classrooms')
             ->withPivot('default')
             ->withTimestamps();
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 
-    public function ledgerEntries() {
+    public function ledgerEntries()
+    {
         return $this->hasMany('App\LedgerEntry');
     }
 
-    public function topics() {
+    public function topics()
+    {
         return $this->hasMany('App\Topic');
     }
 
-    public function unavailabilities() {
+    public function unavailabilities()
+    {
         return $this->hasMany('App\Unavailability');
     }
 
@@ -68,7 +75,8 @@ class Teacher extends Model
      * Since it's an eloquent relationship, we can use an observer to `attach()` a Staff model
      * when a new Teacher is created.
      */
-    public function staff() {
+    public function staff()
+    {
         // return
     }
 }

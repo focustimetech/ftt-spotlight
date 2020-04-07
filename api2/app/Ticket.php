@@ -8,15 +8,18 @@ class Ticket extends Model
 {
     protected $table = 'tickets';
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 
-    public function assignee() {
+    public function assignee()
+    {
         return $this->belongsTo('App\User', 'asignee_id');
     }
 
-    public function ticketEvents() {
+    public function ticketEvents()
+    {
         return $this->hasMany('App\TicketEvent');
     }
 }

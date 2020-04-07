@@ -6,10 +6,10 @@ use App\Guardian;
 use App\Staff;
 use App\Student;
 use App\Teacher;
+use Hash; // Alias exists for Hash facade
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -37,7 +37,8 @@ class User extends Authenticatable
         'password', /* 'remember_token' */
     ];
 
-    public static function create(array $attributes) {
+    public static function create(array $attributes)
+    {
         static::query()->create([
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
@@ -49,28 +50,34 @@ class User extends Authenticatable
         ]);
     }
 
-    public static function findByUsername(String $username) {
+    public static function findByUsername(String $username)
+    {
         return User::firstWhere('username', $username);
     }
 
-    public function feedback() {
+    public function feedback()
+    {
         return $this->hasMany('App\Feedback');
     }
 
-    public function sentMessages() {
+    public function sentMessages()
+    {
         return $this->hasMany('App\Message', 'sender_id');
     }
 
-    public function messages() {
+    public function messages()
+    {
         return $this->belongsToMany('App\Message', 'message_recipients', 'recipient_id', 'message_id')
             ->withTimestamps();
     }
 
-    public function reports() {
+    public function reports()
+    {
         return $this->hasMany('App\Reports');
     }
 
-    public function account() {
+    public function account()
+    {
         switch ($this->account_type) {
             case 'student':
                 return Student::firstWhere('user_id', $this->id);
@@ -83,29 +90,35 @@ class User extends Authenticatable
         }
     }
 
-    public function student() {
+    public function student()
+    {
         return $this->belongsTo('App\Student');
     }
 
-    public function staff() {
+    public function staff()
+    {
         return $this->belongsTo('App\Staff');
     }
 
-    public function teacher() {
+    public function teacher()
+    {
         return $this->belongsTo('App\Teacher');
     }
 
-    public function guardian() {
+    public function guardian()
+    {
         return $this->belongsTo('App\Guardian');
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->title
             ? "$this->title. $this->last_name, $this->first_name"
             : "$this->first_name $this->last_name";
     }
 
-    public function hasRole($role) {
+    public function hasRole($role)
+    {
         if ($role === 'staff') {
             return $this->isStaff();
         } else {
@@ -113,14 +126,16 @@ class User extends Authenticatable
         }
     }
 
-    public function getAvatar() {
+    public function getAvatar()
+    {
         return [
             'initials' => $this->initials,
             'color' => $this->color
         ];
     }
 
-    public function isStaff() {
+    public function isStaff()
+    {
         return in_array($this->account_type, ['staff', 'teacher']);
     }
 }

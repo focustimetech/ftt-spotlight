@@ -8,7 +8,8 @@ class Feedback extends Model
 {
     protected $table = 'feedback';
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 }

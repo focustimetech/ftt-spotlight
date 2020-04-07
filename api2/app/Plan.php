@@ -8,15 +8,18 @@ class Plan extends Model
 {
     protected $table = 'plans';
 
-    public function block() {
+    public function block()
+    {
         return $this->belongsTo('App\Block');
     }
 
-    public function student() {
+    public function student()
+    {
         return $this->belongsTo('App\Student');
     }
 
-    public function teacher() {
+    public function teacher()
+    {
         return $this->belongsTo('App\Teacher');
     }
 }

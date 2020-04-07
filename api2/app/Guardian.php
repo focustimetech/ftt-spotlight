@@ -14,7 +14,8 @@ class Guardian extends Model
         'email'
     ];
 
-    public static function create(array $attributes) {
+    public static function create(array $attributes)
+    {
         $user = User::create([
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
@@ -29,16 +30,14 @@ class Guardian extends Model
         return $teacher;
     }
 
-    public static function findByUserId($userId) {
-        return Teacher::firstWhere('user_id', $userId);
-    }
-
-    public function students() {
+    public function students()
+    {
         return $this->belongsToMany('App\Student', 'guardians_students')
             ->withTimestamps();
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 }

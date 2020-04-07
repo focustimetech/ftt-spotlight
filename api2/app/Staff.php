@@ -15,7 +15,8 @@ class Staff extends Model
         'administrator'
     ];
 
-    public static function create(array $attributes) {
+    public static function create(array $attributes)
+    {
         $user = User::create([
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
@@ -31,15 +32,18 @@ class Staff extends Model
         return $staff;
     }
 
-    public function amendments() {
+    public function amendments()
+    {
         return $this->hasMany('App\Amendment');
     }
 
-    public function calendarEvents() {
+    public function calendarEvents()
+    {
         return $this->hasMany('App\CalendarEvent');
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 }

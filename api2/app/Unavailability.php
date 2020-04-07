@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Unavailability extends Model
 {
-    public function teacher() {
+    public function teacher()
+    {
         return $this->belongsTo('App\Teacher');
     }
 
-    public function block() {
+    public function block()
+    {
         return $this->belongsTo('App\Block');
     }
 }

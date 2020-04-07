@@ -13,22 +13,26 @@ class Classroom extends Model
         'teacher_id'
     ];
 
-    public function teachers($date) {
+    public function teachers($date)
+    {
         return $this->belongsToMany('App\Teacher', 'teachers_classrooms')
             ->withPivot('default')
             ->withTimestamps();
     }
 
-    public function teacher() {
+    public function teacher() 
+    {
         return $this->belongsTo('App\Teacher');
     }
 
-    public function appointments($date) {
+    public function appointments($date)
+    {
         return $this->hasMany('App\Appointment')
             ->where('date', $date);
     }
 
-    public function topics() {
+    public function topics()
+    {
         return $this->hasMany('App\Topic');
     }
 }

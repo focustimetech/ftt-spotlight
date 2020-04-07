@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function findAvatar($username) {
+    public function findAvatar($username)
+    {
         $user = User::findByUsername($username);
 
         if (!$user) {
@@ -19,7 +20,8 @@ class UserController extends Controller
         return new AvatarResource($user);
     }
 
-    public function currentUser(Request $request) {
+    public function currentUser(Request $request)
+    {
         return new UserResource($request->user());
     }
 }

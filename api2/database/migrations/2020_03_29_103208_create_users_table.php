@@ -27,6 +27,8 @@ class CreateUsersTable extends Migration
             $table->enum('account_type', ['student', 'staff', 'teacher', 'guardian']);
             $table->softDeletes();          // Use soft deletes
             $table->timestamps();
+            // Unique indexes
+            $table->unique('username');
         });
     }
 

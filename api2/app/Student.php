@@ -12,7 +12,8 @@ class Student extends Model
         'first_name',
         'last_name',
         'student_number',
-        'grade'
+        'grade',
+        'user_id'
     ];
 
     public static function create(array $attributes)
@@ -24,7 +25,7 @@ class Student extends Model
             'account_type' => 'student'
         ]);
 
-        $student = static::quere()->create([
+        $student = static::query()->create([
             'grade' => $attributes['grade'],
             'user_id' => $user->id
         ]);

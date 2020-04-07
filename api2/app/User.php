@@ -2,11 +2,12 @@
 
 namespace App;
 
+use Hash; // Alias exists for Hash facade
+use Utils;
 use App\Guardian;
 use App\Staff;
 use App\Student;
 use App\Teacher;
-use Hash; // Alias exists for Hash facade
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,7 +25,10 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
+        'initials',
         'username',
+        'password',
+        'color',
         'account_type'
     ];
 
@@ -39,15 +43,17 @@ class User extends Authenticatable
 
     public static function create(array $attributes)
     {
-        static::query()->create([
+        $user = static::query()->create([
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
             'initials' => strtoupper($attributes['first_name'][0] . $attributes['last_name'][0]),
             'username' => $attributes['username'],
             'password' => Hash::make($attributes['username']),
-            'color' => 'red', /** @TODO Use a Utils class */
+            'color' => Utils::randomColor(),
             'account_type' => $attributes['account_type'],
         ]);
+
+        return $user;
     }
 
     public static function findByUsername(String $username)

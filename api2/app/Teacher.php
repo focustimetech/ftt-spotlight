@@ -17,22 +17,24 @@ class Teacher extends Model
         'last_name',
         'email',
         'title',
-        'unavailability_limit'
+        'unavailability_limit',
+        'user_id'
     ];
 
     public static function create(array $attributes)
     {
-        $user = User::create([
+        $staff = Staff::create([
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
-            'username' => $attributes['email'],
-            'account_type' => 'teacher'
+            'email' => $attributes['email'],
+            'account_type' => 'teacher',
+            'administrator' => $attributes['administrator']
         ]);
 
-        $teacher = static::quere()->create([
+        $teacher = static::query()->create([
             'title' => $attributes['title'],
-            'unavailability_limit' => $attributes['unavailability_limit'],
-            'user_id' => $user->id
+            'unavailability_limit' => $attributes['unavailability_limit'] ?? Utils::settings('DEFAULT_UNAVAILABILITY_LIMIT'),
+            'user_id' => $staff->user()->first()->id
         ]);
 
         return $teacher;

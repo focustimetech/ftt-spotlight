@@ -1,24 +1,23 @@
-import { SET_CURRENT_USER } from '../actions/types'
+import { SET_CURRENT_USER, UNSET_CURRENT_USER } from '../actions/types'
 import { ReduxAction } from '../types'
 import { IUser } from '../types/auth'
 
-interface IState {
-    isAuthenticated: boolean,
+interface IAuthReducerState {
     user: IUser
 }
 
-const initialState: IState = {
-    isAuthenticated: false,
+const initialState: IAuthReducerState = {
     user: null
 }
 
-export const authReducer = (state = initialState, action: ReduxAction<IUser>) => {
+export const authReducer = (state: IAuthReducerState = initialState, action: ReduxAction<IUser>): IAuthReducerState => {
     switch (action.type) {
         case SET_CURRENT_USER:
             return {
-                isAuthenticated: Boolean(action.payload),
                 user: action.payload
             }
+        case UNSET_CURRENT_USER:
+            return initialState
         default:
             return state
     }

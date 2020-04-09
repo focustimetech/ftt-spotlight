@@ -23,6 +23,9 @@ Route::get('avatar/{username}', 'UserController@findAvatar');
  * Authenticates routes
  */
 Route::middleware('auth:sanctum')->group(function() {
+    // User
+    Route::get('user', 'UserController@currentUser');
+
     // Staff
     Route::get('staff', 'StaffController@index');
     Route::get('staff/{id}', 'StaffController@show');

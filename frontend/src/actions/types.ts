@@ -20,6 +20,7 @@ export const DETATCH_STUDENTS = 'DETATCH_STUDENTS'
 
 // Authorization
 export const SET_CURRENT_USER = 'SET_CURRENT_USER'
+export const UNSET_CURRENT_USER = 'UNSET_CURRENT_USER'
 
 // Starred
 export const FETCH_STARRED = 'FETCH_STARRED'

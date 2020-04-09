@@ -1,20 +1,17 @@
 import axios, { AxiosResponse } from 'axios'
 
-import { IAvatar, ReduxAction } from '../types'
-import { ICredentials, IUser } from '../types/auth'
+import { ReduxAction } from '../types'
+import { IAvatar, ICredentials, IUser } from '../types/auth'
 import API from '../utils/api'
 import { SET_CURRENT_USER } from './types'
 
-export const dispatchCurrentUser = () => {
-    return (dispatch: (action: ReduxAction<IUser>) => void) => {
-        return API.get('/user')
-            .then((res: AxiosResponse<IUser>) => {
-                dispatch({
-                    type: SET_CURRENT_USER,
-                    payload: res.data
-                })
-            })
-    }
+export const dispatchCurrentUser = () => dispatch => {
+    return API.get('/user').then((res: AxiosResponse<IUser>) => {
+        return dispatch({
+            type: SET_CURRENT_USER,
+            payload: res.data
+        })
+    })
 }
 
 export const getAvatar = (username: string) => {

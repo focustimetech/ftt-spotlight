@@ -19,12 +19,15 @@ class CreateAirTogglesTable extends Migration
          */
         Schema::create('air_toggles', function (Blueprint $table) {
             $table->id();
-            $table->boolean('enabled')
-                ->default(true);
-            $table->foreignId('teacher_id');
+            $table->string('code');             // The code students use to Air check-in
+            $table->date('date');               // The date of the toggle
+            $table->foreignId('teacher_id');    // The teacher acceping the Air requests
+            $table->foreignId('block_id');      // The block of the toggle
             $table->timestamps();
             // Foreign keys
             $table->foreign('teacher_id')->references('id')->on('teachers');
+            // Unique keys
+            $table->unique('code');
         });
     }
 

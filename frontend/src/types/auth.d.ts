@@ -1,5 +1,7 @@
 import { TopicColor } from '../theme'
 
+type AccountType = 'student' | 'teacher' | 'staff' | 'guardian'
+
 export interface ICredentials {
     username: string
     password: string
@@ -11,7 +13,7 @@ export interface IAvatar {
 }
 
 export interface IUserDetails {
-    accountType: 'student' | 'teacher' | 'staff' | 'guardian'
+    accountType: AccountType
     firstName: string
     lastName: string
     name: string

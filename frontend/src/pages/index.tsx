@@ -1,9 +1,9 @@
 import React from 'react'
 
 const Index = () => {
-    const getInitialProps = async () => {
-        // get c
-    }
+    return (
+        <h1>Index</h1>
+    )
 }
 
-export default withAuth(Index)
+export default Index

@@ -23,4 +23,4 @@ class Classrooms extends React.Component {
     }
 }
 
-export default withAuth(Classrooms)
+export default withAuth('staff', 'teacher')(Classrooms)

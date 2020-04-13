@@ -3,7 +3,7 @@ import { DEQUEUE_SNACKBAR, QUEUE_SNACKBAR } from './types'
 
 export interface ISnackbarLink {
     value: string
-    to: string
+    href: string
 }
 
 export interface ISnackbarButton {

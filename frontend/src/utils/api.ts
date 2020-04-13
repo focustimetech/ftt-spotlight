@@ -1,4 +1,15 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import staticAxios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+
+/**
+ * Define Axios constants
+ */
+export const axios: AxiosInstance = staticAxios.create({
+    headers: { common: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }},
+    withCredentials: true
+})
 
 /**
  * @TODO Move this to .env

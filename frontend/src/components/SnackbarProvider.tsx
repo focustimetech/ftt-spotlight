@@ -1,6 +1,7 @@
+import { AxiosResponse } from 'axios'
+import Link from 'next/link'
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
 import {
     Button,
@@ -10,12 +11,20 @@ import {
 } from '@material-ui/core'
 import { CSSProperties } from '@material-ui/styles'
 
-import { dequeueSnackbar, ISnackbar, ISnackbarButton, ISnackbarLink } from '../actions/snackbarActions'
+import {
+    dequeueSnackbar,
+    ISnackbar,
+    ISnackbarButton,
+    ISnackbarLink,
+    queueSnackbar
+} from '../actions/snackbarActions'
+import { axios } from '../utils/api'
 
 interface IReduxProps {
     currentSnackbar: ISnackbar
     snackbars: ISnackbar[]
     getNextSnackbar: () => void
+    queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IState {
@@ -49,6 +58,21 @@ class Snackbar extends React.Component<IReduxProps, IState> {
         }
     }
 
+    componentDidMount() {
+        axios.interceptors.response.use((response: AxiosResponse<any>) => response, (error: any) => {
+            if (error.response && error.response.status && error.response.status === 401) {
+                console.error("User's session has expired.")
+                this.props.queueSnackbar({
+                    message: 'Your session has expired. Please log in again.',
+                    links: [
+                        { value: 'Log in', href: '/login' }
+                    ]
+                })
+            }
+            return Promise.reject(error)
+        })
+    }
+
     render() {
         const snackbar = this.props.currentSnackbar
         const messageStyle: CSSProperties = {
@@ -76,7 +100,7 @@ class Snackbar extends React.Component<IReduxProps, IState> {
                         return <Button key={index} color='secondary' onClick={onClick}>{button.value}</Button>
                     }),
                     snackbar.links && snackbar.links.map((link: ISnackbarLink, index: number) => (
-                        <Link to={link.to} key={index}>
+                        <Link href={link.href} key={index}>
                             <Button color='secondary'>{link.value}</Button>
                         </Link>
                     ))
@@ -91,6 +115,6 @@ const mapStateToProps = (state: any) => ({
     snackbars: state.snackbars.items
 })
 
-const mapDispatchToProps = { getNextSnackbar: dequeueSnackbar }
+const mapDispatchToProps = { getNextSnackbar: dequeueSnackbar, queueSnackbar }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Snackbar)

@@ -90,6 +90,7 @@ const mapStateToProps = (state: any) => ({
     currentSnackbar: state.snackbars.item,
     snackbars: state.snackbars.items
 })
+
 const mapDispatchToProps = { getNextSnackbar: dequeueSnackbar }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Snackbar)

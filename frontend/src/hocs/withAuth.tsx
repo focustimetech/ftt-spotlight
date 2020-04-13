@@ -11,22 +11,28 @@ import API from '../utils/api'
 import redirect from '../utils/redirect'
 
 const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: React.ComponentType<T>) => {
+    console.log('Rendering withAuth:', accountTypes)
     return class AuthComponent extends React.Component<T> {
         static getInitialProps = async (context: NextPageContext) => {
-            API.get('/user').then((res: AxiosResponse<IUser>) => {
-                accountTypes.forEach((accountType: AccountType) => {
-                    if (accountType === res.data.accountType) {
-                        return context
-                    }
+            const { isServer, req } = context
+            const cookie: string = isServer && req ? req.headers.cookie : null // cookies()
+            API.get('/user', { headers: { Cookie: cookie } }).then((res: AxiosResponse<IUser>) => {
+                console.log('Successfully hit /user')
+                console.log('res.data:', res.data)
+                const allowAccess: boolean = accountTypes.some((accountType: AccountType) => {
+                    return accountType === res.data.accountType
                 })
-            }, (error: any) => {
-                console.error('Could not get current user.', error)
-                //redirect('login', context)
-                return context
-            })
+                if (allowAccess) {
+                    return
+                }
 
-            console.error('User not permitted.')
-            //redirect('/', context)
+                console.log('Redirecting to slash')
+                redirect('/', context)
+            }, (error: any) => {
+                if (isServer) {
+                    redirect('/login', context)
+                }
+            })
         }
 
         render() {

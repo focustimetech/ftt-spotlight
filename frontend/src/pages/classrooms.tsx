@@ -1,3 +1,4 @@
+import { NextPageContext } from 'next'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
@@ -6,8 +7,8 @@ import { RootState } from '../store'
 import API from '../utils/api'
 
 class Classrooms extends React.Component {
-    static async getInitialProps({ store }) {
-        return
+    static async getInitialProps(context: NextPageContext) {
+        //
     }
 
     componentDidMount() {

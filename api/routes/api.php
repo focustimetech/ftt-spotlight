@@ -37,7 +37,8 @@ Route::middleware('auth:sanctum')->group(function() {
     // Classrooms
     Route::get('classrooms', 'ClassroomController@index');
 });
-
+/*
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+*/

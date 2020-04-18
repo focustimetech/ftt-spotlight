@@ -18,7 +18,7 @@ import {
     ISnackbarLink,
     queueSnackbar
 } from '../actions/snackbarActions'
-import { axios } from '../utils/api'
+// import { axios } from '../utils/api'
 
 interface IReduxProps {
     currentSnackbar: ISnackbar
@@ -59,6 +59,7 @@ class Snackbar extends React.Component<IReduxProps, IState> {
     }
 
     componentDidMount() {
+        /*
         axios.interceptors.response.use((response: AxiosResponse<any>) => response, (error: any) => {
             if (error.response && error.response.status && error.response.status === 401) {
                 console.error("User's session has expired.")
@@ -71,6 +72,7 @@ class Snackbar extends React.Component<IReduxProps, IState> {
             }
             return Promise.reject(error)
         })
+        */
     }
 
     render() {

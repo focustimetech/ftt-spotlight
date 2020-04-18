@@ -40,7 +40,4 @@ class App extends NextApp<ReduxWrapperAppProps<RootState>> {
     }
 }
 
-// Ignore using 'next-redux-wrapper' for now...
-// export default withRedux(makeStore)(App)
-
-export default connect(null, { queueSnackbar })(App)
+export default withRedux(makeStore)(App)

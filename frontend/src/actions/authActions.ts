@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 
 import { ReduxAction } from '../types'
 import { IAvatar, ICredentials, IUser } from '../types/auth'
-import API from '../utils/api'
+import API, { axios } from '../utils/api'
 import { SET_CURRENT_USER } from './types'
 
 export const dispatchCurrentUser = () => dispatch => {
@@ -28,22 +28,22 @@ export const getCsrfCookie = () => {
 
 export const logout = () => {
     return (dispatch: any) => {
-        return axios.post('/api/logout')
+        return API.post('/api/logout')
     }
 }
 
 export const resetPasswords = (userIDs: number[]): Promise<any> => {
-    return axios.post('/api/users/reset-passwords', { user_ids: userIDs })
+    return API.post('/api/users/reset-passwords', { user_ids: userIDs })
 }
 
 export const invalidatePasswords = (userIDs: number[]): Promise<any> => {
-    return axios.post('/api/users/invalidate-passwords', { user_ids: userIDs })
+    return API.post('/api/users/invalidate-passwords', { user_ids: userIDs })
 }
 
 export const disableUsers = (userIDs: number[]): Promise<any> => {
-    return axios.post('/api/users/disable-users', { user_ids: userIDs })
+    return API.post('/api/users/disable-users', { user_ids: userIDs })
 }
 
 export const reenableUsers = (userIDs: number[]): Promise<any> => {
-    return axios.post('/api/users/reenable-users', { user_ids: userIDs })
+    return API.post('/api/users/reenable-users', { user_ids: userIDs })
 }

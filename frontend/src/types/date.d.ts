@@ -33,3 +33,5 @@ export interface IPredefinedDateRange {
 }
 
 export type DateRange = IAbsoluteDateRange | IRelativeDateRange | IPredefinedDateRange
+
+export type DayOfWeekNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6

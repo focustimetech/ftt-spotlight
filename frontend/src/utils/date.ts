@@ -1,8 +1,10 @@
 import {
+    addDays,
     endOfMonth,
     endOfToday,
     endOfWeek,
     endOfYesterday,
+    format,
     startOfMonth,
     startOfToday,
     startOfWeek,
@@ -12,11 +14,12 @@ import {
     subHours,
     subMonths,
     subWeeks,
-    subYears
+    subYears,
 } from 'date-fns'
 
 import {
     DateRange,
+    DayOfWeekNumber,
     IAbsoluteDateRange,
     IPredefinedDateRange,
     IRelativeDateRange,
@@ -24,7 +27,7 @@ import {
 } from '../types/date'
 import { ReportSegment } from '../types/report'
 
-// import { endOfMonth, startOfWeek, subWeeks, startOfMonth, subMonths, , startOfYear } from 'date-fns/esm'
+const ALL_DAYS: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 export const DATE_SEGMENT_LABELS: Record<ReportSegment, string[]> = {
     block: ['Block', 'Blocks'],
@@ -126,4 +129,30 @@ export const dateRangeToString = (dateRange: DateRange): string => {
 export const formatDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }
     return date.toLocaleDateString('en-US', options)
+}
+
+/**
+ * Returns an array of the textual representations of the days of the week, i.e. 'Mon' through 'Sun'
+ * @param firstDayOfWeek The first day of the week, Sunday (0) being the default.
+ */
+export const getDaysOfWeek = (firstDayOfWeek: DayOfWeekNumber = 0): string[] => {
+    const days: string[] = [...ALL_DAYS]
+    const splice: string[] = days.splice(0, firstDayOfWeek)
+    return days.concat(splice)
+}
+
+/**
+ * Returns a string that represents the month(s) and year relative to the given date.
+ * @param date The given Date.
+ * @param days The amount of days within the range, which is 7 by default.
+ * @return The string representing the year and month, e.g. "January 2020", "Jan - Feb 2020", "Dec 2020 - Jan 2021".
+ */
+export const getWeekTitle = (date: Date, days: number = 7): string => {
+    const end: Date = addDays(date, days)
+    if (date.getUTCFullYear() !== end.getUTCFullYear()) {
+        return `${format(date, 'MMM yyyy')} - ${format(end, 'MMM yyyy')}`
+    } else if (date.getUTCMonth() !== end.getUTCMonth()) {
+        return `${format(date, 'MMM')} - ${format(end, 'MMM yyyy')}`
+    }
+    return format(date, 'MMMM yyyy')
 }

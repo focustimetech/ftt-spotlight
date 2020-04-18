@@ -19,7 +19,8 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": ["jest"]
   },
   "include": [
     "./resources/**/*"

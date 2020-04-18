@@ -1,20 +1,23 @@
 /* Main */
-@import "common/global";
+@import "common/reset";
 @import "common/variables";
+@import "common/functions";
+@import "common/mixins";
 @import "common/colors";
 
 /* Layout */
-@import "layouts/app";
-@import "layouts/drawer";
-@import "layouts/form";
-@import "layouts/login";
-@import "layouts/router";
+@import "layout/app";
+@import "layout/flexbox";
+@import "layout/drawer";
+@import "layout/form";
+@import "layout/login";
+@import "layout/router";
 
 
 /* Components */
 @import "components/about";
 @import "components/banner";
-@import "components/calendar";
+@import "components/calendar_new";
 @import "components/carousel";
 @import "components/check-in";
 @import "components/chip_select";
@@ -40,6 +43,3 @@
 @import "components/table";
 @import "components/topics";
 @import "components/topnav";
-
-/* D3.js */
-@import "d3/calendar_view";

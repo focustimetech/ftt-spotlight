@@ -1,0 +1,13 @@
+.flexbox {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    & > * + * {
+        margin-left: spacing(1) !important;
+    }
+
+    &.--padding {
+        padding: spacing(1) spacing(2);
+    }
+}

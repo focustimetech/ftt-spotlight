@@ -11,8 +11,6 @@
 @import "layout/drawer";
 @import "layout/form";
 @import "layout/login";
-@import "layout/router";
-
 
 /* Components */
 @import "components/about";
@@ -27,6 +25,7 @@
 @import "components/expansion_panel";
 @import "components/items_modal";
 @import "components/modal_section";
+@import "components/nav";
 @import "components/not_found";
 @import "components/notifications_modal";
 @import "components/power_scheduler";

@@ -10,7 +10,7 @@ import { AboutSpotlight } from '../Modals/AboutSpotlight'
 import FeedbackDialog from '../Modals/FeedbackDialog'
 import { NavItem } from './NavItem'
 
-export const HelpWidget = () => {
+const HelpWidget = () => {
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
         = React.useState(null)
     const [feedbackDialogOpen, setFeedbackDialogOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -58,3 +58,5 @@ export const HelpWidget = () => {
         </>
     )
 }
+
+export default HelpWidget

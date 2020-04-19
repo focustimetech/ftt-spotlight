@@ -21,6 +21,9 @@ interface IReduxProps {
     logout: () => Promise<any>
 }
 
+export interface IAccountWidgetProps {
+    //
+}
 interface IProps extends IReduxProps {
     onSignOut: (callback?: () => void) => void
 }
@@ -30,7 +33,7 @@ interface IState {
     menuRef: any
 }
 
-class AccountWidget extends React.Component<IProps, IState> {
+class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, IState> {
     state: IState = {
         loadingSignOut: false,
         menuRef: null

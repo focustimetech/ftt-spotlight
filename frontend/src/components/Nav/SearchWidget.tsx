@@ -52,7 +52,7 @@ const emptySearchResults: ISearchResults = {
     clusters: []
 }
 
-export class SearchWidget extends React.Component<{}, IState> {
+class SearchWidget extends React.Component<{}, IState> {
     state: IState = {
         open: false,
         loading: false,
@@ -221,3 +221,5 @@ export class SearchWidget extends React.Component<{}, IState> {
         )
     }
 }
+
+export default SearchWidget

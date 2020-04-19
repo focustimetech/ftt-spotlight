@@ -156,3 +156,15 @@ export const getWeekTitle = (date: Date, days: number = 7): string => {
     }
     return format(date, 'MMMM yyyy')
 }
+
+export const getHoursOfDay = (includeMidnight: boolean = true): string[] => {
+    const hours: string[] = []
+    for (let i: number = includeMidnight ? 0 : 1; i < 24; i ++) {
+        hours.push(`${i % 12 || 12} ${i > 11 ? 'PM' : 'AM'}`)
+    }
+    return hours
+}
+
+export const getTimeRangeLabels = (start: Date, end: Date): [string, string] => {
+    return ['5', '9pm']
+}

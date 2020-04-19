@@ -30,7 +30,7 @@ const CalendarMonthLabel = (props: ICalendarMonthLabelProps) => {
     }
 
     return (
-        <Typography variant='h5'>{label}</Typography>
+        <Typography className='calendar-month-label' variant='h5'>{label}</Typography>
     )
 }
 

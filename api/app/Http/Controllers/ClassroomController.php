@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ClassroomController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return ClassroomResource::collection(Classroom::all());
     }

@@ -24,29 +24,27 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: React
         static getInitialProps = async (context: NextPageContext) => {
             const { req, store } = context
             const isServer: boolean = typeof window === 'undefined'
-            console.log('isServer = ', isServer)
-            console.log('typeof window:', typeof window)
+            // console.log('isServer = ', isServer)
+            // console.log('typeof window:', typeof window)
             // const cookie: string = isServer && req ? req.headers.cookie : null // Unused
-            let user: IUser = null // Get him from the datastore
-            // Set axios headers
-            // axios.defaults.headers = req.headers
 
-            if (isServer) {
-                store.dispatch(dispatchCurrentUser()).then(() => {
-                    user = null // Get the just-fetched user from the datastore.
-                    if (accountMatchesWhitelist(user.accountType, accountTypes)) {
-                        return
-                    }
-                    redirect('/', context) // Account doesn't have the right access.
+            let user: IUser = store.getState().auth.user // Get him from the datastore
+            console.log('Initial user:', user)
+
+            if (!user) {
+                await store.dispatch(dispatchCurrentUser()).then(() => {
+                    // Get the just-fetched user from the datastore.
+                    user = store.getState().auth.user
+                    console.log('New user:', user)
                 }, (error: any) => {
-                    console.log('Failed to get USER, probably 401')
-                    redirect('/login', context) // Couldn't verify using the user's cookie, send to login
+                    redirect('/login',  isServer ? context : undefined) // Couldn't verify using the user's cookie, send to login
                 })
-            } else {
-                if (!user) {
-                    redirect('/login')
-                }
             }
+
+            if (user && accountMatchesWhitelist(user.accountType, accountTypes)) {
+                return
+            }
+            redirect('/', isServer ? context : undefined) // Account doesn't have the right access.
         }
 
         render() {

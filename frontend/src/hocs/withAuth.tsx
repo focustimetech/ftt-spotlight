@@ -1,33 +1,20 @@
-import axios, { AxiosResponse } from 'axios'
-import cookies from 'js-cookie'
-import { NextPageContext } from 'next'
 import React from 'react'
-import { connect } from 'react-redux'
 
 import { dispatchCurrentUser } from '../actions/authActions'
 import { RootState } from '../store'
+import { NextPageContext } from '../types'
 import { AccountType, IUser } from '../types/auth'
-import API from '../utils/api'
 import redirect from '../utils/redirect'
 
 const accountMatchesWhitelist = (accountType: AccountType, whitelist: AccountType[]): boolean => {
     return whitelist.some((type: AccountType) => type === accountType)
 }
 
-interface IReduxProps {
-    currentUser: IUser
-    dispatchCurrentUser: () => Promise<void>
-}
-
 const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: React.ComponentType<T>) => {
-    class AuthComponent extends React.Component<T & IReduxProps> {
+    class AuthComponent extends React.Component<T> {
         static getInitialProps = async (context: NextPageContext) => {
-            const { req, store } = context
+            const { store } = context
             const isServer: boolean = typeof window === 'undefined'
-            // console.log('isServer = ', isServer)
-            // console.log('typeof window:', typeof window)
-            // const cookie: string = isServer && req ? req.headers.cookie : null // Unused
-
             let user: IUser = store.getState().auth.user // Get him from the datastore
             console.log('Initial user:', user)
 
@@ -60,7 +47,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: React
 
     const mapDispatchToProps = { dispatchCurrentUser }
 
-    return connect(mapStateToProps, mapDispatchToProps)(AuthComponent)
+    return (AuthComponent)
 }
 
 export default withAuth

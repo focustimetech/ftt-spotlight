@@ -21,7 +21,7 @@ import {
 	Typography
 } from '@material-ui/core'
 
-import { getAvatar, getCsrfCookie, login } from '../actions/authActions'
+import { dispatchCurrentUser, getAvatar, getCsrfCookie, login } from '../actions/authActions'
 import { TopicColor } from '../theme'
 import { IAvatar } from '../types'
 import { ICredentials } from '../types/auth'
@@ -46,6 +46,7 @@ interface IRememberMe {
 
 interface IReduxProps {
 	settings: any
+	dispatchCurrentUser: () => Promise<any>
 	checkUsername: (username: string) => Promise<any>
 	login: (credentials: ICredentials) => Promise<any>
 }
@@ -145,7 +146,11 @@ class Login extends React.Component<IProps, IState> {
 				const credentials: ICredentials = { username: this.state.user, password: this.state.password }
 				login(credentials).then((res: AxiosResponse) => {
 					this.setState({ loadingPassword: false })
-					redirect('/classrooms')
+					this.props.dispatchCurrentUser().then(() => {
+						redirect('/')
+					}, () => {
+						console.error('Could not dispatchCurrentUser upon successful login')
+					})
 				}, () => {
 					this.setState({
 						loadingPassword: false,
@@ -373,6 +378,6 @@ class Login extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({
 	settings: state.settings.items
 })
-const mapDispatchToProps = {} // { login }
+const mapDispatchToProps = { dispatchCurrentUser } // { login }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

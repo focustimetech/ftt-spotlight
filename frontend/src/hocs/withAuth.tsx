@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import cookies from 'js-cookie'
 import { NextPageContext } from 'next'
 import React from 'react'
@@ -10,8 +10,8 @@ import { AccountType, IUser } from '../types/auth'
 import API from '../utils/api'
 import redirect from '../utils/redirect'
 
-const validateAccountTypes = (accountType: AccountType, accountTypes: AccountType[]): boolean => {
-    return accountTypes.some((type: AccountType) => type === accountType)
+const accountMatchesWhitelist = (accountType: AccountType, whitelist: AccountType[]): boolean => {
+    return whitelist.some((type: AccountType) => type === accountType)
 }
 
 interface IReduxProps {
@@ -22,29 +22,42 @@ interface IReduxProps {
 const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: React.ComponentType<T>) => {
     class AuthComponent extends React.Component<T & IReduxProps> {
         static getInitialProps = async (context: NextPageContext) => {
-            const { isServer, req } = context
-            const cookie: string = isServer && req ? req.headers.cookie : null // cookies()
-            const config = { headers: { Cookie: cookie } }
+            const { isServer, req, store } = context
+            const cookie: string = isServer && req ? req.headers.cookie : null
 
-            // console.log('with cookie:', cookie)
+            // Set axios headers
+            axios.defaults.headers = req.headers
 
+            store.dispatch(dispatchCurrentUser()).then((res: AxiosResponse<IUser>) => {
+                console.log('USER got:', res.data)
+                if (accountMatchesWhitelist(res.data.accountType, accountTypes)) {
+                    return
+                }
+                redirect('/', context)
+            }, (error: any) => {
+                console.log('Failed to get USER, probably 401')
+                redirect('/login', context)
+            })
+
+            /*
             if (isServer) {
                 await API.get('/user', config).then((res: AxiosResponse<IUser>) => {
-                    if (validateAccountTypes(res.data.accountType, accountTypes)) {
+                    console.log('USER got:', res.data)
+                    if (accountMatchesWhitelist(res.data.accountType, accountTypes)) {
                         return
                     }
-
                     redirect('/', context)
                 }, (error: any) => {
                     redirect('/login', context)
                 })
-            } else {
-                
-                // await dispatchCurrentUser().then((res) => {
-                // })
             }
-            
-            
+            */
+        }
+
+        componentDidMount() {
+            if (!this.props.currentUser) {
+                // redirect('/login') // Add this back in later
+            }
         }
 
         render() {

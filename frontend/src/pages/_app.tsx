@@ -1,25 +1,30 @@
-import axios, { AxiosResponse } from 'axios'
-import withRedux, { ReduxWrapperAppProps } from 'next-redux-wrapper'
+// note: This library is being depricated
+// import withRedux, { ReduxWrapperAppProps } from 'next-redux-wrapper'
+
+
 import NextApp, { AppContext } from 'next/app'
 import React from 'react'
 import { connect, Provider } from 'react-redux'
 
-// material-ui
+// Material UI components
 import { ThemeProvider } from '@material-ui/styles'
 
 // Providers, style, static assets
 import '../assets/styles/main.scss'
-import makeStore, { RootState } from '../store'
+import withReduxStore from '../hocs/withReduxStore'
 import { theme } from '../theme'
 
 // Actions, utils
-import { queueSnackbar } from '../actions/snackbarActions'
+import { axios } from '../utils/api'
 
 // Components
 import SnackbarProvider from '../components/SnackbarProvider'
 
-class App extends NextApp<ReduxWrapperAppProps<RootState>> {
+class App extends NextApp {
     static async getInitialProps({ Component, ctx }: AppContext) {
+        if (ctx.req) {
+            axios.defaults.headers = { ...ctx.req.headers, 'Date': '1999-01-19T00:00:00' }
+        }
         const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {}
         return { pageProps }
     }
@@ -40,4 +45,4 @@ class App extends NextApp<ReduxWrapperAppProps<RootState>> {
     }
 }
 
-export default withRedux(makeStore)(App)
+export default withReduxStore(App)

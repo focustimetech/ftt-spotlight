@@ -6,6 +6,7 @@ import API, { axios } from '../utils/api'
 import { SET_CURRENT_USER } from './types'
 
 export const dispatchCurrentUser = () => dispatch => {
+    console.log('dispatchCurrentUser()')
     return API.get('/user').then((res: AxiosResponse<IUser>) => {
         return dispatch({
             type: SET_CURRENT_USER,
@@ -19,7 +20,9 @@ export const getAvatar = (username: string) => {
 }
 
 export const login = (credentials: ICredentials) => {
-    return getCsrfCookie().then(() => axios.post(`${API.getBaseUrl()}/login`, credentials))
+    return getCsrfCookie().then(() => {
+        return axios.post(`${API.getBaseUrl()}/login`, credentials)
+    })
 }
 
 export const getCsrfCookie = () => {

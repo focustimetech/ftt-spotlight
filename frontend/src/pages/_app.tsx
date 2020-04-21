@@ -10,7 +10,10 @@ import { connect, Provider } from 'react-redux'
 import { ThemeProvider } from '@material-ui/styles'
 
 // Providers, style, static assets
+import 'nprogress/nprogress.css'
 import '../assets/styles/main.scss'
+
+import withLoadingBar from '../hocs/withLoadingBar'
 import withReduxStore from '../hocs/withReduxStore'
 import { theme } from '../theme'
 

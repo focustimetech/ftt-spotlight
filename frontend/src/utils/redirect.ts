@@ -8,7 +8,7 @@ import Router from 'next/router'
  * @param code The error code, e.g. 401.
  */
 const redirect = (target: string, context?: NextPageContext, code?: number) => {
-    if (context && /* && context.res */ context.isServer) {
+    if (typeof window === 'undefined') {
         context.res.writeHead(code || 303, { Location: target })
         context.res.end()
         return

@@ -146,6 +146,10 @@ class Login extends React.Component<IProps, IState> {
 				const credentials: ICredentials = { username: this.state.user, password: this.state.password }
 				login(credentials).then((res: AxiosResponse) => {
 					this.setState({ loadingPassword: false })
+					/**
+					 * Next will dispatchCurrentUser whenever it SSRs, so we need to do for the first client render
+					 * fo withAuth wrapped components.
+					 */
 					this.props.dispatchCurrentUser().then(() => {
 						redirect('/')
 					}, () => {

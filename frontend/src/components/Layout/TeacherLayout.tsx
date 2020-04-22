@@ -11,6 +11,7 @@ class TeacherLayout extends React.Component<ITeacherLayoutProps> {
         return (
             <>
                 <VerticalNav />
+                {this.props.children}
             </>
         )
     }

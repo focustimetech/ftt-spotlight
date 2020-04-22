@@ -15,6 +15,7 @@ const redirect = (target: string, context?: NextPageContext, code?: number) => {
     }
 
     Router.replace(target)
+    console.log(`Router.replace(${target})`)
 }
 
 export default redirect

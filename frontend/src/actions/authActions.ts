@@ -3,6 +3,7 @@ import { AxiosResponse } from 'axios'
 import { ReduxAction } from '../types'
 import { IAvatar, ICredentials, IUser } from '../types/auth'
 import API, { axios } from '../utils/api'
+import redirect from '../utils/redirect'
 import { SET_CURRENT_USER } from './types'
 
 export const dispatchCurrentUser = () => dispatch => {
@@ -31,7 +32,9 @@ export const getCsrfCookie = () => {
 
 export const logout = () => {
     return (dispatch: any) => {
-        return API.post('/api/logout')
+        return API.post('/api/logout').then(() => {
+            redirect('/login')
+        })
     }
 }
 

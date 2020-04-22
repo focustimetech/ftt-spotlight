@@ -9,6 +9,8 @@ import {
 
 export interface INavItemProps {
     title: string
+    onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    children?: any
     href?: string
     icon?: string
     src?: string
@@ -17,13 +19,14 @@ export interface INavItemProps {
 const NavItem = (props: INavItemProps) => {
     const Button = () => {
         return (
-            <IconButton>
+            <IconButton onClick={props.onClick}>
                 {props.icon && (
                     <Icon>{props.icon}</Icon>
                 )}
                 {props.src && (
                     <img className='nav-item__image' src={props.src} />
                 )}
+                {props.children}
             </IconButton>
         )
     }

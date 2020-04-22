@@ -42,7 +42,10 @@
 @import "components/topics";
 @import "components/topnav";
 
-    /* Widgets */
+    /* Modals */
+    @import "components/modals/context_menu";
+
+    /* Nav */
     @import "components/nav/account_widget";
     @import "components/nav/nav";
     @import "components/nav/search_bar";

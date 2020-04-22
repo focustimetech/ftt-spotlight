@@ -5,12 +5,12 @@ import {
 } from '@material-ui/core'
 
 interface IContextMenuProps {
-
+    open: boolean
 }
 
 const ContextMenu = (props: IContextMenuProps) => {
     return (
-        <Menu className='context-menu' />
+        <Menu className='context-menu' open={props.open} />
     )
 }
 

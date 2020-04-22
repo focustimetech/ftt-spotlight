@@ -1,15 +1,17 @@
 import Link from 'next/link'
 import React from 'react'
 
-import TeacherLayout from '../components/Layout/TeacherLayout'
+
+import { Paper } from '@material-ui/core'
+
+import StudentLayout from '../components/Layout/StudentLayout'
 
 const Index = () => {
     return (
         <div>
-            <h1>Index</h1>
-            <TeacherLayout>
+            <StudentLayout>
                 <Link href='classrooms'><a>Let's see some Classrooms</a></Link>
-            </TeacherLayout>
+            </StudentLayout>
         </div>
 
     )

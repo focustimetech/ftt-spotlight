@@ -22,11 +22,12 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
         return (
             <>
                 <nav className={classNames('nav', '--vertical')}>
-                    <div>
+                    <div className='nav__group'>
                         <NavItem
+                            className='nav__logo'
                             title='Spotlight'
                             href='/'
-                            src='images/ft-badge.svg'
+                            src='images/ft-badge-white.png'
                         />
                         <FavoritesWidget />
                         <SearchWidget />
@@ -34,7 +35,7 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
                             <NavItem {...navItemProps} />
                         ))}
                     </div>
-                    <div>
+                    <div className='nav__group'>
                         <DefaultNavItems />
                     </div>
                 </nav>

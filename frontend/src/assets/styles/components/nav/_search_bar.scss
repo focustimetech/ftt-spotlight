@@ -1,0 +1,23 @@
+.search-bar {
+    box-sizing: border-box;
+    height: 40px;
+    flex: 1;
+    padding: spacing(1);
+    border-radius: 8px;
+    width: spacing(45);
+    background: rgba(0, 0, 0, 0.20);
+
+    &__input {
+        width: 100%;
+        flex: 1;
+    }
+
+    &__input,
+    button {
+        color: inherit !important;
+    }
+
+    &.--on-primary {
+        background: rgba(255, 255, 255, 0.20);
+    }
+}

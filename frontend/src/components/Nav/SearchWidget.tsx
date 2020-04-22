@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
-import { NavItem } from '../Sidebar/NavItem'
+import NavItem from './NavItem'
 
 interface ISearchGroup {
     value: string
@@ -124,7 +124,7 @@ class SearchWidget extends React.Component<{}, IState> {
         ) : 0
 
         return (
-            <>
+            <div>
                 <NavItem title='Search' icon='search' onClick={this.handleClickOpen} />
                 <Drawer open={this.state.open}>
 					<div className='sidebar_modal search_modal items_modal'>
@@ -217,7 +217,7 @@ class SearchWidget extends React.Component<{}, IState> {
                         </div>
 					</div>
 				</Drawer>
-            </>
+            </div>
         )
     }
 }

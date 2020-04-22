@@ -19,7 +19,7 @@ import { fetchStarred, starItem, unstarItem } from '../../actions/starActions'
 import { IStarredGroup, IStarredItem, IStarredList, starredGroups } from '../../reducers/starReducer'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
-import { NavItem } from '../Sidebar/NavItem'
+import NavItem from './NavItem'
 
 interface IState {
     open: boolean
@@ -100,8 +100,8 @@ class IStarredWidget extends React.Component<IReduxProps, IState> {
             })
         }
         return (
-            <>
-                <NavItem title='Starred' icon='star' onClick={this.handleClickOpen} />
+            <div>
+                <NavItem title='Starred' icon='star_border' onClick={this.handleClickOpen} />
                 <Drawer open={this.state.open}>
 					<div className='sidebar_modal starred_modal items_modal'>
                         <div className='sidebar_modal__header'>
@@ -185,7 +185,7 @@ class IStarredWidget extends React.Component<IReduxProps, IState> {
                         </div>
 					</div>
 				</Drawer>
-            </>
+            </div>
         )
     }
 }

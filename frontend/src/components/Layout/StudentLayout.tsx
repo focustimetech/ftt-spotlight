@@ -16,4 +16,4 @@ class StudentLayout extends React.Component<IStudentLayoutProps> {
     }
 }
 
-export default TeacherLayout
+export default StudentLayout

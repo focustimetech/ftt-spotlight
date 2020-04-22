@@ -6,7 +6,7 @@ import FavoritesWidget from './FavoritesWidget'
 import NavItem, { INavItemProps } from './NavItem'
 import NavMenu from './NavMenu'
 import NavMenuItem, { INavMenuItemProps } from './NavMenuItem'
-import SearchWidget from './SearchWidget'
+import SearchBar from './SearchBar'
 
 interface IHorizontalNavProps {
     navItems?: INavItemProps[]
@@ -21,21 +21,22 @@ class HorizontalNav extends React.Component<IHorizontalNavProps> {
     render() {
         return (
             <nav className={classNames('nav', '--horizontal')}>
-                <div>
+                <div className='nav__group'>
                     <NavItem
+                        className='nav__logo'
                         title='Spotlight'
                         href='/'
-                        src='images/ft-badge.svg'
+                        src='images/ft-badge-white.png'
                     />
                     {this.props.hasFavorites && (
                         <FavoritesWidget />
                     )}
-                    <SearchWidget />
+                    <SearchBar />
                     {this.props.navItems && this.props.navItems.map((navItemProps: INavItemProps) => (
                         <NavItem {...navItemProps} />
                     ))}
                 </div>
-                <div>
+                <div className='nav__group'>
                     <DefaultNavItems />
                 </div>
             </nav>

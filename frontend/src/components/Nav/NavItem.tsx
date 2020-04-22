@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import Link from 'next/link'
 import React from 'react'
 
@@ -11,6 +12,7 @@ export interface INavItemProps {
     title: string
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
     children?: any
+    className?: string
     href?: string
     icon?: string
     src?: string
@@ -32,7 +34,7 @@ const NavItem = (props: INavItemProps) => {
     }
 
     return (
-        <div className='nav-item'>
+        <div className={classNames('nav-item', props.className)}>
             <Tooltip title={props.title}>
                 {props.href ? (
                     <Link href={props.href}><Button /></Link>

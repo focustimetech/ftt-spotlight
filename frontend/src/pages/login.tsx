@@ -61,6 +61,7 @@ interface IState {
 	avatar: IAvatar
 	error: ILoginError
 	loadingUsername: boolean
+	loadingNextPage: boolean
 	loadingPassword: boolean
 	loginState: LoginState
 	rememberMe: boolean
@@ -74,6 +75,7 @@ class Login extends React.Component<IProps, IState> {
 		avatar: null,
 		error: null,
 		loadingUsername: false,
+		loadingNextPage: false,
 		loadingPassword: false,
 		loginState: 'username',
 		rememberMe: false,
@@ -145,16 +147,8 @@ class Login extends React.Component<IProps, IState> {
 				this.setState({ loadingPassword: true })
 				const credentials: ICredentials = { username: this.state.user, password: this.state.password }
 				login(credentials).then((res: AxiosResponse) => {
-					this.setState({ loadingPassword: false })
-					/**
-					 * Next will dispatchCurrentUser whenever it SSRs, so we need to do for the first client render
-					 * fo withAuth wrapped components.
-					 */
-					this.props.dispatchCurrentUser().then(() => {
-						redirect('/')
-					}, () => {
-						console.error('Could not dispatchCurrentUser upon successful login')
-					})
+					this.setState({ loadingPassword: false, loadingNextPage: true })
+					redirect('/')
 				}, () => {
 					this.setState({
 						loadingPassword: false,
@@ -334,7 +328,7 @@ class Login extends React.Component<IProps, IState> {
 											type='submit'
 											color='primary'
 											variant='contained'
-											loading={this.state.loadingUsername}
+											loading={this.state.loadingUsername || this.state.loadingNextPage}
 										>Next</LoadingButton>
 									</DialogActions>
 								</>

@@ -37,9 +37,27 @@ const NavItem = (props: INavItemProps) => {
         <div className={classNames('nav-item', props.className)}>
             <Tooltip title={props.title}>
                 {props.href ? (
-                    <Link href={props.href}><Button /></Link>
+                    <Link href={props.href}>
+                        <IconButton onClick={props.onClick}>
+                            {props.icon && (
+                                <Icon>{props.icon}</Icon>
+                            )}
+                            {props.src && (
+                                <img className='nav-item__image' src={props.src} />
+                            )}
+                            {props.children}
+                        </IconButton>
+                    </Link>
                 ) : (
-                    <Button />
+                    <IconButton onClick={props.onClick}>
+                        {props.icon && (
+                            <Icon>{props.icon}</Icon>
+                        )}
+                        {props.src && (
+                            <img className='nav-item__image' src={props.src} />
+                        )}
+                        {props.children}
+                    </IconButton>
                 )}
             </Tooltip>
         </div>

@@ -36,7 +36,7 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
                         ))}
                     </div>
                     <div className='nav__group'>
-                        <DefaultNavItems />
+                        <DefaultNavItems orientation='vertical'/>
                     </div>
                 </nav>
                 <NavMenu>

@@ -37,7 +37,7 @@ class HorizontalNav extends React.Component<IHorizontalNavProps> {
                     ))}
                 </div>
                 <div className='nav__group'>
-                    <DefaultNavItems />
+                    <DefaultNavItems orientation='horizontal'/>
                 </div>
             </nav>
         )

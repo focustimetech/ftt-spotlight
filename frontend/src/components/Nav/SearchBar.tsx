@@ -14,7 +14,11 @@ interface IState {
     loading: boolean
 }
 
-class SearchBar extends React.Component {
+interface ISearchBarProps {
+
+}
+
+class SearchBar extends React.Component<ISearchBarProps, IState> {
     state: IState = {
         value: '',
         loading: false

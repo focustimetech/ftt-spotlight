@@ -4,8 +4,12 @@ import { connect } from 'react-redux'
 
 import {
     Avatar,
+    IconButton,
     Menu,
     MenuItem,
+    PopoverOrigin,
+    PopoverPosition,
+    Tooltip,
     Typography
 } from '@material-ui/core'
 
@@ -23,6 +27,7 @@ interface IReduxProps {
 }
 
 export interface IAccountWidgetProps {
+    orientation: 'vertical' | 'horizontal'
     onSignOut?: (callback?: () => void) => void
 }
 
@@ -38,6 +43,9 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
     }
 
     handleClickOpen = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        if (!this.props.currentUser) {
+            return
+        }
         this.setState({ menuRef: event.currentTarget })
     }
 
@@ -69,30 +77,40 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
 
     render() {
         const { menuRef } = this.state
+        console.log('menuRef:', menuRef)
         const menuOpen = Boolean(menuRef)
         const user: IUser = this.props.currentUser
+        const anchorOrigin: PopoverOrigin = { vertical: 'bottom', horizontal: 'right' }
+        const transformOrigin: PopoverOrigin = this.props.orientation === 'horizontal'
+            ? { vertical: 'top', horizontal: 'right' }
+            : { vertical: 'bottom', horizontal: 'left' }
 
         return (
             <div className='account-widget'>
-                <NavItem title='Account' onClick={this.handleClickOpen}>
+
+                <NavItem title='bool' onClick={this.handleClickOpen}>
                     <Avatar className='account-widget__avatar' >{user ? user.avatar.initials : undefined}</Avatar>
                 </NavItem>
+
                 {user && (
-                        <Menu
-                            open={menuOpen}
-                            anchorEl={menuRef}
-                            onClose={() => this.handleClose()}
-                        >
-                            <div className='nav_account_details'>
-                                <Typography variant='h6'>{user.name}</Typography>
-                                <Typography variant='caption'>{getDisplayRole(user.accountType)}</Typography>
-                            </div>
-                            <Link href='profile'><MenuItem onClick={() => this.handleClose()}>Profile</MenuItem></Link>
-                            <LoadingMenuItem
-                                onClick={() => this.handleSignOut()}
-                                loading={this.state.loadingSignOut}
-                            >Sign Out</LoadingMenuItem>
-                        </Menu>
+                    <Menu
+                        open={menuOpen}
+                        anchorEl={menuRef}
+                        getContentAnchorEl={null}
+                        anchorOrigin={anchorOrigin}
+                        transformOrigin={transformOrigin}
+                        onClose={() => this.handleClose()}
+                    >
+                        <div className='nav_account_details'>
+                            <Typography variant='h6'>{user.name}</Typography>
+                            <Typography variant='caption'>{getDisplayRole(user.accountType)}</Typography>
+                        </div>
+                        <Link href='profile'><MenuItem onClick={() => this.handleClose()}>Profile</MenuItem></Link>
+                        <LoadingMenuItem
+                            onClick={() => this.handleSignOut()}
+                            loading={this.state.loadingSignOut}
+                        >Sign Out</LoadingMenuItem>
+                    </Menu>
                     )}
             </div>
         )

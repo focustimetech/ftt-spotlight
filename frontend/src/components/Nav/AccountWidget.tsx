@@ -77,7 +77,6 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
 
     render() {
         const { menuRef } = this.state
-        console.log('menuRef:', menuRef)
         const menuOpen = Boolean(menuRef)
         const user: IUser = this.props.currentUser
         const anchorOrigin: PopoverOrigin = { vertical: 'bottom', horizontal: 'right' }
@@ -87,11 +86,9 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
 
         return (
             <div className='account-widget'>
-
-                <NavItem title='bool' onClick={this.handleClickOpen}>
+                <NavItem title='My Account' onClick={this.handleClickOpen}>
                     <Avatar className='account-widget__avatar' >{user ? user.avatar.initials : undefined}</Avatar>
                 </NavItem>
-
                 {user && (
                     <Menu
                         open={menuOpen}

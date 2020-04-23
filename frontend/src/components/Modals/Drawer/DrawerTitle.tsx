@@ -28,7 +28,7 @@ class DrawerTitle extends React.Component<IDrawerTitleProps> {
             <Flexbox className='drawer__title'>
                 <IconButton onClick={() => this.props.onClose()}><Icon>arrow_back</Icon></IconButton>
                 {this.props.title && (
-                    <Typography>{this.props.title}</Typography>
+                    <Typography variant='h6'>{this.props.title}</Typography>
                 )}
                 {this.props.children && (
                     this.props.children

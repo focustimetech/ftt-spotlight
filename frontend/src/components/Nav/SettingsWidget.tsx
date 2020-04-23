@@ -1,17 +1,62 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
+import { dispatchCurrentUser } from '../../actions/authActions'
+import { RootState } from '../../store'
+import { IUser } from '../../types/auth'
+
+import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
 import NavItem from './NavItem'
 
-const SettingsWidget = () => {
-    return (
-        <div>
-            <NavItem
-                onClick={() => null}
-                title='Settings'
-                icon='settings'
-            />
-        </div>
-    )
+interface IReduxProps {
+    currentUser: IUser
 }
 
-export default SettingsWidget
+interface IState {
+    open: boolean
+}
+
+class SettingsWidget extends React.Component<IReduxProps, IState> {
+    state: IState = {
+        open: false
+    }
+
+    handleOpen = () => {
+        /*
+        if (!this.props.currentUser) {
+            return
+        }
+        */
+        this.setState({ open: true })
+    }
+
+    handleClose = () => {
+        this.setState({ open: false })
+    }
+
+    render() {
+        return (
+            <div>
+                <NavItem
+                    onClick={this.handleOpen}
+                    title='Settings'
+                    icon='settings'
+                />
+                <Drawer open={this.state.open}>
+                    <DrawerTitle title='Settings' onClose={this.handleClose} />
+                    <DrawerContent>
+                        <span>Settings are found here.</span>
+                    </DrawerContent>
+                </Drawer>
+            </div>
+        )
+    }
+}
+
+const mapStateToProps = (state: RootState) => ({
+    currentUser: state.auth.user
+})
+
+const mapDispatchToProps = { dispatchCurrentUser }
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsWidget)

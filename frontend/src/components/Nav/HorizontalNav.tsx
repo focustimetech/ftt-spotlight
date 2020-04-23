@@ -5,7 +5,7 @@ import DefaultNavItems from './DefaultNavItems'
 import FavoritesWidget from './FavoritesWidget'
 import NavItem, { INavItemProps } from './NavItem'
 import NavMenu from './NavMenu'
-import NavMenuItem, { INavMenuItemProps } from './NavMenuItem'
+import NavMenuItem, { INavMenuItem } from './NavMenuItem'
 import SearchBar from './SearchBar'
 
 interface IHorizontalNavProps {

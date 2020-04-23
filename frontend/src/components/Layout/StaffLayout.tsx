@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { INavMenuItemProps } from '../Nav/NavMenuItem'
+import { INavMenuItem } from '../Nav/NavMenuItem'
 
-export const staffMenuItems: INavMenuItemProps[] = [
+export const staffMenuItems: INavMenuItem[] = [
     { label: 'Reporting', href: 'reporting', icon: 'assessment' }
 ]
 

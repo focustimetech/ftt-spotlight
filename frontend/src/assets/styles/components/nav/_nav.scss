@@ -56,11 +56,23 @@
 .nav-menu {
     box-sizing: border-box;
     height: 100%;
-    padding: spacing(2) spacing(1) !important;
+    padding: spacing(2) 0 !important;
     width: 64px;
     background: #EEE;
 
     &.--expanded {
+        padding-left: spacing(1) !important;
+        padding-right: spacing(1) !important;
         width: unset;
+    }
+
+    &__item {
+        &.--active {
+            background-color: rgba(0, 0, 0, 0.04);
+
+            * {
+                color: $primary !important;
+            }
+        }
     }
 }

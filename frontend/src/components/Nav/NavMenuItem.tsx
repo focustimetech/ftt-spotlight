@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import Link from 'next/link'
 import React from 'react'
 
@@ -9,27 +10,35 @@ import {
     MenuItem
 } from '@material-ui/core'
 
-export interface INavMenuItemProps {
+export interface INavMenuItem {
     icon: string
     label: string
     href: string
 }
 
+interface INavMenuItemProps extends INavMenuItem {
+    active: boolean
+    useListItem: boolean
+}
+
 const NavMenuItem = (props: INavMenuItemProps & { useListItem: boolean }) => {
+    const { active, href, icon, label, useListItem } = props
+    const className: string = classNames('nav-menu__item', { '--active': active, '--expanded': !useListItem })
+
     return props.useListItem ? (
-        <Link href={props.href}>
+        <Link href={href}>
             <a>
-                <MenuItem className='nav-menu__item'>
-                    <ListItemIcon><Icon>{props.icon}</Icon></ListItemIcon>
-                    <ListItemText>{props.label}</ListItemText>
+                <MenuItem className={className}>
+                    <ListItemIcon><Icon>{icon}</Icon></ListItemIcon>
+                    <ListItemText>{label}</ListItemText>
                 </MenuItem>
             </a>
         </Link>
     ) : (
-        <li className='nav-menu__item'>
-            <Link href={props.href}>
-                <IconButton title={props.label}>
-                    <Icon>{props.icon}</Icon>
+        <li className={className}>
+            <Link href={href}>
+                <IconButton title={label}>
+                    <Icon>{icon}</Icon>
                 </IconButton>
             </Link>
         </li>

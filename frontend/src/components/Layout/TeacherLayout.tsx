@@ -5,11 +5,11 @@ import { ILayoutProps } from '../../types/layout'
 import { staffMenuItems } from './StaffLayout'
 
 import Layout from '.'
-import { INavMenuItemProps } from '../Nav/NavMenuItem'
+import { INavMenuItem } from '../Nav/NavMenuItem'
 import VerticalNav from '../Nav/VerticalNav'
 import LayoutContent from './LayoutContent'
 
-const teacherMenuItems: INavMenuItemProps[] = [
+const teacherMenuItems: INavMenuItem[] = [
     { label: 'Student Check-in', href: 'check-in', icon: 'how_to_vote' }
 ]
 

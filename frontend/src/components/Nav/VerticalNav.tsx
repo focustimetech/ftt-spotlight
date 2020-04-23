@@ -5,12 +5,12 @@ import DefaultNavItems from './DefaultNavItems'
 import FavoritesWidget from './FavoritesWidget'
 import NavItem, { INavItemProps } from './NavItem'
 import NavMenu from './NavMenu'
-import NavMenuItem, { INavMenuItemProps } from './NavMenuItem'
+import { INavMenuItem } from './NavMenuItem'
 import SearchWidget from './SearchWidget'
 
 interface IVerticalNavProps {
     navItems?: INavItemProps[]
-    menuItems?: INavMenuItemProps[]
+    menuItems?: INavMenuItem[]
 }
 
 class VerticalNav extends React.Component<IVerticalNavProps> {

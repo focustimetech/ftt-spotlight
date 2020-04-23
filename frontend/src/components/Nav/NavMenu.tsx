@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import { NextRouter, useRouter } from 'next/router'
 import React from 'react'
 
 import {
@@ -11,16 +12,16 @@ import {
     Paper
 } from '@material-ui/core'
 
-import NavMenuItem, { INavMenuItemProps } from './NavMenuItem'
+import NavMenuItem, { INavMenuItem } from './NavMenuItem'
 
 interface INavMenuProps {
     children?: any
-    menuItems?: INavMenuItemProps[]
+    menuItems?: INavMenuItem[]
 }
 
 const NavMenu = (props: INavMenuProps) => {
     const [expanded, setExpanded] = React.useState(true)
-    console.log('expanded: ', expanded)
+    const router: NextRouter = useRouter()
 
     return (
         <Paper>
@@ -38,9 +39,15 @@ const NavMenu = (props: INavMenuProps) => {
                     </li>
                 )}
                 {props.children}
-                {props.menuItems && props.menuItems.map((menuItemProps) => {
-                    const itemProps = { ...menuItemProps, useListItem: expanded }
-                    return <NavMenuItem {...itemProps} jey={itemProps.label} />
+                {props.menuItems && props.menuItems.map((menuItem) => {
+                    return (
+                        <NavMenuItem
+                            {...menuItem}
+                            useListItem={expanded}
+                            active={router.pathname === menuItem.href}
+                            key={menuItem.label}
+                        />
+                    )
                 })}
             </List>
         </Paper>

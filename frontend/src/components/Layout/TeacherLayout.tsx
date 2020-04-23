@@ -1,22 +1,27 @@
+import classNames from 'classnames'
 import React from 'react'
 
-import VerticalNav from '../Nav/VerticalNav'
+import { ILayoutProps } from '../../types/layout'
+import { staffMenuItems } from './StaffLayout'
+
+import Layout from '.'
 import { INavMenuItemProps } from '../Nav/NavMenuItem'
+import VerticalNav from '../Nav/VerticalNav'
+import LayoutContent from './LayoutContent'
 
-interface ITeacherLayoutProps {
-    children: any
-}
+const teacherMenuItems: INavMenuItemProps[] = [
+    { label: 'Student Check-in', href: 'check-in', icon: 'how_to_vote' }
+]
 
-class TeacherLayout extends React.Component<ITeacherLayoutProps> {
+class TeacherLayout extends React.Component<ILayoutProps> {
     render() {
-        const menuItems: INavMenuItemProps[] = [
-            { label: 'Student Check-in', href: 'check-in', icon: 'alarm' }
-        ]
         return (
-            <div className='layout'>
-                <VerticalNav menuItems={menuItems} />
-                {this.props.children}
-            </div>
+            <Layout orientation='vertical'>
+                <VerticalNav menuItems={[...teacherMenuItems, ...staffMenuItems]} />
+                <LayoutContent orientation='vertical'>
+                    {this.props.children}
+                </LayoutContent>
+            </Layout>
         )
     }
 }

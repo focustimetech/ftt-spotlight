@@ -39,9 +39,7 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
                         <DefaultNavItems orientation='vertical'/>
                     </div>
                 </nav>
-                <NavMenu>
-                    <NavMenuItem label='Check In' icon='alarm' />
-                </NavMenu>
+                <NavMenu menuItems={this.props.menuItems} />
             </>
         )
     }

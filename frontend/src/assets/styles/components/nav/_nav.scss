@@ -38,6 +38,10 @@
         }
     }
 
+    &.--horizontal {
+        box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    }
+
     .nav-item {
         button {
             color: inherit;
@@ -50,5 +54,13 @@
 }
 
 .nav-menu {
+    box-sizing: border-box;
+    height: 100%;
+    padding: spacing(2) spacing(1) !important;
+    width: 64px;
+    background: #EEE;
 
+    &.--expanded {
+        width: unset;
+    }
 }

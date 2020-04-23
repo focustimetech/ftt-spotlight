@@ -4,36 +4,34 @@ import React from 'react'
 import {
     Icon,
     IconButton,
-    ListItemText
+    ListItemIcon,
+    ListItemText,
+    MenuItem
 } from '@material-ui/core'
 
 export interface INavMenuItemProps {
     icon: string
     label: string
-    href?: string
-    onClick?: () => void
+    href: string
 }
 
 const NavMenuItem = (props: INavMenuItemProps & { useListItem: boolean }) => {
-    const listItem = props.useListItem ? (
-        <a onClick={props.onClick}>
-            <Icon>{props.icon}</Icon>
-            <ListItemText>{props.label}</ListItemText>
-        </a>
+    return props.useListItem ? (
+        <Link href={props.href}>
+            <a>
+                <MenuItem className='nav-menu__item'>
+                    <ListItemIcon><Icon>{props.icon}</Icon></ListItemIcon>
+                    <ListItemText>{props.label}</ListItemText>
+                </MenuItem>
+            </a>
+        </Link>
     ) : (
-        <IconButton title={props.label} onClick={props.onClick}>
-            <Icon>{props.icon}</Icon>
-        </IconButton>
-    )
-
-    console.log('useListItem', props.useListItem)
-    return (
         <li className='nav-menu__item'>
-            {props.href ? (
-                <Link href={props.href}>{listItem}</Link>
-            ) : (
-                listItem
-            )}
+            <Link href={props.href}>
+                <IconButton title={props.label}>
+                    <Icon>{props.icon}</Icon>
+                </IconButton>
+            </Link>
         </li>
     )
 }

@@ -1,0 +1,19 @@
+.layout {
+    display: flex;
+    flex-flow: column nowrap;
+
+    &.--vertical {
+        flex-flow: row nowrap
+    }
+
+    & > * {
+        position: relative;
+        top: 0;
+        bottom: 0;
+        overflow-y: auto;
+    }
+
+    &__content {
+        flex: 1;
+    }
+}

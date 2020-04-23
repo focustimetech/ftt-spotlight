@@ -59,11 +59,15 @@
     padding: spacing(2) 0 !important;
     width: 64px;
     background: #EEE;
+    transition-property: width;
+    transition-duration: 0.2s;
+    will-change: width;
+
 
     &.--expanded {
         padding-left: spacing(1) !important;
         padding-right: spacing(1) !important;
-        width: unset;
+        width: spacing(30);
     }
 
     &__item {

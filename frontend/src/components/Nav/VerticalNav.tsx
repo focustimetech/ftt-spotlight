@@ -11,6 +11,7 @@ import SearchWidget from './SearchWidget'
 interface IVerticalNavProps {
     navItems?: INavItemProps[]
     menuItems?: INavMenuItem[]
+    hiddenMenuItems?: INavMenuItem[]
 }
 
 class VerticalNav extends React.Component<IVerticalNavProps> {
@@ -39,7 +40,7 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
                         <DefaultNavItems orientation='vertical'/>
                     </div>
                 </nav>
-                <NavMenu menuItems={this.props.menuItems} />
+                <NavMenu menuItems={this.props.menuItems} hiddenMenuItems={this.props.hiddenMenuItems} />
             </>
         )
     }

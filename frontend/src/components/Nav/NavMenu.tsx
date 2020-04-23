@@ -20,9 +20,10 @@ const NavMenu = (props: INavMenuProps) => {
                 </IconButton>
             </li>
             {props.children}
-            {props.menuItems && props.menuItems.map((menuItemProps) => (
-                <NavMenuItem {...menuItemProps} />
-            ))}
+            {props.menuItems && props.menuItems.map((menuItemProps) => {
+                const props = { ...menuItemProps, useListItem: expanded }
+                return <NavMenuItem {...props} />
+            })}
         </ul>
     )
 }

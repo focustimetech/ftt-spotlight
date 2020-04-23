@@ -1,7 +1,11 @@
 import Link from 'next/link'
 import React from 'react'
 
-import { Icon, ListItemText, Typography } from '@material-ui/core'
+import {
+    Icon,
+    IconButton,
+    ListItemText
+} from '@material-ui/core'
 
 export interface INavMenuItemProps {
     icon: string
@@ -10,20 +14,25 @@ export interface INavMenuItemProps {
     onClick?: () => void
 }
 
-const NavMenuItem = (props: INavMenuItemProps) => {
-    const ListItem = () => (
-        <a onClick={() => props.onClick()}>
+const NavMenuItem = (props: INavMenuItemProps & { useListItem: boolean }) => {
+    const listItem = props.useListItem ? (
+        <a onClick={props.onClick}>
             <Icon>{props.icon}</Icon>
             <ListItemText>{props.label}</ListItemText>
         </a>
+    ) : (
+        <IconButton title={props.label} onClick={props.onClick}>
+            <Icon>{props.icon}</Icon>
+        </IconButton>
     )
 
+    console.log('useListItem', props.useListItem)
     return (
         <li className='nav-menu__item'>
             {props.href ? (
-                <Link href={props.href}><ListItem /></Link>
+                <Link href={props.href}>{listItem}</Link>
             ) : (
-                <ListItem />
+                listItem
             )}
         </li>
     )

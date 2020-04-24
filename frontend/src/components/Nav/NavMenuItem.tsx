@@ -7,7 +7,8 @@ import {
     IconButton,
     ListItemIcon,
     ListItemText,
-    MenuItem
+    MenuItem,
+    Tooltip
 } from '@material-ui/core'
 
 export interface INavMenuItem {
@@ -37,9 +38,11 @@ const NavMenuItem = (props: INavMenuItemProps & { useListItem: boolean }) => {
     ) : (
         <li className={className}>
             <Link href={href}>
-                <IconButton title={label}>
-                    <Icon>{icon}</Icon>
-                </IconButton>
+                <Tooltip title={label} placement='right'>
+                    <IconButton>
+                        <Icon>{icon}</Icon>
+                    </IconButton>
+                </Tooltip>
             </Link>
         </li>
     )

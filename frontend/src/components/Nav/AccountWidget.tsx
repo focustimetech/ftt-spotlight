@@ -86,7 +86,7 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
 
         return (
             <div className='account-widget'>
-                <NavItem title='My Account' onClick={this.handleClickOpen}>
+                <NavItem title='My Account' onClick={this.handleClickOpen} orientation={this.props.orientation}>
                     <Avatar className='account-widget__avatar' >{user ? user.avatar.initials : undefined}</Avatar>
                 </NavItem>
                 {user && (

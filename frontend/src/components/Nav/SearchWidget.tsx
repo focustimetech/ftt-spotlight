@@ -15,6 +15,8 @@ import {
     Typography
 } from '@material-ui/core'
 
+import { Orientation } from '../../types/layout'
+
 import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
 import NavItem from './NavItem'
 
@@ -52,7 +54,11 @@ const emptySearchResults: ISearchResults = {
     clusters: []
 }
 
-class SearchWidget extends React.Component<{}, IState> {
+interface ISearchWidgetProps {
+    orientation: Orientation
+}
+
+class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
     state: IState = {
         open: false,
         loading: false,
@@ -101,7 +107,7 @@ class SearchWidget extends React.Component<{}, IState> {
 
         return (
             <div>
-                <NavItem title='Search' icon='search' onClick={this.handleClickOpen} />
+                <NavItem title='Search' icon='search' onClick={this.handleClickOpen} orientation={this.props.orientation} />
                 <Drawer open={this.state.open}>
                     <DrawerTitle onClose={this.handleClose}>
                         <TextField

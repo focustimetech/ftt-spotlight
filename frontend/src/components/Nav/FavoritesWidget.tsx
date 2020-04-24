@@ -17,6 +17,7 @@ import {
 
 import { fetchStarred, starItem, unstarItem } from '../../actions/starActions'
 import { IStarredGroup, IStarredItem, IStarredList, starredGroups } from '../../reducers/starReducer'
+import { Orientation } from '../../types/layout'
 
 import { EmptyStateIcon } from '../EmptyStateIcon'
 import NavItem from './NavItem'
@@ -34,7 +35,11 @@ interface IReduxProps {
     newIStarred: IStarredItem
 }
 
-class IStarredWidget extends React.Component<IReduxProps, IState> {
+interface IFavoritesWidgetProps extends IReduxProps {
+    orientation: Orientation
+}
+
+class IStarredWidget extends React.Component<IFavoritesWidgetProps, IState> {
     state: IState = {
         open: false,
         loading: false
@@ -101,7 +106,7 @@ class IStarredWidget extends React.Component<IReduxProps, IState> {
         }
         return (
             <div>
-                <NavItem title='Starred' icon='star_border' onClick={this.handleClickOpen} />
+                <NavItem title='Starred' icon='star_border' onClick={this.handleClickOpen} orientation={this.props.orientation} />
                 <Drawer open={this.state.open}>
 					<div className='sidebar_modal starred_modal items_modal'>
                         <div className='sidebar_modal__header'>

@@ -55,38 +55,53 @@
 
 .nav-menu {
     box-sizing: border-box;
-    height: 100%;
     padding: spacing(2) 0 !important;
+    height: 100%;
     width: 64px;
     background: #EEE;
     transition-property: width;
-    will-change: width;
     @include slide-transition;
-    position: relative;
 
-    &__container {
-        position: absolute;
+    position: relative;
+    overflow-x: hidden;
+
+    &.--expanded {
+        width: spacing(30);
+    }
+
+    &__list {
+        position: absolute !important;
+        width: 100%;
+        left: 8px;
+        // @include slide-transition;
+        transition-property: left !important;
+
+        &.--expanded {
+            left: 0;
+
+            .nav-menu__item {
+                //padding: 12px 20px !important;
+                padding-left: 20px !important; // Unused
+                padding-right: 20px !important; // Unused
+                // height: 48px !important;
+            }
+        }
     }
 
     &__item {
+        box-sizing: border-box;
+        height: 48px !important;
+        padding: 0;
+        // @include slide-transition;
+        transition-property: padding;
+        transition-duration: 1s; // DEBUG
+
         &.--active {
             background-color: rgba(0, 0, 0, 0.04);
 
             * {
                 color: $primary !important;
             }
-        }
-    }
-
-    &.--expanded {
-        width: spacing(30);
-
-        .nav-menu__item {
-
-        }
-
-        .nav-menu__container {
-            
         }
     }
 }

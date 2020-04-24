@@ -36,65 +36,66 @@ const NavMenu = (props: INavMenuProps) => {
 
     return (
         <Paper>
-            <List className={classNames('nav-menu', { '--expanded': expanded })}>
-                <Fade in={expanded} unmountOnExit>
-                    <div className='nav-menu__container'>
-                        <MenuItem className='nav-menu__toggle' onClick={() => setExpanded(!expanded)}>
-                            <ListItemIcon><Icon>chevron_left</Icon></ListItemIcon>
-                            <ListItemText>Close</ListItemText>
-                        </MenuItem>
-                        {props.menuItems.map((menuItem) => (
-                            <NavMenuItem
-                                {...menuItem}
-                                useListItem
-                                active={router.pathname === menuItem.href}
-                                key={menuItem.label}
-                            />
-                        ))}
-                        {props.hiddenMenuItems && (
-                            <>
-                                <Collapse in={showHidden}>
-                                    <div>
-                                        <Divider />
-                                        {props.hiddenMenuItems.map((menuItem: INavMenuItem) => (
-                                            <NavMenuItem
-                                                {...menuItem}
-                                                useListItem
-                                                active={router.pathname === menuItem.href}
-                                                key={menuItem.label}
-                                            />
-                                        ))}
-                                    </div>
-                                </Collapse>
-                                <MenuItem className='nav-menu__toggle' onClick={() => setShowHidden(!showHidden)}>
-                                    <ListItemIcon><Icon>{showHidden ? 'expand_less' : 'expand_more'}</Icon></ListItemIcon>
-                                    <ListItemText>{showHidden ? 'Show less' : 'Show more'}</ListItemText>
-                                </MenuItem>
-                            </>
-                        )}
+            <div className={classNames('nav-menu', { '--expanded': expanded })}>
+                <Fade in={expanded} unmountOnExit={false}>
+                    <div>
+                        <List className={classNames('nav-menu__list', '--expanded')}>
+                            <MenuItem className={classNames('nav-menu__toggle', 'nav-menu__item')} onClick={() => setExpanded(!expanded)}>
+                                <ListItemIcon><Icon>chevron_left</Icon></ListItemIcon>
+                                <ListItemText>Close</ListItemText>
+                            </MenuItem>
+                            {props.menuItems.map((menuItem) => (
+                                <NavMenuItem
+                                    {...menuItem}
+                                    useListItem
+                                    active={router.pathname === menuItem.href}
+                                    key={menuItem.label}
+                                />
+                            ))}
+                            {props.hiddenMenuItems && (
+                                <>
+                                    <Collapse in={showHidden}>
+                                        <div>
+                                            <Divider />
+                                            {props.hiddenMenuItems.map((menuItem: INavMenuItem) => (
+                                                <NavMenuItem
+                                                    {...menuItem}
+                                                    useListItem
+                                                    active={router.pathname === menuItem.href}
+                                                    key={menuItem.label}
+                                                />
+                                            ))}
+                                        </div>
+                                    </Collapse>
+                                    <MenuItem className='nav-menu__toggle' onClick={() => setShowHidden(!showHidden)}>
+                                        <ListItemIcon><Icon>{showHidden ? 'expand_less' : 'expand_more'}</Icon></ListItemIcon>
+                                        <ListItemText>{showHidden ? 'Show less' : 'Show more'}</ListItemText>
+                                    </MenuItem>
+                                </>
+                            )}
+                        </List>
                     </div>
                 </Fade>
-                <Fade in={!expanded} unmountOnExit>
-                    <div className='nav-menu__container'>
-                        <li>
-                            <IconButton onClick={() => setExpanded(!expanded)}>
-                                <Icon>chevron_right</Icon>
-                            </IconButton>
-                        </li>
-                        {props.menuItems.map((menuItem) => (
-                            <NavMenuItem
-                                {...menuItem}
-                                useListItem={false}
-                                active={router.pathname === menuItem.href}
-                                key={menuItem.label}
-                            />
-                        ))}
+                <Fade in={!expanded} unmountOnExit={false}>
+                    <div>
+                        <List className='nav-menu__list'>
+                            <li>
+                                <IconButton onClick={() => setExpanded(!expanded)}>
+                                    <Icon>chevron_right</Icon>
+                                </IconButton>
+                            </li>
+                            {props.menuItems.map((menuItem) => (
+                                <NavMenuItem
+                                    {...menuItem}
+                                    useListItem={false}
+                                    active={router.pathname === menuItem.href}
+                                    key={menuItem.label}
+                                />
+                            ))}
+                        </List>
                     </div>
                 </Fade>
-
-                
-                
-            </List>
+            </div>
         </Paper>
     )
 }

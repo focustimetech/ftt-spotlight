@@ -7,6 +7,7 @@ import { IUser } from '../../types/auth'
 
 import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
 import NavItem from './NavItem'
+import { Orientation } from '../../types/layout'
 
 interface IReduxProps {
     currentUser: IUser
@@ -16,7 +17,11 @@ interface IState {
     open: boolean
 }
 
-class SettingsWidget extends React.Component<IReduxProps, IState> {
+interface ISettingsWidgetProps {
+    orientation: Orientation
+}
+
+class SettingsWidget extends React.Component<ISettingsWidgetProps, IState> {
     state: IState = {
         open: false
     }
@@ -41,6 +46,7 @@ class SettingsWidget extends React.Component<IReduxProps, IState> {
                     onClick={this.handleOpen}
                     title='Settings'
                     icon='settings'
+                    orientation={this.props.orientation}
                 />
                 <Drawer open={this.state.open}>
                     <DrawerTitle title='Settings' onClose={this.handleClose} />

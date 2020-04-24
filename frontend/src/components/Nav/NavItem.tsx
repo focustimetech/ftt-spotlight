@@ -8,8 +8,11 @@ import {
     Tooltip
 } from '@material-ui/core'
 
+import { Orientation } from '../../types/layout'
+
 export interface INavItemProps {
     title: string
+    orientation: Orientation
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
     children?: any
     className?: string
@@ -19,35 +22,23 @@ export interface INavItemProps {
 }
 
 const NavItem = (props: INavItemProps) => {
-    const Button = () => {
-        return (
-            <IconButton onClick={props.onClick}>
-                {props.icon && (
-                    <Icon>{props.icon}</Icon>
-                )}
-                {props.src && (
-                    <img className='nav-item__image' src={props.src} />
-                )}
-                {props.children}
-            </IconButton>
-        )
-    }
-
     return (
         <div className={classNames('nav-item', props.className)}>
-            <Tooltip title={props.title}>
+            <Tooltip title={props.title} placement={props.orientation === 'vertical' ? 'right' : 'top'}>
                 {props.href ? (
-                    <Link href={props.href}>
-                        <IconButton onClick={props.onClick}>
-                            {props.icon && (
-                                <Icon>{props.icon}</Icon>
-                            )}
-                            {props.src && (
-                                <img className='nav-item__image' src={props.src} />
-                            )}
-                            {props.children}
-                        </IconButton>
-                    </Link>
+                    <div>
+                        <Link href={props.href}>
+                            <IconButton onClick={props.onClick}>
+                                {props.icon && (
+                                    <Icon>{props.icon}</Icon>
+                                )}
+                                {props.src && (
+                                    <img className='nav-item__image' src={props.src} />
+                                )}
+                                {props.children}
+                            </IconButton>
+                        </Link>
+                    </div>
                 ) : (
                     <IconButton onClick={props.onClick}>
                         {props.icon && (

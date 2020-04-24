@@ -9,8 +9,8 @@ type IDefaultNavItemsProps = IAccountWidgetProps
 const DefaultNavItems = (props: IDefaultNavItemsProps) => {
     return (
         <>
-            <HelpWidget />
-            <SettingsWidget />
+            <HelpWidget orientation={props.orientation} />
+            <SettingsWidget orientation={props.orientation} />
             <AccountWidget {...props} />
         </>
     )

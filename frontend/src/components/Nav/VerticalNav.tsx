@@ -29,9 +29,10 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
                             title='Spotlight'
                             href='/'
                             src='images/ft-badge-white.png'
+                            orientation='vertical'
                         />
-                        <FavoritesWidget />
-                        <SearchWidget />
+                        <FavoritesWidget orientation='vertical' />
+                        <SearchWidget orientation='vertical' />
                         {this.props.navItems && this.props.navItems.map((navItemProps: INavItemProps) => (
                             <NavItem {...navItemProps} />
                         ))}

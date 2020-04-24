@@ -6,11 +6,17 @@ import {
     MenuItem
 } from '@material-ui/core'
 
+import { Orientation } from '../../types/layout'
+
 import { AboutSpotlight } from '../Modals/AboutSpotlight'
 import FeedbackDialog from '../Modals/FeedbackDialog'
 import NavItem from './NavItem'
 
-const HelpWidget = () => {
+interface IHelpWidgetProps {
+    orientation: Orientation
+}
+
+const HelpWidget = (props: IHelpWidgetProps) => {
     const [menuRef, setMenuRef]: [any, React.Dispatch<React.SetStateAction<any>>]
         = React.useState(null)
     const [feedbackDialogOpen, setFeedbackDialogOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -43,6 +49,7 @@ const HelpWidget = () => {
                 icon='help'
                 title='Help'
                 onClick={handleMenuOpen}
+                orientation={props.orientation}
             />
             <Menu
                 open={menuOpen}

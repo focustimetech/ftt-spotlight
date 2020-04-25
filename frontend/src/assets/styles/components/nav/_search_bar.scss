@@ -1,11 +1,19 @@
 .search-bar {
-    box-sizing: border-box;
-    height: 40px;
     flex: 1;
-    padding: spacing(1);
+    color: inherit;
     border-radius: 8px;
-    width: spacing(45);
+
+    color: inherit !important;
     background: rgba(0, 0, 0, 0.20);
+
+    &__entry {
+        box-sizing: border-box;
+        height: 40px;
+        // flex: 1;
+        width: spacing(45);
+
+        padding: spacing(1);
+    }
 
     &__input {
         width: 100%;
@@ -15,6 +23,11 @@
     &__input,
     button {
         color: inherit !important;
+    }
+
+    &.--open {
+        color: unset;
+        background: unset;
     }
 
     &.--on-primary {

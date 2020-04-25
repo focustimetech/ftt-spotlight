@@ -30,9 +30,9 @@ class HorizontalNav extends React.Component<IHorizontalNavProps> {
                         orientation='horizontal'
                     />
                     {this.props.hasFavorites && (
-                        <FavoritesWidget />
+                        <FavoritesWidget orientation='horizontal' />
                     )}
-                    <SearchBar />
+                    <SearchBar onChange={() => null} loading={false} />
                     {this.props.navItems && this.props.navItems.map((navItemProps: INavItemProps) => (
                         <NavItem {...navItemProps} />
                     ))}

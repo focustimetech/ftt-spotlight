@@ -34,28 +34,12 @@ interface ISearchResults {
 }
 
 interface IState {
-    open: boolean
-    loading: boolean
     value: string
-    searchResults: ISearchResults
 }
 
-const searchGroups: ISearchGroup[] = [
-    { value: 'students', label: 'Students' },
-    { value: 'staff', label: 'Staff' },
-    { value: 'courses', label: 'Courses' },
-    { value: 'clusters', label: 'Clusters' },
-]
-
-const emptySearchResults: ISearchResults = {
-    students: [],
-    staff: [],
-    courses: [],
-    clusters: []
-}
 
 interface ISearchWidgetProps {
-    orientation: Orientation
+    variant: 'drawer' | 'bar'
 }
 
 class SearchWidget extends React.Component<ISearchWidgetProps, IState> {

@@ -32,7 +32,7 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
                             orientation='vertical'
                         />
                         <FavoritesWidget orientation='vertical' />
-                        <SearchWidget orientation='vertical' />
+                        <SearchWidget variant='drawer' orientation='vertical' />
                         {this.props.navItems && this.props.navItems.map((navItemProps: INavItemProps) => (
                             <NavItem {...navItemProps} />
                         ))}

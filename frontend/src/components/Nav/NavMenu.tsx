@@ -17,6 +17,8 @@ import {
     Slide
 } from '@material-ui/core'
 
+import { MENU_OPEN } from '../../utils/localStorage/keys'
+
 import NavMenuItem, { INavMenuItem } from './NavMenuItem'
 
 interface INavMenuProps {
@@ -31,8 +33,17 @@ const NavMenu = (props: INavMenuProps) => {
     const router: NextRouter = useRouter()
 
     React.useEffect(() => {
-        // Fetch expanded state from localStorage
-    })
+        const menuState: any = localStorage.getItem(MENU_OPEN)
+        if (menuState === null) {
+            return
+        }
+        setExpanded(Boolean(Number(menuState)))
+    }, [])
+
+    const handleToggle = () => {
+        localStorage.setItem(MENU_OPEN, !expanded ? '1' : '0')
+        setExpanded(!expanded)
+    }
 
     return (
         <Paper>
@@ -40,7 +51,7 @@ const NavMenu = (props: INavMenuProps) => {
                 <Fade in={expanded} unmountOnExit={false}>
                     <div>
                         <List className={classNames('nav-menu__list', '--expanded')}>
-                            <MenuItem className={classNames('nav-menu__toggle', 'nav-menu__item')} onClick={() => setExpanded(!expanded)}>
+                            <MenuItem className={classNames('nav-menu__toggle', 'nav-menu__item')} onClick={() => handleToggle()}>
                                 <ListItemIcon><Icon>chevron_left</Icon></ListItemIcon>
                                 <ListItemText>Close</ListItemText>
                             </MenuItem>
@@ -80,7 +91,7 @@ const NavMenu = (props: INavMenuProps) => {
                     <div>
                         <List className='nav-menu__list'>
                             <li>
-                                <IconButton onClick={() => setExpanded(!expanded)}>
+                                <IconButton onClick={() => handleToggle()}>
                                     <Icon>chevron_right</Icon>
                                 </IconButton>
                             </li>

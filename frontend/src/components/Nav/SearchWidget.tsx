@@ -59,7 +59,7 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
         return (
             <div>
                 {this.props.variant === 'bar' ? (
-                    <SearchBar onChange={this.handleChange} onExpand={this.handleOpen} loading={this.state.loading} />
+                    <SearchBar value={this.state.value} onChange={this.handleChange} onExpand={this.handleOpen} loading={this.state.loading} />
                 ) : (
                     <NavItem title='Search' icon='search' onClick={this.handleOpen} orientation={this.props.orientation} />
                 )}

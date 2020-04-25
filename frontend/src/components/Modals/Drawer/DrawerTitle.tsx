@@ -16,7 +16,6 @@ interface IDrawerTitleProps {
 
 class DrawerTitle extends React.Component<IDrawerTitleProps> {
     escFunction = (event: KeyboardEvent) => {
-        console.log('Triggering close')
         if (event.keyCode === 27) {
             this.props.onClose()
         }

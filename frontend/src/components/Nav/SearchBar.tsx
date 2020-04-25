@@ -21,6 +21,7 @@ interface IState {
 
 interface ISearchBarProps {
     loading: boolean
+    value?: string
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
     onExpand?: () => void
 }
@@ -52,7 +53,7 @@ class SearchBar extends React.Component<ISearchBarProps, IState> {
                         <IconButton size='small'><Icon>search</Icon></IconButton>
                         <InputBase
                             className='search-bar__input'
-                            value={this.state.value}
+                            value={this.props.value || this.state.value}
                             onChange={this.handleChange}
                             placeholder='Search Spotlight'
                         />

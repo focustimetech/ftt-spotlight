@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { makeArray } from './utils'
+import { makeArray } from '../utils'
 
 export type UserType = 'staff' | 'student'
 
@@ -70,9 +70,3 @@ export const getObjectFromLocalStorage = (key: string): any => {
     const json: string = localStorage.getItem(key)
     return JSON.parse(json)
 }
-
-// localStorage keys
-export const ACCESS_TOKEN = 'ACCESS_TOKEN'
-export const CHECK_IN_ERRORS = 'CHECK_IN_ERRORS'
-export const MENU_OPEN = 'MENU_OPEN'
-export const REMEMBER_USERS = 'REMEMBER_USERS'

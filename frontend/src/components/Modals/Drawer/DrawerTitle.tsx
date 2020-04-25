@@ -15,12 +15,19 @@ interface IDrawerTitleProps {
 }
 
 class DrawerTitle extends React.Component<IDrawerTitleProps> {
+    escFunction = (event: KeyboardEvent) => {
+        console.log('Triggering close')
+        if (event.keyCode === 27) {
+            this.props.onClose()
+        }
+    }
+
     componentDidMount() {
-        console.log('DrawerTitle.componentDidMount()')
+        document.addEventListener('keydown', this.escFunction, false)
     }
 
     componentWillUnmount() {
-        console.log('DrawerTitle.componentWillUnmount()')
+        document.removeEventListener('keydown', this.escFunction, false)
     }
 
     render() {

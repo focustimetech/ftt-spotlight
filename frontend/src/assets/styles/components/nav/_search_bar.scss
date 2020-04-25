@@ -1,18 +1,17 @@
 .search-bar {
     flex: 1;
-    color: inherit;
     border-radius: 8px;
-
-    color: inherit !important;
-    background: rgba(0, 0, 0, 0.20);
+    transition: box-shadow, color, background 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
 
     &__entry {
         box-sizing: border-box;
         height: 40px;
-        // flex: 1;
         width: spacing(45);
-
         padding: spacing(1);
+    }
+
+    &__input-container {
+        flex: 1;
     }
 
     &__input {
@@ -20,17 +19,19 @@
         flex: 1;
     }
 
-    &__input,
-    button {
+
+    &:not(:focus-within) {
         color: inherit !important;
-    }
+        background: rgba(0, 0, 0, 0.20);
+        box-shadow: none;
 
-    &.--open {
-        color: unset;
-        background: unset;
-    }
+        .search-bar__input,
+        button {
+            color: inherit !important;
+        }
 
-    &.--on-primary {
-        background: rgba(255, 255, 255, 0.20);
+        &.--on-primary {
+            background: rgba(255, 255, 255, 0.20);
+        }
     }
 }

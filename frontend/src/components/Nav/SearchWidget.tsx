@@ -19,43 +19,30 @@ import { Orientation } from '../../types/layout'
 
 import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
 import NavItem from './NavItem'
+import SearchBar from './SearchBar'
 
-interface ISearchGroup {
-    value: string
-    label: string
-}
-
-interface ISearchResults {
-    students: any[],
-    staff: any[],
-    courses: any[],
-    clusters: any[],
-    [key: string]: any
+interface ISearchWidgetProps {
+    orientation: Orientation
+    variant: 'drawer' | 'bar'
 }
 
 interface IState {
+    open: boolean
+    loading: boolean
     value: string
+    results: any[]
 }
 
-
-interface ISearchWidgetProps {
-    variant: 'drawer' | 'bar'
-}
 
 class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
     state: IState = {
         open: false,
         loading: false,
         value: '',
-        searchResults: emptySearchResults
+        results: []
     }
 
-    constructor(props: any) {
-        super(props)
-        this.escFunction = this.escFunction.bind(this)
-    }
-
-    handleClickOpen = () => {
+    handleOpen = () => {
         this.setState({ open: true })
     }
 
@@ -68,30 +55,14 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
         this.setState({ value })
     }
 
-    escFunction = (event: any) => {
-        if (event.keyCode === 27) {
-            this.setState({ open: false })
-        }
-    }
-
-    componentDidMount() {
-        document.addEventListener('keydown', this.escFunction, false)
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('keydown', this.escFunction, false)
-    }
-
     render() {
-        const resultCount: number = this.state.searchResults ? (
-            searchGroups.reduce((count: number, itemGroup: ISearchGroup) => {
-                return count + this.state.searchResults[itemGroup.value].length
-            }, 0)
-        ) : 0
-
         return (
             <div>
-                <NavItem title='Search' icon='search' onClick={this.handleClickOpen} orientation={this.props.orientation} />
+                {this.props.variant === 'bar' ? (
+                    <SearchBar onChange={this.handleChange} onExpand={this.handleOpen} loading={this.state.loading} />
+                ) : (
+                    <NavItem title='Search' icon='search' onClick={this.handleOpen} orientation={this.props.orientation} />
+                )}
                 <Drawer open={this.state.open}>
                     <DrawerTitle onClose={this.handleClose}>
                         <TextField

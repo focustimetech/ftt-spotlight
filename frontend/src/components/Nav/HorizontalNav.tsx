@@ -6,7 +6,7 @@ import FavoritesWidget from './FavoritesWidget'
 import NavItem, { INavItemProps } from './NavItem'
 import NavMenu from './NavMenu'
 import NavMenuItem, { INavMenuItem } from './NavMenuItem'
-import SearchBar from './SearchBar'
+import SearchWidget from './SearchWidget'
 
 interface IHorizontalNavProps {
     navItems?: INavItemProps[]
@@ -32,7 +32,7 @@ class HorizontalNav extends React.Component<IHorizontalNavProps> {
                     {this.props.hasFavorites && (
                         <FavoritesWidget orientation='horizontal' />
                     )}
-                    <SearchBar onChange={() => null} loading={false} />
+                    <SearchWidget variant='bar' orientation='horizontal' />
                     {this.props.navItems && this.props.navItems.map((navItemProps: INavItemProps) => (
                         <NavItem {...navItemProps} />
                     ))}

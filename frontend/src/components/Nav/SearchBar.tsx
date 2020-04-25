@@ -10,6 +10,10 @@ import {
 
 import Flexbox from '../Layout/Flexbox'
 
+const truncateSearchResults = () => {
+    //
+}
+
 interface IState {
     value: string
     open: boolean
@@ -17,7 +21,8 @@ interface IState {
 
 interface ISearchBarProps {
     loading: boolean
-    onChange: (value: string) => void
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+    onExpand?: () => void
 }
 
 class SearchBar extends React.Component<ISearchBarProps, IState> {
@@ -29,7 +34,7 @@ class SearchBar extends React.Component<ISearchBarProps, IState> {
     handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target
         this.setState({ value })
-        this.props.onChange(value)
+        this.props.onChange(event)
     }
 
     handleResetValue = () => {
@@ -37,16 +42,13 @@ class SearchBar extends React.Component<ISearchBarProps, IState> {
     }
 
     render() {
-        const open: boolean = this.state.value.length > 0
-
         return (
-            <Paper className={classNames('search-bar', '--on-primary', { '--open': open })} elevation={open ? 2 : 0}>
+            <Paper className={classNames('search-bar', '--on-primary')} elevation={2}>
                 <Flexbox
-                    // padding
                     justifyContent='space-between'
                     className={classNames('search-bar__entry')}
                 >
-                    <Flexbox>
+                    <Flexbox className='search-bar__input-container'>
                         <IconButton size='small'><Icon>search</Icon></IconButton>
                         <InputBase
                             className='search-bar__input'
@@ -61,9 +63,11 @@ class SearchBar extends React.Component<ISearchBarProps, IState> {
                                 <Icon>close</Icon>
                             </IconButton>
                         )}
-                        <IconButton size='small' onClick={() => null}>
-                            <Icon>arrow_right</Icon>
-                        </IconButton>
+                        {this.props.onExpand && (
+                            <IconButton size='small' onClick={() => this.props.onExpand()}>
+                                <Icon>arrow_right</Icon>
+                            </IconButton>
+                        )}
                     </Flexbox>
                 </Flexbox>
             </Paper>

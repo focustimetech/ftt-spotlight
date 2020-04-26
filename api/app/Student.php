@@ -25,7 +25,7 @@ class Student extends Model
             'account_type' => 'student'
         ]);
 
-        $student = self::create([
+        $student = Student::create([
             'grade' => $attributes['grade'],
             'student_number' => $attributes['student_number'],
             'user_id' => $user->id
@@ -36,7 +36,7 @@ class Student extends Model
 
     public static function search(String $query)
     {
-        return User::search($query)->where('account_type', 'student');
+        return User::search($query)->where('account_type', 'student')->get();
     }
 
     public function amendments()

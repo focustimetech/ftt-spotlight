@@ -7,29 +7,36 @@ use App\Cluster;
 use App\Staff;
 use App\Student;
 use App\Teacher;
+use App\Http\Resources\Classroom as ClassroomResource;
+use App\Http\Resources\Cluster as ClusterResource;
+use App\Http\Resources\Staff as StaffResource;
+use App\Http\Resources\Student as StudentResource;
+use App\Http\Resources\Teacher as TeacherResource;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
     public function search(String $query) {
         $user = auth()->user();
-        $teachers = Teacher::search($query);
+        $teachers = TeacherResource::collection(Teacher::search($query));
         
         if ($user->hasRole('student')) {
-            return [ 'teachers' => $teachers];
+            //return [ 'teachers' => $teachers];
         } else {
-            $staff = Staff::search($query);
+            $staff = StaffResource::collection(Staff::search($query));
             if ($user->hasRole('guardian')) {
-                return ['teachers' => $teachers, 'staff' => $staff];
+                //return ['teachers' => $teachers, 'staff' => $staff];
             } else {
                 return [
-                    'teachers' => $teachers,
+                    //'teachers' => $teachers,
                     'staff' => $staff,
-                    'students' => Students::search($query),
-                    'classrooms' => Classrooms::search($query),
-                    'clusters' => Cluster::search($query)
+                    'students' => StudentResource::collection(Student::search($query)),
+                    //'classrooms' => ClassroomResource::collection(Classroom::search($query)),
+                    //'clusters' => ClusterResource::collection(Cluster::search($query))
                 ];
             }
         }
+
+        return [];
     }
 }

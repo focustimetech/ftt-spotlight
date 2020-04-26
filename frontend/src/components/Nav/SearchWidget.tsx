@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import Link from 'next/link'
 import React from 'react'
 
@@ -59,6 +59,7 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
     }
 
     search = (query: string) => {
+        console.log('token:', axios.CancelToken.source())
         this.setState({ loading: true, error: null })
         API.get(`/search/${query}`).then((res: AxiosResponse<ISearchResults>) => {
             this.setState({ loading: false, results: res.data })

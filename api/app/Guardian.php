@@ -23,7 +23,7 @@ class Guardian extends Model
             'account_type' => 'guardian'
         ]);
 
-        $guardian = self::create([
+        $guardian = Guardian::create([
             'user_id' => $user->id
         ]);
 

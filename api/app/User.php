@@ -44,8 +44,8 @@ class User extends Authenticatable
         return User::firstWhere('username', $username);
     }
 
-    public static function search(String $string) {
-        return;
+    public static function search(String $query) {
+        return User::where('first_name', 'like', $query)->orWhere('last_name', 'like', $query);
     }
 
     public function feedback()

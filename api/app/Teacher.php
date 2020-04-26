@@ -31,13 +31,17 @@ class Teacher extends Model
             'administrator' => $attributes['administrator']
         ]);
 
-        $teacher = self::create([
+        $teacher = Teacher::create([
             'title' => $attributes['title'],
             'unavailability_limit' => $attributes['unavailability_limit'] ?? Utils::settings('DEFAULT_UNAVAILABILITY_LIMIT'),
             'user_id' => $staff->user()->first()->id
         ]);
 
         return $teacher;
+    }
+
+    public static function search(String $query) {
+        return Teacher::all();
     }
 
     public function appointments()
@@ -80,9 +84,5 @@ class Teacher extends Model
     public function staff()
     {
         // return
-    }
-
-    public function search(String $query) {
-        return self::all();
     }
 }

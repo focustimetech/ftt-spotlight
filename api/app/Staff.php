@@ -25,12 +25,17 @@ class Staff extends Model
             'account_type' => 'staff'
         ]);
 
-        $staff = self::create([
+        $staff = Staff::create([
             'administrator' => $attributes['administrator'] ?? false,
             'user_id' => $user->id
         ]);
 
         return $staff;
+    }
+
+    public static function search(String $query)
+    {
+        return Staff::all();
     }
 
     public function amendments()

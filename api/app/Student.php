@@ -27,6 +27,7 @@ class Student extends Model
 
         $student = self::create([
             'grade' => $attributes['grade'],
+            'student_number' => $attributes['student_number'],
             'user_id' => $user->id
         ]);
 

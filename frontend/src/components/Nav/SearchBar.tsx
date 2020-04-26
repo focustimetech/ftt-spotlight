@@ -8,10 +8,13 @@ import {
     Paper
 } from '@material-ui/core'
 
-import Flexbox from '../Layout/Flexbox'
+import { ISearchResults } from '../../types/components/search'
 
-const truncateSearchResults = () => {
-    //
+import Flexbox from '../Layout/Flexbox'
+import SearchResults from './SearchResults'
+
+const truncateSearchResults = (results: ISearchResults): ISearchResults => {
+    return results
 }
 
 interface IState {
@@ -21,6 +24,7 @@ interface IState {
 
 interface ISearchBarProps {
     loading: boolean
+    results: ISearchResults
     value?: string
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
     onExpand?: () => void
@@ -71,6 +75,9 @@ class SearchBar extends React.Component<ISearchBarProps, IState> {
                         )}
                     </Flexbox>
                 </Flexbox>
+                {this.props.results && Object.keys(this.props.results).length > 0 && (
+                    <SearchResults results={truncateSearchResults(this.props.results)} />
+                )}
             </Paper>
         )
     }

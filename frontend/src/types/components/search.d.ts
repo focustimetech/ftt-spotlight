@@ -1,12 +1,13 @@
-import { IAvatar } from '../auth'
+import { IStudent, IStaff, ITeacher } from '../auth'
+import { IClusterDetails } from '../cluster';
 
-interface ISearchResult {
-    avatar?: IAvatar
-    label: string
-    href: string
+interface IClassroom {}
+
+export interface ISearchResults {
+    students?: IStudent[]
+    staff?: IStaff[]
+    teachers?: ITeacher[]
+    clusters?: IClusterDetails[]
+    classrooms?: IClassroom[]
 }
 
-interface ISearchGroup {
-    groupName: string
-    results: ISearchResult
-}

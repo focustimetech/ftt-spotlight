@@ -1,25 +1,26 @@
-import axios from 'axios'
+import { AxiosResponse } from 'axios'
+import Link from 'next/link'
 import React from 'react'
-import ContentLoader from 'react-content-loader'
-import { Link } from 'react-router-dom'
 
 import {
-    Fade,
-    Grow,
-    Icon,
-    IconButton,
-    List,
-    ListItem,
-    Slide,
     TextField,
     Typography
 } from '@material-ui/core'
 
+import { ISearchResults } from '../../types/components/search'
 import { Orientation } from '../../types/layout'
+import API from '../../utils/api'
 
 import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
 import NavItem from './NavItem'
 import SearchBar from './SearchBar'
+
+export const searchGroupNames: Record<string, string> = {
+    teachers: 'Teachers',
+    staff: 'Staff',
+    students: 'Students',
+    clusters: 'Clusters'
+}
 
 interface ISearchWidgetProps {
     orientation: Orientation
@@ -29,17 +30,18 @@ interface ISearchWidgetProps {
 interface IState {
     open: boolean
     loading: boolean
+    error: string
     value: string
-    results: any[]
+    results: ISearchResults
 }
-
 
 class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
     state: IState = {
         open: false,
         loading: false,
+        error: null,
         value: '',
-        results: []
+        results: {}
     }
 
     handleOpen = () => {
@@ -53,13 +55,31 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
     handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target
         this.setState({ value })
+        this.search(value)
+    }
+
+    search = (query: string) => {
+        this.setState({ loading: true, error: null })
+        API.get(`/search/${query}`).then((res: AxiosResponse<ISearchResults>) => {
+            this.setState({ loading: false, results: res.data })
+        }, (error: any) => {
+            this.setState({ loading: false, error: error.message })
+        })
     }
 
     render() {
+        const errored: boolean = Boolean(this.state.error)
+
         return (
             <div>
                 {this.props.variant === 'bar' ? (
-                    <SearchBar value={this.state.value} onChange={this.handleChange} onExpand={this.handleOpen} loading={this.state.loading} />
+                    <SearchBar
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        onExpand={this.handleOpen}
+                        loading={this.state.loading}
+                        results={this.state.results}
+                    />
                 ) : (
                     <NavItem title='Search' icon='search' onClick={this.handleOpen} orientation={this.props.orientation} />
                 )}
@@ -76,6 +96,8 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
                             autoFocus={true}
                             fullWidth={true}
                             autoComplete='off'
+                            error={errored}
+                            helperText={errored ? this.state.error : undefined}
                         />
                     </DrawerTitle>
                     <DrawerContent>

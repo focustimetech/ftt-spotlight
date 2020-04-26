@@ -14,7 +14,7 @@ class Guardian extends Model
         'email'
     ];
 
-    public static function create(array $attributes)
+    public static function createUser(array $attributes)
     {
         $user = User::create([
             'first_name' => $attributes['first_name'],
@@ -23,11 +23,11 @@ class Guardian extends Model
             'account_type' => 'guardian'
         ]);
 
-        $guardian = static::query()->create([
+        $guardian = self::create([
             'user_id' => $user->id
         ]);
 
-        return $teacher;
+        return $guardian;
     }
 
     public function students()

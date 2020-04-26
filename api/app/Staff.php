@@ -16,7 +16,7 @@ class Staff extends Model
         'user_id'
     ];
 
-    public static function create(array $attributes)
+    public static function createUser(array $attributes)
     {
         $user = User::create([
             'first_name' => $attributes['first_name'],
@@ -25,7 +25,7 @@ class Staff extends Model
             'account_type' => 'staff'
         ]);
 
-        $staff = static::query()->create([
+        $staff = self::create([
             'administrator' => $attributes['administrator'] ?? false,
             'user_id' => $user->id
         ]);

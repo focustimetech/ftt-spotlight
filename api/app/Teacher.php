@@ -21,9 +21,9 @@ class Teacher extends Model
         'user_id'
     ];
 
-    public static function create(array $attributes)
+    public static function createUser(array $attributes)
     {
-        $staff = Staff::create([
+        $staff = Staff::createUser([
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
             'email' => $attributes['email'],
@@ -31,7 +31,7 @@ class Teacher extends Model
             'administrator' => $attributes['administrator']
         ]);
 
-        $teacher = static::query()->create([
+        $teacher = self::create([
             'title' => $attributes['title'],
             'unavailability_limit' => $attributes['unavailability_limit'] ?? Utils::settings('DEFAULT_UNAVAILABILITY_LIMIT'),
             'user_id' => $staff->user()->first()->id

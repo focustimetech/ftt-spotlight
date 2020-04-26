@@ -25,6 +25,8 @@ class CreateStudentsTable extends Migration
             $table->timestamps();
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');
+            // Unique keys
+            $table->unique('student_number');
         });
     }
 

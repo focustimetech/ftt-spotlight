@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\User;
+use App\Observers\UserObserver;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -29,6 +31,6 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
 
         // Register Observers
-        //
+        User::observe(UserObserver::class);
     }
 }

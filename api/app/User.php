@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Hash; // Alias exists for Hash facade
-use Utils;
 use App\Guardian;
 use App\Staff;
 use App\Student;
@@ -40,21 +38,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password', /* 'remember_token' */
     ];
-
-    public static function create(array $attributes)
-    {
-        $user = static::query()->create([
-            'first_name' => $attributes['first_name'],
-            'last_name' => $attributes['last_name'],
-            'initials' => strtoupper($attributes['first_name'][0] . $attributes['last_name'][0]),
-            'username' => $attributes['username'],
-            'password' => Hash::make($attributes['username']),
-            'color' => Utils::randomColor(),
-            'account_type' => $attributes['account_type'],
-        ]);
-
-        return $user;
-    }
 
     public static function findByUsername(String $username)
     {

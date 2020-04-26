@@ -16,7 +16,9 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function search(String $query) {
+    public function search(String $queryString) {
+        parse_str($queryString, $params);
+        $query = $params['q'];
         $user = auth()->user();
         $teachers = TeacherResource::collection(Teacher::search($query));
         

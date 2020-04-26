@@ -56,7 +56,10 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
     search = (query: string) => {
         console.log('token:', axios.CancelToken.source())
         this.setState({ loading: true, error: null })
-        API.get(`/search/${query}`).then((res: AxiosResponse<ISearchResults>) => {
+        const searchParams: Record<string, string> = {
+            q: query
+        }
+        API.get(`/search/${new URLSearchParams(searchParams).toString()}`).then((res: AxiosResponse<ISearchResults>) => {
             this.setState({ loading: false, results: res.data })
         }, (error: any) => {
             this.setState({ loading: false, error: error.message })

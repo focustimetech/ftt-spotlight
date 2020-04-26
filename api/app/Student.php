@@ -34,6 +34,11 @@ class Student extends Model
         return $student;
     }
 
+    public static function search(String $query)
+    {
+        return User::search($query)->where('account_type', 'student');
+    }
+
     public function amendments()
     {
         return $this->hasMany('App\Amendment');

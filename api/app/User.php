@@ -44,6 +44,10 @@ class User extends Authenticatable
         return User::firstWhere('username', $username);
     }
 
+    public static function search(String $string) {
+        return;
+    }
+
     public function feedback()
     {
         return $this->hasMany('App\Feedback');

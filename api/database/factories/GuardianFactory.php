@@ -3,12 +3,15 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Guardian;
+use App\User;
 use Faker\Generator as Faker;
 
 $factory->define(Guardian::class, function (Faker $faker) {
+    $user = $user = factory(User::class)->create([
+        'account_type' => 'guardian'
+    ]);
+
     return [
-        'first_name' => $faker->firstName(),
-        'last_name' => $faker->lastName(),
-        'email' => $faker->unique()->safeEmail()
+        'user_id' => $user->id
     ];
 });

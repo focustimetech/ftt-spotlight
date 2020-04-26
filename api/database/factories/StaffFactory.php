@@ -3,13 +3,16 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Staff;
+use App\User;
 use Faker\Generator as Faker;
 
 $factory->define(Staff::class, function (Faker $faker) {
+    $user = factory(User::class)->create([
+        'account_type' => 'staff'
+    ]);
+
     return [
-        'first_name' => $faker->firstName(),
-        'last_name' => $faker->lastName(),
-        'email' => $faker->unique()->safeEmail(),
+        'user_id' => $user->id,
         'administrator' => $faker->boolean()
     ];
 });

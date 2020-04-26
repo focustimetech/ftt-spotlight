@@ -19,6 +19,5 @@ class UserObserver
         if ($user->initials == null) {
             $user->initials = strtoupper($user->first_name[0] . $user->last_name[0]);
         }
-        // return $user->save();
     }
 }

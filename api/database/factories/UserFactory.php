@@ -13,6 +13,6 @@ $factory->define(User::class, function (Faker $faker) {
         'password' => null, // Filled by Observer
         'color' => null, // Filled by Observer
         'account_type' => 'teacher',
-        'username' => $faker->unique()->email()
+        'username' => $faker->unique()->safeEmail()
     ];
 });

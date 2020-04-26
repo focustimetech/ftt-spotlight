@@ -85,9 +85,9 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
             : { vertical: 'bottom', horizontal: 'left' }
 
         return (
-            <div className='account-widget'>
+            <div>
                 <NavItem title='My Account' onClick={this.handleClickOpen} orientation={this.props.orientation}>
-                    <Avatar className='account-widget__avatar' style={user ? {background: `#${user.avatar.color}`} : undefined}>
+                    <Avatar className='avatar --medium' style={user ? {background: `#${user.avatar.color}`} : undefined}>
                         {user ? user.avatar.initials : undefined}
                     </Avatar>
                 </NavItem>

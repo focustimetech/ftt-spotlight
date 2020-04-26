@@ -81,4 +81,8 @@ class Teacher extends Model
     {
         // return
     }
+
+    public function search(String $query) {
+        return self::all();
+    }
 }

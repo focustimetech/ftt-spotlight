@@ -26,6 +26,9 @@ Route::middleware('auth:sanctum')->group(function() {
     // User
     Route::get('user', 'UserController@currentUser');
 
+    // Search
+    Route::get('search/{query}', 'SearchController@search');
+
     // Staff
     Route::get('staff', 'StaffController@index');
     Route::get('staff/{id}', 'StaffController@show');

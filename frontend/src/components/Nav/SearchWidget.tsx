@@ -3,8 +3,9 @@ import Link from 'next/link'
 import React from 'react'
 
 import {
+    CircularProgress,
     TextField,
-    Typography
+    Typography,
 } from '@material-ui/core'
 
 import { ISearchResults } from '../../types/components/search'
@@ -14,13 +15,7 @@ import API from '../../utils/api'
 import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
 import NavItem from './NavItem'
 import SearchBar from './SearchBar'
-
-export const searchGroupNames: Record<string, string> = {
-    teachers: 'Teachers',
-    staff: 'Staff',
-    students: 'Students',
-    clusters: 'Clusters'
-}
+import SearchResults from './SearchResults'
 
 interface ISearchWidgetProps {
     orientation: Orientation
@@ -76,6 +71,7 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
                 {this.props.variant === 'bar' ? (
                     <SearchBar
                         value={this.state.value}
+                        open={!this.state.open}
                         onChange={this.handleChange}
                         onExpand={this.handleOpen}
                         loading={this.state.loading}
@@ -102,7 +98,11 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
                         />
                     </DrawerTitle>
                     <DrawerContent>
-                        <Typography variant='body1'>Hello world</Typography>
+                        {this.state.loading ? (
+                            <CircularProgress />
+                        ) : (
+                            <SearchResults results={this.state.results} />
+                        )}
                     </DrawerContent>
 				</Drawer>
             </div>

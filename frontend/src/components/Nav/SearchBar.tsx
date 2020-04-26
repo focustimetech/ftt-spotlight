@@ -25,6 +25,7 @@ interface IState {
 interface ISearchBarProps {
     loading: boolean
     results: ISearchResults
+    open: boolean
     value?: string
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
     onExpand?: () => void
@@ -75,7 +76,7 @@ class SearchBar extends React.Component<ISearchBarProps, IState> {
                         )}
                     </Flexbox>
                 </Flexbox>
-                {this.props.results && Object.keys(this.props.results).length > 0 && (
+                {this.props.open && this.props.results && Object.keys(this.props.results).length > 0 && (
                     <SearchResults results={truncateSearchResults(this.props.results)} />
                 )}
             </Paper>

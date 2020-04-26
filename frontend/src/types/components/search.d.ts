@@ -1,13 +1,19 @@
 import { IStudent, IStaff, ITeacher } from '../auth'
-import { IClusterDetails } from '../cluster';
+import { IClassroom } from '../classroom'
+import { IClusterDetails } from '../cluster'
 
-interface IClassroom {}
+export type SearchResultKey =
+    | 'teacher'
+    | 'staff'
+    | 'student'
+    | 'cluster'
+    | 'classroom'
 
 export interface ISearchResults {
-    students?: IStudent[]
+    student?: IStudent[]
     staff?: IStaff[]
-    teachers?: ITeacher[]
-    clusters?: IClusterDetails[]
-    classrooms?: IClassroom[]
+    teacher?: ITeacher[]
+    cluster?: IClusterDetails[]
+    classroom?: IClassroom[]
 }
 

@@ -30,6 +30,11 @@ class CreateUsersTable extends Migration
             // Unique indexes
             $table->unique('username');
         });
+
+        /**
+         * Create a FULLTEXT index for fast searching.
+         */
+        DB::statement('ALTER TABLE `users` ADD FULLTEXT search(`first_name`, `last_name`)');
     }
 
     /**

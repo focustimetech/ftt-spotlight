@@ -27,6 +27,11 @@ class CreateTopicsTable extends Migration
             $table->foreign('classroom_id')->references('id')->on('classrooms');
             $table->timestamps();
         });
+
+        /**
+         * Create a FULLTEXT index for fast searching.
+         */
+        DB::statement('ALTER TABLE `topics` ADD FULLTEXT search(`memo`)');
     }
 
     /**

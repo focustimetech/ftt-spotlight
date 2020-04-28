@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosResponse, CancelTokenSource } from 'axios'
 import Link from 'next/link'
 import React from 'react'
 
@@ -23,6 +23,7 @@ interface ISearchWidgetProps {
 }
 
 interface IState {
+    cancelTokenSource: CancelTokenSource
     open: boolean
     loading: boolean
     error: string
@@ -32,6 +33,7 @@ interface IState {
 
 class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
     state: IState = {
+        cancelTokenSource: null,
         open: false,
         loading: false,
         error: null,
@@ -54,15 +56,18 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
     }
 
     search = (query: string) => {
-        console.log('token:', axios.CancelToken.source())
-        this.setState({ loading: true, error: null })
-        const searchParams: Record<string, string> = {
-            q: query
+        if (this.state.cancelTokenSource) {
+            this.state.cancelTokenSource.cancel()
         }
-        API.get(`/search/${new URLSearchParams(searchParams).toString()}`).then((res: AxiosResponse<ISearchResults>) => {
-            this.setState({ loading: false, results: res.data })
-        }, (error: any) => {
-            this.setState({ loading: false, error: error.message })
+        const cancelTokenSource: CancelTokenSource = axios.CancelToken.source()
+        this.setState({ cancelTokenSource, loading: true, error: null }, () => {
+            const searchParams: Record<string, string> = { q: query }
+
+            API.get(`/search/${new URLSearchParams(searchParams).toString()}`).then((res: AxiosResponse<ISearchResults>) => {
+                this.setState({ loading: false, results: res.data })
+            }, (error: any) => {
+                this.setState({ loading: false, error: error.message })
+            })
         })
     }
 

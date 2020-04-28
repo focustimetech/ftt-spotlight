@@ -16,6 +16,7 @@ import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
 import NavItem from './NavItem'
 import SearchBar from './SearchBar'
 import SearchResults from './SearchResults'
+import { SearchBuffer } from '../../utils/searchBuffer'
 
 interface ISearchWidgetProps {
     orientation: Orientation
@@ -41,6 +42,8 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
         results: {}
     }
 
+    searchBuffer: SearchBuffer<ISearchResults> = new SearchBuffer(6)
+
     handleOpen = () => {
         this.setState({ open: true })
     }
@@ -51,11 +54,15 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
 
     handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target
-        this.setState({ value })
-        this.search(value)
+        this.setState({ value }, () => {
+            this.search(value)
+        })
     }
 
     search = (query: string) => {
+        if (this.searchBuffer.hasKey(query) || this.state.value.length === 0) {
+            return
+        }
         if (this.state.cancelTokenSource) {
             this.state.cancelTokenSource.cancel()
         }
@@ -64,7 +71,8 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
             const searchParams: Record<string, string> = { q: query }
 
             API.get(`/search/${new URLSearchParams(searchParams).toString()}`).then((res: AxiosResponse<ISearchResults>) => {
-                this.setState({ loading: false, results: res.data })
+                this.searchBuffer.push(query, res.data)
+                this.setState({ loading: false })
             }, (error: any) => {
                 this.setState({ loading: false, error: error.message })
             })
@@ -73,6 +81,7 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
 
     render() {
         const errored: boolean = Boolean(this.state.error)
+        const searchResults: ISearchResults = this.searchBuffer.retrieve(this.state.value) || {}
 
         return (
             <div>
@@ -109,7 +118,7 @@ class SearchWidget extends React.Component<ISearchWidgetProps, IState> {
                         {this.state.loading ? (
                             <CircularProgress />
                         ) : (
-                            <SearchResults results={this.state.results} />
+                            <SearchResults results={searchResults} />
                         )}
                     </DrawerContent>
 				</Drawer>

@@ -20,8 +20,8 @@ export class SearchBuffer<T> {
         const index: number = this.findIndex(key)
         if (index === -1) {
             this.buffer.push({ key, value })
-            if (this.buffer.length > this.bufferSize) {
-                this.buffer.unshift()
+            while (this.buffer.length > this.bufferSize) {
+                this.buffer.shift()
             }
             return
         }
@@ -35,5 +35,13 @@ export class SearchBuffer<T> {
 
     flush = () => {
         this.buffer = []
+    }
+
+    keys = (): string[] => {
+        return this.buffer.map((item: ISearchBufferItem<T>) => item.key)
+    }
+
+    hasKey = (key: string): boolean => {
+        return this.findIndex(key) !== -1
     }
 }

@@ -98,15 +98,6 @@ export interface IAppointment {
 
 export type IAmendment = IAppointment
 
-export interface ITopic {
-    id: number
-    memo: string
-    color: string
-    deleted: boolean
-    staff: IStaff
-    unavailable: boolean
-}
-
 export interface ITopicSchedule {
     id: number
     date: string

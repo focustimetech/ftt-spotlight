@@ -61,6 +61,11 @@ class Teacher extends Model
             ->withTimestamps();
     }
 
+    public function clusters()
+    {
+        return $this->user()->first()->clusters();
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');

@@ -26,6 +26,11 @@ class CreateClassroomsTable extends Migration
             // Foreign keys
             $table->foreign('teacher_id')->references('id')->on('teachers');
         });
+
+        /**
+         * Create a FULLTEXT index for fast searching.
+         */
+        DB::statement('ALTER TABLE `classrooms` ADD FULLTEXT search(`name`)');
     }
 
     /**

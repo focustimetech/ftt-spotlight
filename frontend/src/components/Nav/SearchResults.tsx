@@ -12,7 +12,8 @@ import {
 
 import { IAvatar, IStaff, IStudent, ITeacher } from '../../types/auth'
 import { IClassroom } from '../../types/classroom'
-import { ICluster, IClusterDetails } from '../../types/cluster'
+import { IClusterDetails } from '../../types/cluster'
+import { ITopic } from '../../types/topic'
 import { ISearchResults, SearchResultKey } from '../../types/components/search'
 
 interface ISearchResultProps {
@@ -30,7 +31,8 @@ const searchGroupNames: Record<SearchResultKey, string> = {
     staff: 'Staff',
     student: 'Students',
     cluster: 'Clusters',
-    classroom: 'Classrooms'
+    classroom: 'Classrooms',
+    topic: 'Topics'
 }
 
 const SearchResults = (props: ISearchResultProps) => {
@@ -77,12 +79,19 @@ const SearchResults = (props: ISearchResultProps) => {
                             link: `clusters/${cluster.id}`
                         }))
                         break
+                    case 'topic':
+                        resultListItems = results.topic.map((topic: ITopic) => ({
+                            value: topic.memo,
+                            link: `topics/${topic.id}`,
+                            avatar: topic.owner.avatar
+                        }))
+                        break
                     default:
                         return []
                 }
                 return (
                     <>
-                        <Typography variant='overline'>{searchGroupNames[key]}</Typography>
+                        <Typography variant='overline'>{searchGroupNames[key] || 'Other'}</Typography>
                         <List dense>
                             {resultListItems.map((resultListItem: ISearchResultListItem) => (
                                 <Link href={resultListItem.link}>

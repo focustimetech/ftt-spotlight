@@ -12,7 +12,7 @@ class Topic extends Model
     public static function search($query)
     {
         $queryString = Utils::prepareFullTextQuery($query);
-        return Topic::whereRaw('MATCH(`memo`) AGAINST("?" IN BOOLEAN MODE))', $queryString)
+        return Topic::whereRaw('MATCH(`memo`) AGAINST(? IN BOOLEAN MODE)', $queryString)
             ->limit(20);
     }
 

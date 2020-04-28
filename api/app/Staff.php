@@ -53,6 +53,11 @@ class Staff extends Model
         return $this->hasMany('App\CalendarEvent');
     }
 
+    public function clusters()
+    {
+        return $this->user()->first()->clusters();
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');

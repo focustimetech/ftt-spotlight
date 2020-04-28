@@ -11,12 +11,12 @@ import {
 import { ISearchResults } from '../../types/components/search'
 import { Orientation } from '../../types/layout'
 import API from '../../utils/api'
+import { SearchBuffer } from '../../utils/searchBuffer'
 
 import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
 import NavItem from './NavItem'
 import SearchBar from './SearchBar'
 import SearchResults from './SearchResults'
-import { SearchBuffer } from '../../utils/searchBuffer'
 
 interface ISearchWidgetProps {
     orientation: Orientation

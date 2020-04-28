@@ -48,6 +48,11 @@ class User extends Authenticatable
         return User::where('first_name', 'like', $query)->orWhere('last_name', 'like', $query);
     }
 
+    public function clusters()
+    {
+        return $this->hasMany('App\Cluster');
+    }
+
     public function feedback()
     {
         return $this->hasMany('App\Feedback');

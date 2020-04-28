@@ -15,7 +15,7 @@ class Classroom extends Model
 
     public static function search($query)
     {
-        return Classroom::limit(20);
+        return Classroom::where('name', 'LIKE', '%' . $query . '%');
     }
 
     public function teachers($date)

@@ -1,7 +1,7 @@
 import { IStudent, IStaff, ITeacher } from '../auth'
 import { IClassroom } from '../classroom'
 import { IClusterDetails } from '../cluster'
-import { ITopic } from '../calendar'
+import { ITopic } from '../topic'
 
 export type SearchResultKey =
     | 'teacher'
@@ -9,6 +9,7 @@ export type SearchResultKey =
     | 'student'
     | 'cluster'
     | 'classroom'
+    | 'topic'
 
 export interface ISearchResults {
     student?: IStudent[]

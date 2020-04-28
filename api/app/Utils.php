@@ -9,6 +9,21 @@ use Arr;
  */
 class Utils
 {
+    /**
+     * Prepares a full text query into a string that can be used in an `AGAINST` clause.
+     */
+    public static function prepareFullTextQuery(string $string)
+    {
+        $appendPlus = function ($word) {
+            return "+$word";
+        };
+
+        return implode(' ', array_map($appendPlus, explode(' ', trim($string)))) . '*';
+    }
+
+    /**
+     * Returns a random default color.
+     */
     public static function randomColor()
     {
         $colors = ['F44336', 'E91E63', '9C27B0', '673AB7', '3F51B5', '2196F3', '03A9F4', '00BCD4', '009688',

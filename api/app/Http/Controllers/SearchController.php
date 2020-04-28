@@ -20,19 +20,19 @@ class SearchController extends Controller
         parse_str($queryString, $params);
         $query = $params['q'];
         $user = auth()->user();
-        $teachers = TeacherResource::collection(Teacher::search($query));
+        // $teachers = TeacherResource::collection(Teacher::search($query));
         
         if ($user->hasRole('student')) {
             //return [ 'teacher' => $teachers];
         } else {
-            $staff = StaffResource::collection(Staff::search($query));
+            // $staff = StaffResource::collection(Staff::search($query));
             if ($user->hasRole('guardian')) {
                 //return ['teacher' => $teachers, 'staff' => $staff];
             } else {
                 return [
                     //'teachers' => $teachers,
-                    'staff' => $staff,
-                    'student' => StudentResource::collection(Student::search($query)),
+                    // 'staff' => $staff,
+                    'student' => StudentResource::collection(Student::search($query)->get()),
                     //'classroom' => ClassroomResource::collection(Classroom::search($query)),
                     //'cluster' => ClusterResource::collection(Cluster::search($query))
                 ];

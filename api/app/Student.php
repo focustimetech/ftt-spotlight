@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Utils;
 use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
@@ -34,9 +35,13 @@ class Student extends Model
         return $student;
     }
 
-    public static function search(String $query)
+    public static function search($query)
     {
-        return User::search($query)->where('account_type', 'student')->get();
+        $queryString = Utils::prepareFullTextQuery($query);
+        return Student::whereRaw(
+            '`user_id` IN (SELECT `id` from `users` WHERE MATCH(`first_name`, `last_name`) AGAINST(? IN BOOLEAN MODE))',
+            $queryString
+        );
     }
 
     public function amendments()

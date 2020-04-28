@@ -13,6 +13,11 @@ class Classroom extends Model
         'teacher_id'
     ];
 
+    public static function search($query)
+    {
+        return Classroom::limit(20);
+    }
+
     public function teachers($date)
     {
         return $this->belongsToMany('App\Teacher', 'teachers_classrooms')

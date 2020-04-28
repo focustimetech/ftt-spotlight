@@ -41,7 +41,7 @@ class Student extends Model
         return Student::whereRaw(
             '`user_id` IN (SELECT `id` from `users` WHERE MATCH(`first_name`, `last_name`) AGAINST(? IN BOOLEAN MODE))',
             $queryString
-        );
+        )->limit(20);
     }
 
     public function amendments()

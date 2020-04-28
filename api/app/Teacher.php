@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Utils;
 use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
@@ -41,7 +42,11 @@ class Teacher extends Model
     }
 
     public static function search(String $query) {
-        return Teacher::all();
+        $queryString = Utils::prepareFullTextQuery($query);
+        return Teacher::whereRaw(
+            '`user_id` IN (SELECT `id` from `users` WHERE MATCH(`first_name`, `last_name`) AGAINST(? IN BOOLEAN MODE))',
+            $queryString
+        )->limit(20);
     }
 
     public function appointments()
@@ -76,13 +81,8 @@ class Teacher extends Model
         return $this->hasMany('App\Unavailability');
     }
 
-    /**
-     * Eloquent relationship between Staff and Teacher. Should exist on Staff model as well.
-     * Since it's an eloquent relationship, we can use an observer to `attach()` a Staff model
-     * when a new Teacher is created.
-     */
-    public function staff()
+    public function getStaff()
     {
-        // return
+        return Staff::firstWhere('user_id', $this->user_id);
     }
 }

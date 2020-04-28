@@ -14,7 +14,11 @@ import Flexbox from '../Layout/Flexbox'
 import SearchResults from './SearchResults'
 
 const truncateSearchResults = (results: ISearchResults): ISearchResults => {
-    return results
+    const truncatedResults: ISearchResults = {}
+    Object.keys(results).forEach((key: string) => {
+        truncatedResults[key] = results[key].slice(0, 4)
+    })
+    return truncatedResults
 }
 
 interface IState {

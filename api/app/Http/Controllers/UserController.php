@@ -32,7 +32,7 @@ class UserController extends Controller
         $user = $request->user();
         switch ($user->account_type) {
             case 'guardian':
-                return new GuardianResource(Guadian::firstWhere('user_id', $user->id));
+                return new GuardianResource(Guardian::firstWhere('user_id', $user->id));
             case 'staff':
                 return new StaffResource(Staff::firstWhere('user_id', $user->id));
             case 'student':

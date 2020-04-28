@@ -1,6 +1,7 @@
 import { IStudent, IStaff, ITeacher } from '../auth'
 import { IClassroom } from '../classroom'
 import { IClusterDetails } from '../cluster'
+import { ITopic } from '../calendar'
 
 export type SearchResultKey =
     | 'teacher'
@@ -15,5 +16,7 @@ export interface ISearchResults {
     teacher?: ITeacher[]
     cluster?: IClusterDetails[]
     classroom?: IClassroom[]
+    topic?: ITopic[]
+    [key: string]: any[]
 }
 

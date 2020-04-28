@@ -13,7 +13,7 @@ class GuardiansTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Guardian::class, 10)->create()->each(function(Guardian $guardian) {
+        factory(Guardian::class, 50)->create()->each(function(Guardian $guardian) {
             $guardian->students()->attach(Student::all()->random()->id);
         });
     }

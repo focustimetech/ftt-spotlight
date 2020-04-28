@@ -2,11 +2,19 @@
 
 namespace App;
 
+use Utils;
 use Illuminate\Database\Eloquent\Model;
 
 class Topic extends Model
 {
     protected $table = 'topics';
+
+    public static function search($query)
+    {
+        $queryString = Utils::prepareFullTextQuery($query);
+        return Topic::whereRaw('MATCH(`memo`) AGAINST("?" IN BOOLEAN MODE))', $queryString)
+            ->limit(20);
+    }
 
     public function blocks($date)
     {

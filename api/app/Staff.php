@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Utils;
 use Illuminate\Database\Eloquent\Model;
 
 class Staff extends Model
@@ -35,7 +36,11 @@ class Staff extends Model
 
     public static function search(String $query)
     {
-        return Staff::all();
+        $queryString = Utils::prepareFullTextQuery($query);
+        return Staff::whereRaw(
+            '`user_id` IN (SELECT `id` from `users` WHERE MATCH(`first_name`, `last_name`) AGAINST(? IN BOOLEAN MODE))',
+            $queryString
+        )->limit(20);
     }
 
     public function amendments()

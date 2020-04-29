@@ -7,9 +7,9 @@ import TeacherLayout from '../components/Layout/TeacherLayout'
 const Index = () => {
     return (
         <div>
-            <StudentLayout>
+            <TeacherLayout>
                 <Link href='classrooms'><a>Let's see some Classrooms</a></Link>
-            </StudentLayout>
+            </TeacherLayout>
         </div>
 
     )

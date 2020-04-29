@@ -1,0 +1,79 @@
+.drawer_old {
+    background: #EEE;
+    position: fixed;
+    z-index: 300;
+    top: 0;
+    right: -236px;
+    width: 260px;
+    height: 100vh;
+    padding: 16px 24px;
+    box-sizing: border-box;
+    box-shadow: $elevation2;
+    transition-duration: 0.2s;
+    transition-property: right;
+
+    &.--open  ~ .content {
+        margin-right: 260px;   
+    }
+
+    &.--open,
+    &:hover {
+        right: 0;
+    }
+
+    &__topbar {
+        height: 48px;
+        padding: 0 0 016px;
+        box-sizing: content-box;
+        border-bottom: 1px solid #DDD;
+        margin-bottom: 16px;
+
+        & > * {
+            line-height: 48px !important;
+        }
+    }
+
+    &__loading {
+        position: absolute;
+        top: calc(50% + 64px);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.report_name_widget {
+    padding: 8px 0;
+    position: relative;
+
+    &__input {
+        font: inherit;
+        padding: 8px 0;
+        margin: -2px;
+        min-width: 12px;
+    }
+
+    &__hidden {
+        position: absolute;
+        height: 0;
+        overflow: hidden;
+        white-space: pre;
+    }
+
+    &__helper {
+        position: absolute;
+        left: 0;
+        top: 56px;
+        color: $failure !important;
+    }
+
+    &.--edit {
+        padding: 0;
+    }
+
+    &.--error,
+    &.--error input,
+    &__helper {
+        width: 200px !important;
+    }
+}

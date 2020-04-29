@@ -1,0 +1,110 @@
+$block-height: 48px;
+
+.new-calendar {
+    display: flex;
+    flex-flow: column nowrap;
+
+    &__date-labels {
+        display: flex;
+        flex-flow: row nowrap;
+        padding-left: 56px;
+
+        .new-calendar__date-label {
+            flex: 1;
+            box-sizing: border-box;
+            padding: 0 spacing(2);
+            height: 64px;
+            border-bottom: 1px solid #DDD;
+    
+            .date-label-date {
+                line-height: normal;
+            }
+        }
+    }
+
+    &__body {
+        padding: 0 spacing(2);
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    &__hour-display {
+        box-sizing: border-box;
+        border-right: 1px solid #DDD;
+        width: 56px;
+        padding-right: spacing(2);
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    &__hour-indicator {
+        height: $block-height;
+        text-align: right;
+        position: relative;
+
+        &:first-child span {
+            display: none;
+        }
+
+        span {
+            position: relative;
+            top: -12px;
+        }
+    }
+
+    &__data {
+        flex: 1;
+        position: relative;
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    &__content {
+        display: flex;
+        flex-flow: row nowrap;
+    }
+
+    &__content-dividers {
+        div {
+            height: 48px;
+
+            &::after {
+                content: '';
+                    border-bottom: 1px solid #DDD;
+                    position: absolute;
+                    width: 100%;
+                    margin-top: -1px;
+                    z-index: 3;
+                    pointer-events: none;
+            }
+        }
+    }
+
+    &__calendar-days {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-flow: row nowrap;
+
+        .new-calendar__calendar-day {
+            flex: 1;
+            position: relative;
+            padding-right: spacing(1);
+            border-right: 1px solid #DDD;
+        }
+    }
+
+    .calendar-month-label {
+        &__month {
+            font-weight: 600;
+        }
+    }
+
+    .new-calendar-block {
+        position: absolute;
+        z-index: 3;
+    }
+}

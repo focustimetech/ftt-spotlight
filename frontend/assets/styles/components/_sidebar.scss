@@ -1,0 +1,168 @@
+.sidebar {
+	height: 100vh;
+	position: relative;
+	display: flex;
+	flex-shrink: 1;
+	width: 80px;
+	background: $primary-white;
+	transition-property: width;
+	transition-duration: 0.3s;
+	transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+	&__nav {
+		width: 64px;
+		height: 100vh;
+		position: relative;
+		z-index: 3;
+		box-shadow: inset -6px 0 6px -6px rgba(0, 0, 0, 0.16), inset -6px 0 6px -6px rgba(0, 0, 0, 0.23);
+		margin-right: 16px;
+		padding: 16px 8px;
+		box-sizing: border-box;
+		background: $primary;
+		color: $primary-white;
+		display: flex;
+		flex-flow: column;
+		justify-content: space-between;
+
+		.nav_account {
+			padding: 8px;
+		}
+
+		& > div > * {
+			color: inherit;
+		}
+
+		.nav_button {
+			color: inherit;
+
+			.nav_avatar {
+				width: 32px;
+				height: 32px;
+				font-size: 14px;
+			}
+		}
+	}
+
+	&__menu {
+		position: absolute;
+		left: 64px;
+		top: 0;
+		z-index: 2;
+		height: 100vh;
+		width: 0;
+		flex-shrink: 0;
+		background: $primary-white;
+		padding: 0;
+		margin: 0;
+		box-sizing: content-box;
+		display: inline-block;
+		box-shadow: none;
+		overflow-y: auto;
+		overflow-x: hidden;
+		transition-duration: 0.3s;
+		transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+		transition-property: width, box-shadow;
+
+		.menu_content {
+			position: relative;
+			width: 260px;
+		}
+
+		.menu_header {
+			height: 80px;
+			margin: 0 16px 8px;
+			padding: 16px;
+			box-sizing: border-box;
+			border-bottom: 1px solid rgba(0,0,0,0.12);
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
+
+			&__logo {
+				width: 48px;
+				max-height: 48px;
+				margin-right: 8px;
+				background: $primary-semi-light;
+				background-repeat: no-repeat;
+				background-size: cover;
+				border-radius: 2px;
+				overflow: hidden;
+
+				&.--logo {
+					background: unset;
+				}
+
+				img {
+					width: 100%;
+				}
+			}
+
+			h4 {
+				margin: 0;
+				font-weight: 500;
+				letter-spacing: normal;
+				text-transform: uppercase;
+				font-size: 14px;
+			}
+		}
+
+		.menu_list {
+			padding: 0 16px;
+
+			&__link {
+				color: inherit;
+
+				.list_item {
+					display: flex;
+					align-items: center;
+					padding: 8px 16px;
+					margin: 4px 0;
+					min-width: 128px;
+					max-width: 224px;
+					height: 48px;
+					box-sizing: border-box;
+					line-height: 18px !important;
+					border-radius: 2px;
+					font-weight: 500;
+					cursor: pointer;
+					user-select: none;
+					transition: color 0.2s;
+
+					&:hover {
+						background: $primary-light
+					}
+
+					&__icon {
+						color: rgba(0, 0, 0, 0.54);
+					}
+				}
+
+				&.--selected .list_item {
+					color: $primary;
+					background: $primary-light;
+
+					&__icon {
+						color: $primary;
+					}
+				}
+			}
+		}
+	}
+}
+
+.nav_account_details {
+	padding: 8px 16px;
+
+	h3 {
+		margin: 0;
+		line-height: 24px;
+		display: flex;
+		font-weight: 500;
+	}
+
+	h5 {
+		margin: 0;
+		font-weight: 500;
+		color: #888;
+	}
+}

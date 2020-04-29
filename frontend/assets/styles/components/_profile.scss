@@ -1,0 +1,31 @@
+.profile {
+
+	.profile_title {
+		display: flex;
+		align-items: center;
+		line-height: 22px;
+		
+		.profile_avatar {
+			margin-right: 12px;
+		}
+
+		.name {
+			margin: 0;
+			font-weight: 500;
+
+			.grade {
+				font-weight: 400;
+				color: #888;
+				margin-left: 8px;
+				border-left: 1px solid #888;
+				padding-left: 8px;
+			}
+		}
+
+		.cluster-list {
+			font-weight: 700;
+			margin: 0;
+			color: #888;
+		}
+	}
+}

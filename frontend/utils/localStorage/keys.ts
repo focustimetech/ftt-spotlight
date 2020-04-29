@@ -1,0 +1,3 @@
+export const CHECK_IN_ERRORS = 'CHECK_IN_ERRORS'
+export const MENU_OPEN = 'MENU_OPEN'
+export const REMEMBER_USERS = 'REMEMBER_USERS'

@@ -1,0 +1,18 @@
+.drawer {
+    box-sizing: border-box;
+    width: spacing(55);
+    padding: spacing(2) spacing(1);
+
+    &__close {
+        flex: 0;
+    }
+
+    &__content {
+        padding: 0 spacing(2) spacing(1) spacing(7);
+    }
+
+    &__title {
+        padding: 0 spacing(2) 0 0;
+        margin-bottom: spacing(2);
+    }
+}

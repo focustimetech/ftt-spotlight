@@ -1,0 +1,107 @@
+// This file covers styles for VerticalNav, HorizontalNav and NavMenu
+.nav {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row nowrap;
+    width: 100vw;
+    height: 64px;
+    padding: spacing(1) spacing(2);
+    background: $primary;
+    color: $on-primary;
+
+    &__group {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+    }
+
+    &__logo {
+        img {
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    &.--vertical {
+        flex-flow: column nowrap;
+        width: 64px;
+        height: 100vh;
+        padding: spacing(2) spacing(1);
+
+        & > .nav-item + .nav-item {
+            margin: spacing(1) 0 0 0;
+        }
+
+        .nav__group {
+            flex-flow: column nowrap;
+        }
+    }
+
+    &.--horizontal {
+        box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    }
+
+    .nav-item {
+        button {
+            color: inherit;
+        }
+
+        & + .nav-item {
+            margin: 0 0 0 spacing(1);
+        }
+    }    
+}
+
+.nav-menu {
+    box-sizing: border-box;
+    padding: spacing(2) 0 !important;
+    height: 100%;
+    width: 64px;
+    background: #EEE;
+    transition-property: width;
+    @include slide-transition;
+
+    position: relative;
+    overflow-x: hidden;
+
+    &.--expanded {
+        width: spacing(30);
+    }
+
+    &__list {
+        position: absolute !important;
+        width: 100%;
+        left: 8px;
+        // @include slide-transition;
+        transition-property: left !important;
+
+        &.--expanded {
+            left: 0;
+
+            .nav-menu__item {
+                //padding: 12px 20px !important;
+                padding-left: 20px !important; // Unused
+                padding-right: 20px !important; // Unused
+                // height: 48px !important;
+            }
+        }
+    }
+
+    &__item {
+        box-sizing: border-box;
+        height: 48px !important;
+        padding: 0;
+        // @include slide-transition;
+        transition-property: padding;
+        transition-duration: 1s; // DEBUG
+
+        &.--active {
+            background-color: rgba(0, 0, 0, 0.04);
+
+            * {
+                color: $primary !important;
+            }
+        }
+    }
+}

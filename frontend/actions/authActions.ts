@@ -1,10 +1,11 @@
 import { AxiosResponse } from 'axios'
+import cookies from 'js-cookie'
 
 import { ReduxAction } from '../types'
 import { IAvatar, ICredentials, IUser } from '../types/auth'
 import API, { axios } from '../utils/api'
 import redirect from '../utils/redirect'
-import { SET_CURRENT_USER } from './types'
+import { SET_CURRENT_USER, UNSET_CURRENT_USER } from './types'
 
 export const dispatchCurrentUser = () => dispatch => {
     console.log('dispatchCurrentUser()')
@@ -30,12 +31,14 @@ export const getCsrfCookie = () => {
     return axios.get(`${API.getBaseUrl()}/sanctum/csrf-cookie`)
 }
 
-export const logout = () => {
-    return (dispatch: any) => {
-        return API.post('/api/logout').then(() => {
-            redirect('/login')
+export const logout = () => dispatch => {
+    return axios.post(`${API.getBaseUrl()}/logout`).then(() => {
+        cookies.remove('spotlight_session')
+        redirect('/login')
+        return dispatch({
+            type: UNSET_CURRENT_USER
         })
-    }
+    })
 }
 
 export const resetPasswords = (userIDs: number[]): Promise<any> => {

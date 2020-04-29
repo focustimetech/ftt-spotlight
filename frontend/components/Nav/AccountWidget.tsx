@@ -56,12 +56,6 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
     handleSignOut = () => {
         this.setState({ loadingSignOut: true })
         this.props.logout()
-            .then(() => {
-                this.onSignOut()
-            })
-            .catch(() => {
-                this.onSignOut()
-            })
     }
 
     onSignOut = () => {

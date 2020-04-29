@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Utils;
 use Illuminate\Database\Eloquent\Model;
 
 class Cluster extends Model
@@ -9,7 +10,9 @@ class Cluster extends Model
     protected $table = 'clusters';
 
     public static function search($query) {
-        return Cluster::limit(20);
+        $queryString = Utils::prepareFullTextQuery($query);
+        return Cluster::whereRaw('MATCH(`name`) AGAINST(? IN BOOLEAN MODE)', $queryString)
+            ->limit(20);
     }
 
     public function students()

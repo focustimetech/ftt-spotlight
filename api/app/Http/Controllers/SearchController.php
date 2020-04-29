@@ -37,7 +37,7 @@ class SearchController extends Controller
                     'student' => StudentResource::collection(Student::search($query)->get()),
                     'topic' => TopicResource::collection(Topic::search($query)->get()),
                     'classroom' => ClassroomResource::collection(Classroom::search($query)->get()),
-                    // 'cluster' => ClusterResource::collection(Cluster::search($query)->get())
+                    'cluster' => ClusterResource::collection(Cluster::search($query)->get())
                 ];
             }
         }

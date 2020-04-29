@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Utils;
 use Illuminate\Database\Eloquent\Model;
 
 class Classroom extends Model
@@ -15,7 +16,9 @@ class Classroom extends Model
 
     public static function search($query)
     {
-        return Classroom::where('name', 'LIKE', '%' . $query . '%');
+        $queryString = Utils::prepareFullTextQuery($query);
+        return Classroom::whereRaw('MATCH(`name`) AGAINST(? IN BOOLEAN MODE)', $queryString)
+            ->limit(20);
     }
 
     public function teachers($date)

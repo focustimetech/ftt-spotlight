@@ -32,13 +32,15 @@ export interface IAccountWidgetProps {
 }
 
 interface IState {
-    loadingSignOut: boolean
+    currentUser: IUser
+    loading: boolean
     menuRef: any
 }
 
 class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, IState> {
     state: IState = {
-        loadingSignOut: false,
+        currentUser: null,
+        loading: false,
         menuRef: null
     }
 
@@ -54,13 +56,8 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
     }
 
     handleSignOut = () => {
-        this.setState({ loadingSignOut: true })
+        this.setState({ loading: true, currentUser: this.props.currentUser })
         this.props.logout()
-    }
-
-    onSignOut = () => {
-        this.setState({ loadingSignOut: false })
-        this.props.onSignOut()
     }
 
     componentDidMount() {
@@ -72,7 +69,8 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
     render() {
         const { menuRef } = this.state
         const menuOpen = Boolean(menuRef)
-        const user: IUser = this.props.currentUser
+        const user: IUser = this.state.currentUser || this.props.currentUser
+        const avatar = user ? user.avatar : undefined
         const anchorOrigin: PopoverOrigin = { vertical: 'bottom', horizontal: 'right' }
         const transformOrigin: PopoverOrigin = this.props.orientation === 'horizontal'
             ? { vertical: 'top', horizontal: 'right' }
@@ -81,8 +79,8 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
         return (
             <div>
                 <NavItem title='My Account' onClick={this.handleClickOpen} orientation={this.props.orientation}>
-                    <Avatar className='avatar --medium' style={user ? {background: `#${user.avatar.color}`} : undefined}>
-                        {user ? user.avatar.initials : undefined}
+                    <Avatar className='avatar --medium' style={avatar ? {background: `#${avatar.color}`} : undefined}>
+                        {avatar ? avatar.initials : undefined}
                     </Avatar>
                 </NavItem>
                 {user && (
@@ -101,7 +99,7 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
                         <Link href='profile'><MenuItem onClick={() => this.handleClose()}>Profile</MenuItem></Link>
                         <LoadingMenuItem
                             onClick={() => this.handleSignOut()}
-                            loading={this.state.loadingSignOut}
+                            loading={this.state.loading}
                         >Sign Out</LoadingMenuItem>
                     </Menu>
                     )}

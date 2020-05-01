@@ -8,7 +8,6 @@ import redirect from '../utils/redirect'
 import { SET_CURRENT_USER, UNSET_CURRENT_USER } from './types'
 
 export const dispatchCurrentUser = () => dispatch => {
-    console.log('dispatchCurrentUser()')
     return API.get('/user').then((res: AxiosResponse<IUser>) => {
         return dispatch({
             type: SET_CURRENT_USER,
@@ -33,7 +32,6 @@ export const getCsrfCookie = () => {
 
 export const logout = () => dispatch => {
     return axios.post(`${API.getBaseUrl()}/logout`).then(() => {
-        cookies.remove('spotlight_session')
         redirect('/login')
         return dispatch({
             type: UNSET_CURRENT_USER

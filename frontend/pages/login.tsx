@@ -1,6 +1,5 @@
 import { AxiosResponse } from 'axios'
 import classNames from 'classnames'
-import cookies from 'js-cookie'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -24,13 +23,12 @@ import {
 
 import { dispatchCurrentUser, getAvatar, getCsrfCookie, login } from '../actions/authActions'
 import { TopicColor } from '../theme'
+import { NextPageContext } from '../types'
 import { IAvatar, ICredentials } from '../types/auth'
-import cookieParser from '../utils/cookieParser'
 import redirect from '../utils/redirect'
 
 import Carousel, { ICarouselImage } from '../components/Carousel'
 import { LoadingButton } from '../components/Form/LoadingButton'
-import { NextPageContext } from 'next'
 // import API from '../utils/api'
 
 type LoginState = 'username' | 'password'
@@ -73,6 +71,24 @@ interface IState {
 }
 
 class Login extends React.Component<IProps, IState> {
+	static getInitialProps = async (context: NextPageContext) => {
+		const { store } = context
+		const isServer: boolean = typeof window === 'undefined'
+		// console.log('login.getInitialProps')
+		// console.log('isServer:', isServer)
+		await store.dispatch(dispatchCurrentUser()).then(() => {
+			// console.log('login succeede with dCU')
+			if (store.getState().auth.user) {
+				redirect('/', isServer ? context : undefined)
+			}
+			return
+		}, (error: any) => {
+			return
+		})
+
+		// return {}
+	}
+
 	state: IState = {
 		avatar: null,
 		error: null,
@@ -84,17 +100,6 @@ class Login extends React.Component<IProps, IState> {
 		menuRef: null,
 		user: '',
 		password: ''
-	}
-
-	static getInitialProps = async (context: NextPageContext) => {
-		const isServer: boolean = typeof window === 'undefined'
-		const sessionCookie: string = isServer
-			? cookieParser(context.req.headers.cookie)['spotlight_session']
-			: cookies.get('spotlight_session')
-		if (sessionCookie) {
-			console.log('Found a sessonCookie')
-			redirect('/', isServer ? context : undefined)
-		}
 	}
 
 	handleChangeUser = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {

@@ -26,7 +26,8 @@ import SnackbarProvider from '../components/SnackbarProvider'
 class App extends NextApp {
     static async getInitialProps({ Component, ctx }: AppContext) {
         if (ctx.req) {
-            axios.defaults.headers = { ...ctx.req.headers, 'Date': '1999-01-19T00:00:00' }
+            axios.defaults.headers['Cookie'] = ctx.req.headers.cookie
+            axios.defaults.headers['Date'] = '1999-01-19T00:00:00'
         }
         const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {}
         return { pageProps }

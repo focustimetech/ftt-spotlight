@@ -1,4 +1,7 @@
 const cookieParser = (cookieString: string): Record<string, string> => {
+    if (!cookieString) {
+        return {}
+    }
     const cookies: Record<string, string> = {}
     cookieString.split(';').forEach((cookie: string) => {
         const keyValue: string[] = cookie.trim().split('=')

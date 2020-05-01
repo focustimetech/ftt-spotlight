@@ -18,6 +18,7 @@ const accountMatchesWhitelist = (accountType: AccountType, whitelist: AccountTyp
 const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: React.ComponentType<T>) => {
     class AuthComponent extends React.Component<T> {
         static getInitialProps = async (context: NextPageContext) => {
+            // console.log('Rendering withAuth')
             const { store } = context
             const isServer: boolean = typeof window === 'undefined'
             let user: IUser = store.getState().auth.user // Get him from the datastore
@@ -41,11 +42,11 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: React
             if (!authValid) {
                 // Couldn't verify using the user's cookie, send to login
                 redirect('/login',  isServer ? context : undefined)
-                if (!isServer) {
+                //if (!isServer) {
                     store.dispatch(queueSnackbar({
                         message: 'Your session has expired. Please sign back in.'
                     }))
-                }
+                // }
                 return
             }
 

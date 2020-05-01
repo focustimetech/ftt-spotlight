@@ -30,14 +30,11 @@
 @import "components/not_found";
 @import "components/notifications_modal";
 @import "components/power_scheduler";
-@import "components/profile";
 @import "components/report";
 @import "components/search_modal";
 @import "components/selectable_list";
 @import "components/settings";
 @import "components/setup";
-@import "components/sidebar";
-@import "components/sidebar_modal";
 @import "components/splash";
 @import "components/starred";
 @import "components/table";
@@ -51,3 +48,6 @@
     /* Nav */
     @import "components/nav/nav";
     @import "components/nav/search";
+
+    /* Profile */
+    @import "components/profile/profile";

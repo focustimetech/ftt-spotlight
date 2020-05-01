@@ -36,7 +36,7 @@ export const getCsrfCookie = () => {
 }
 
 export const logout = () => dispatch => {
-    return axios.post(`${API.getBaseUrl()}/logout`).then(() => {
+    return API.post('/logout').then(() => {
         redirect('/login')
         return dispatch({
             type: UNSET_CURRENT_USER

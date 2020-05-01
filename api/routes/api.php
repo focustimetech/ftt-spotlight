@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
  * Unauthenticated routes
  */
 Route::get('avatar/{username}', 'UserController@findAvatar');
+Route::post('login', 'Auth\LoginController@login');
 
 /**
  * Authenticates routes

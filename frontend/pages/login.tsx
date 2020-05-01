@@ -74,10 +74,7 @@ class Login extends React.Component<IProps, IState> {
 	static getInitialProps = async (context: NextPageContext) => {
 		const { store } = context
 		const isServer: boolean = typeof window === 'undefined'
-		// console.log('login.getInitialProps')
-		// console.log('isServer:', isServer)
 		await store.dispatch(dispatchCurrentUser()).then(() => {
-			// console.log('login succeede with dCU')
 			if (store.getState().auth.user) {
 				redirect('/', isServer ? context : undefined)
 			}
@@ -85,8 +82,6 @@ class Login extends React.Component<IProps, IState> {
 		}, (error: any) => {
 			return
 		})
-
-		// return {}
 	}
 
 	state: IState = {
@@ -164,9 +159,10 @@ class Login extends React.Component<IProps, IState> {
 			case 'password':
 				this.setState({ loadingPassword: true })
 				const credentials: ICredentials = { username: this.state.user, password: this.state.password }
-				login(credentials).then((res: AxiosResponse) => {
-					this.setState({ loadingPassword: false, loadingNextPage: true })
-					redirect('/')
+				login(credentials).then(() => {
+					this.setState({ loadingPassword: false, loadingNextPage: true }, () => {
+						redirect('/')
+					})
 				}, () => {
 					this.setState({
 						loadingPassword: false,

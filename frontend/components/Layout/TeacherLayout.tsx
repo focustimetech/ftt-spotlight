@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import React from 'react'
 
-import { ILayoutProps } from '../../types/layout'
+import { ILayoutContainerProps } from '../../types/layout'
 import { staffMenuItems } from './StaffLayout'
 
 import LayoutContainer from './LayoutContainer'
@@ -18,7 +18,7 @@ const clusters: INavMenuItem[] = [
     { label: 'Advisory 27', href: 'clusters/2', icon: 'group' }
 ]
 
-class TeacherLayout extends React.Component<ILayoutProps> {
+class TeacherLayout extends React.Component<ILayoutContainerProps> {
     render() {
         return (
             <LayoutContainer orientation='vertical'>

@@ -49,4 +49,4 @@ class App extends NextApp {
     }
 }
 
-export default withReduxStore(App)
+export default withReduxStore(withLoadingBar(App))

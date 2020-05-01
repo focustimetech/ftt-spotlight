@@ -1,4 +1,4 @@
-export interface ILayoutProps {
+export interface ILayoutContainerProps {
     children: any
 }
 

@@ -4,7 +4,7 @@ import React from 'react'
 import { ILayoutProps } from '../../types/layout'
 import { staffMenuItems } from './StaffLayout'
 
-import Layout from '.'
+import LayoutContainer from './LayoutContainer'
 import { INavMenuItem } from '../Nav/NavMenuItem'
 import VerticalNav from '../Nav/VerticalNav'
 import LayoutContent from './LayoutContent'
@@ -21,12 +21,12 @@ const clusters: INavMenuItem[] = [
 class TeacherLayout extends React.Component<ILayoutProps> {
     render() {
         return (
-            <Layout orientation='vertical'>
+            <LayoutContainer orientation='vertical'>
                 <VerticalNav menuItems={[...teacherMenuItems, ...staffMenuItems]} hiddenMenuItems={clusters} />
                 <LayoutContent orientation='vertical'>
                     {this.props.children}
                 </LayoutContent>
-            </Layout>
+            </LayoutContainer>
         )
     }
 }

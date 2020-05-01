@@ -20,9 +20,14 @@ export const getAvatar = (username: string) => {
     return API.get<IAvatar>(`/avatar/${username}`)
 }
 
-export const login = (credentials: ICredentials) => {
+export const login = (credentials: ICredentials) => dispatch => {
     return getCsrfCookie().then(() => {
-        return API.post('/login', credentials)
+        return API.post('/login', credentials).then((res: AxiosResponse<IUser>) => {
+            return dispatch({
+                type: SET_CURRENT_USER,
+                payload: res.data
+            })
+        })
     })
 }
 

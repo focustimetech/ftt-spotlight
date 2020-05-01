@@ -21,7 +21,7 @@ import {
 	Typography
 } from '@material-ui/core'
 
-import { dispatchCurrentUser, getAvatar, getCsrfCookie, login } from '../actions/authActions'
+import { dispatchCurrentUser, getAvatar, login } from '../actions/authActions'
 import { TopicColor } from '../theme'
 import { NextPageContext } from '../types'
 import { IAvatar, ICredentials } from '../types/auth'
@@ -159,7 +159,7 @@ class Login extends React.Component<IProps, IState> {
 			case 'password':
 				this.setState({ loadingPassword: true })
 				const credentials: ICredentials = { username: this.state.user, password: this.state.password }
-				login(credentials).then(() => {
+				this.props.login(credentials).then(() => {
 					this.setState({ loadingPassword: false, loadingNextPage: true }, () => {
 						redirect('/')
 					})
@@ -342,7 +342,7 @@ class Login extends React.Component<IProps, IState> {
 											type='submit'
 											color='primary'
 											variant='contained'
-											loading={this.state.loadingUsername || this.state.loadingNextPage}
+											loading={this.state.loadingUsername}
 										>Next</LoadingButton>
 									</DialogActions>
 								</>
@@ -371,7 +371,7 @@ class Login extends React.Component<IProps, IState> {
 											type='submit'
 											color='primary'
 											variant='contained'
-											loading={this.state.loadingPassword}
+											loading={this.state.loadingPassword || this.state.loadingNextPage}
 										>Sign In</LoadingButton>
 									</DialogActions>
 								</>
@@ -390,6 +390,6 @@ class Login extends React.Component<IProps, IState> {
 const mapStateToProps = (state: any) => ({
 	settings: state.settings.items
 })
-const mapDispatchToProps = { dispatchCurrentUser } // { login }
+const mapDispatchToProps = { dispatchCurrentUser, login }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

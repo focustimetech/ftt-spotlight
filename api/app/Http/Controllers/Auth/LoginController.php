@@ -26,16 +26,6 @@ class LoginController extends Controller
     use ThrottlesLogins;
 
     /**
-     * Show the application's login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showLoginForm()
-    {
-        return view('auth.login');
-    }
-
-    /**
      * Handle a login request to the application.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -125,9 +115,7 @@ class LoginController extends Controller
             return $response;
         }
 
-        return $request->wantsJson()
-                    ? new Response('', 204)
-                    : redirect()->intended($this->redirectPath());
+        return new Response('', 204);
     }
 
     /**
@@ -139,7 +127,7 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        //
+        return new UserResource($user);
     }
 
     /**
@@ -185,9 +173,7 @@ class LoginController extends Controller
             return $response;
         }
 
-        return $request->wantsJson()
-            ? new Response('', 204)
-            : redirect('/');
+        return new Response('', 204);
     }
 
     /**

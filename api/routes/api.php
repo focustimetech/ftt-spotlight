@@ -40,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // Classrooms
     Route::get('classrooms', 'ClassroomController@index');
+
+    // Logout
+    Route::post('logout', 'Auth\LoginController@logout');
 });
 /*
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

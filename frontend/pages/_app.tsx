@@ -42,7 +42,7 @@ class App extends NextApp {
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
                     <>
-                        <Component {...pageProps} />
+                        <Layout user={pageProps.user}><Component {...pageProps} /></Layout>
                         <SnackbarProvider />
                     </>
                 </Provider>

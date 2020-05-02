@@ -26,9 +26,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
     const AuthComponent: NextPage<T & IAuthComponentProps> = (props: T & IAuthComponentProps) => {
         console.log('AuthComponent.render.props:', props)
         return (
-            <Layout user={props.user}>
-                <C {...props} />
-            </Layout>
+            <C {...props} />
         )
     }
 

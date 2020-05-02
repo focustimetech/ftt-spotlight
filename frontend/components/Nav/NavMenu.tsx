@@ -25,6 +25,7 @@ interface INavMenuProps {
     menuItems: INavMenuItem[]
     children?: any
     hiddenMenuItems?: INavMenuItem[]
+    disableHiddenMenu?: boolean
 }
 
 const NavMenu = (props: INavMenuProps) => {
@@ -78,7 +79,11 @@ const NavMenu = (props: INavMenuProps) => {
                                             ))}
                                         </div>
                                     </Collapse>
-                                    <MenuItem className='nav-menu__toggle' onClick={() => setShowHidden(!showHidden)}>
+                                    <MenuItem
+                                        className='nav-menu__toggle'
+                                        onClick={() => setShowHidden(!showHidden)}
+                                        disabled={props.hiddenMenuItems.length === 0 || props.disableHiddenMenu}
+                                    >
                                         <ListItemIcon><Icon>{showHidden ? 'expand_less' : 'expand_more'}</Icon></ListItemIcon>
                                         <ListItemText>{showHidden ? 'Show less' : 'Show more'}</ListItemText>
                                     </MenuItem>

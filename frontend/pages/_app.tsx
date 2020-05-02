@@ -21,6 +21,7 @@ import { theme } from '../theme'
 import { axios } from '../utils/api'
 
 // Components
+import Layout from '../components/Layout'
 import SnackbarProvider from '../components/SnackbarProvider'
 
 class App extends NextApp {

@@ -7,5 +7,5 @@ export interface IClusterDetails {
 }
 
 export interface ICluster extends IClusterDetails {
-    students: IStudent[]
+    studentIds: number[]
 }

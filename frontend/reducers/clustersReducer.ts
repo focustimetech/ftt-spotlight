@@ -6,29 +6,25 @@ import {
     NEW_CLUSTER,
     UPDATE_CLUSTER,
 } from '../actions/types'
+import { ICluster } from '../types/cluster'
+import { IReduxAction } from '../types/redux'
 
 interface IState {
-    prev: any[],
-    next: any[]
+    items: ICluster[]
 }
 
 const initialState: IState = {
-    prev: [],
-    next: []
+    items: []
 }
 
-interface IAction {
-    type: string
-    payload: any
-}
-
-export const clustersReducer = (state = initialState, action: IAction) => {
+export const clustersReducer = (state = initialState, action: IReduxAction) => {
     switch (action.type) {
         case FETCH_CLUSTERS:
             return {
                 ...state,
-                prev: action.payload
+                items: action.payload
             }
+        /*
         case ATTACH_STUDENTS:
             return {
                 ...state,
@@ -37,5 +33,9 @@ export const clustersReducer = (state = initialState, action: IAction) => {
                 )),
                 next: action.payload
             }
+        */
+
+        default:
+            return state
     }
 }

@@ -12,6 +12,7 @@ interface IVerticalNavProps {
     navItems?: INavItemProps[]
     menuItems?: INavMenuItem[]
     hiddenMenuItems?: INavMenuItem[]
+    disableHiddenMenu?: boolean
 }
 
 class VerticalNav extends React.Component<IVerticalNavProps> {
@@ -41,7 +42,11 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
                         <DefaultNavItems orientation='vertical'/>
                     </div>
                 </nav>
-                <NavMenu menuItems={this.props.menuItems} hiddenMenuItems={this.props.hiddenMenuItems} />
+                <NavMenu
+                    menuItems={this.props.menuItems}
+                    hiddenMenuItems={this.props.hiddenMenuItems}
+                    disableHiddenMenu={this.props.disableHiddenMenu}
+                />
             </>
         )
     }

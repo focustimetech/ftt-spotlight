@@ -1,4 +1,5 @@
-import axios from 'axios'
+import { Dispatch } from '../types/redux'
+import API from '../utils/api'
 
 import {
     ATTACH_STUDENTS,
@@ -9,16 +10,17 @@ import {
     UPDATE_CLUSTER,
 } from './types'
 
-export const fetchClusters = () => (dispatch: any) => {
-    return axios.get('/api/clusters')
-        .then((res: any) => dispatch({
+export const dispatchClusters = () => (dispatch: Dispatch) => {
+    return API.get('/clusters').then((res: any) => {
+        dispatch({
             type: FETCH_CLUSTERS,
             payload: res.data
-        }))
+        })
+    })
 }
-
+/*
 export const attachStudents = (studentClusters: any) => (dispatch: any) => {
-    return axios.post('/api/clusters/students', studentClusters)
+    return API.post('/clusters/students', studentClusters)
         .then((res: any) => dispatch({
             type: ATTACH_STUDENTS,
             payload: res.data
@@ -26,9 +28,10 @@ export const attachStudents = (studentClusters: any) => (dispatch: any) => {
 }
 
 export const detatchStudents = (studentClusters: any) => (dispatch: any) => {
-    return axios.delete('/api/clusters/students', studentClusters)
+    return API.delete('/clusters/students', studentClusters)
         .then((res: any) => dispatch({
             type: DETATCH_STUDENTS,
             payload: res.data
         }))
 }
+*/

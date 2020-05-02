@@ -23,27 +23,36 @@ Route::post('login', 'Auth\LoginController@login');
 /**
  * Authenticates routes
  */
+
+// Any User
 Route::middleware('auth:sanctum')->group(function() {
-    // User
-    Route::get('user', 'UserController@currentUser');
-
-    // Search
-    Route::get('search/{query}', 'SearchController@search');
-
-    // Staff
-    Route::get('staff', 'StaffController@index');
-    Route::get('staff/{id}', 'StaffController@show');
-
-    // Teachers
-    Route::get('teacher', 'TeacherController@index');
-    Route::get('teacher/{id}', 'TeacherController@show');
-
     // Classrooms
     Route::get('classrooms', 'ClassroomController@index');
 
     // Logout
     Route::post('logout', 'Auth\LoginController@logout');
+
+    // Search
+    Route::get('search/{query}', 'SearchController@search');
+
+    // Teachers
+    Route::get('teacher', 'TeacherController@index');
+    Route::get('teacher/{id}', 'TeacherController@show');
+
+    // User
+    Route::get('user', 'UserController@currentUser');
+
+    // UNUSED
+    Route::get('staff', 'StaffController@index');
+    Route::get('staff/{id}', 'StaffController@show');
 });
+
+// Teachers, Staff
+Route::middleware('auth:sanctum', 'scopes:staff,teacher')->group(function() {
+    // Clusters
+    Route::get('clusters', 'ClustersController@index');
+});
+
 /*
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

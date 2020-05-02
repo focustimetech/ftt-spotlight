@@ -9,7 +9,10 @@ use App\Model;
 use Faker\Generator as Faker;
 
 $factory->define(Cluster::class, function (Faker $faker) {
-    $userId = $faker->boolean() ? Staff::all()->random()->id : Teacher::all()->random()->id;
+    $userId = $faker->boolean()
+        ? Staff::all()->random()->user_id
+        : Teacher::all()->random()->user_id;
+
     return [
         'name' => $faker->sentence(3),
         'public' => $faker->boolean(),

@@ -35,6 +35,7 @@ class App extends NextApp {
     }
 
     render() {
+        console.log('_app.tsx render pageProps:', this.props.pageProps)
         const { Component, pageProps, store } = this.props
 
         return (
@@ -50,4 +51,4 @@ class App extends NextApp {
     }
 }
 
-export default withReduxStore(withLoadingBar(App))
+export default withReduxStore(App)

@@ -4,36 +4,50 @@ import { connect } from 'react-redux'
 import { IUser } from '../../types/auth'
 import { ILayoutContainerProps, Orientation } from '../../types/layout'
 
+import HorizontalNav from '../Nav/HorizontalNav'
+import VerticalNav from '../Nav/VerticalNav'
+
 import GuardianLayout from './GuardianLayout'
 import LayoutContainer from './LayoutContainer'
 import StaffLayout from './StaffLayout'
 import StudentLayout from './StudentLayout'
+import TeacherLayout from './TeacherLayout'
 
-const DEFAULT_ORIENTATION: Orientation = 'vertical'
+const DEFAULT_ORIENTATION: Orientation = 'horizontal'
 
-interface IReduxProps {
-    currentUser: IUser
+interface ILayoutProps extends ILayoutContainerProps {
+    user: IUser
 }
 
-class Layout extends React.Component<IReduxProps & ILayoutContainerProps> {
+class Layout extends React.Component<ILayoutProps> {
     render() {
-        const { currentUser } = this.props
+        console.log('Layout.user:', this.props.user)
+        const { user } = this.props
 
-        if (currentUser && currentUser.accountType) {
-            switch (currentUser.accountType) {
+        if (user && user.accountType) {
+            switch (user.accountType) {
                 case 'guardian':
+                    console.log('Using Guardian layout')
                     return <GuardianLayout>{this.props.children}</GuardianLayout>
                 case 'staff':
+                    console.log('Using Staff layout')
                     return <StaffLayout>{this.props.children}</StaffLayout>
                 case 'student':
+                    console.log('Using Student layout')
                     return <StudentLayout>{this.props.children}</StudentLayout>
                 case 'teacher':
-                    return <StudentLayout>{this.props.children}</StudentLayout>
+                    console.log('Using Guardian layout')
+                    return <TeacherLayout>{this.props.children}</TeacherLayout>
             }
         }
 
         return (
             <LayoutContainer orientation={DEFAULT_ORIENTATION}>
+                {DEFAULT_ORIENTATION === 'horizontal' ? (
+                    <HorizontalNav />
+                ) : (
+                    <VerticalNav />
+                )}
                 {this.props.children}
             </LayoutContainer>
         )

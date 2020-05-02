@@ -38,8 +38,8 @@ export default (App) => {
         }
 
         render() {
-            const { initialReduxState } = this.props
-            return <App {...this.props} store={getOrCreateStore(initialReduxState)} />
+            const { initialReduxState, ...rest } = this.props
+            return <App {...rest} store={getOrCreateStore(initialReduxState)} />
         }
     }
 }

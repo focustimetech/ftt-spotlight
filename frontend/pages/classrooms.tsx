@@ -7,11 +7,14 @@ import { RootState } from '../store'
 import API from '../utils/api'
 
 class Classrooms extends React.Component {
+    /*
     static async getInitialProps(context: NextPageContext) {
-        //
+        console.log('classrooms.getInitialProps')
     }
+    */
 
     componentDidMount() {
+        console.log('classrooms.componentDidMount.props:', this.props)
         API.get('/classrooms').then((res: any) => {
             console.log('res.data:', res.data)
         })

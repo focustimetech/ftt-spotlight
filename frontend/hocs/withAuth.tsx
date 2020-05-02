@@ -7,6 +7,9 @@ import { NextPageContext } from '../types'
 import { AccountType, IUser } from '../types/auth'
 import redirect from '../utils/redirect'
 
+import Layout from '../components/Layout'
+import { NextPage } from 'next'
+
 const accountMatchesWhitelist = (accountType: AccountType, whitelist: AccountType[]): boolean => {
     if (whitelist.length === 0) {
         console.log('No whitelist.')
@@ -15,49 +18,57 @@ const accountMatchesWhitelist = (accountType: AccountType, whitelist: AccountTyp
     return whitelist.some((type: AccountType) => type === accountType)
 }
 
-const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: React.ComponentType<T>) => {
-    class AuthComponent extends React.Component<T> {
-        static getInitialProps = async (context: NextPageContext) => {
-            // console.log('Rendering withAuth')
-            const { store } = context
-            const isServer: boolean = typeof window === 'undefined'
-            let user: IUser = store.getState().auth.user // Get him from the datastore
-            let authValid: boolean = true
-            console.log('Initial user:', user)
+interface IAuthComponentProps {
+    user: IUser
+}
 
-            if (!user) {
-                await store.dispatch(dispatchCurrentUser()).then(() => {
-                    // Get the just-fetched user from the datastore.
-                    user = store.getState().auth.user
-                    console.log('New user:', user)
-                }, (error: any) => {
-                    authValid = false
-                })
-            }
+const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextPage<T>) => {
+    const AuthComponent: NextPage<T & IAuthComponentProps> = (props: T & IAuthComponentProps) => {
+        console.log('AuthComponent.render.props:', props)
+        return (
+            <Layout user={props.user}>
+                <C {...props} />
+            </Layout>
+        )
+    }
 
-            if (user && accountMatchesWhitelist(user.accountType, accountTypes)) {
-                return
-            }
+    AuthComponent.getInitialProps = async (context: NextPageContext): Promise<T & IAuthComponentProps> => {
+        console.log('AuthComponent.getInitialProps')
 
-            if (!authValid) {
-                // Couldn't verify using the user's cookie, send to login
-                redirect('/login',  isServer ? context : undefined)
-                //if (!isServer) {
-                    store.dispatch(queueSnackbar({
-                        message: 'Your session has expired. Please sign back in.'
-                    }))
-                // }
-                return
-            }
+        const pageProps = C.getInitialProps ? await C.getInitialProps(context) : {}
 
-            redirect('/', isServer ? context : undefined) // Account doesn't have the right access.
+        const { store } = context
+        const isServer: boolean = typeof window === 'undefined'
+        let user: IUser = store.getState().auth.user // Get him from the datastore
+        let authValid: boolean = true
+        console.log('Initial user:', user)
+
+        if (!user) {
+            await store.dispatch(dispatchCurrentUser()).then(() => {
+                // Get the just-fetched user from the datastore.
+                user = store.getState().auth.user
+                console.log('New user:', user)
+            }, (error: any) => {
+                authValid = false
+            })
         }
 
-        render() {
-            return (
-                <C {...this.props} />
-            )
+        if (user && accountMatchesWhitelist(user.accountType, accountTypes)) {
+            return { ...pageProps, user }
         }
+
+        if (!authValid) {
+            // Couldn't verify using the user's cookie, send to login
+            redirect('/login',  isServer ? context : undefined)
+            store.dispatch(queueSnackbar({
+                message: 'Your session has expired. Please sign back in.'
+            }))
+
+            return {...pageProps, user: undefined }
+        }
+
+        redirect('/', isServer ? context : undefined) // Account doesn't have the right access.
+        return {...pageProps, user: undefined }
     }
 
     return (AuthComponent)

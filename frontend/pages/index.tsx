@@ -8,14 +8,13 @@ import StudentLayout from '../components/Layout/StudentLayout'
 import TeacherLayout from '../components/Layout/TeacherLayout'
 
 const Index = () => {
+    console.log('Rendering index')
     return (
         <div>
-            <TeacherLayout>
-                <Link href='classrooms'><a>Let's see some Classrooms</a></Link>
-            </TeacherLayout>
+            <Link href='classrooms'><a>Let's see some Classrooms</a></Link>
         </div>
 
     )
 }
 
-export default withAuth()(Index)
+export default withAuth('staff', 'teacher')(Index)

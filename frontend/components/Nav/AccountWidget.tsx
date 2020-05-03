@@ -3,7 +3,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
-    Avatar,
     IconButton,
     Menu,
     MenuItem,
@@ -17,6 +16,7 @@ import { dispatchCurrentUser, logout } from '../../actions/authActions'
 import { IUser } from '../../types/auth'
 import { getDisplayRole } from '../../utils/user'
 
+import Avatar from '../Avatar'
 import { LoadingMenuItem } from '../Form/LoadingMenuItem'
 import NavItem from './NavItem'
 
@@ -79,9 +79,7 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
         return (
             <div>
                 <NavItem title='My Account' onClick={this.handleClickOpen} orientation={this.props.orientation}>
-                    <Avatar className='avatar --medium' style={avatar ? {background: `#${avatar.color}`} : undefined}>
-                        {avatar ? avatar.initials : undefined}
-                    </Avatar>
+                    <Avatar size='medium' avatar={avatar} />
                 </NavItem>
                 {user && (
                     <Menu

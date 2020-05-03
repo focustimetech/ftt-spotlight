@@ -6,9 +6,9 @@ import {
     Icon,
     IconButton,
     ListItemIcon,
-    ListItemText,
     MenuItem,
-    Tooltip
+    Tooltip,
+    Typography
 } from '@material-ui/core'
 
 export interface INavMenuItem {
@@ -31,7 +31,7 @@ const NavMenuItem = (props: INavMenuItemProps & { useListItem: boolean }) => {
             <a>
                 <MenuItem className={className}>
                     <ListItemIcon><Icon>{icon}</Icon></ListItemIcon>
-                    <ListItemText>{label}</ListItemText>
+                    <Typography variant='inherit' noWrap>{label}</Typography>
                 </MenuItem>
             </a>
         </Link>

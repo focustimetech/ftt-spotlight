@@ -1,9 +1,14 @@
 import React from 'react'
 
+import {
+    Typography
+} from '@material-ui/core'
+
 import { IProfileProps } from '../../types/components/profile'
 import { getDisplayRole } from '../../utils/user'
 
-import TopBar from '../TopBar'
+import Calendar from '../Calendar/NewCalendar'
+import TopBar, { ITabs } from '../TopBar'
 
 interface ITeacherProfileState {
     tab: number
@@ -23,12 +28,20 @@ class TeacherProfile extends React.Component<IProfileProps, ITeacherProfileState
         }
 
         return (
-            <TopBar
-                title={user.name}
-                avatar={user.avatar}
-                subtitle={getDisplayRole(user.accountType)}
-                tabs={tabs}
-            />
+            <>
+                <TopBar
+                    title={user.name}
+                    avatar={user.avatar}
+                    subtitle={getDisplayRole(user.accountType)}
+                    tabs={tabs}
+                />
+                {this.state.tab === 0 && (
+                    <Typography>Overview</Typography>
+                )}
+                {this.state.tab === 1 && (
+                    <Calendar calendar={{}} />
+                )}
+            </>
         )
     }
 }

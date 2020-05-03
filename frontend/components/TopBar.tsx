@@ -7,7 +7,7 @@ import { IAvatar } from '../types/auth';
 import Avatar from './Avatar'
 import Flexbox from './Layout/Flexbox';
 
-interface ITabs {
+export interface ITabs {
     tabs: string[]
     value: number
     onChange: (value: number) => void

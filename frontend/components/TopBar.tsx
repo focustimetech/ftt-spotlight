@@ -1,10 +1,17 @@
 import classNames from 'classnames'
 import React from 'react'
-import { IAvatar } from '../types/auth';
-import { Typography } from '@material-ui/core'
 
+import { Tab, Tabs, Typography } from '@material-ui/core'
+
+import { IAvatar } from '../types/auth';
 import Avatar from './Avatar'
 import Flexbox from './Layout/Flexbox';
+
+interface ITabs {
+    tabs: string[]
+    value: number
+    onChange: (value: number) => void
+}
 
 interface ITopBarProps {
     title: string
@@ -12,24 +19,39 @@ interface ITopBarProps {
     breadcrumbs?: any
     children?: any
     avatar?: IAvatar
+    tabs?: ITabs
 }
 
 const TopBar = (props: ITopBarProps) => {
     return (
-        <Flexbox className={classNames('top-bar', { '--breadcrumbs': props.breadcrumbs })}>
-            <Flexbox className='top-bar__heading'>
-                {props.avatar && (
-                    <Avatar size='large' avatar={props.avatar} />
+        <div className={classNames('top-bar', { '--breadcrumbs': props.breadcrumbs }, { '--tabs': props.tabs })}>
+            <Flexbox className='top-bar__inner'>
+                <Flexbox className='top-bar__heading'>
+                    {props.avatar && (
+                        <Avatar size='large' avatar={props.avatar} />
+                    )}
+                    <div>
+                        <Typography variant='h5'>{props.title}</Typography>
+                        <Typography variant='subtitle1'>{props.subtitle}</Typography>
+                    </div>
+                </Flexbox>
+                {props.children && (
+                    <Flexbox className='top-bar__tools'>{props.children}</Flexbox>
                 )}
-                <div>
-                    <Typography variant='h5'>{props.title}</Typography>
-                    <Typography variant='subtitle1'>{props.subtitle}</Typography>
-                </div>
             </Flexbox>
-            {props.children && (
-                <Flexbox className='top-bar__tools'>{props.children}</Flexbox>
+            {props.tabs && (
+                <Tabs
+                    className='top-bar__tabs'
+                    onChange={(event: React.ChangeEvent<{}>, value: number) => props.tabs.onChange(value)}
+                    value={props.tabs.value}
+                    indicatorColor='primary'
+                >
+                    {props.tabs.tabs.map((label: string) => (
+                        <Tab label={label} />
+                    ))}
+                </Tabs>
             )}
-        </Flexbox>
+        </div>
     )
 }
 

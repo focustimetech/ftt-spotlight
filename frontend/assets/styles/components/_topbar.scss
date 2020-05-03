@@ -1,7 +1,20 @@
 .top-bar {
-    padding: spacing(2) 0;
+    &__inner {
+        padding: spacing(2) 0;
+    }
 
     .avatar + * {
         margin-left: spacing(2) !important;
+    }
+
+    &.--tabs {
+        .top-bar__inner {
+            padding-bottom: spacing(1);
+        }
+        border-bottom: 2px solid #EEE;
+        
+        .top-bar__tabs {
+            margin-bottom: -2px;
+        }
     }
 }

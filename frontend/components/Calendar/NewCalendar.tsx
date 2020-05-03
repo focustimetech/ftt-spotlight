@@ -5,6 +5,7 @@ import {
     addDays,
     addWeeks,
     endOfWeek,
+    isToday,
     startOfWeek,
     subDays,
     subWeeks,
@@ -57,6 +58,10 @@ class Calendar extends React.Component<ICalendarProps, IState> {
         currentDate: new Date()
     }
 
+    handleSetToday = () => {
+        this.setState({ currentDate: new Date()})
+    }
+
     handleNext = () => {
         this.setState((state: IState) => ({
             currentDate: startOfWeek(addDays(endOfWeek(state.currentDate), 1))
@@ -80,7 +85,7 @@ class Calendar extends React.Component<ICalendarProps, IState> {
         return (
             <div className='new-calendar'>
                 <Flexbox padding className='new-calendar__header'>
-                    <Button variant='outlined'>Today</Button>
+                    <Button variant='outlined' onClick={() => this.handleSetToday()}>Today</Button>
                     <IconButton onClick={() => this.handlePrevious()}><Icon>chevron_left</Icon></IconButton>
                     <IconButton onClick={() => this.handleNext()}><Icon>chevron_right</Icon></IconButton>
                     <CalendarMonthLabel date={weekStart} />
@@ -89,13 +94,18 @@ class Calendar extends React.Component<ICalendarProps, IState> {
                     <div className='new-calendar__date-labels'>
                         {daysOfWeek.map((dayOfWeek: string, index: number) => {
                             const date: Date = addDays(weekStart, index)
+                            const dateIsToday: boolean = isToday(date)
                             const key: string = date.toISOString().substr(0, 10)
                             calendarDayKeys.push(key)
 
                             return (
                                 <div className='new-calendar__date-label'>
-                                    <Typography variant='overline' className='date-label-day'>{dayOfWeek}</Typography>
-                                    <Typography variant='h6' className='date-label-date'>{date.getDate()}</Typography>
+                                    <Typography variant='overline' className='date-label-day' color={dateIsToday ? 'primary' : undefined}>
+                                        {dateIsToday ? 'Today' : dayOfWeek}
+                                    </Typography>
+                                    <Typography variant='h6' className='date-label-date' color={dateIsToday ? 'primary' : undefined}>
+                                        {date.getDate()}
+                                    </Typography>
                                 </div>
                             )
                         })}

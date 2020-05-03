@@ -16,7 +16,7 @@ import TeacherLayout from './TeacherLayout'
 const DEFAULT_ORIENTATION: Orientation = 'horizontal'
 
 interface ILayoutProps extends ILayoutContainerProps {
-    user: IUser
+    user?: IUser
 }
 
 class Layout extends React.Component<ILayoutProps> {

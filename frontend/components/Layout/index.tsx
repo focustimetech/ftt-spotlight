@@ -27,30 +27,28 @@ class Layout extends React.Component<ILayoutProps> {
         if (user && user.accountType) {
             switch (user.accountType) {
                 case 'guardian':
-                    console.log('Using Guardian layout')
                     return <GuardianLayout>{this.props.children}</GuardianLayout>
                 case 'staff':
-                    console.log('Using Staff layout')
                     return <StaffLayout>{this.props.children}</StaffLayout>
                 case 'student':
-                    console.log('Using Student layout')
                     return <StudentLayout>{this.props.children}</StudentLayout>
                 case 'teacher':
-                    console.log('Using Guardian layout')
                     return <TeacherLayout>{this.props.children}</TeacherLayout>
+                default:
+                    return (
+                        <LayoutContainer orientation={DEFAULT_ORIENTATION}>
+                            {DEFAULT_ORIENTATION === 'horizontal' ? (
+                                <HorizontalNav />
+                            ) : (
+                                <VerticalNav />
+                            )}
+                            {this.props.children}
+                        </LayoutContainer>
+                    )
             }
         }
 
-        return (
-            <LayoutContainer orientation={DEFAULT_ORIENTATION}>
-                {DEFAULT_ORIENTATION === 'horizontal' ? (
-                    <HorizontalNav />
-                ) : (
-                    <VerticalNav />
-                )}
-                {this.props.children}
-            </LayoutContainer>
-        )
+        return <LayoutContainer orientation='horizontal'>{this.props.children}</LayoutContainer>
     }
 }
 

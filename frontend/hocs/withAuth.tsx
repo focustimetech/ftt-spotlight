@@ -24,15 +24,12 @@ interface IAuthComponentProps {
 
 const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextPage<T>) => {
     const AuthComponent: NextPage<T & IAuthComponentProps> = (props: T & IAuthComponentProps) => {
-        console.log('AuthComponent.render.props:', props)
         return (
             <C {...props} />
         )
     }
 
     AuthComponent.getInitialProps = async (context: NextPageContext): Promise<T & IAuthComponentProps> => {
-        console.log('AuthComponent.getInitialProps')
-
         const pageProps = C.getInitialProps ? await C.getInitialProps(context) : {}
 
         const { store } = context
@@ -42,6 +39,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
         console.log('Initial user:', user)
 
         if (!user) {
+            console.log('Fetching new user')
             await store.dispatch(dispatchCurrentUser()).then(() => {
                 // Get the just-fetched user from the datastore.
                 user = store.getState().auth.user
@@ -49,6 +47,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
             }, (error: any) => {
                 authValid = false
             })
+            console.log('Done fetching')
         }
 
         if (user && accountMatchesWhitelist(user.accountType, accountTypes)) {
@@ -56,6 +55,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
         }
 
         if (!authValid) {
+            console.log('auth invalid')
             // Couldn't verify using the user's cookie, send to login
             redirect('/login',  isServer ? context : undefined)
             store.dispatch(queueSnackbar({

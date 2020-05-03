@@ -12,7 +12,9 @@ interface ILayoutContentProps {
 const LayoutContent = (props: ILayoutContentProps) => {
     return (
         <Paper className='layout__content' elevation={props.orientation === 'vertical' ? 1 : 0}>
-            {props.children}
+            <div className='layout__container'>
+                {props.children}
+            </div>
         </Paper>
     )
 }

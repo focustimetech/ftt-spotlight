@@ -20,4 +20,15 @@ class Cluster extends Model
         return $this->belongsToMany('App\Student', 'clusters_students')
             ->withTimestamps();
     }
+
+
+    public function isPublic()
+    {
+        return $this->public == true;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

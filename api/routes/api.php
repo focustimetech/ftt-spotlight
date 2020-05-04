@@ -52,8 +52,8 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher')->group(function() {
     // Clusters
     Route::get('clusters', 'ClustersController@index');
     Route::get('clusters/{id}', 'ClustersController@find');
-    Route::create('clusters', 'ClustersController@create');
-    Route::update('clusters', 'ClustersController@update');
+    Route::post('clusters', 'ClustersController@create');
+    Route::put('clusters', 'ClustersController@update');
     Route::delete('clusters/{id}', 'ClustersController@delete');
 });
 

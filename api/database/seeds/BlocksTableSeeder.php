@@ -1,5 +1,6 @@
 <?php
 
+use App\Block;
 use Illuminate\Database\Seeder;
 
 class BlocksTableSeeder extends Seeder
@@ -12,16 +13,16 @@ class BlocksTableSeeder extends Seeder
     public function run()
     {
         $time = strtotime('monday 9am');
-        $beginsOn = $time;
+        $beginsOn = date('Y-m-d H:i:s', $time);
         for ($dayOfWeek = 1; $dayOfWeek <= 7; $dayOfWeek ++) {
             $time = strtotime('9am', $time);
             for ($i = 0; $i < 4; $i ++) {
                 factory(Block::class)->create([
                     'start_time' => date('H:i:s', $time),
-                    'end_time' => date('+50 minutes', $time),
+                    'end_time' => date('H:i:s', strtotime('+50 minutes', $time)),
                     'begins_on' => $beginsOn,
                     'ends_on' => null,
-                    'week_day', $dayOfWeek
+                    'week_day' => $dayOfWeek
                 ]);
                 $time = strtotime('+1 hour', $time);
             }

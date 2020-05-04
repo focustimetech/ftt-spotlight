@@ -26,6 +26,9 @@ Route::post('login', 'Auth\LoginController@login');
 
 // Any User
 Route::middleware('auth:sanctum')->group(function() {
+    // Blocks
+    Route::get('blocks', 'BlocksController@index');
+
     // Classrooms
     Route::get('classrooms', 'ClassroomController@index');
 
@@ -35,16 +38,17 @@ Route::middleware('auth:sanctum')->group(function() {
     // Search
     Route::get('search/{query}', 'SearchController@search');
 
+    // Staff
+    Route::get('staff', 'StaffController@index');
+    Route::get('staff/{id}', 'StaffController@show');
+
     // Teachers
     Route::get('teacher', 'TeacherController@index');
     Route::get('teacher/{id}', 'TeacherController@show');
+    Route::get('teacher/{id}/calendar/{date?}', 'CalendarController@teacherCalendar');
 
     // User
     Route::get('user', 'UserController@currentUser');
-
-    // UNUSED
-    Route::get('staff', 'StaffController@index');
-    Route::get('staff/{id}', 'StaffController@show');
 });
 
 // Teachers, Staff
@@ -55,6 +59,9 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher')->group(function() {
     Route::post('clusters', 'ClustersController@create');
     Route::put('clusters', 'ClustersController@update');
     Route::delete('clusters/{id}', 'ClustersController@delete');
+
+    // Students
+    Route::get('students/{id}/calendar/{date?}', 'CalendarController@studentCalendar');
 });
 
 /*

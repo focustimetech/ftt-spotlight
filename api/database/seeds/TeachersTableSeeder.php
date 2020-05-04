@@ -1,6 +1,7 @@
 <?php
 
 use App\Teacher;
+use App\User;
 use Illuminate\Database\Seeder;
 
 class TeachersTableSeeder extends Seeder
@@ -13,5 +14,14 @@ class TeachersTableSeeder extends Seeder
     public function run()
     {
         factory(Teacher::class, 50)->create();
+        $user = factory(User::class)->create([
+            'first_name' => 'Spotlight',
+            'last_name' => 'Dev',
+            'account_type' => 'teacher',
+            'username' => 'teacher@focustime.ca'
+        ]);
+        factory(Teacher::class)->create([
+            'user_id' => $user->id
+        ]);
     }
 }

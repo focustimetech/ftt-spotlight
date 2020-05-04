@@ -19,6 +19,10 @@ class TeacherProfile extends React.Component<IProfileProps, ITeacherProfileState
         tab: 0
     }
 
+    componentDidMount() {
+        
+    }
+
     render() {
         const { user, editable } = this.props
         const tabs: ITabs = {

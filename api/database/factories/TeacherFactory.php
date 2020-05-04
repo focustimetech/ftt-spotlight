@@ -9,10 +9,13 @@ use Faker\Generator as Faker;
 
 $factory->define(Teacher::class, function (Faker $faker) {
     $gender = $faker->randomElement(['male', 'female']);
+    $firstName = $faker->firstName($gender);
+    $lastName = $faker->lastName($gender);
 
     $user = factory(User::class)->create([
-        'first_name' => $faker->firstName($gender),
-        'last_name' => $faker->lastName($gender),
+        'first_name' => $firstName,
+        'last_name' => $lastName,
+        'username' => str_replace(' ', '', strtolower($firstName . '.' . $lastName . '@example.com')),
         'account_type' => 'teacher'
     ]);
 

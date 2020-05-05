@@ -16,57 +16,23 @@ export const theme: Theme = createMuiTheme({
     }
 })
 
-export interface IColor {
-    name: TopicColor,
-    label: string
-}
-
-export const COLORS: IColor[] = [
-    { name: 'red', label: 'Red' },
-    { name: 'pink', label: 'Pink' },
-    { name: 'purple', label: 'Purple' },
-    { name: 'deep-purple', label: 'Deep Purple' },
-    { name: 'indigo', label: 'Indigo' },
-    { name: 'blue', label: 'Blue' },
-    { name: 'light-blue', label: 'Light Blue' },
-    { name: 'cyan', label: 'Cyan' },
-    { name: 'teal', label: 'Teal' },
-    { name: 'green', label: 'Green' },
-    { name: 'light-green', label: 'Light Green' },
-    { name: 'lime', label: 'Lime' },
-    { name: 'yellow', label: 'Yellow' },
-    { name: 'amber', label: 'Amber' },
-    { name: 'orange', label: 'Orange' },
-    { name: 'deep-orange', label: 'Deep Orange' },
-    { name: 'brown', label: 'Brown' },
-    { name: 'blue-grey', label: 'Blue Grey' }
-]
-
-export type TopicColor =
-    | 'red'
-    | 'pink'
-    | 'purple'
-    | 'deep-purple'
-    | 'indigo'
-    | 'blue'
-    | 'light-blue'
-    | 'cyan'
-    | 'teal'
-    | 'green'
-    | 'light-green'
-    | 'lime'
-    | 'yellow'
-    | 'amber'
-    | 'orange'
-    | 'deep-orange'
-    | 'brown'
-    | 'blue-grey'
-    | 'black'
-
-/**
- * Returns a random Color.
- * @return The a random Color.
- */
-export const getRandomColor = (): IColor => {
-    return COLORS[Math.floor(Math.random() * COLORS.length)]
+export const COLORS: Record<string, string> = {
+    '#C62828': 'Red',
+    '#AD1457': 'Pink',
+    '#6A1B9A': 'Purple',
+    '#4527A0': 'Deep Purple',
+    '#283593': 'Indigo',
+    '#1565C0': 'Blue',
+    '#0277BD': 'Light Blue',
+    '#00838F': 'Cyan',
+    '#00695C': 'Teal',
+    '#2E7D32': 'Green',
+    '#558B2F': 'Light Green',
+    '#9E9D24': 'Lime',
+    '#F9A825': 'Yellow',
+    '#FF8F00': 'Amber',
+    '#EF6C00': 'Orange',
+    '#D84315': 'Deep Orange',
+    '#4E342E': 'Brown',
+    '#37474F': 'Blue Grey'
 }

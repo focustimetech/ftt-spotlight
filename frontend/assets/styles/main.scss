@@ -39,8 +39,9 @@
 @import "components/starred";
 @import "components/table";
 @import "components/topbar";
-@import "components/topics";
-@import "components/topnav";
+
+    /* Form */
+    @import "components/form/color_picker";
 
     /* Modals */
     @import "components/modals/context_menu";

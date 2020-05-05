@@ -10,6 +10,8 @@ export const getDisplayRole = (accountType: AccountType): string => {
             return 'Teacher'
         case 'guardian':
             return 'Parent'
+        case 'sysadmin':
+            return 'CS'
         default:
             return 'User'
     }

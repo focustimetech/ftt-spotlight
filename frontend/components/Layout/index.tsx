@@ -11,6 +11,7 @@ import GuardianLayout from './GuardianLayout'
 import LayoutContainer from './LayoutContainer'
 import StaffLayout from './StaffLayout'
 import StudentLayout from './StudentLayout'
+import SysAdminLayout from './SysAdminLayout'
 import TeacherLayout from './TeacherLayout'
 
 const DEFAULT_ORIENTATION: Orientation = 'horizontal'
@@ -34,6 +35,8 @@ class Layout extends React.Component<ILayoutProps> {
                     return <StudentLayout>{this.props.children}</StudentLayout>
                 case 'teacher':
                     return <TeacherLayout>{this.props.children}</TeacherLayout>
+                case 'sysadmin':
+                    return <SysAdminLayout>{this.props.children}</SysAdminLayout>
                 default:
                     return (
                         <LayoutContainer orientation={DEFAULT_ORIENTATION}>

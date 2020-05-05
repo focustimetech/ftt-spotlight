@@ -17,4 +17,4 @@ const Index = () => {
     )
 }
 
-export default withAuth('staff', 'teacher')(Index)
+export default withAuth()(Index)

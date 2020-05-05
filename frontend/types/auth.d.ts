@@ -1,6 +1,6 @@
 import { TopicColor } from '../theme'
 
-type AccountType = 'student' | 'teacher' | 'staff' | 'guardian'
+type AccountType = 'student' | 'teacher' | 'staff' | 'guardian' | 'sysadmin'
 
 export interface ICredentials {
     username: string
@@ -40,4 +40,8 @@ export interface IGuardian extends IUserDetails {
     accountType: 'guardian'
 }
 
-export type IUser = IStudent | IStaff | ITeacher | IGuardian
+export interface ISysAdmin extends IUserDetails {
+    accountType: 'sysadmin'
+}
+
+export type IUser = IStudent | IStaff | ITeacher | IGuardian | ISysAdmin

@@ -32,6 +32,11 @@ class Utils
         return Arr::random($colors);
     }
 
+    public static function sysAdminColor()
+    {
+        return '000';
+    }
+
     /**
      * Grabs an app setting using the given key.
      * @param key The key to search by.

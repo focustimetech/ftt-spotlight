@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('password');     // Encrypted password
             $table->string('initials');     // Initials used in user's avatar
             $table->string('color');        // Color used in user's avatar
-            $table->enum('account_type', ['student', 'staff', 'teacher', 'guardian']);
+            $table->enum('account_type', ['student', 'staff', 'teacher', 'guardian', 'sysadmin']);
             $table->softDeletes();          // Use soft deletes
             $table->timestamps();
             // Unique indexes

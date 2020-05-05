@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ClustersTableSeeder::class);
         $this->call(ScheduledTopicsTableSeeder::class);
         $this->call(PlansTableSeeder::class);
+        $this->call(SysAdminsTableSeeder::class);
     }
 }

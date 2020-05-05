@@ -85,6 +85,8 @@ class User extends Authenticatable
                 return Teacher::firstWhere('user_id', $this->id);
             case 'guardian':
                 return Guardian::firstWhere('user_id', $this->id);
+            case 'sysadmin':
+                return SysAdmin::firstWhere('user_id', $this->id);
         }
     }
 

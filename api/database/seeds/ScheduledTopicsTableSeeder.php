@@ -22,16 +22,14 @@ class ScheduledTopicsTableSeeder extends Seeder
          */
         foreach(Teacher::all() as $teacher) {
             $topics = $teacher->topics()->get();
-            if (count($topics) === 0) {
-                return;
-            }
-
-            foreach($blocks as $block) {
-                ScheduledTopic::create([
-                    'block_id' => $block->id,
-                    'topic_id' => $topics->random()->id,
-                    'date' => date('Y-m-d', strtotime('+' . ($block->day_of_week + 5 ) % 7 . 'days', $startOfWeek))
-                ]);
+            if (count($topics) > 0) {
+                foreach($blocks as $block) {
+                    ScheduledTopic::create([
+                        'block_id' => $block->id,
+                        'topic_id' => $topics->random()->id,
+                        'date' => date('Y-m-d', strtotime('+' . ($block->day_of_week + 5 ) % 7 . 'days', $startOfWeek))
+                    ]);
+                }
             }
         }
     }

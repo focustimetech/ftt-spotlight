@@ -25,6 +25,8 @@ class CalendarController extends Controller
         $scheduledTopics = $teacher->scheduledTopics()
             ->whereBetween('date', $dateRange)
             ->get();
+        
+        return;
 
     }
 

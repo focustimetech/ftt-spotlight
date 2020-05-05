@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // Classrooms
     Route::get('classrooms', 'ClassroomController@index');
+    Route::get('classrooms/{id}', 'ClassroomController@show');
 
     // Logout
     Route::post('logout', 'Auth\LoginController@logout');
@@ -48,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('teacher/{id}/calendar/{date?}', 'CalendarController@teacherCalendar');
 
     // Topics
+    Route::get('clusters', 'ClustersController@index');
     Route::get('topics/{id}', 'TopicsController@show');
 
     // User
@@ -57,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function() {
 // Teachers, Staff, SysAdmin
 Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(function() {
     // Clusters
-    Route::get('clusters', 'ClustersController@index');
+    Route::get('clusters', 'ClustersController@list');
     Route::get('clusters/{id}', 'ClustersController@find');
     Route::post('clusters', 'ClustersController@create');
     Route::put('clusters', 'ClustersController@update');
@@ -69,6 +71,12 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(functi
 
 // Teachers
 Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
+    // Classrooms
+    Route::get('classrooms', 'ClassroomsController@list');
+    Route::post('classrooms', 'ClassroomsController@create');
+    Route::get('classrooms', 'ClassroomsController@update');
+    Route::get('classrooms/{id}', 'ClassroomsController@delete');    
+
     // Topics
     Route::get('topics', 'TopicsController@index');
     Route::post('topics', 'TopicsController@create');

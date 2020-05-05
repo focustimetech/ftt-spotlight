@@ -11,9 +11,7 @@ class TopicsController extends Controller
 {
     public function index()
     {
-        $teacher = auth()->user()->account();
-        
-        return TopicResource::collection($teacher->topics()->get());
+        return TopicResource::collection(Topic::all());
     }
 
     public function show($id)
@@ -21,6 +19,13 @@ class TopicsController extends Controller
         $topic = Topic::findOrFail($id);
 
         return new TopicResource($topic);
+    }
+
+    public function list()
+    {
+        $teacher = auth()->user()->account();
+        
+        return TopicResource::collection($teacher->topics()->get());
     }
 
     public function create(Request $request)

@@ -51,8 +51,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('user', 'UserController@currentUser');
 });
 
-// Teachers, Staff
-Route::middleware('auth:sanctum', 'scopes:staff,teacher')->group(function() {
+// Teachers, Staff, SysAdmin
+Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(function() {
     // Clusters
     Route::get('clusters', 'ClustersController@index');
     Route::get('clusters/{id}', 'ClustersController@find');

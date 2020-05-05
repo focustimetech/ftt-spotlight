@@ -35,6 +35,7 @@ class ClustersController extends Controller
         $user = auth()->user();
         $cluster = Cluster::create([
             'name' => $request->input('name'),
+            'public' => $request->input('public'),
             'user_id' => $user->id
         ]);
 

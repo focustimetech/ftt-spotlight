@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 
 class ClustersController extends Controller
 {
+    public function index(Request $request)
+    {
+        return ClusterResource::collection(Cluster::where('public', true)->get());
+    }
+
     /**
      * Retrieves all Clusters belonging to the user.
      */
-    public function index(Request $request)
+    public function list(Request $request)
     {
         return ClusterResource::collection($request->user()->clusters()->get());
     }

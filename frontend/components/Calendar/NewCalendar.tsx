@@ -29,6 +29,8 @@ import Flexbox from '../Layout/Flexbox'
 import CalendarMonthLabel from './CalendarMonthLabel'
 import CalendarBlock from './NewCalendarBlock'
 
+export type ICalendar = Record<string, ICalendarDay>
+
 interface ICalendarDay {
     events: ICalendarFullDayEvent[]
     blocks: ICalendarEvent[]
@@ -48,7 +50,7 @@ export interface ICalendarEvent extends ICalendarFullDayEvent {
 }
 
 interface ICalendarProps {
-    calendar: Record<string, ICalendarDay>
+    calendar: ICalendar
     weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
 }
 

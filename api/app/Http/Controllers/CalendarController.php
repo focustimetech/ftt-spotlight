@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Block;
+use App\Http\Resources\Block as BlockResource;
 use Illuminate\Http\Request;
 
 class CalendarController extends Controller
@@ -17,16 +19,29 @@ class CalendarController extends Controller
     public function teacherCalendar($id, $date = null)
     {
         $time = $date ? strtotime($date) : time();
-        $teacher = Teacher::findOrFail($id);
         $dateRange = $this->getDateRangeFromTime($time);
+        $startTime = strtotime('monday', $time);
+        
+        $calendar = [];
+
+        $blocks = Block::where('begins_on', '>=', date('Y-m-d H:i:s', $time))
+            ->get()
+            ->mapToGroups(function ($block, $key) use ($startTime) {
+                return [date('Y-m-d', strtotime('+' . ($block->week_day - 1) . ' days', $startTime)) => new BlockResource($block)];
+            });
+        
+        /*
+        $teacher = Teacher::findOrFail($id);
+
         $appointments = $teacher->appointments()
             ->whereBetween('date', $dateRange)
             ->get();
         $scheduledTopics = $teacher->scheduledTopics()
             ->whereBetween('date', $dateRange)
             ->get();
-        
-        return;
+        */
+
+        return $blocks;
 
     }
 

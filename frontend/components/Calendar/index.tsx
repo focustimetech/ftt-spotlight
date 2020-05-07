@@ -93,8 +93,8 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
         const pickerOpen: boolean = Boolean(this.state.pickerRef)
 
         return (
-            <div className='new-calendar'>
-                <Flexbox className='new-calendar__header'>
+            <div className='calendar'>
+                <Flexbox className='calendar__header'>
                     <Button variant='outlined' onClick={() => this.handleSetToday()}>Today</Button>
                     <IconButton onClick={() => this.handlePrevious()}><Icon>chevron_left</Icon></IconButton>
                     <IconButton onClick={() => this.handleNext()}><Icon>chevron_right</Icon></IconButton>
@@ -115,8 +115,8 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                         </MuiPickersUtilsProvider>
                     </div>
                 </Flexbox>
-                <div className='new-calendar__body'>
-                    <div className='new-calendar__date-labels'>
+                <div className='calendar__body'>
+                    <div className='calendar__date-labels'>
                         {datesOfWeek.map((date: Date, index: number) => {
                             console.log('date:', date)
                             const dayOfWeek: string = format(date, 'iiii', { weekStartsOn })
@@ -126,7 +126,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                             calendarDayKeys.push(key)
 
                             return (
-                                <div className='new-calendar__date-label'>
+                                <div className='calendar__date-label'>
                                     <Typography variant='overline' className='date-label-day' color={dateIsToday ? 'primary' : undefined}>
                                         {dateIsToday ? 'Today' : dayOfWeek}
                                     </Typography>
@@ -137,25 +137,25 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                             )
                         })}
                     </div>
-                    <div className='new-calendar__content'>
-                        <div className='new-calendar__hour-display'>
+                    <div className='calendar__content'>
+                        <div className='calendar__hour-display'>
                             {hoursOfDay.map((hourOfDay: string) => (
-                                <div className='new-calendar__hour-indicator' key={hourOfDay}>
+                                <div className='calendar__hour-indicator' key={hourOfDay}>
                                     <Typography variant='caption'>{hourOfDay}</Typography>
                                 </div>
                             ))}
                         </div>
-                        <div className='new-calendar__data'>
-                            <div className='new-calendar__content-dividers'>
+                        <div className='calendar__data'>
+                            <div className='calendar__content-dividers'>
                                 {hoursOfDay.map((hourOfDay: string) => (
                                     <div key={hourOfDay} />
                                 ))}
                             </div>
-                            <div className='new-calendar__calendar-days'>
+                            <div className='calendar__calendar-days'>
                                 {calendarDayKeys.map((key: string) => {
                                     const calendarDay = calendar[key]
                                     return (
-                                        <div className='new-calendar__calendar-day'>
+                                        <div className='calendar__calendar-day'>
                                             {calendarDay && calendarDay.blocks.map((calendarEvent: ICalendarEvent) => {
                                                 const { startTime, endTime, ...rest } = calendarEvent
                                                 const start: Date = moment(`${key} ${startTime}`).toDate()

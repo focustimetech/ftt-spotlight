@@ -94,7 +94,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
         return (
             <div className='new-calendar'>
-                <Flexbox padding className='new-calendar__header'>
+                <Flexbox className='new-calendar__header'>
                     <Button variant='outlined' onClick={() => this.handleSetToday()}>Today</Button>
                     <IconButton onClick={() => this.handlePrevious()}><Icon>chevron_left</Icon></IconButton>
                     <IconButton onClick={() => this.handleNext()}><Icon>chevron_right</Icon></IconButton>

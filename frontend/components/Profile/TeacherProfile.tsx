@@ -10,6 +10,7 @@ import API from '../../utils/api'
 import { getDisplayRole } from '../../utils/user'
 
 import Calendar from '../Calendar'
+import Section from '../Layout/Section'
 import TopBar, { ITabs } from '../TopBar'
 
 interface ITeacherProfileState {
@@ -54,7 +55,9 @@ class TeacherProfile extends React.Component<IProfileProps, ITeacherProfileState
                     tabs={tabs}
                 />
                 {this.state.tab === 0 && (
-                    <Typography>Overview</Typography>
+                    <Section>
+                        <Typography>Overview</Typography>
+                    </Section>
                 )}
                 {this.state.tab === 1 && (
                     <Calendar calendar={this.state.calendar} />

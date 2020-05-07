@@ -8,38 +8,44 @@ import {
     CardContent
 } from '@material-ui/core'
 
-import { IBlockDetails, ICalendarBlock } from '../../types/calendar'
+import { CardProps } from '@material-ui/core/Card'
 
-interface IProps extends ICalendarBlock {
-    onClick: (blockDetails: IBlockDetails) => void
-}
+import { ICalendarEvent } from '.'
 
-export const CalendarBlock = (props: IProps) => {
-    const { memo, title, variant, badgeCount, voided } = props
-    const { label } = props.details
+type ICalendarBlocksProps = ICalendarEvent & CardProps
 
+const CalendarBlock = (props: ICalendarBlocksProps) => {
+    const badgeCount = 0
+    const { style, title, label, description, color, onClick, startTime, endTime, ...rest } = props
+    const { top, height } = style
     return (
-        <Badge
-            badgeContent={badgeCount}
-            invisible={badgeCount === 0}
-            color='secondary'
-            max={9}
-            className='block__badge'
-        >
-            <Card className='block'>
-                <CardActionArea
-                    className={classNames('block__inner', {[`--${variant}`]: variant}, {['--void']: voided})}
-                    onClick={() => props.onClick(props.details)}
-                >
-                    <CardContent className='block__content'>
-                        <h6 className='block__label'>{label || 'No Label'}</h6>
-                        <p className='block__title'>{title}</p>
-                        {memo && (
-                            <p className='block__memo'>{memo}</p>
-                        )}
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-        </Badge>
+        <div className='new-calendar-block' style={{ top }}>
+            <Badge
+                badgeContent={badgeCount}
+                invisible={badgeCount === 0}
+                color='secondary'
+                max={9}
+                className='new-calendar-block-badge'
+            >
+                <Card {...rest}>
+                    <CardActionArea
+                        className={classNames('new-calendar-block__inner')}
+                        onClick={onClick}
+                        style={{ height }}
+                    >
+                        <CardContent className='new-calendar-block__content'>
+                            <h6 className='block-label'>{label || 'Unlabeled Block'}</h6>
+                            <p>{`${startTime} - ${endTime}`}</p>
+                            <p className='block-title'>{title}</p>
+                            {description && (
+                                <p className='block-description'>{description}</p>
+                            )}
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </Badge>
+        </div>
     )
 }
+
+export default CalendarBlock

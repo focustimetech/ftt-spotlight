@@ -4,11 +4,12 @@ import {
     Typography
 } from '@material-ui/core'
 
+import { ICalendar } from '../../types/calendar'
 import { IProfileProps } from '../../types/components/profile'
 import API from '../../utils/api'
 import { getDisplayRole } from '../../utils/user'
 
-import Calendar, { ICalendar } from '../Calendar/NewCalendar'
+import Calendar from '../Calendar'
 import TopBar, { ITabs } from '../TopBar'
 
 interface ITeacherProfileState {

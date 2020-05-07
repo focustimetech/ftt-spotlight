@@ -132,36 +132,27 @@ export const formatDate = (date: Date): string => {
 }
 
 /**
- * Returns an array of the textual representations of the days of the week, i.e. 'Mon' through 'Sun'
- * @param firstDayOfWeek The first day of the week, Sunday (0) being the default.
+ * Returns an array of the dates in the week.
+ * @param date The Dates returned being relative to this date.
+ * @param weekStartsOn The first day of the week, Sunday (0) being the default.
+ * @param daysPerWeek The number of days per week, 7 by default.
  */
-export const getDaysOfWeek = (firstDayOfWeek: DayOfWeekNumber = 0): string[] => {
-    const days: string[] = [...ALL_DAYS]
-    const splice: string[] = days.splice(0, firstDayOfWeek)
-    return days.concat(splice)
-}
-
-/**
- * Returns a string that represents the month(s) and year relative to the given date.
- * @param date The given Date.
- * @param days The amount of days within the range, which is 7 by default.
- * @return The string representing the year and month, e.g. "January 2020", "Jan - Feb 2020", "Dec 2020 - Jan 2021".
- */
-export const getWeekTitle = (date: Date, days: number = 7): string => {
-    const end: Date = addDays(date, days)
-    if (date.getUTCFullYear() !== end.getUTCFullYear()) {
-        return `${format(date, 'MMM yyyy')} - ${format(end, 'MMM yyyy')}`
-    } else if (date.getUTCMonth() !== end.getUTCMonth()) {
-        return `${format(date, 'MMM')} - ${format(end, 'MMM yyyy')}`
+export const getDatesOfWeek = (date: Date, weekStartsOn: DayOfWeekNumber = 0, daysPerWeek: number = 7): Date[] => {
+    const weekStart: Date = startOfWeek(date, { weekStartsOn })
+    const dates: Date[] = [weekStart]
+    for (let i: number = 1; i < daysPerWeek; i ++) {
+        dates.push(addDays(weekStart, i))
     }
-    return format(date, 'MMMM yyyy')
+    return dates
 }
 
-export const getHoursOfDay = (includeMidnight: boolean = true): string[] => {
+export const getHoursOfDay = (is24Hour: boolean = false): string[] => {
     const hours: string[] = []
-    for (let i: number = includeMidnight ? 0 : 1; i < 24; i ++) {
+    const lastHour: number = is24Hour ? 24 : 18
+    for (let i: number = is24Hour ? 0 : 6; i < lastHour; i ++) {
         hours.push(`${i % 12 || 12} ${i > 11 ? 'PM' : 'AM'}`)
     }
+    console.log('hours:', hours)
     return hours
 }
 

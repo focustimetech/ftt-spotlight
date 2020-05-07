@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Calendar from '../components/calendar/NewCalendar'
+import Calendar from '../components/calendar'
 
 const data = {
     '2020-04-14': {
@@ -21,7 +21,7 @@ const data = {
 
 const CalendarTest = () => {
     return (
-        <Calendar calendar={data} weekStartsOn={1} />
+        <Calendar calendar={data} />
     )
 }
 

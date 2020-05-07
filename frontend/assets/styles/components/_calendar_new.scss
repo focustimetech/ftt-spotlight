@@ -1,4 +1,4 @@
-$block-height: 48px;
+$block-height: 92px;
 
 .new-calendar {
     display: flex;
@@ -66,7 +66,7 @@ $block-height: 48px;
 
     &__content-dividers {
         div {
-            height: 48px;
+            height: $block-height;
 
             &::after {
                 content: '';

@@ -8,10 +8,10 @@ import {
     endOfWeek,
     isToday,
     startOfWeek,
-    
     subDays,
     subWeeks,
-    getMinutes
+    getMinutes,
+    format
 } from 'date-fns'
 
 import {
@@ -23,35 +23,25 @@ import {
 } from '@material-ui/core'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
-import { getDaysOfWeek, getHoursOfDay, getTimeRangeLabels } from '../../utils/date'
+import {
+    ICalendar,
+    ICalendarDay,
+    ICalendarEvent,
+    ICalendarFullDayEvent
+} from '../../types/calendar'
+import { getDatesOfWeek, getHoursOfDay, getTimeRangeLabels } from '../../utils/date'
 
 import Flexbox from '../Layout/Flexbox'
 import CalendarMonthLabel from './CalendarMonthLabel'
-import CalendarBlock from './NewCalendarBlock'
+import CalendarBlock from './CalendarBlock'
+import { DayOfWeekNumber } from '../../types/date'
 
-export type ICalendar = Record<string, ICalendarDay>
-
-interface ICalendarDay {
-    events: ICalendarFullDayEvent[]
-    blocks: ICalendarEvent[]
-}
-
-interface ICalendarFullDayEvent {
-    title: string
-    description: string
-    color: string
-    onClick: () => void
-}
-
-export interface ICalendarEvent extends ICalendarFullDayEvent {
-    startTime: string
-    endTime: string
-    label: string
-}
+const BLOCK_HEIGHT: number = 92
 
 interface ICalendarProps {
     calendar: ICalendar
-    weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+    is24Hour?: boolean
+    includeWeekends?: boolean
 }
 
 interface ICalendarState {
@@ -95,10 +85,10 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
     render() {
         const { currentDate } = this.state
-        const { weekStartsOn, calendar } = this.props
-        const weekStart: Date = startOfWeek(currentDate, { weekStartsOn })
-        const daysOfWeek: string[] = getDaysOfWeek(weekStartsOn)
-        const hoursOfDay = getHoursOfDay()
+        const { calendar, is24Hour, includeWeekends } = this.props
+        const weekStartsOn: DayOfWeekNumber = includeWeekends ? 0 : 1
+        const datesOfWeek: Date[] = getDatesOfWeek(currentDate, weekStartsOn, includeWeekends ? 7 : 5)
+        const hoursOfDay: string[] = getHoursOfDay(is24Hour)
         const calendarDayKeys: string[] = []
         const pickerOpen: boolean = Boolean(this.state.pickerRef)
 
@@ -108,7 +98,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                     <Button variant='outlined' onClick={() => this.handleSetToday()}>Today</Button>
                     <IconButton onClick={() => this.handlePrevious()}><Icon>chevron_left</Icon></IconButton>
                     <IconButton onClick={() => this.handleNext()}><Icon>chevron_right</Icon></IconButton>
-                    <CalendarMonthLabel date={weekStart} />
+                    <CalendarMonthLabel date={datesOfWeek[0]} />
                     <div>
                         <IconButton onClick={this.handleOpenPicker}><Icon>today</Icon></IconButton>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -127,8 +117,10 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                 </Flexbox>
                 <div className='new-calendar__body'>
                     <div className='new-calendar__date-labels'>
-                        {daysOfWeek.map((dayOfWeek: string, index: number) => {
-                            const date: Date = addDays(weekStart, index)
+                        {datesOfWeek.map((date: Date, index: number) => {
+                            console.log('date:', date)
+                            const dayOfWeek: string = format(date, 'iiii', { weekStartsOn })
+                            console.log('dayOfWeek:', dayOfWeek)
                             const dateIsToday: boolean = isToday(date)
                             const key: string = date.toISOString().substr(0, 10)
                             calendarDayKeys.push(key)
@@ -161,7 +153,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                             </div>
                             <div className='new-calendar__calendar-days'>
                                 {calendarDayKeys.map((key: string) => {
-                                    const calendarDay = this.props.calendar[key]
+                                    const calendarDay = calendar[key]
                                     return (
                                         <div className='new-calendar__calendar-day'>
                                             {calendarDay && calendarDay.blocks.map((calendarEvent: ICalendarEvent) => {
@@ -172,9 +164,9 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                                                 const midnight = new Date(`${key} 00:00:00`)
                                                 const hoursAfterMidnight = Math.floor(start.getTime() - midnight.getTime()) / (1000 * 60 * 60)
                                                 console.log('hoursAfterMignight:', hoursAfterMidnight)
-                                                const top: number = 48 * (Math.round(start.getTime() - midnight.getTime()) / (1000 * 60 * 60))
+                                                const top: number = BLOCK_HEIGHT * (Math.round(start.getTime() - midnight.getTime()) / (1000 * 60 * 60))
                                                 console.log('top:', top)
-                                                const height: number = 48 * Math.round(end.getTime() - start.getTime()) / (1000 * 60 * 60)
+                                                const height: number = BLOCK_HEIGHT * Math.round(end.getTime() - start.getTime()) / (1000 * 60 * 60)
                                                 console.log('midnight:', midnight)
                                                 console.log('start:', start)
                                                 const minutes: number = getMinutes(moment(calendarEvent.startTime).toDate())

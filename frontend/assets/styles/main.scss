@@ -1,9 +1,10 @@
-/* Main */
+/* Common */
 @import "common/reset";
 @import "common/variables";
 @import "common/functions";
 @import "common/mixins";
 @import "common/colors";
+@import "common/animations";
 
 /* Layout */
 @import "layout/app";

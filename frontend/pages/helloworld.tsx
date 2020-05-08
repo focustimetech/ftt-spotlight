@@ -11,7 +11,7 @@ export default () => {
 
     return (
         <div>
-            <Button onClick={e => setRef(e.currentTarget)}>Test</Button>
+            <Button className='test' onClick={e => setRef(e.currentTarget)}>Test</Button>
             <CalendarContextMenu
                 anchorEl={ref}
                 onClose={() => setRef(null)}

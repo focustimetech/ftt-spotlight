@@ -16,6 +16,12 @@ import p from '../../utils/pluralize'
 
 import Flexbox from '../Layout/Flexbox'
 
+interface IContentMenuListItem {
+    icon: string
+    label: string
+    isLive?: boolean
+}
+
 export interface ICalendarContextMenuOption {
     label: string
     onClick: () => void
@@ -38,31 +44,42 @@ interface ICalendarContextMenuProps {
 const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
     const open: boolean = Boolean(props.anchorEl)
     const { event, context, date } = props
+    const isLive: boolean = true
 
     // Build context items
-    let contextList: string[][]
+    let contextList: IContentMenuListItem[]
     if (context) {
         contextList = []
         if (context.airCheckIns) {
-            contextList.push(['wifi_tethering', `${context.airCheckIns} pending ${p('Air Check-in', context.airCheckIns)}`])
+            contextList.push({
+                icon: 'wifi_tethering',
+                label: `${context.airCheckIns} pending ${p('Air Check-in', context.airCheckIns)}`
+            })
         }
         if (context.appointments) {
-            contextList.push(['supervised_user_circle', `${context.appointments} ${p('Appointment', context.appointments)}`])
+            contextList.push({
+                icon: 'supervised_user_circle',
+                label: `${context.appointments} ${p('Appointment', context.appointments)}`
+            })
         }
         if (context.attended) {
-            contextList.push(['done', 'Student attended'])
+            contextList.push({ icon: 'done', label: 'Student attended' })
         }
         if (context.ledgerEntries) {
-            contextList.push([
-                context.ledgerEntries === 1 ? 'done' : 'done_all',
-                `${context.ledgerEntries} ${p('student', context.ledgerEntries)} checked-in`
-            ])
+            contextList.push({
+                icon: context.ledgerEntries === 1 ? 'done' : 'done_all',
+                label: `${context.ledgerEntries} ${p('student', context.ledgerEntries)} checked-in`,
+                isLive
+            })
         }
         if (context.missedAppointment) {
-            contextList.push(['warning', 'Missed appointment'])
+            contextList.push({ icon: 'warning', label: 'Missed appointment' })
         }
         if (context.plans) {
-            contextList.push(['bookmark', `${context.plans} ${p('student', context.plans)} anticipated`])
+            contextList.push({
+                icon: 'bookmark',
+                label: `${context.plans} ${p('student', context.plans)} anticipated`
+            })
         }
     }
     return (
@@ -101,10 +118,19 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
                     <div className='context-menu__icon'><Icon>room</Icon></div>
                     <div><Typography variant='subtitle1'>{event.location.name}</Typography></div>
                 </Flexbox>
-                {contextList && contextList.map((listItem: string[]) => (
+                {contextList && contextList.map((listItem: IContentMenuListItem) => (
                     <Flexbox className='context-menu__row'>
-                        <div className='context-menu__icon'><Icon>{listItem[0]}</Icon></div>
-                        <div><Typography variant='subtitle1'>{listItem[1]}</Typography></div>
+                        <div className='context-menu__icon'>
+                            <Icon>{listItem.icon}</Icon>
+                        </div>
+                        <div>
+                            <Typography variant='subtitle1'>
+                                {listItem.isLive && (
+                                    <span className='--live' />
+                                )}
+                                {listItem.label}
+                            </Typography>
+                        </div>
                     </Flexbox>
                 ))}
             </div>

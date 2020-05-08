@@ -25,7 +25,7 @@ interface IState {
     passwordConfirmation: string
 }
 
-class Setup extends React.Component<IState> {
+class Welcome extends React.Component<IState> {
     state: IState = {
         step: 0,
         password: '',
@@ -139,4 +139,4 @@ class Setup extends React.Component<IState> {
     }
 }
 
-export default Setup
+export default Welcome

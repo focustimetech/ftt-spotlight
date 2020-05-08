@@ -22,7 +22,6 @@ interface ILayoutProps extends ILayoutContainerProps {
 
 class Layout extends React.Component<ILayoutProps> {
     render() {
-        console.log('Layout.user:', this.props.user)
         const { user } = this.props
 
         if (user && user.accountType) {

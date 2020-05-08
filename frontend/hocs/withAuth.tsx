@@ -31,23 +31,20 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
 
     AuthComponent.getInitialProps = async (context: NextPageContext): Promise<T & IAuthComponentProps> => {
         const pageProps = C.getInitialProps ? await C.getInitialProps(context) : {}
-
         const { store } = context
         const isServer: boolean = typeof window === 'undefined'
         let user: IUser = store.getState().auth.user // Get him from the datastore
         let authValid: boolean = true
-        console.log('Initial user:', user)
+        // console.log('Initial user:', user)
 
         if (!user) {
-            console.log('Fetching new user')
             await store.dispatch(dispatchCurrentUser()).then(() => {
                 // Get the just-fetched user from the datastore.
                 user = store.getState().auth.user
-                console.log('New user:', user)
+                // console.log('New user:', user)
             }, (error: any) => {
                 authValid = false
             })
-            console.log('Done fetching')
         }
 
         if (user && accountMatchesWhitelist(user.accountType, accountTypes)) {

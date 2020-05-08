@@ -21,7 +21,8 @@ class User extends JsonResource
             'lastName' => $this->last_name,
             'name' => $this->getName(),
             'accountType' => $this->account_type,
-            'avatar' => new AvatarResource($this)
+            'avatar' => new AvatarResource($this),
+            'active' => $this->active == true
         ];
     }
 }

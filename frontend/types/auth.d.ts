@@ -1,4 +1,4 @@
-import { TopicColor } from '../theme'
+import { TopicColor } from './topic'
 
 type AccountType = 'student' | 'teacher' | 'staff' | 'guardian' | 'sysadmin'
 
@@ -19,6 +19,7 @@ export interface IUserDetails {
     lastName: string
     name: string
     avatar: IAvatar
+    active: boolean
 }
 
 export interface IStudent extends IUserDetails {

@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // User
     Route::get('user', 'UserController@currentUser');
+    Route::post('user/activate', 'UserController@activate');
 });
 
 // Teachers, Staff, SysAdmin

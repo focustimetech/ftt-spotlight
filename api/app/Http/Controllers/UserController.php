@@ -41,4 +41,25 @@ class UserController extends Controller
                 return new TeacherResource(Teacher::firstWhere('user_id', $user->id));
         }
     }
+
+    public function activate(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($user->account_type === 'teacher') {
+            $teacher = $user->account();
+            $classrooms = $teacher->classrooms()->get();
+            $topics = $teacher->topics()->get();
+            if (count($classrooms) === 0) {
+                return response()->json(['Cannot complete account creation without at least one classroom.', 422]);
+            } else if (count($topics) === 0) {
+                return response()->json(['Cannot complete account creation without at least one topic.', 422]);
+            }
+        }
+
+        $user->active = true;
+        if ($user->save()) {
+            return response()->noContent();
+        }
+    }
 }

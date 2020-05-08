@@ -94,7 +94,7 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
                             <Typography variant='h6'>{user.name}</Typography>
                             <Typography variant='caption'>{getDisplayRole(user.accountType)}</Typography>
                         </div>
-                        {user.accountType !== 'sysadmin' && (
+                        {user.accountType !== 'sysadmin' && user.active && (
                             <Link href='profile'>
                                 <MenuItem onClick={() => this.handleClose()}>Profile</MenuItem>
                             </Link>

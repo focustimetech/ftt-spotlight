@@ -12,6 +12,9 @@ import {
     Typography
 } from '@material-ui/core'
 
+import withAuth from '../hocs/withAuth'
+import withNavigation from '../hocs/withNavigation'
+
 interface ISetupStep {
     key: string
     label: string
@@ -139,4 +142,4 @@ class Welcome extends React.Component<IState> {
     }
 }
 
-export default Welcome
+export default withNavigation(withAuth()(Welcome))

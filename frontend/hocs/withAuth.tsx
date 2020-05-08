@@ -12,7 +12,6 @@ import { NextPage } from 'next'
 
 const accountMatchesWhitelist = (accountType: AccountType, whitelist: AccountType[]): boolean => {
     if (whitelist.length === 0) {
-        console.log('No whitelist.')
         return true
     }
     return whitelist.some((type: AccountType) => type === accountType)
@@ -47,7 +46,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
             })
         }
 
-        if (user && accountMatchesWhitelist(user.accountType, accountTypes)) {
+        if (user && accountMatchesWhitelist(user.accountType, accountTypes) && user.active) {
             return { ...pageProps, user }
         }
 
@@ -59,6 +58,12 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
                 message: 'Your session has expired. Please sign back in.'
             }))
 
+            return {...pageProps, user: undefined }
+        }
+
+        if (!user.active) {
+            // User hasn't finished setting up their account; Redirect to welcome
+            redirect('/welcome',  isServer ? context : undefined)
             return {...pageProps, user: undefined }
         }
 

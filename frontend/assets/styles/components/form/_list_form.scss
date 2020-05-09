@@ -1,0 +1,29 @@
+.list-form {
+    max-width: spacing(56);
+
+    &__inner {
+        width: 100%;
+    }
+
+    &__actions {
+        padding: spacing(1) spacing(2);
+        text-align: center;
+    }
+
+    .swatch {
+        display: block;
+        width: 18px;
+        height: 18px;
+        margin: 3px;
+        border-radius: 50%;
+        background: #DDD;
+    }
+
+    .flexbox {
+        text-align: left;
+    }
+
+    p {
+        margin-bottom: spacing(1);
+    }
+}

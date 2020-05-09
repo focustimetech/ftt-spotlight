@@ -1,18 +1,18 @@
 import { DELETE_TOPIC, FETCH_TOPICS, NEW_TOPIC } from '../actions/types'
-import { ReduxAction } from '../types/app'
-import { ITopic } from '../types/calendar'
+import { IReduxAction } from '../types/redux'
+import { ITopic } from '../types/topic'
 
 interface IState {
-    items: any[]
-    item: any
+    items: ITopic[]
+    item: ITopic
 }
 
 const initialState: IState = {
     items: [],
-    item: {}
+    item: null
 }
 
-export const topicReducer = (state = initialState, action: ReduxAction<ITopic>) => {
+export const topicReducer = (state = initialState, action: IReduxAction<ITopic>) => {
     switch (action.type) {
         case FETCH_TOPICS:
             return {
@@ -26,11 +26,11 @@ export const topicReducer = (state = initialState, action: ReduxAction<ITopic>) 
                 items: [...state.items, action.payload]
             }
         case DELETE_TOPIC:
+            const deleted: number = state.items.findIndex((item: ITopic) => item.id === action.payload.id)
             return {
                 ...state,
-                items: state.items.filter((item: any) => (
-                    item.id !== action.payload.id
-                ))
+                item: state.items[deleted],
+                items: state.items.splice(deleted, 1)
             }
         default:
             return state

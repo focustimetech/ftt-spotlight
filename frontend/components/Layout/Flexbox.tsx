@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import React, { CSSProperties } from 'react'
 
-interface IFlexboxProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface IFlexboxProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     alignItems?: CSSProperties['alignItems']
     justifyContent?: CSSProperties['justifyContent']
     padding?: boolean

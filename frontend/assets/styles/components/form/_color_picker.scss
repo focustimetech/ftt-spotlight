@@ -28,6 +28,7 @@
         color: $on-primary;
         background: #DDD;
         padding: 2px;
+        min-height: unset;
 
         & > * {
             font-size: 0.875rem !important;

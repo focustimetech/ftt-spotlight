@@ -22,8 +22,8 @@ class Topic extends JsonResource
             'id' => $this->id,
             'memo' => $this->memo,
             'color' => $this->color,
-            'classroom' => new ClassroomResource(Classroom::find($this->classroom_id)),
-            'owner' => new TeacherResource(Teacher::find($this->teacher_id))
+            'classroomId' => $this->classroom_id,
+            'teacherId' => $this->teacher_id
         ];
     }
 }

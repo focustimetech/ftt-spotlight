@@ -5,10 +5,20 @@
         flex-flow: row wrap;
         align-items: flex-start;
         justify-content: flex-start;
-        width: 48px;
+        width: 48px !important;
+
+        .color-picker__swatch:hover {
+            cursor: pointer;
+            line-height: 20px;
+            width: 20px;
+            height: 20px;
+            margin: 2px;
+        }
     }
 
-    &__swatch {
+    .color-picker__swatch {
+        box-sizing: border-box;
+        outline: none;
         border-radius: 50%;
         text-align: center;
         line-height: 18px;
@@ -17,17 +27,14 @@
         margin: 3px;
         color: $on-primary;
         background: #DDD;
-
-        &:hover {
-            cursor: pointer;
-            line-height: 20px;
-            width: 20px;
-            height: 20px;
-            margin: 2px;
-        }
+        padding: 2px;
 
         & > * {
             font-size: 0.875rem !important;
+        }
+
+        &.--select-value {
+            margin: 0.5px
         }
     }
 }

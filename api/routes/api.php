@@ -29,10 +29,6 @@ Route::middleware('auth:sanctum')->group(function() {
     // Blocks
     Route::get('blocks', 'BlocksController@index');
 
-    // Classrooms
-    Route::get('classrooms', 'ClassroomController@index');
-    Route::get('classrooms/{id}', 'ClassroomController@show');
-
     // Logout
     Route::post('logout', 'Auth\LoginController@logout');
 
@@ -77,12 +73,14 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(functi
 Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
     // Classrooms
     Route::get('classrooms', 'ClassroomsController@list');
+    Route::get('classrooms/all', 'ClassroomsController@index');
     Route::post('classrooms', 'ClassroomsController@create');
-    Route::get('classrooms', 'ClassroomsController@update');
-    Route::get('classrooms/{id}', 'ClassroomsController@delete');    
+    Route::put('classrooms', 'ClassroomsController@update');
+    Route::delete('classrooms/{id}', 'ClassroomsController@delete');    
 
     // Topics
-    Route::get('topics', 'TopicsController@index');
+    Route::get('topics', 'TopicsController@list');
+    Route::get('topics/all', 'TopicsController@index');
     Route::post('topics', 'TopicsController@create');
     Route::put('topics', 'TopicsController@update');
     Route::delete('topics/{id}', 'TopicsController@delete');

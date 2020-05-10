@@ -56,9 +56,12 @@ class Teacher extends Model
 
     public function classrooms()
     {
+        return $this->hasMany('App\Classroom');
+        /*
         return $this->belongsToMany('App\Classroom', 'teachers_classrooms')
             ->withPivot('default')
             ->withTimestamps();
+        */
     }
 
     public function clusters()

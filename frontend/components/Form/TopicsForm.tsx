@@ -1,9 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { createTopic, deleteTopic, fetchTopics } from '../../actions/topicActions'
-import { ITopic, INewTopic } from '../../types/topic'
-
 import {
     Button,
     FormControl,
@@ -20,16 +17,25 @@ import {
     Divider
 } from '@material-ui/core'
 
+import { fetchClassrooms } from '../../actions/classroomActions'
+import { createTopic, deleteTopic, fetchTopics } from '../../actions/topicActions'
+import { INewClassroom, IClassroom } from '../../types/classroom'
+import { ITopic, INewTopic } from '../../types/topic'
+
 import Flexbox from '../Layout/Flexbox'
 import ColorPicker, { randomColor } from './ColorPicker'
 import Form from './Form'
 import FormRow from './FormRow'
 import FormRowElement from './FormRowElement'
+import { LoadingButton } from './LoadingButton'
+import API from '../../utils/api'
 
 interface IReduxProps {
+    classrooms: IClassroom[]
     topics: ITopic[]
-    createTopic: (topic: INewTopic) => Promise<any>
+    createTopic: (topic: INewTopic, classroom?: INewClassroom) => Promise<any>
     deleteTopic: (topicId: number) => Promise<any>
+    fetchClassrooms: () => Promise<any>
     fetchTopics: () => Promise<any>
 }
 
@@ -40,6 +46,7 @@ interface ITopcisFormState {
     capacity: number
     classroom: number
     classroomName: string
+    loadingTopic: boolean
 }
 
 class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
@@ -49,11 +56,15 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
         color: randomColor(),
         capacity: 30,
         classroom: -1,
-        classroomName: ''
+        classroomName: '',
+        loadingTopic: false
     }
 
     handleOpenEditing = () => {
-        this.setState({ editing: true })
+        this.setState((state: ITopcisFormState) => ({
+            editing: true,
+            classroom: this.props.classrooms.length > 0 ? this.props.classrooms[0].id : state.classroom
+        }))
     }
 
     handleChangeMemo = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -82,13 +93,39 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
 
     handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        const topic: INewTopic = {
+            memo: this.state.memo,
+            color: this.state.color.replace(/#/, ''),
+            classroomId: this.state.classroom
+        }
+        const classroom: INewClassroom = {
+            name: this.state.classroomName,
+            capacity: this.state.capacity
+        }
+
+        this.setState({ loadingTopic: true })
+        this.props.createTopic(topic, this.isCreatingClassroom() ? classroom : undefined).then(() => {
+            this.setState({ loadingTopic: false })
+        }, () => {
+            this.setState({ loadingTopic: false })
+        })
+    }
+
+    isCreatingClassroom = (): boolean => {
+        return this.state.classroom === -1
+    }
+
+    componentDidMount() {
+        if (this.props.topics.length === 0) {
+            this.props.fetchTopics()
+        }
+        if (this.props.classrooms.length === 0) {
+            this.props.fetchClassrooms()
+        }
     }
 
     render() {
-        const topics: ITopic[] = [] /*
-            { id: 1, memo: 'Xtreme Knitting', color: 'FF0000', classroomId: 1, teacherId: 1 },
-            { id: 2, memo: 'African Hand-drumming', color: '00FF00', classroomId: 1, teacherId: 1 }
-        ]*/
+        const { classrooms, topics } = this.props
 
         return (
             <Popover open={true} PaperProps={{ className: 'list-form' }}>
@@ -117,6 +154,7 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                         placeholder='Your Focus topic'
                                         value={this.state.memo}
                                         onChange={this.handleChangeMemo}
+                                        required
                                     />
                                 </FormRow>
                                 <FormRow>
@@ -131,8 +169,9 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                                 label='Classroom'
                                             >
                                                 <MenuItem value={-1}><em>New Classroom</em></MenuItem>
-                                                <MenuItem value={1}>B103</MenuItem>
-                                                <MenuItem value={2}>A120</MenuItem>
+                                                {classrooms && classrooms.length > 0 && classrooms.map((classroom: IClassroom) => (
+                                                    <MenuItem value={classroom.id} key={classroom.id}>{classroom.name}</MenuItem>
+                                                ))}
                                             </Select>
                                         </FormControl>
                                     </FormRowElement>
@@ -143,7 +182,7 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                         margin='dense'
                                     />
                                 </FormRow>
-                                {this.state.classroom === -1 && (
+                                {this.isCreatingClassroom() && (
                                     <FormRow>
                                         <TextField
                                             label='Classroom'
@@ -154,6 +193,7 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                             fullWidth
                                             margin='dense'
                                             variant='outlined'
+                                            required
                                         />
                                         <TextField
                                             label='Capacity'
@@ -163,11 +203,12 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                             onChange={this.handleChangeCapacity}
                                             margin='dense'
                                             variant='outlined'
+                                            required
                                         />
                                     </FormRow>
                                 )}
                                 <FormRow>
-                                    <Button type='submit' variant='text' color='primary'>Create</Button>
+                                    <LoadingButton loading={this.state.loadingTopic} type='submit' variant='text' color='primary'>Create</LoadingButton>
                                 </FormRow>
                             </>
                         ) : (
@@ -181,9 +222,10 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
 }
 
 const mapStateToProps = (state) => ({
-    topics: state.topics.items
+    topics: state.topics.items,
+    classrooms: state.classrooms.items
 })
 
-const mapDispatchToProps = { createTopic, deleteTopic, fetchTopics }
+const mapDispatchToProps = { createTopic, deleteTopic, fetchClassrooms, fetchTopics }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicsForm)

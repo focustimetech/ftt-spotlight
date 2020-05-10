@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classroom;
 use App\Topic;
 use App\User;
 use App\Http\Resources\Topic as TopicResource;
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
 
 class TopicsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return TopicResource::collection(Topic::all());
     }
@@ -21,9 +22,9 @@ class TopicsController extends Controller
         return new TopicResource($topic);
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $teacher = auth()->user()->account();
+        $teacher = $request->user()->account();
         
         return TopicResource::collection($teacher->topics()->get());
     }
@@ -31,10 +32,18 @@ class TopicsController extends Controller
     public function create(Request $request)
     {
         $teacher = auth()->user()->account();
+        $classroom = null;
+        if ($request->input('classroomName') && $request->input('classroomCapacity')) {
+            $classroom = Classroom::create([
+                'name' => $request->input('classroomName'),
+                'capacity' => $request->input('classroomCapacity'),
+                'teacher_id' => $teacher->id
+            ]);
+        }
         $topic = Topic::create([
             'memo' => $request->input('memo'),
             'color' => $request->input('color'),
-            'classroom_id' => $request->input('classroom_id'),
+            'classroom_id' => $classroom ? $classroom->id : $request->input('classroomId'),
             'teacher_id' => $teacher->id
         ]);
 
@@ -49,7 +58,7 @@ class TopicsController extends Controller
             return response()->json(['message' => "Cannot update another User's Topic.", 403]);
         }
         $topic->memo = $request->input('memo');
-        $topic->classroom_id = $request->input('classroom_id');
+        $topic->classroom_id = $request->input('classroomId');
         $topic->color = $request->input('color');
 
         if ($topic->save()) {

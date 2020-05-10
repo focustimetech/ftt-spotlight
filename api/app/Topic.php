@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Topic extends Model
 {
     protected $table = 'topics';
+    protected $fillable = ['memo', 'color', 'teacher_id', 'classroom_id'];
 
     public static function search($query)
     {

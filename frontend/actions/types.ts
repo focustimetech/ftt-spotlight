@@ -1,3 +1,9 @@
+// Classrooms
+export const FETCH_CLASSROOMS = 'FETCH_CLASSROOMS'
+export const NEW_CLASSROOM = 'NEW_CLASSROOM'
+export const DELETE_CLASSROOM = 'DELETE_CLASSROOM'
+export const UPDATE_CLASSROOM = 'UPDATE_CLASSROOM'
+
 // Students
 export const FETCH_STUDENTS = 'FETCH_STUDENTS'
 export const NEW_STUDENT = 'NEW_STUDENT'

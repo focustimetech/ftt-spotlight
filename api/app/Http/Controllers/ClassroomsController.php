@@ -15,16 +15,16 @@ class ClassroomsController extends Controller
 
     public function list(Request $request)
     {
-        $classrooms = auth()->user()->account()->classrooms()->get();
+        $classrooms = $request->user()->account()->classrooms()->get();
 
-        return ClassroomResource($classrooms);
+        return ClassroomResource::collection($classrooms);
     }
 
     public function show($id)
     {
         $classroom = Classroom::findOrFail($id);
 
-        return ClassrooomResource($id);
+        return new ClassrooomResource($classroom);
     }
 
     public function create(Request $request)
@@ -32,7 +32,7 @@ class ClassroomsController extends Controller
         $classroom = Classroom::create([
             'name' => $request->input('name'),
             'capacity' => $request->input('capacity'),
-            'teacher_id' => auth()->user()->account()->id
+            'teacher_id' => $request->user()->account()->id
         ]);
 
         return new ClassroomResource($classroom);
@@ -41,7 +41,7 @@ class ClassroomsController extends Controller
     public function update(Request $request)
     {
         $classroom = Classroom::findOrFail($request->input('id'));
-        if ($classroom->teacher_id !== auth()->user()->account()->id) {
+        if ($classroom->teacher_id !== $request->user()->account()->id) {
             return respone()->json(['message' => "Cannot update another User's Classroom.", 403]);
         }
 
@@ -56,7 +56,7 @@ class ClassroomsController extends Controller
     public function delete($id)
     {
         $classroom = Classroom::findOrFail($id);
-        if ($classroom->teacher_id !== auth()->user()->account()->id) {
+        if ($classroom->teacher_id !== $request->user()->account()->id) {
             return respone()->json(['message' => "Cannot delete another User's Classroom.", 403]);
         }
 

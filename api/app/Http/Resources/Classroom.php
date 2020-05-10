@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Teacher as TeacherResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class Classroom extends JsonResource
@@ -19,7 +18,7 @@ class Classroom extends JsonResource
             'id' => $this->id,
             'capacity' => $this->capacity,
             'name' => $this->name,
-            'owner' => new TeacherResource($this->teacher()->first())
+            'teacherId' => $this->teacher_id
         ];
     }
 }

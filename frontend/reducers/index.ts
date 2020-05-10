@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 
 import { authReducer } from './authReducer'
 import { checkinReducer } from './checkinReducer'
+import { classroomsReducer } from './classroomsReducer'
 import { clustersReducer } from './clustersReducer'
 import { notificationReducer } from './notificationReducer'
 import { reportReducer } from './reportReducer'
@@ -22,6 +23,7 @@ import { wikiReducer } from './wikiReducer'
 export const rootReducer = combineReducers({
     auth: authReducer,
     checkin: checkinReducer,
+    classrooms: classroomsReducer,
     clusters: clustersReducer,
     notifications: notificationReducer,
     settings: settingsReducer,

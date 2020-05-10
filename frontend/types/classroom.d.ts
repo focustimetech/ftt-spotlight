@@ -4,5 +4,7 @@ export interface IClassroom {
     id: number
     capacity: number
     name: string
-    owner: ITeacher
+    teacherId: number
 }
+
+export type INewClassroom = Omit<IClassroom, 'id' | 'teacherId'>

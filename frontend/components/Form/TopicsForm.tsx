@@ -16,7 +16,8 @@ import {
     Popover,
     Select,
     Typography,
-    TextField
+    TextField,
+    Divider
 } from '@material-ui/core'
 
 import Flexbox from '../Layout/Flexbox'
@@ -91,7 +92,7 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
 
         return (
             <Popover open={true} PaperProps={{ className: 'list-form' }}>
-                <Form className='list-form__inner' onSubmit={this.handleSubmit}>
+                <Form className='list-form__inner' onSubmit={this.handleSubmit} autoComplete='off'>
                     <MenuList>
                         {topics.length > 0 && topics.map((topic: ITopic) => (
                             <MenuItem onClick={() => null}>
@@ -111,7 +112,7 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                         variant='outlined'
                                         margin='dense'
                                         fullWidth
-                                        name='memo'
+                                        name='topic-memo'
                                         label='Memo'
                                         placeholder='Your Focus topic'
                                         value={this.state.memo}
@@ -124,7 +125,8 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                             <InputLabel id='classroom-select-label'>Classroom</InputLabel>
                                             <Select
                                                 labelId='classroom-select-label'
-                                                value={this.state.color}
+                                                name='topic-classroom'
+                                                value={this.state.classroom}
                                                 onChange={this.handleSelectClassroom}
                                                 label='Classroom'
                                             >
@@ -147,7 +149,8 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                             label='Classroom'
                                             value={this.state.classroomName}
                                             onChange={this.handleChangeClassroomName}
-                                            name='classroom-name'
+                                            placeholder='Your classroom name'
+                                            name='topic-classroom-name'
                                             fullWidth
                                             margin='dense'
                                             variant='outlined'
@@ -155,6 +158,7 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                         <TextField
                                             label='Capacity'
                                             type='number'
+                                            name='topic-classroom-capacity'
                                             value={this.state.capacity}
                                             onChange={this.handleChangeCapacity}
                                             margin='dense'

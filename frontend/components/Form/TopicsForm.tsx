@@ -140,8 +140,8 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                     <MenuList>
                         {topics.length > 0 && topics.map((topic: ITopic) => (
                             <MenuItem onClick={() => null}>
-                                <ListItemIcon><span className='swatch' style={{ background: `#${topic.color}` }} /></ListItemIcon>
-                                <Typography variant='inherit'>{topic.memo}</Typography>
+                                <span className='swatch' style={{ background: `#${topic.color}` }} />
+                                <Typography variant='inherit' noWrap>{topic.memo}</Typography>
                             </MenuItem>
                         ))}
                     </MenuList>
@@ -177,7 +177,9 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                             >
                                                 <MenuItem value={-1}><em>New Classroom</em></MenuItem>
                                                 {classrooms && classrooms.length > 0 && classrooms.map((classroom: IClassroom) => (
-                                                    <MenuItem value={classroom.id} key={classroom.id}>{classroom.name}</MenuItem>
+                                                    <MenuItem value={classroom.id} key={classroom.id}>
+                                                        <Typography variant='inherit' noWrap>{classroom.name}</Typography>
+                                                    </MenuItem>
                                                 ))}
                                             </Select>
                                         </FormControl>
@@ -214,7 +216,7 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
                                         />
                                     </FormRow>
                                 )}
-                                <FormRow>
+                                <FormRow justifyContent='flex-end'>
                                     <LoadingButton loading={this.state.loadingTopic} type='submit' variant='text' color='primary'>Create</LoadingButton>
                                 </FormRow>
                             </>

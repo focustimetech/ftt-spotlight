@@ -19,6 +19,7 @@ import {
 
 import { fetchClassrooms } from '../../actions/classroomActions'
 import { createTopic, deleteTopic, fetchTopics } from '../../actions/topicActions'
+import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
 import { INewClassroom, IClassroom } from '../../types/classroom'
 import { ITopic, INewTopic } from '../../types/topic'
 
@@ -28,7 +29,6 @@ import Form from './Form'
 import FormRow from './FormRow'
 import FormRowElement from './FormRowElement'
 import { LoadingButton } from './LoadingButton'
-import API from '../../utils/api'
 
 interface IReduxProps {
     classrooms: IClassroom[]
@@ -37,6 +37,7 @@ interface IReduxProps {
     deleteTopic: (topicId: number) => Promise<any>
     fetchClassrooms: () => Promise<any>
     fetchTopics: () => Promise<any>
+    queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface ITopcisFormState {
@@ -105,7 +106,13 @@ class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
 
         this.setState({ loadingTopic: true })
         this.props.createTopic(topic, this.isCreatingClassroom() ? classroom : undefined).then(() => {
-            this.setState({ loadingTopic: false })
+            this.setState((state: ITopcisFormState) => ({
+                loadingTopic: false,
+                color: randomColor(),
+                memo: '',
+                classroomName: this.isCreatingClassroom() ? '' : state.classroomName
+            }))
+            this.props.queueSnackbar({ message: 'Created new Topic.' })
         }, () => {
             this.setState({ loadingTopic: false })
         })
@@ -226,6 +233,6 @@ const mapStateToProps = (state) => ({
     classrooms: state.classrooms.items
 })
 
-const mapDispatchToProps = { createTopic, deleteTopic, fetchClassrooms, fetchTopics }
+const mapDispatchToProps = { createTopic, deleteTopic, fetchClassrooms, fetchTopics, queueSnackbar }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicsForm)

@@ -1,7 +1,7 @@
-import { INewClassroom } from '../types/classroom'
+import { INewClassroom, IClassroom } from '../types/classroom'
 import { IReduxAction } from '../types/redux'
 import { ITopic, INewTopic } from '../types/topic'
-import { DELETE_TOPIC, DELETE_TOPIC_SCHEDULE, FETCH_TOPICS, NEW_TOPIC, NEW_TOPIC_SCHEDULE } from './types'
+import { DELETE_TOPIC, DELETE_TOPIC_SCHEDULE, FETCH_TOPICS, NEW_TOPIC, NEW_TOPIC_SCHEDULE, NEW_CLASSROOM } from './types'
 import API from '../utils/api'
 
 export const fetchTopics = () => {
@@ -22,12 +22,20 @@ export const createTopic = (topic: INewTopic, classroom?: INewClassroom) => {
         classroomName: classroom.name,
         classroomCapacity: classroom.capacity
     } : topic
-    return (dispatch: (action: IReduxAction<ITopic>) => void) => {
-        return API.post('/topics', data).then((res: any) => {
+    return (dispatch: (action: IReduxAction<ITopic | IClassroom>) => void) => {
+        return API.post<ITopic>('/topics', data).then((res) => {
+            const topic: ITopic = res.data
             dispatch({
                 type: NEW_TOPIC,
-                payload: res.data
+                payload: topic
             })
+
+            if (classroom) {
+                dispatch({
+                    type: NEW_CLASSROOM,
+                    payload: { ...classroom, id: topic.classroomId, teacherId: topic.teacherId}
+                })
+            }
         })
     }
 }

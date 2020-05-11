@@ -4,13 +4,17 @@ import AccountWidget, { IAccountWidgetProps } from './AccountWidget'
 import HelpWidget from './HelpWidget'
 import SettingsWidget from './SettingsWidget'
 
-type IDefaultNavItemsProps = IAccountWidgetProps
+interface IDefaultNavItemsProps extends IAccountWidgetProps {
+    noSettings?: boolean
+}
 
 const DefaultNavItems = (props: IDefaultNavItemsProps) => {
     return (
         <>
             <HelpWidget orientation={props.orientation} />
-            <SettingsWidget orientation={props.orientation} />
+            {!props.noSettings && (
+                <SettingsWidget orientation={props.orientation} />
+            )}
             <AccountWidget {...props} />
         </>
     )

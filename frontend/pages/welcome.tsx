@@ -15,11 +15,6 @@ import {
 import withAuth from '../hocs/withAuth'
 import withNavigation from '../hocs/withNavigation'
 
-interface ISetupStep {
-    key: string
-    label: string
-    optional?: boolean
-}
 interface IState {
     step: number
     password: string
@@ -142,4 +137,4 @@ class Welcome extends React.Component<IState> {
     }
 }
 
-export default withNavigation(withAuth()(Welcome))
+export default withNavigation({ noSearch: true, noSettings: true })(withAuth()(Welcome))

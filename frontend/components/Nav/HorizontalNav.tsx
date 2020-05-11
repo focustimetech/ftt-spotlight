@@ -8,14 +8,20 @@ import NavMenu from './NavMenu'
 import NavMenuItem, { INavMenuItem } from './NavMenuItem'
 import SearchWidget from './SearchWidget'
 
-interface IHorizontalNavProps {
+export interface IHorizontalNavProps {
     navItems?: INavItemProps[]
     hasFavorites?: boolean
+    noSearch?: boolean
+    noSettings?: boolean
 }
 
 class HorizontalNav extends React.Component<IHorizontalNavProps> {
     static getInitialProps = async () => {
         //
+    }
+
+    componentDidMount() {
+        console.log('Nav props:', this.props)
     }
 
     render() {
@@ -32,13 +38,15 @@ class HorizontalNav extends React.Component<IHorizontalNavProps> {
                     {this.props.hasFavorites && (
                         <FavoritesWidget orientation='horizontal' />
                     )}
-                    <SearchWidget variant='bar' orientation='horizontal' />
+                    {!this.props.noSearch && (
+                        <SearchWidget variant='bar' orientation='horizontal' />
+                    )}
                     {this.props.navItems && this.props.navItems.map((navItemProps: INavItemProps) => (
                         <NavItem {...navItemProps} />
                     ))}
                 </div>
                 <div className='nav__group'>
-                    <DefaultNavItems orientation='horizontal'/>
+                    <DefaultNavItems orientation='horizontal' noSettings={this.props.noSettings} />
                 </div>
             </nav>
         )

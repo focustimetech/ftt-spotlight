@@ -1,16 +1,16 @@
-import { IReduxAction } from '../types/redux'
 import { IClassroom, INewClassroom } from '../types/classroom'
+import { IReduxAction } from '../types/redux'
+import API from '../utils/api'
 import {
     DELETE_CLASSROOM,
     FETCH_CLASSROOMS,
     NEW_CLASSROOM,
     UPDATE_CLASSROOM
 } from './types'
-import API from '../utils/api'
 
 export const fetchClassrooms = () => {
     return (dispatch: (action: IReduxAction<IClassroom[]>) => void) => {
-        return API.get('/classrooms').then((res: any) => {
+        return API.get('/classrooms/all').then((res: any) => {
             dispatch({
                 type: FETCH_CLASSROOMS,
                 payload: res.data

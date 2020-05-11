@@ -57,6 +57,13 @@ Route::middleware('auth:sanctum')->group(function() {
 
 // Teachers, Staff, SysAdmin
 Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(function() {
+    // Classrooms
+    Route::get('classrooms', 'ClassroomsController@list');
+    Route::get('classrooms/all', 'ClassroomsController@index');
+    Route::post('classrooms', 'ClassroomsController@create');
+    Route::put('classrooms', 'ClassroomsController@update');
+    Route::delete('classrooms/{id}', 'ClassroomsController@delete');
+
     // Clusters
     Route::get('clusters', 'ClustersController@index');
     Route::get('clusters', 'ClustersController@list');
@@ -71,13 +78,6 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(functi
 
 // Teachers
 Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
-    // Classrooms
-    Route::get('classrooms', 'ClassroomsController@list');
-    Route::get('classrooms/all', 'ClassroomsController@index');
-    Route::post('classrooms', 'ClassroomsController@create');
-    Route::put('classrooms', 'ClassroomsController@update');
-    Route::delete('classrooms/{id}', 'ClassroomsController@delete');    
-
     // Topics
     Route::get('topics', 'TopicsController@list');
     Route::get('topics/all', 'TopicsController@index');

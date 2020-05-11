@@ -26,7 +26,7 @@ class CreateClassroomsTable extends Migration
             // Foreign keys
             $table->foreign('teacher_id')->references('id')->on('teachers');
             // Unique keys
-            $table->unique(['name', 'teacher_id']); // Ensures teachers don't make two classrooms with the same name
+            $table->unique(['name']); // Ensures teachers don't make two classrooms with the same name
         });
 
         /**

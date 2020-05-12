@@ -6,11 +6,11 @@ import {
     MenuItem
 } from '@material-ui/core'
 
-import { Orientation } from '../../types/layout'
+import { Orientation } from '../../../types/layout'
 
-import { AboutSpotlight } from '../Modals/AboutSpotlight'
-import FeedbackDialog from '../Modals/FeedbackDialog'
-import NavItem from './NavItem'
+import { AboutSpotlight } from '../../Modals/AboutSpotlight'
+import FeedbackDialog from '../../Modals/FeedbackDialog'
+import NavItem from '../NavItem'
 
 interface IHelpWidgetProps {
     orientation: Orientation

@@ -1,8 +1,8 @@
 import React from 'react'
 
-import AccountWidget, { IAccountWidgetProps } from './AccountWidget'
-import HelpWidget from './HelpWidget'
-import SettingsWidget from './SettingsWidget'
+import AccountWidget, { IAccountWidgetProps } from './Widgets/AccountWidget'
+import HelpWidget from './Widgets/HelpWidget'
+import SettingsWidget from './Widgets/SettingsWidget'
 
 interface IDefaultNavItemsProps extends IAccountWidgetProps {
     noSettings?: boolean

@@ -12,13 +12,13 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { dispatchCurrentUser, logout } from '../../actions/authActions'
-import { IUser } from '../../types/auth'
-import { getDisplayRole } from '../../utils/user'
+import { dispatchCurrentUser, logout } from '../../../actions/authActions'
+import { IUser } from '../../../types/auth'
+import { getDisplayRole } from '../../../utils/user'
 
-import Avatar from '../Avatar'
-import { LoadingMenuItem } from '../Form/LoadingMenuItem'
-import NavItem from './NavItem'
+import Avatar from '../../Avatar'
+import { LoadingMenuItem } from '../../Form/Components/LoadingMenuItem'
+import NavItem from '../NavItem'
 
 interface IReduxProps {
     currentUser: IUser

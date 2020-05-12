@@ -8,15 +8,15 @@ import {
     Typography,
 } from '@material-ui/core'
 
-import { ISearchResults } from '../../types/components/search'
-import { Orientation } from '../../types/layout'
-import API from '../../utils/api'
-import { SearchBuffer } from '../../utils/searchBuffer'
+import { ISearchResults } from '../../../types/components/search'
+import { Orientation } from '../../../types/layout'
+import API from '../../../utils/api'
+import { SearchBuffer } from '../../../utils/searchBuffer'
 
-import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
-import NavItem from './NavItem'
-import SearchBar from './SearchBar'
-import SearchResults from './SearchResults'
+import Drawer, { DrawerContent, DrawerTitle } from '../../Modals/Drawer'
+import NavItem from '../NavItem'
+import SearchBar from '../SearchBar'
+import SearchResults from '../SearchResults'
 
 interface ISearchWidgetProps {
     orientation: Orientation

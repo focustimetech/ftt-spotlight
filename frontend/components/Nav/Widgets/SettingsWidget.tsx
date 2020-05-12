@@ -1,13 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { dispatchCurrentUser } from '../../actions/authActions'
-import { RootState } from '../../store'
-import { IUser } from '../../types/auth'
+import { dispatchCurrentUser } from '../../../actions/authActions'
+import { RootState } from '../../../store'
+import { IUser } from '../../../types/auth'
 
-import Drawer, { DrawerContent, DrawerTitle } from '../Modals/Drawer'
-import NavItem from './NavItem'
-import { Orientation } from '../../types/layout'
+import Drawer, { DrawerContent, DrawerTitle } from '../../Modals/Drawer'
+import NavItem from '../NavItem'
+import { Orientation } from '../../../types/layout'
 
 interface IReduxProps {
     currentUser: IUser

@@ -15,12 +15,12 @@ import {
     ListItemSecondaryAction
 } from '@material-ui/core'
 
-import { fetchStarred, starItem, unstarItem } from '../../actions/starActions'
-import { IStarredGroup, IStarredItem, IStarredList, starredGroups } from '../../reducers/starReducer'
-import { Orientation } from '../../types/layout'
+import { fetchStarred, starItem, unstarItem } from '../../../actions/starActions'
+import { IStarredGroup, IStarredItem, IStarredList, starredGroups } from '../../../reducers/starReducer'
+import { Orientation } from '../../../types/layout'
 
-import { EmptyStateIcon } from '../EmptyStateIcon'
-import NavItem from './NavItem'
+import { EmptyStateIcon } from '../../EmptyStateIcon'
+import NavItem from '../NavItem'
 
 interface IState {
     open: boolean

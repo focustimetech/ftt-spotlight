@@ -2,11 +2,11 @@ import classNames from 'classnames'
 import React from 'react'
 
 import DefaultNavItems from './DefaultNavItems'
-import FavoritesWidget from './FavoritesWidget'
+import FavoritesWidget from './Widgets/FavoritesWidget'
 import NavItem, { INavItemProps } from './NavItem'
 import NavMenu from './NavMenu'
 import { INavMenuItem } from './NavMenuItem'
-import SearchWidget from './SearchWidget'
+import SearchWidget from './Widgets/SearchWidget'
 
 interface IVerticalNavProps {
     navItems?: INavItemProps[]

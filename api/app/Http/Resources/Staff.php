@@ -18,7 +18,8 @@ class Staff extends JsonResource
         $user = new UserResource($this->user()->first());
         return array_merge(
             [
-                'administrator' => $this->administrator == true
+                'administrator' => $this->administrator == true,
+                'email' => $user->username
             ],
             $user->toArray($request)
         );

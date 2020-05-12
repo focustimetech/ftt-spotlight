@@ -29,6 +29,7 @@ export interface IStudent extends IUserDetails {
 
 export interface IStaff extends IUserDetails {
     accountType: 'staff'
+    email: string
     administrator: boolean
 }
 

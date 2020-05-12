@@ -3,7 +3,6 @@
 @import "common/variables";
 @import "common/functions";
 @import "common/mixins";
-@import "common/colors";
 @import "common/animations";
 
 /* Layout */
@@ -17,27 +16,18 @@
 /* Components */
 @import "components/about";
 @import "components/avatar";
+@import "components/badge";
 @import "components/banner";
 @import "components/calendar";
 @import "components/carousel";
-@import "components/check-in";
 @import "components/chip_select";
-@import "components/content";
 @import "components/date_widget";
 @import "components/empty_state";
 @import "components/expansion_panel";
-@import "components/items_modal";
-@import "components/modal_section";
-@import "components/not_found";
-@import "components/notifications_modal";
-@import "components/power_scheduler";
 @import "components/report";
-@import "components/search_modal";
 @import "components/selectable_list";
-@import "components/settings";
 @import "components/setup";
 @import "components/splash";
-@import "components/starred";
 @import "components/table";
 @import "components/topbar";
 
@@ -49,6 +39,7 @@
     /* Modals */
     @import "components/modals/context_menu";
     @import "components/modals/drawer";
+    @import "components/modals/modal_section";
 
     /* Nav */
     @import "components/nav/nav";

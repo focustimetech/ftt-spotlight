@@ -14,9 +14,9 @@ import {
     TextField
 } from '@material-ui/core'
 
-import { createCluster, deleteCluster, fetchCluster } from '../../actions/clusterActions'
+import { createClusters, deleteClusters, fetchClusters } from '../../actions/clusterActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { ICluster } from '../../types/cluster'
+import { ICluster, INewCluster } from '../../types/cluster'
 
 import Flexbox from '../Layout/Flexbox'
 import Form from './Form'
@@ -31,93 +31,23 @@ interface IReduxProps {
     fetchClusters: () => Promise<any>
 }
 
-interface IClusterFormState {
+interface IClustersFormState {
     
 }
 
-class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
-    state: ITopcisFormState = {
-        editing: false,
-        memo: '',
-        color: randomColor(),
-        capacity: 30,
-        classroom: -1,
-        classroomName: '',
-        loadingTopic: false
-    }
-
-    handleOpenEditing = () => {
-        this.setState((state: ITopcisFormState) => ({
-            editing: true,
-            classroom: this.props.classrooms.length > 0 ? this.props.classrooms[0].id : state.classroom
-        }))
-    }
-
-    handleChangeMemo = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { value } = event.target
-        this.setState({ memo: value })
-    }
-
-    handleSelectColor = (color: string) => {
-        this.setState({ color })
-    }
-
-    handleSelectClassroom = (event: React.ChangeEvent<{ name?: string, value: any }>) => {
-        const { value } = event.target
-        this.setState({ classroom: value })
-    }
-
-    handleChangeClassroomName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { value } = event.target
-        this.setState({ classroomName: value })
-    }
-
-    handleChangeCapacity = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { value } = event.target
-        this.setState({ capacity: Number(value) })
-    }
-
-    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const topic: INewTopic = {
-            memo: this.state.memo,
-            color: this.state.color.replace(/#/, ''),
-            classroomId: this.state.classroom
-        }
-        const classroom: INewClassroom = {
-            name: this.state.classroomName,
-            capacity: this.state.capacity
-        }
-
-        this.setState({ loadingTopic: true })
-        this.props.createTopic(topic, this.isCreatingClassroom() ? classroom : undefined).then(() => {
-            this.setState((state: ITopcisFormState) => ({
-                loadingTopic: false,
-                color: randomColor(),
-                memo: '',
-                classroomName: this.isCreatingClassroom() ? '' : state.classroomName
-            }))
-            this.props.queueSnackbar({ message: 'Created new Topic.' })
-        }, () => {
-            this.setState({ loadingTopic: false })
-        })
-    }
-
-    isCreatingClassroom = (): boolean => {
-        return this.state.classroom === -1
+class ClustersForm extends React.Component<IReduxProps, IClustersFormState> {
+    state: IClustersFormState = {
+        
     }
 
     componentDidMount() {
-        if (this.props.topics.length === 0) {
-            this.props.fetchTopics()
-        }
-        if (this.props.classrooms.length === 0) {
-            this.props.fetchClassrooms()
+        if (!this.props.clusters || this.props.clusters.length === 0) {
+            this.props.fetchClusters()
         }
     }
 
     render() {
-        const { classrooms, topics } = this.props
+        const { clusters } = this.props
 
         return (
             <Popover open={true} PaperProps={{ className: 'list-form' }}>

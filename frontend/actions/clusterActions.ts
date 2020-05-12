@@ -1,3 +1,4 @@
+import { ICluster, INewCluster } from '../types/cluster'
 import { Dispatch } from '../types/redux'
 import API from '../utils/api'
 
@@ -10,10 +11,28 @@ import {
     UPDATE_CLUSTER,
 } from './types'
 
-export const dispatchClusters = () => (dispatch: Dispatch) => {
+export const fetchClusters = () => (dispatch: Dispatch) => {
     return API.get('/clusters').then((res: any) => {
         dispatch({
             type: FETCH_CLUSTERS,
+            payload: res.data
+        })
+    })
+}
+
+export const createCluster = (cluster: INewCluster) => (dispatch: Dispatch) => {
+    return API.post('/clusters').then((res: any) => {
+        dispatch({
+            type: NEW_CLUSTER,
+            payload: res.data
+        })
+    })
+}
+
+export const deleteCluster = (clusterId: number) => (dispatch: Dispatch) => {
+    return API.post(`/clusters/${clusterId}`).then((res: any) => {
+        dispatch({
+            type: DELETE_CLUSTER,
             payload: res.data
         })
     })

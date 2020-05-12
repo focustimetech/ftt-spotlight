@@ -14,4 +14,4 @@ const FormRowElement = (props: IFormRowElementProps) => {
     )
 }
 
-export default FormRowElement
+export { FormRowElement }

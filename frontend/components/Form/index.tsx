@@ -11,3 +11,5 @@ const Form = (props: React.FormHTMLAttributes<HTMLFormElement>) => {
 }
 
 export default Form
+export { FormRow } from './FormRow'
+export { FormRowElement } from './FormRowElement'

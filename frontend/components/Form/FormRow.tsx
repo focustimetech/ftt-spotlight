@@ -12,4 +12,4 @@ const FormRow = (props: IFlexboxProps) => {
     )
 }
 
-export default FormRow
+export { FormRow }

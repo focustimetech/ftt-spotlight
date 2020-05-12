@@ -16,9 +16,9 @@ import {
 } from '@material-ui/core'
 
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { IStaffUser } from '../../types/auth'
+import { IStaff, ITeacher } from '../../types/auth'
 
-import { LoadingButton } from '../Form/LoadingButton'
+import { LoadingButton } from '../Form/Components/LoadingButton'
 import { EnhancedDialogTitle } from './EnhancedDialogTitle'
 
 interface IChip {
@@ -42,7 +42,7 @@ const initialState: IState = {
 }
 
 interface IReduxProps {
-	currentUser: IStaffUser
+	currentUser: IStaff | ITeacher
 	queueSnackbar: (snackbar: ISnackbar) => void
 }
 
@@ -88,7 +88,7 @@ class FeedbackDialog extends React.Component<IProps, IState> {
             allow_response: this.state.allowReply,
             feedback: this.state.inputValue,
             tags: this.state.selectedChips.join(','),
-            email: this.props.currentUser.details.email
+            email: this.props.currentUser.email
         }
         this.setState({ uploading: true })
         axios.post('/api/feedback', data)

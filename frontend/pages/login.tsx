@@ -22,13 +22,12 @@ import {
 } from '@material-ui/core'
 
 import { dispatchCurrentUser, getAvatar, login } from '../actions/authActions'
-import { TopicColor } from '../theme'
 import { NextPageContext } from '../types'
 import { IAvatar, ICredentials } from '../types/auth'
 import redirect from '../utils/redirect'
 
 import Carousel, { ICarouselImage } from '../components/Carousel'
-import { LoadingButton } from '../components/Form/LoadingButton'
+import { LoadingButton } from '../components/Form/Components/LoadingButton'
 // import API from '../utils/api'
 
 type LoginState = 'username' | 'password'
@@ -41,7 +40,7 @@ interface ILoginError {
 interface IRememberMe {
     username: string
     initials: string
-    color: TopicColor
+    color: string
 }
 
 interface IReduxProps {
@@ -253,8 +252,10 @@ class Login extends React.Component<IProps, IState> {
 		return (
 			<div className='login'>
 				<div className='login__container'>
-					<h2>Smart attendance for the internet age.</h2>
-					<a href='https://focustime.ca' className='subtitle_link'>Start using powerful tools that let your self directed study blocks succeed.</a>
+					<Typography variant='h4'>Smart attendance for the internet age.</Typography>
+					<a href='https://focustime.ca' className='subtitle_link'>
+						<Typography variant='subtitle1'>Start using powerful tools that let your self directed study blocks succeed.</Typography>
+					</a>
 					<Paper className='login__paper'>
 						<Carousel images={carouselImages} />
 						<form className='login__form' onSubmit={this.onSubmit}>
@@ -270,7 +271,7 @@ class Login extends React.Component<IProps, IState> {
 									</>
 								*/}
 							</div>
-							<h2>Sign in to Spotlight</h2>
+							<Typography variant='h5'>Sign in to Spotlight</Typography>
 							{/*this.state.avatar && this.state.loginState  (
 								<>
 									<Button className='auth-username' onClick={this.handleOpenMenu}>
@@ -379,7 +380,7 @@ class Login extends React.Component<IProps, IState> {
 						</form>
 					</Paper>
 					<ul className='login__links'>
-						<a href='https://focustime.ca'><li>Learn More</li></a>
+						<a href='https://focustime.ca'><li><Typography>Learn More</Typography></li></a>
 					</ul>
 				</div>
 			</div>

@@ -1,40 +1,21 @@
 import React from 'react'
+import { NextPageContext } from 'next'
 
-interface IProps {
+interface IErrorPageProps {
     statusCode: number
 }
 
-class Error extends React.Component<IProps> {
+class ErrorPage extends React.Component<IErrorPageProps> {
+    static getInitialProps = (context: NextPageContext): Partial<IErrorPageProps> => {
+        const { res, err } = context
+        const statusCode: number = res ? res.statusCode : err ? err.statusCode : 404
+        return { statusCode }
+    }
+
     render() {
-        return <div>An error {this.props.statusCode} occured.</div>
+        console.log('props:', this.props)
+        return <div>Oh no! An error {this.props.statusCode} occured.</div>
     }
 }
 
-export default Error
-
-/*
-import React from 'react'
-import { Link, RouteComponentProps } from 'react-router-dom'
-
-import { Button } from '@material-ui/core'
-
-import { EmptyStateIcon } from '../components/EmptyStateIcon'
-
-interface IProps extends RouteComponentProps {
-    path?: string
-}
-
-export const NotFound = (props: IProps) => {
-    return (
-        <div className='content' id='content'>
-            <div className='not-found'>
-                <EmptyStateIcon variant='not-found'>
-                    <h2>No match for <code>{props.path || props.location.pathname}</code></h2>
-                    <h3>The item you're looking for may have been moved, renamed or deleted.</h3>
-                    <Link to='/'><Button variant='contained' color='primary'>Back to Dashboard</Button></Link>
-                </EmptyStateIcon>
-            </div>
-        </div>
-    )
-}
-*/
+export default ErrorPage

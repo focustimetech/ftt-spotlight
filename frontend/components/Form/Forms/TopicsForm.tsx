@@ -17,18 +17,16 @@ import {
     Divider
 } from '@material-ui/core'
 
-import { fetchClassrooms } from '../../actions/classroomActions'
-import { createTopic, deleteTopic, fetchTopics } from '../../actions/topicActions'
-import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { INewClassroom, IClassroom } from '../../types/classroom'
-import { ITopic, INewTopic } from '../../types/topic'
+import { fetchClassrooms } from '../../../actions/classroomActions'
+import { createTopic, deleteTopic, fetchTopics } from '../../../actions/topicActions'
+import { ISnackbar, queueSnackbar } from '../../../actions/snackbarActions'
+import { INewClassroom, IClassroom } from '../../../types/classroom'
+import { ITopic, INewTopic } from '../../../types/topic'
 
-import Flexbox from '../Layout/Flexbox'
-import ColorPicker, { randomColor } from './ColorPicker'
-import Form from './Form'
-import FormRow from './FormRow'
-import FormRowElement from './FormRowElement'
-import { LoadingButton } from './LoadingButton'
+import Flexbox from '../../Layout/Flexbox'
+import ColorPicker, { randomColor } from '../Pickers/ColorPicker'
+import { LoadingButton } from '../Components/LoadingButton'
+import Form, { FormRow, FormRowElement } from '../'
 
 interface IReduxProps {
     classrooms: IClassroom[]

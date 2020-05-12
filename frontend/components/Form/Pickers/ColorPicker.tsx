@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 import { FormControlProps } from '@material-ui/core/FormControl'
 
-import { COLORS } from '../../theme'
+import { COLORS } from '../../../theme'
 
 interface IColorPickerProps extends Pick<FormControlProps, 'variant' | 'margin'> {
     value: string

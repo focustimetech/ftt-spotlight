@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { dispatchClusters } from '../../actions/clusterActions'
+import { fetchClusters } from '../../actions/clusterActions'
 import { ICluster } from '../../types/cluster'
 import { ILayoutContainerProps } from '../../types/layout'
 import { staffMenuItems } from './StaffLayout'
@@ -18,7 +18,7 @@ export const teacherMenuItems: INavMenuItem[] = [
 
 interface IReduxProps {
     clusters: ICluster[]
-    dispatchClusters: () => Promise<void>
+    fetchClusters: () => Promise<void>
 }
 
 interface IState {
@@ -34,7 +34,7 @@ class TeacherLayout extends React.Component<IReduxProps & ILayoutContainerProps,
         console.log('TeacherLayout.componentDidMount()')
         if (!this.props.clusters || this.props.clusters.length === 0) {
             this.setState({ loadingClusters: true })
-            this.props.dispatchClusters().then(() => {
+            this.props.fetchClusters().then(() => {
                 this.setState({ loadingClusters: false })
             })
         }
@@ -66,6 +66,6 @@ const mapStateToProps = (state) => ({
     clusters: state.clusters.items
 })
 
-const mapDispatchToProps = { dispatchClusters }
+const mapDispatchToProps = { fetchClusters }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeacherLayout)

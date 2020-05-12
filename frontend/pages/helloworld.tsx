@@ -2,9 +2,9 @@ import React from 'react'
 
 import { Button } from '@material-ui/core'
 
-import ColorPicker, { randomColor } from '../components/Form/ColorPicker'
+import ColorPicker, { randomColor } from '../components/Form/Pickers/ColorPicker'
 import CalendarContextMenu from '../components/Calendar/CalendarContextMenu'
-import TopicsForm from '../components/Form/TopicsForm'
+import TopicsForm from '../components/Form/Forms/TopicsForm'
 
 export default () => {
     const [ref, setRef] = React.useState(null)

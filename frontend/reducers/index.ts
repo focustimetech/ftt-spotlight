@@ -18,7 +18,6 @@ import { studentReducer } from './studentReducer'
 import { studentScheduleReducer } from './studentScheduleReducer'
 import { topicReducer } from './topicReducer'
 import { usersReducer } from './usersReducer'
-import { wikiReducer } from './wikiReducer'
 
 export const rootReducer = combineReducers({
     auth: authReducer,
@@ -38,6 +37,5 @@ export const rootReducer = combineReducers({
     reports: reportReducer,
     topics: topicReducer,
     staffTopics: staffTopicsReducer,
-    users: usersReducer,
-    wiki: wikiReducer
+    users: usersReducer
 })

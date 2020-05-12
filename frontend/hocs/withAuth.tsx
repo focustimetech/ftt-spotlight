@@ -67,7 +67,12 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
             return {...pageProps, user: undefined }
         }
 
-        redirect('/', isServer ? context : undefined) // Account doesn't have the right access.
+        // Account doesn't have the right access.
+        if (isServer) {
+            context.res.writeHead(403)
+        } else {
+            redirect('/')
+        }
         return {...pageProps, user: undefined }
     }
 

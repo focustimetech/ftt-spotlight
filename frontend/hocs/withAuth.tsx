@@ -1,3 +1,4 @@
+import Error from 'next/error'
 import React from 'react'
 
 import { dispatchCurrentUser } from '../actions/authActions'
@@ -19,11 +20,14 @@ const accountMatchesWhitelist = (accountType: AccountType, whitelist: AccountTyp
 
 interface IAuthComponentProps {
     user: IUser
+    statusCode?: number
 }
 
 const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextPage<T>) => {
     const AuthComponent: NextPage<T & IAuthComponentProps> = (props: T & IAuthComponentProps) => {
-        return (
+        return props.statusCode ? (
+            <Error statusCode={props.statusCode} />
+        ) : (
             <C {...props} />
         )
     }
@@ -46,6 +50,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
             })
         }
 
+        console.log('user:', user)
         if (user && accountMatchesWhitelist(user.accountType, accountTypes) && user.active) {
             return { ...pageProps, user }
         }
@@ -70,6 +75,8 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
         // Account doesn't have the right access.
         if (isServer) {
             context.res.writeHead(403)
+            context.res.end()
+            return
         } else {
             redirect('/')
         }

@@ -13,7 +13,6 @@ class ErrorPage extends React.Component<IErrorPageProps> {
     }
 
     render() {
-        console.log('props:', this.props)
         return <div>Oh no! An error {this.props.statusCode} occured.</div>
     }
 }

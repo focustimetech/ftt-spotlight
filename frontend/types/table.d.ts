@@ -1,56 +1,64 @@
-import { Page } from "csstype";
+export type ITableColumn = ITableGenericColumn | ITableEnumColumn
 
-/**
- * @param id Key for the column.
- * @param disablePadding Will remove padding in cells. False by default.
- * @param isNumeric Indicates whether data in this column is numeric or not.
- * @param label The name for the columm.
- * @param sortLabel The label given when sorting by the column. `label` by default.
- * @param link If set, column is rendered as external link having the given base URL.`null` by default.
- * @param th If true, column is styled as a table header. False by default.
- * @param searchable If true, data in this column can be searched, independant of whether or not it is rendered. True by default.
- * @param visible If true, this columm will be rendered in the table, independant of whether or not it is searchable.
- * @param filterable If true, the table can be filtered by this column.
- */
-export interface ITableHeaderColumn {
-	id: string
-	disablePadding?: boolean
-	isNumeric: boolean
+export interface ITableGenericColumn {
 	label: string
-	sortLabel?: string
-	th?: boolean // If set, column is table header
+	primary?: boolean
 	searchable?: boolean
-	values?: string[]
-	visible: boolean
-	filterable: boolean
+	filterable?: boolean
+	hidden?: boolean
+	sortLabel?: string
+	type: TableColumnType
 }
+
+export interface ITableEnumColumn extends ITableGenericColumn {
+	type: 'enum'
+	values: string[]
+}
+
+type TableColumnType =
+	| 'string'
+	| 'number'
+	| 'date'
+	| 'enum'
+
+export type TableColumns<T> = Record<keyof T, ITableColumn> & { [key: string]: ITableColumn }
 
 export type ITableFilter =
 	| ITableStringFilter
 	| ITableNumericFilter
 	| ITableEnumFilter
+	| ITableDateFilter
 
-export interface ITableStringFilter {
-	id: string
+interface ITableGenericFilter {
+	rule: ITableStringFilterType | ITableNumericFilterType | ITableDateFilterType
+	// [key: string]: any
+}
+
+export interface ITableStringFilter extends ITableGenericFilter {
+	columnKey: string
 	type: 'string'
 	rule: ITableStringFilterType
 	value: string
-	[key: string]: any
 }
 
-export interface ITableNumericFilter {
-	id: string
-	type: 'numeric'
+export interface ITableNumericFilter extends ITableGenericFilter {
+	columnKey: string
+	type: 'number'
 	rule: ITableNumericFilterType
-	value: string
-	[key: string]: any
+	value: number
 }
 
 export interface ITableEnumFilter {
-	id: string
+	columnKey: string
 	type: 'enum'
 	value: string
-	[key: string]: any
+}
+
+export interface ITableDateFilter extends ITableGenericFilter {
+	columnKey: string
+	type: 'date'
+	rule: ITableDateFilterType
+	value: Date
 }
 
 export type ITableStringFilterType = 
@@ -66,16 +74,15 @@ export type ITableNumericFilterType =
 	| 'equal-to'
 	| 'not-equal-to'
 
+export type ITableDateFilterType =
+	| 'before'
+	| 'equal-to'
+	| 'after'
+
 export interface ITableAction {
 	id: string
 	name: string
 	callback: () => void
 } 
-
-export interface ITableLink {
-	label: string
-	key: string
-	path: string
-}
 
 export type SortOrder = 'asc' | 'desc'

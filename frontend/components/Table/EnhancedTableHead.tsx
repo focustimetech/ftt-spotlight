@@ -2,7 +2,6 @@ import React from 'react'
 
 import {
 	Checkbox,
-	Radio,
 	TableCell,
 	TableHead,
 	TableRow,
@@ -10,79 +9,64 @@ import {
 	Tooltip
 } from '@material-ui/core'
 
-import { ITableHeaderColumn, ITableLink, SortOrder } from '../../types/table'
+import { ITableColumn, SortOrder, TableColumns } from '../../types/table'
 
-interface IProps {
-	columns: ITableHeaderColumn[]
+interface IEnhancedTableHeadProps<T> {
+	columns: TableColumns<T>
 	numSelected: number
 	order: SortOrder
 	orderBy: string
-	loading: boolean
 	rowCount: number
-	selectable: boolean
-	link?: ITableLink
-	radio?: boolean
-	onRequestSort: (property: string) => void
-	onSelectAllClick: (event: any) => void
+	onRequestSort: (columnKey: string) => void
+	onSelectAllClick?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export const EnhancedTableHead = (props: IProps) => {
-	const { onSelectAllClick, order, orderBy, numSelected, rowCount, selectable, link } = props
-	const columns = props.columns.filter((column: ITableHeaderColumn) => {
-		return column.visible
-	})
+class EnhancedTableHead<T> extends React.Component<IEnhancedTableHeadProps<T>> {
+	render() {
+		const { onSelectAllClick, onRequestSort, columns, order, orderBy, numSelected, rowCount } = this.props
 
-	const createSortHandler = (property: string) => {
-		props.onRequestSort(property)
-	}
-
-	return (
-		<TableHead>
-			<TableRow>
-				{selectable && (
-					<TableCell padding='checkbox'>
-						{props.radio ? (
-							<Radio
-								checked={numSelected > 0}
-								onClick={onSelectAllClick}
-								color='primary'
-							/>
-						) : (
+		return (
+			<TableHead>
+				<TableRow>
+					{onSelectAllClick && (
+						<TableCell padding='checkbox'>
 							<Checkbox
 								indeterminate={numSelected > 0 && numSelected < rowCount}
 								checked={numSelected === rowCount}
-								onChange={onSelectAllClick}
+								onChange={(event) => onSelectAllClick(event)}
 								color='primary'
 							/>
-						)}
-					</TableCell>
-				)}
-				{columns.map((column: ITableHeaderColumn, index: number) => (
-					<TableCell
-						key={column.id}
-						align={column.isNumeric ? 'right' : 'left'}
-						padding={column.disablePadding ? (!selectable && index === 0 ? 'default' : 'none') : 'default'}
-						sortDirection={orderBy === column.id ? order : false}
-					>
-						<Tooltip
-							title={'Sort by ' + column.label}
-							placement={column.isNumeric ? 'bottom-end' : 'bottom-start'}
-							enterDelay={300}
-						>
-							<TableSortLabel
-								active={orderBy === column.id}
-								direction={order}
-								onClick={() => createSortHandler(column.id)}
+						</TableCell>
+					)}
+					{Object.keys(columns).map((columnKey: string, index: number) => {
+						const column: ITableColumn = columns[columnKey]
+						return (
+							<TableCell
+								key={columnKey}
+								align={column.type === 'number' ? 'right' : 'left'}
+								padding={!onSelectAllClick && index === 0 ? 'default' : 'none'}
+								sortDirection={orderBy === columnKey ? order : false}
 							>
-								{column.label}
-							</TableSortLabel>
-						</Tooltip>
-					</TableCell>
-				))}
-				{(link && selectable) && (
-					<TableCell key={props.link.key} align='left' padding='default'>{link.label}</TableCell>
-				)}
-			</TableRow>
-		</TableHead>
-	)
+								<Tooltip
+									title={`Sort by ${column.sortLabel || column.label}`}
+									placement={column.type === 'number' ? 'bottom-end' : 'bottom-start'}
+									enterDelay={300}
+								>
+									<TableSortLabel
+										active={orderBy === columnKey}
+										direction={order}
+										onClick={() => onRequestSort(columnKey)}
+									>
+										{column.label}
+									</TableSortLabel>
+								</Tooltip>
+							</TableCell>
+						)
+					})}
+				</TableRow>
+			</TableHead>
+		)
+	}
 }
+
+export default EnhancedTableHead

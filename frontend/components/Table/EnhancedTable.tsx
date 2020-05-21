@@ -1,12 +1,10 @@
+import { format } from 'date-fns'
 import React from 'react'
-import ContentLoader from 'react-content-loader'
-import { Link, Redirect } from 'react-router-dom'
 
 import {
 	Checkbox,
 	Icon,
 	Paper,
-	Radio,
 	Table,
 	TableBody,
 	TableCell,
@@ -14,21 +12,22 @@ import {
 	TableRow,
 	Tooltip
 } from '@material-ui/core'
+import { PaperProps } from '@material-ui/core/Paper'
 
 import {
 	ITableAction,
 	ITableEnumFilter,
 	ITableFilter,
-	ITableHeaderColumn,
-	ITableLink,
-	SortOrder
+	ITableColumn,
+	SortOrder,
+	TableColumns,
+	ITableGenericFilter
 } from '../../types/table'
 
-import { EmptyStateIcon } from '../EmptyStateIcon'
-import { EnhancedTableHead } from './EnhancedTableHead'
-import { EnhancedTableToolbar } from './EnhancedTableToolbar'
+import EnhancedTableHead from './EnhancedTableHead'
+import EnhancedTableToolbar from './EnhancedTableToolbar'
 
-const desc = (a: any, b: any, orderBy: any): number => {
+const desc = (a: any, b: any, orderBy: string): number => {
 	if (b[orderBy] < a[orderBy]) {
 		return -1
 	}
@@ -50,7 +49,7 @@ const stableSort = (array: any[], cmp: any) => {
 	return stabilizedThis.map((item: any) => item[0])
 }
 
-const getSorting = (order: SortOrder, orderBy: any) => {
+const getSorting = (order: SortOrder, orderBy: string) => {
 	return order === 'desc' ? (
 		(a: any, b: any) => desc(a, b, orderBy)
 	) : (
@@ -58,41 +57,36 @@ const getSorting = (order: SortOrder, orderBy: any) => {
 	)
 }
 
-interface IProps {
-	columns: ITableHeaderColumn[]
-	data: any[]
-	loading: boolean
+interface IEnhancedTableProps<T> {
+	title: string
+	columns: TableColumns<T>
+	data: T[]
 	actions?: ITableAction[]
-	children?: any
 	defaultRowsPerPage?: number
-	link?: ITableLink
-	radio?: boolean
 	searchable?: boolean
 	selected?: number[]
-	showEmptyTable?: boolean
-	title?: string
+	PaperProps?: PaperProps
 	onSelect?: (selected: number[]) => void
+	dateFormat?: (date: Date) => string
 }
 
-interface IState {
+interface IEnhancedTableState {
 	tableQuery: string
 	order: SortOrder
 	orderBy: string
 	page: number
-	redirect: string
 	rowsPerPage: number
 	filters: ITableFilter[]
 	filtersDisabled: boolean
 	filterOpen: boolean
 }
 
-export class EnhancedTable extends React.Component<IProps, IState> {
-	state: IState = {
+class EnhancedTable<T> extends React.Component<IEnhancedTableProps<T>, IEnhancedTableState> {
+	state: IEnhancedTableState = {
 		tableQuery: '',
 		order: 'asc',
-		orderBy: this.props.columns[0].id,
+		orderBy: Object.keys(this.props.columns)[0],
 		page: 0,
-		redirect: null,
 		rowsPerPage: this.props.defaultRowsPerPage || 5,
 		filters: [],
 		filtersDisabled: true,
@@ -108,6 +102,7 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 	}
 
 	handleFilterChange = (filters: ITableFilter[], disabled: boolean) => {
+		console.log('table.handleFilterChange')
 		this.setState({
 			filters,
 			filtersDisabled: disabled
@@ -118,37 +113,33 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		return Boolean(this.props.onSelect)
 	}
 
-	filterTableData = (): any[] => {
+	filterTableData = (): T[] => {
 		const { tableQuery, filters } = this.state
-		const properties: string[] = this.props.columns.reduce((acc: string[], column: ITableHeaderColumn) => {
-			if (column.searchable) {
-				acc.push(column.id)
-			}
-			return acc
-		}, [])
-		return this.props.data.filter((row: any) => {
-			const enumFilters: ITableEnumFilter[]
-				= filters.filter((filter: ITableFilter) => filter.type === 'enum') as ITableEnumFilter[]
-			const otherFilters: ITableFilter[]
-				= filters.filter((filter: ITableFilter) => filter.type !== 'enum')
+		console.log('filters:', filters)
+		const searchableColumnKeys: string[] = Object.keys(this.props.columns)
+			.filter((columnKey: string) => this.props.columns[columnKey].searchable)
+
+		return this.props.data.filter((row: T) => {
+			const enumFilters: ITableEnumFilter[] = filters.filter((filter: ITableFilter) => filter.type === 'enum') as ITableEnumFilter[]
+			const otherFilters: ITableGenericFilter[] = filters.filter((filter: ITableFilter) => filter.type !== 'enum') as ITableGenericFilter[]
 
 			const matchSearch: boolean = tableQuery.length > 0 ? (
-				properties.some((property) => {
-					return row[property] && new RegExp(tableQuery.toLowerCase(), 'g').test(row[property].toLowerCase())
+				searchableColumnKeys.some((columnKey: string) => {
+					return row[columnKey] && new RegExp(tableQuery.toLowerCase(), 'g').test(row[columnKey].toLowerCase())
 				})
 			) : true
 
 			const matchEnums: boolean = enumFilters.length && !this.state.filtersDisabled ? (
 				enumFilters.every((filter: ITableEnumFilter) => {
-					return row[filter.id] === filter.value
+					return row[filter.columnKey] === filter.value
 				})
 			) : true
-
+/*
 			const matchFilters = otherFilters.length ? (
-				otherFilters.some((filter: ITableFilter) => {
+				otherFilters.some((filter: ITableGenericFilter) => {
 					switch (filter.rule) {
 						case 'contains':
-							return row[filter.id].includes(filter.value)
+							return row[filter.columnKey].includes(filter.value)
 						case 'ends-with':
 							return row[filter.id].endsWith(filter.value)
 						case 'equal-to':
@@ -166,6 +157,8 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 					}
 				})
 			) : true
+*/
+			const matchFilters = true
 			return matchSearch && matchFilters && matchEnums
 		})
 	}
@@ -182,52 +175,42 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		if (!this.props.onSelect) {
 			return
 		}
-		let newSelected: number[] = []
-		if (event.target.checked && this.props.radio !== true) {
-			newSelected = (
-				this.props.searchable && this.state.tableQuery.length)
-				|| (this.state.filters.length && !this.state.filtersDisabled
-				) ? (
-				this.filterTableData().map((n: any) => n.id)
-			) : (
-				this.props.data.map((n: any) => n.id)
-			)
+		let selected: number[] = []
+		if (event.target.checked) {
+			const selectedRows = (this.props.searchable && this.state.tableQuery.length) || (this.state.filters.length && !this.state.filtersDisabled)
+				? this.filterTableData()
+				: this.props.data
+			selected = selectedRows.map((row: T, index: number) => index)
 		}
 
-		this.props.onSelect(newSelected)
+		this.props.onSelect(selected)
 	}
 
 	handleInvertSelection = () => {
-		if (!this.isSelectable() || this.props.radio) {
-			return
-		}
-		const newSelected: number[] = this.props.data.map((n: any) => n.id).filter((index: number) => {
+		const selected: number[] = this.props.data.map((row: T, index) => index).filter((index: number) => {
 			return this.props.selected.indexOf(index) < 0
 		})
-		this.props.onSelect(newSelected)
+		this.props.onSelect(selected)
 	}
 
-	handleClick = (id: number) => {
+	handleClick = (index: number) => {
 		if (!this.isSelectable()) {
 			return
 		}
 		let newSelected: number[] = []
-		if (this.props.radio) {
-			newSelected = [id]
-		} else {
-			const { selected } = this.props
-			const selectedIndex = selected.indexOf(id)
+	
+		const { selected } = this.props
+		const selectedIndex = selected.indexOf(index)
 
-			if (selectedIndex === -1) {
-				newSelected = newSelected.concat(selected, id)
-			} else if (selectedIndex === 0) {
-				newSelected = newSelected.concat(selected.slice(1))
-			} else if (selectedIndex > 0) {
-				newSelected = newSelected.concat(
-					selected.slice(0, selectedIndex),
-					selected.slice(selectedIndex + 1),
-				)
-			}
+		if (selectedIndex === -1) {
+			newSelected = newSelected.concat(selected, index)
+		} else if (selectedIndex === 0) {
+			newSelected = newSelected.concat(selected.slice(1))
+		} else if (selectedIndex > 0) {
+			newSelected = newSelected.concat(
+				selected.slice(0, selectedIndex),
+				selected.slice(selectedIndex + 1),
+			)
 		}
 
 		this.props.onSelect(newSelected)
@@ -241,208 +224,146 @@ export class EnhancedTable extends React.Component<IProps, IState> {
 		this.setState({ rowsPerPage: event.target.value })
 	}
 
-	isSelected = (id: number): boolean => {
-		if (!this.isSelectable()) {
-			return false
-		}
-		return this.props.selected.indexOf(id) !== -1
+	isSelected = (index: number): boolean => {
+		return this.isSelectable() && this.props.selected.indexOf(index) !== -1
 	}
 
 	handleTableQueryChange = (value: string) => {
 		this.setState({ tableQuery: value })
 	}
 
-	skeletonRows = () => {
-		const rows: any = []
-		for (let i = 0; i < this.state.rowsPerPage; i ++) {
-			rows.push(
-				<TableRow key={i}>
-					<TableCell padding='checkbox'>
-						<div style={{ width: 24, height: 24, padding: 12}}>
-							<ContentLoader width={24} height={24}>
-								<rect x='0' y='0' rx='4' ry='4' height='24' width='24' />
-							</ContentLoader>
-						</div>
-					</TableCell>
-					{this.props.columns.map((column: ITableHeaderColumn) => {
-						if (column.th) {
-							return (
-								<TableCell component='th' scope='row' padding='none' key={column.id}>
-									<div style={{height: 24, width: 75}}>
-										<ContentLoader width={75} height={24}>
-											<rect x='0' y='0' rx='4' ry='4' width='75' height='8' />
-										</ContentLoader>
-									</div>
-								</TableCell>
-							)
-						} else {
-							return <TableCell align='right' key={column.id}>
-								<div style={{height: 24, width: 50, float: 'right'}}>
-										<ContentLoader width={50} height={24}>
-											<rect x='0' y='0' rx='4' ry='4' width='50' height='8' />
-										</ContentLoader>
-									</div>
-							</TableCell>
-						}
-					})}
-				</TableRow>
-			)
-		}
-		return rows
-	}
-
 	render() {
-		if (this.state.redirect) {
-			return <Redirect to={this.state.redirect} />
-		}
-
 		const { order, orderBy, rowsPerPage, page } = this.state
-		const { selected } = this.props
+		const { columns, selected } = this.props
+
+		const filterableColumns: TableColumns<Partial<T>> = Object.keys(columns)
+			.filter((key: string) => columns[key].filterable)
+			.reduce((obj: Partial<TableColumns<T>>, key: string) => {
+				return { ...obj, [key]: columns[key]}
+			}, {})
+
+		const visibleColumns: TableColumns<Partial<T>> = Object.keys(columns)
+			.filter((key: string) => columns[key].hidden !== true)
+			.reduce((obj: Partial<TableColumns<T>>, key: string) => {
+				return { ...obj, [key]: columns[key]}
+			}, {})
+
 		const numSelected: number = selected ? selected.length : 0
 		const selectable: boolean = this.isSelectable()
-		const data: any[] = (this.props.searchable && this.state.tableQuery.length)
-		|| (this.state.filters.length && !this.state.filtersDisabled) ? (
+		const data: T[] = (this.props.searchable && this.state.tableQuery.length)
+		|| (this.state.filters.length > 0 && !this.state.filtersDisabled) ? (
 			this.filterTableData()
 		) : (
 			this.props.data
 		)
+		console.log('props.data:', this.props.data)
+		console.log(stableSort(data, getSorting(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
 
 		return (
 			<div className='enhanced-table'>
-				{this.props.data.length === 0 && !this.props.loading && this.props.showEmptyTable !== false ? (
-					<div className='empty-state'>
-						<EmptyStateIcon variant='file'>
-							<h3>{`${this.props.title ? `${this.props.title} table` : 'Table'} is empty.`}</h3>
-						</EmptyStateIcon>
+				<Paper {...this.props.PaperProps}>
+					<EnhancedTableToolbar<Partial<T>>
+						title={this.props.title}
+						searchable={this.props.searchable}
+						selectable={selectable}
+						tableQuery={this.state.tableQuery}
+						numSelected={numSelected}
+						numShown={data.length}
+						numTotal={this.props.data.length}
+						columns={filterableColumns}
+						actions={this.props.actions}
+						filters={this.state.filters}
+						filtersDisabled={this.state.filtersDisabled}
+						onInvertSelection={this.handleInvertSelection}
+						onFilterOpen={this.handleFilterOpen}
+						onFilterClose={this.handleFilterClose}
+						onFilterChange={this.handleFilterChange}
+						onTableQueryChange={this.handleTableQueryChange}
+						filterOpen={this.state.filterOpen}
+					>
+						{this.props.children}
+					</EnhancedTableToolbar>
+					<div>
+						<Table>
+							<EnhancedTableHead<Partial<T>>
+								columns={visibleColumns}
+								numSelected={numSelected}
+								order={order}
+								orderBy={orderBy}
+								onRequestSort={this.handleRequestSort}
+								onSelectAllClick={this.handleSelectAllClick}
+								rowCount={data.length}
+							/>
+							<TableBody className='enhanced-table__table-body'>
+								{stableSort(data, getSorting(order, orderBy))
+								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+								.map((row: T, rowIndex: number) => {
+									const isSelected = this.isSelected(rowIndex)
+									return (
+										<TableRow
+											hover
+											onClick={() => this.handleClick(rowIndex)}
+											role={selectable ? 'checkbox' : null}
+											aria-checked={isSelected}
+											tabIndex={-1}
+											key={rowIndex}
+											selected={isSelected}
+										>
+											{selectable && (
+												<TableCell padding={'checkbox'}>
+													<Checkbox checked={isSelected} color='primary'/>
+												</TableCell>
+											)}
+											{Object.keys(columns).map((columnKey: string, index: number) => {
+												const column: ITableColumn = columns[columnKey]
+												const isNumeric: boolean = column.type === 'number'
+												let columnData: any = row[columnKey]
+												if (column.type === 'date') {
+													columnData = this.props.dateFormat
+														? this.props.dateFormat(columnData)
+														: format(columnData, 'LLLL M, yyyy')
+												}
+												if (column.primary) {
+													return (
+														<TableCell
+															align={isNumeric ? 'right' : 'left'}
+															component='th'
+															scope='row'
+															padding={selectable || index !== 0 ? 'none' : 'default'}
+															key={columnKey}
+														>
+															{columnData}
+														</TableCell>
+													)
+												} else {
+													return <TableCell align='right' key={columnKey}>{columnData}</TableCell>
+												}
+											})}
+										</TableRow>
+									)
+								})}
+							</TableBody>
+						</Table>
 					</div>
-				) : (
-					<Paper>
-						<EnhancedTableToolbar
-							title={this.props.title}
-							searchable={this.props.searchable}
-							selectable={selectable}
-							tableQuery={this.state.tableQuery}
-							numSelected={numSelected}
-							numShown={data.length}
-							numTotal={this.props.data.length}
-							columns={this.props.columns}
-							actions={this.props.actions}
-							filters={this.state.filters}
-							filtersDisabled={this.state.filtersDisabled}
-							handleInvertSelection={this.handleInvertSelection}
-							handleFilterOpen={this.handleFilterOpen}
-							handleFilterClose={this.handleFilterClose}
-							handleFilterChange={this.handleFilterChange}
-							handleTableQueryChange={this.handleTableQueryChange}
-							filterOpen={this.state.filterOpen}
-							loading={this.props.loading}
-						>
-							{this.props.children}
-						</EnhancedTableToolbar>
-						<div>
-							<Table>
-								<EnhancedTableHead
-									columns={this.props.columns}
-									link={this.props.link}
-									loading={this.props.loading}
-									numSelected={numSelected}
-									order={order}
-									orderBy={orderBy}
-									onRequestSort={this.handleRequestSort}
-									onSelectAllClick={this.handleSelectAllClick}
-									radio={this.props.radio}
-									rowCount={data.length}
-									selectable={selectable}
-								/>
-								<TableBody className='enhanced-table__table-body'>
-									{this.props.loading ? (
-										this.skeletonRows()
-									) : (
-										stableSort(data, getSorting(order, orderBy))
-										.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-										.map((n: any) => {
-											const isSelected = this.isSelected(n.id)
-											const columns = this.props.columns.filter((column: ITableHeaderColumn) => {
-												return column.visible
-											})
-											return (
-												<TableRow
-													hover
-													onClick={() => this.handleClick(n.id)}
-													role={selectable ? 'checkbox' : null}
-													aria-checked={isSelected}
-													tabIndex={-1}
-													key={n.id}
-													selected={isSelected}
-												>
-													{selectable && (
-														<TableCell padding={'checkbox'}>
-															{this.props.radio ? (
-																<Radio checked={isSelected} color='primary'/>
-															) : (
-																<Checkbox checked={isSelected} color='primary'/>
-															)}
-														</TableCell>
-													)}
-													{columns.map((column: ITableHeaderColumn, index: number) => {
-														const columnData: any = n[column.id]
-														if (column.th) {
-															return (
-																<TableCell
-																	component='th'
-																	scope='row'
-																	padding={selectable || index !== 0 ? 'none' : 'default'}
-																	key={column.id}
-																>
-																	{this.props.link && !selectable ? (
-																		<Link
-																			className='enhanced-table__link'
-																			to={`${this.props.link.path}/${n[this.props.link.key]}`}
-																		>
-																			{columnData}
-																		</Link>
-																	) : columnData
-																	}
-																</TableCell>
-															)
-														} else {
-															return <TableCell align='right' key={column.id}>{columnData}</TableCell>
-														}
-													})}
-													{(this.props.link && selectable)  && (
-														<TableCell padding='checkbox' align='center'>
-															<Tooltip title={this.props.link.label} placement='left'>
-																<Link to={`${this.props.link.path}/${n[this.props.link.key]}`}>
-																	<Icon>launch</Icon>
-																</Link>
-															</Tooltip>
-														</TableCell>
-													)}
-												</TableRow>
-											)
-										})
-									)}
-								</TableBody>
-							</Table>
-						</div>
-						<TablePagination
-							rowsPerPageOptions={[5, 10, 25]}
-							component='div'
-							count={data.length}
-							rowsPerPage={rowsPerPage}
-							page={page}
-							backIconButtonProps={{
-								'aria-label': 'Previous Page'
-							}}
-							nextIconButtonProps={{
-								'aria-label': 'Next Page'
-							}}
-							onChangePage={this.handleChangePage}
-							onChangeRowsPerPage={this.handleChangeRowsPerPage}
-						/>
-					</Paper>
-				)}
+					<TablePagination
+						rowsPerPageOptions={[5, 10, 25]}
+						component='div'
+						count={data.length}
+						rowsPerPage={rowsPerPage}
+						page={page}
+						backIconButtonProps={{
+							'aria-label': 'Previous Page'
+						}}
+						nextIconButtonProps={{
+							'aria-label': 'Next Page'
+						}}
+						onChangePage={this.handleChangePage}
+						onChangeRowsPerPage={this.handleChangeRowsPerPage}
+					/>
+				</Paper>
 			</div>
 		)
 	}
 }
+
+export default EnhancedTable

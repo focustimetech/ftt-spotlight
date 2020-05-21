@@ -16,14 +16,15 @@ import {
 	Typography
 } from '@material-ui/core'
 
-import { ITableAction, ITableFilter, ITableHeaderColumn } from '../../types/table'
-import { EnhancedTableFilter} from './EnhancedTableFilter'
+import { ITableAction, ITableFilter, ITableColumn, TableColumns } from '../../types/table'
 
-interface IProps {
+import EnhancedTableFilter from './EnhancedTableFilter'
+
+interface IEnhancedTableToolbarProps<T> {
 	numSelected: number
 	numShown: number
 	numTotal: number
-	title?: string
+	title: string
 	children?: any
 	searchable: boolean
 	selectable: boolean
@@ -31,30 +32,28 @@ interface IProps {
 	filters: ITableFilter[]
 	filtersDisabled: boolean
 	filterOpen: boolean
-	columns: ITableHeaderColumn[]
+	columns: TableColumns<T>
 	actions?: ITableAction[]
-	loading: boolean
-	// handleActionCallback: (id: string) => void
-	handleInvertSelection: () => void
-	handleFilterOpen: () => void
-	handleFilterClose: () => void
-	handleFilterChange: (filters: ITableFilter[], disabled: boolean) => void
-	handleTableQueryChange: (value: string) => void
+	onInvertSelection: () => void
+	onFilterOpen: () => void
+	onFilterClose: () => void
+	onFilterChange: (filters: ITableFilter[], disabled: boolean) => void
+	onTableQueryChange: (value: string) => void
 }
 
-interface IState {
+interface IEnhancedTableToolbarState {
 	searchOpen: boolean
-	menuRef: any
+	menuRef: Element
 }
 
-export class EnhancedTableToolbar extends React.Component<IProps> {
-	state: IState  = {
+class EnhancedTableToolbar<T> extends React.Component<IEnhancedTableToolbarProps<T>, IEnhancedTableToolbarState> {
+	state: IEnhancedTableToolbarState  = {
 		searchOpen: false,
 		menuRef: null
 	}
 	searchInput: any
 
-	handleMenuOpen = (event: any) => {
+	handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		this.setState({ menuRef: event.currentTarget })
 	}
 
@@ -63,19 +62,22 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 	}
 
 	handleOpenSearch = () => {
+		this.props.onTableQueryChange('')
 		this.setState({ searchOpen: true }, () => {
 			this.searchInput.focus()
 		})
 	}
 
 	handleCloseSearch = () => {
-		this.setState({ searchOpen: false }, () => {
-			this.props.handleTableQueryChange('')
-		})
+		this.setState({ searchOpen: false })
 	}
 
+	handleFilterChange = (filters: ITableFilter[], disabled: boolean) => {
+		console.log('toolbar.handleFilterChange')
+		this.props.onFilterChange([...filters], disabled)
+	}
 	handleInvertSelection = () => {
-		this.props.handleInvertSelection()
+		this.props.onInvertSelection()
 		this.handleMenuClose()
 	}
 
@@ -84,16 +86,21 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 		this.handleMenuClose()
 	}
 
-	handleTableQueryChange = (event: any) => {
-		if (event.keyCode === 27) {
+	handleTableQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { value } = event.target
+		this.props.onTableQueryChange(value)
+	}
+
+	handleTableQueryKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+		const key: string | number = event.key || event.keyCode
+		if (key === 27 || key === 'Esc') {
 			this.handleCloseSearch()
 			return
 		}
-		this.props.handleTableQueryChange(event.target.value)
 	}
 
 	render() {
-		const { numSelected, numShown, numTotal, filterOpen } = this.props
+		const { columns, numSelected, numShown, numTotal, filterOpen, title } = this.props
 		const { menuRef } = this.state
 		const menuOpen = Boolean(menuRef)
 
@@ -106,119 +113,105 @@ export class EnhancedTableToolbar extends React.Component<IProps> {
 			} else {
 				headerString = `Showing ${numShown} of ${numTotal}`
 			}
-		} else {
-			headerString = this.props.title
 		}
-
-		const loadingButton = () => (
-			<div style={{ height: 48, width: 160 }}>
-				<ContentLoader width={160} height={48} preserveAspectRatio='none'>
-					<circle cx='24' cy='24' r='24' />
-					<circle cx='80' cy='24' r='24' />
-					<circle cx='136' cy='24' r='24' />
-				</ContentLoader>
-			</div>
-		)
 
 		return (
 			<Toolbar>
 				<div className='enhanced-table__toolbar'>
-					{headerString && (
-						<Typography variant='h6' className={classNames({
-							'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal)
-						})}>{headerString}</Typography>
-					)}
+					<Typography
+						variant='h6'
+						className={classNames({ 'num-selected': numSelected > 0 || (numTotal > 0 && numShown < numTotal) })}
+					>
+						{`${title} ${headerString || ''}`.trim()}
+					</Typography>
 					{filterOpen && (
-						<EnhancedTableFilter
+						<EnhancedTableFilter<T>
 							filters={this.props.filters}
 							disabled={this.props.filtersDisabled}
 							open={filterOpen}
-							handleFilterChange={this.props.handleFilterChange}
-							columns={this.props.columns.filter((column: ITableHeaderColumn) => {
-								return column.filterable
-							})}
-							handleFilterClose={this.props.handleFilterClose}
+							onFilterChange={this.handleFilterChange}
+							columns={columns}
+							onFilterClose={this.props.onFilterClose}
 						/>
 					)}
-					{this.props.loading ? (
-						loadingButton()
-					) : (
-						<ul className='enhanced-table__tools'>
-							{this.props.searchable && (
-								<>
-									<Grow in={this.state.searchOpen}>
-										<li>
-											<TextField
-												className='enhanced-table__search'
-												onChange={this.handleTableQueryChange}
-												placeholder={`Search ${this.props.title}`}
-												value={this.props.tableQuery}
-												variant='standard'
-												margin='none'
-												autoFocus
-												inputRef={(input) => {
-													this.searchInput = input
-												}}
-											/>
-										</li>
-									</Grow>
+					<ul className='enhanced-table__tools'>
+						{this.props.searchable && (
+							<>
+								<Grow in={this.state.searchOpen}>
 									<li>
-										{this.state.searchOpen ? (
-											<Tooltip title='Close Search'>
-												<IconButton onClick={() => this.handleCloseSearch()}>
-													<Icon>close</Icon>
-												</IconButton>
-											</Tooltip>
-										) : (
-											<Tooltip title='Search'>
-												<IconButton onClick={() => this.handleOpenSearch()}>
-													<Icon>search</Icon>
-												</IconButton>
-											</Tooltip>
-										)}
+										<TextField
+											className='enhanced-table__search'
+											onChange={this.handleTableQueryChange}
+											onKeyDown={this.handleTableQueryKeyDown}
+											placeholder={`Search ${this.props.title}`}
+											value={this.props.tableQuery}
+											variant='standard'
+											margin='none'
+											autoFocus
+											inputRef={(input) => {
+												this.searchInput = input
+											}}
+										/>
 									</li>
-								</>
-							)}
-							<li>
-								<Tooltip title='Filter'>
-									<IconButton onClick={this.props.handleFilterOpen}>
-									<Badge
-										invisible={this.props.filters.length === 0 || this.props.filtersDisabled}
-										color='secondary'
-										variant='dot'
-									>
-										<Icon>filter_list</Icon>
-									</Badge>
-									</IconButton>
-								</Tooltip>
-							</li>
-							{this.props.selectable && (
+								</Grow>
 								<li>
-									<IconButton onClick={this.handleMenuOpen}>
-										<Icon>more_vert</Icon>
-									</IconButton>
-									<Menu
-										open={menuOpen}
-										anchorEl={menuRef}
-										onClose={this.handleMenuClose}
-									>
-										<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
-										{(this.props.numSelected > 0 && this.props.actions && this.props.actions.length) && (
-											this.props.actions.map((action: ITableAction) => (
-												<MenuItem
-													key={action.id}
-													onClick={() => this.handleActionSelect(action)}
-												>{action.name}</MenuItem>
-											))
-										)}
-									</Menu>
+									{this.state.searchOpen ? (
+										<Tooltip title='Close Search'>
+											<IconButton onClick={() => this.handleCloseSearch()}>
+												<Icon>close</Icon>
+											</IconButton>
+										</Tooltip>
+									) : (
+										<Tooltip title='Search'>
+											<IconButton onClick={() => this.handleOpenSearch()}>
+												<Icon>search</Icon>
+											</IconButton>
+										</Tooltip>
+									)}
 								</li>
-							)}
-							{this.props.children}
-						</ul>
-					)}
+							</>
+						)}
+						<li>
+							<Tooltip title='Filter'>
+								<IconButton onClick={() => this.props.onFilterOpen()}>
+								<Badge
+									invisible={this.props.filters.length === 0 || this.props.filtersDisabled}
+									color='secondary'
+									variant='dot'
+								>
+									<Icon>filter_list</Icon>
+								</Badge>
+								</IconButton>
+							</Tooltip>
+						</li>
+						{this.props.selectable && (
+							<li>
+								<IconButton onClick={this.handleMenuOpen}>
+									<Icon>more_vert</Icon>
+								</IconButton>
+								<Menu
+									open={menuOpen}
+									anchorEl={menuRef}
+									onClose={this.handleMenuClose}
+								>
+									<MenuItem onClick={() => this.handleInvertSelection()}>Invert selection</MenuItem>
+									{(this.props.numSelected > 0 && this.props.actions && this.props.actions.length) && (
+										this.props.actions.map((action: ITableAction) => (
+											<MenuItem
+												key={action.id}
+												onClick={() => this.handleActionSelect(action)}
+											>{action.name}</MenuItem>
+										))
+									)}
+								</Menu>
+							</li>
+						)}
+						{this.props.children}
+					</ul>
 				</div>
 			</Toolbar>
 		)
 	}
 }
+
+export default EnhancedTableToolbar

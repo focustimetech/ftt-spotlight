@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import DateFnsUtils from '@date-io/date-fns'
 import React from 'react'
 
 import {
@@ -14,69 +15,73 @@ import {
 	TextField,
 	Typography,
 } from '@material-ui/core'
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
 import {
+	ITableDateFilter,
+	ITableEnumColumn,
 	ITableEnumFilter,
 	ITableFilter,
-	ITableHeaderColumn,
+	ITableGenericFilter,
+	ITableColumn,
 	ITableNumericFilter,
 	ITableNumericFilterType,
 	ITableStringFilter,
 	ITableStringFilterType,
+	TableColumns,
+	ITableDateFilterType
 } from '../../types/table'
 
-interface IStringFilterRule {
-	label: string,
-	value: ITableStringFilterType
+const stringFilterRules: Record<ITableStringFilterType, string> = {
+	'equal-to': 'Equal to',
+	'not-equal-to': 'Not equal to',
+	'starts-with': 'Starts with',
+	'ends-with': 'Ends with',
+	'contains': 'Contains'
 }
 
-interface INumericFilterRule {
-	label: string,
-	value: ITableNumericFilterType
+const numericFilterRules: Record<ITableNumericFilterType, string> = {
+	'less-than': 'Less than',
+	'greater-than': 'Greater than',
+	'equal-to': 'Equal to',
+	'not-equal-to': 'Not equal to'
 }
 
-const stringFilterRules: IStringFilterRule[] = [
-	{ label: 'Equal to', value: 'equal-to' },
-	{ label: 'Not equal to', value: 'not-equal-to' },
-	{ label: 'Starts with', value: 'starts-with' },
-	{ label: 'Ends with', value: 'ends-with' },
-	{ label: 'Contains', value: 'contains' }
-]
+const dateFilterRules: Record<ITableDateFilterType, string> = {
+	'before': 'Before',
+	'equal-to': 'Equal to',
+	'after': 'After'
+}
 
-const numericFilterRules: INumericFilterRule[] = [
-	{ label: 'Less than', value: 'less-than' },
-	{ label: 'Greater than', value: 'greater-than' },
-	{ label: 'Equal to', value: 'equal-to' },
-	{ label: 'Not equal to', value: 'not-equal-to' }
-]
-
-interface IProps {
+interface IEnhancedTableFilterProps<T> {
 	disabled: boolean
 	filters: ITableFilter[]
-	columns: ITableHeaderColumn[]
+	columns: TableColumns<T>
 	open: boolean
-	handleFilterChange: (filters: ITableFilter[], disabled: boolean) => void
-	handleFilterClose: () => void
+	onFilterChange: (filters: ITableFilter[], disabled: boolean) => void
+	onFilterClose: () => void
 }
 
-interface IState {
+interface IEnhancedTableFilterState {
 	disabled: boolean
 	error: boolean
 	filters: ITableFilter[]
 }
 
-export class EnhancedTableFilter extends React.Component<IProps, IState> {
-	state: IState = {
+type SelectChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | React.ChangeEvent<{ name?: string, value: any }>
+
+class EnhancedTableFilter<T> extends React.Component<IEnhancedTableFilterProps<T>, IEnhancedTableFilterState> {
+	state: IEnhancedTableFilterState = {
 		disabled: this.props.disabled,
 		error: false,
-		filters: this.props.filters.length ? this.props.filters : [this.newFilter()]
+		filters: this.props.filters.length ? [...this.props.filters] : [this.newFilter()]
 	}
 
 	onApplyFilters = () => {
 		this.setState({ error: false })
 		if (this.allFiltersValid() || this.state.disabled) {
 			this.setState({ error: false })
-			this.props.handleFilterChange(this.state.filters, this.state.disabled)
+			this.props.onFilterChange(this.state.filters, this.state.disabled)
 			return true
 		} else {
 			this.setState({ error: true })
@@ -96,154 +101,118 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 	}
 
 	onAddFilter = () => {
-		this.setState((state: IState) => {
-			return {filters: state.filters.concat(this.newFilter()) }
-		})
+		this.setState((state: IEnhancedTableFilterState) => ({
+			filters: state.filters.concat(this.newFilter())
+		}))
 	}
 
 	onRemoveFilter = (index: number) => {
-		this.setState((state: IState) => {
-			return {
-				filters: state.filters.filter((filter, idx) => {
-					return index !== idx
-				})
-			}
-		})
+		this.setState((state: IEnhancedTableFilterState) => ({
+			filters: state.filters.filter((filter, idx) => {
+				return index !== idx
+			})
+		}))
 	}
 
 	onDuplicateFilter = (index: number) => {
-		this.setState((state: IState) => {
-			const newFilter: ITableFilter = state.filters.find((filter, idx: number) => {
-				return index === idx
-			})
-			return {
-				filters: [...state.filters, newFilter]
-			}
-		})
+		const filters = [...this.state.filters, { ...this.state.filters[index] }]
+		this.setState({ filters })
 	}
 
-	handleChangeFilterID = (event: any, index: number) => {
-		const value: any = event.target.value
-		this.setState((state: IState) => {
-			const filters: ITableFilter[] = state.filters.map((filter: ITableFilter, idx: number) => {
-				if (idx !== index) {
-					return filter
-				} else {
-					const column = this.props.columns.find((tableColumn: ITableHeaderColumn) => {
-						return tableColumn.id === value
-					})
-					const nextType: ITableFilter['type'] = column.values && column.values.length
-						? 'enum'
-						: (column.isNumeric ? 'numeric' : 'string')
-					const hasTypeChanged: boolean = filter.type !== nextType || filter.type === 'enum'
-					let newFilter: ITableFilter
+	handleChangeFilterColumn = (event: React.ChangeEvent<{ name?: string, value: any }>, index: number) => {
+		const { value } = event.target
+		this.setState((state: IEnhancedTableFilterState) => {
+			const { filters } = state
+			const filter: ITableFilter = filters[index]
+			const column: ITableColumn = this.props.columns[value]
+			const hasTypeChanged: boolean = filter.type !== column.type || filter.type === 'enum'
+			let newFilter: ITableFilter
 
-					if (nextType === 'enum') {
-						newFilter = {
-							id: value,
-							value: hasTypeChanged ? column.values[0] : filter.value,
-							type: 'enum'
-						} as ITableEnumFilter
-					} else if (nextType === 'numeric') {
-						newFilter = {
-							id: value,
-							value: hasTypeChanged ? '' : filter.value,
-							type: 'numeric',
-							rule: hasTypeChanged ? numericFilterRules[0].value : (filter as ITableNumericFilter).rule
-						} as ITableNumericFilter
-					} else {
-						newFilter = {
-							id: value,
-							value: hasTypeChanged ? '' : filter.value,
-							type: 'string',
-							rule: hasTypeChanged ? stringFilterRules[0].value : (filter as ITableStringFilter).rule
-						} as ITableStringFilter
-					}
-					return newFilter
-				}
-			})
+			if (column.type === 'enum') {
+				newFilter = {
+					columnKey: value,
+					value: hasTypeChanged ? (column as ITableEnumColumn).values[0] : filter.value,
+					type: 'enum'
+				} as ITableEnumFilter
+			} else if (column.type === 'number') {
+				newFilter = {
+					columnKey: value,
+					value: hasTypeChanged ? 0 : filter.value,
+					type: 'number',
+					rule: hasTypeChanged ? 'equal-to' : (filter as ITableNumericFilter).rule
+				} as ITableNumericFilter
+			} else if (column.type === 'date') {
+				newFilter = {
+					columnKey: value,
+					value: hasTypeChanged ? new Date() : filter.value,
+					type: 'date',
+					rule: hasTypeChanged ? 'equal-to' : (filter as ITableDateFilter).rule
+				} as ITableDateFilter
+			} else {
+				newFilter = {
+					columnKey: value,
+					value: hasTypeChanged ? '' : filter.value,
+					type: 'string',
+					rule: hasTypeChanged ? 'equal-to' : (filter as ITableStringFilter).rule
+				} as ITableStringFilter
+			}
+			filters[index] = newFilter
 			return { filters }
 		})
 	}
 
-	handleChangeFilterRule = (event: any, index: number) => {
-		const value: any = event.target.value
-		this.setState((state: IState) => {
-			return {
-				filters: state.filters.map((filter, idx) => {
-					return index !== idx ? filter : { ...filter, rule: value }
-				})
-			}
-		})
+	handleChangeFilterRule = (event: React.ChangeEvent<{ name?: string, value: any }>, index: number) => {
+		if (this.state.filters[index].type === 'enum') {
+			return
+		}
+		const { value } = event.target
+		const filters = [...this.state.filters]
+		const filter = { ...filters[index], rule: value }
+		filters[index] = filter
+		this.setState({ filters })
 	}
 
-	handleChangeFilterValue = (event: any, index: number) => {
-		const value: string = event.target.value
-		this.setState((state: IState) => {
-			return {
-				filters: state.filters.map((filter, idx) => {
-					return index !== idx ? filter : { ...filter, value }
-				})
-			}
-		})
+	handleChangeFilterValue = (value: any, index: number) => {
+		const filters = [...this.state.filters]
+		const filter = { ...this.state.filters[index], value }
+		filters[index] = filter
+		this.setState({ filters })
 	}
 
 	handleClose = () => {
-		this.props.handleFilterClose()
+		this.props.onFilterClose()
 	}
 
 	allFiltersValid = (): boolean => {
-		return this.state.filters.length ? (
-			this.state.filters.every((filter: ITableFilter) => {
-				return filter.value.length > 0
-			})
-		) : true
+		return this.state.filters.length > 0
+			? this.state.filters.every((filter: ITableFilter) => filter.type !== 'string' || filter.value.length > 0)
+			: true
 	}
 
 	toggleDisabled = () => {
-		this.setState((state: IState) => {
-			return {
-				disabled: !state.disabled,
-				error: false
-			}
-		})
+		this.setState((state: IEnhancedTableFilterState) => ({
+			disabled: !state.disabled,
+			error: false
+		}))
 	}
 
 	newFilter(): ITableFilter {
-		let filter: ITableFilter
-		if (this.props.filters.length) {
-			filter = {
-				...this.props.filters[this.props.filters.length - 1],
-				value: ''
-			}
+		const columnKey: string = Object.keys(this.props.columns)[0]
+		const column: ITableColumn = this.props.columns[columnKey]
+		if (column.type === 'enum') {
+			return { columnKey, type: 'enum', value: (column as ITableEnumColumn).values[0] }
+		} else if (column.type === 'number') {
+			return { columnKey, type: 'number', rule: 'equal-to',	value: 0 }
+		} else if (column.type === 'date') {
+			return { columnKey, type: 'date', rule: 'equal-to', value: new Date }
 		} else {
-			const firstColumn: ITableHeaderColumn = this.props.columns[0]
-			if (firstColumn.values && firstColumn.values.length > 0) {
-				filter = {
-					id: firstColumn.id,
-					type: 'enum',
-					value: firstColumn.values[0]
-				}
-			} else if (firstColumn.isNumeric) {
-				filter = {
-					id: firstColumn.id,
-					type: 'numeric',
-					rule: numericFilterRules[0].value,
-					value: ''
-				}
-			} else {
-				filter = {
-					id: firstColumn.id,
-					type: 'string',
-					rule: stringFilterRules[0].value,
-					value: ''
-				}
-			}
+			return { columnKey, type: 'string', rule: 'equal-to', value: '' }
 		}
-		return filter
 	}
 
 	render() {
+		console.log('props.filters:', this.props.filters)
+		console.log('filters.filters:', this.state.filters)
 		const haveFiltersChanged: boolean = this.state.filters.length === this.props.filters.length ? (
 			!this.state.filters.every((filter: ITableFilter, index: number) => {
 				const propFilter: ITableFilter = this.props.filters[index]
@@ -254,6 +223,9 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 			}) || this.props.disabled !== this.state.disabled
 		) : true
 
+		/**
+		 * @TODO Put filters Paper into a Popover
+		 */
 		return (
 			<Grow in={this.props.open} >
 				<Paper className='enhanced-table__filters' elevation={6}>
@@ -269,32 +241,36 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 						/>
 					</div>
 					<ul>
-						{this.state.filters.map((filter: ITableFilter, idx: number) => {
-							const errored: boolean = this.state.error && filter.value.length === 0
+						{this.state.filters.map((filter: ITableFilter, filterIndex: number) => {
+							const errored: boolean = this.state.error && filter.type === 'string' && filter.value.length === 0
 							const isEnum: boolean = filter.type === 'enum'
-							const column: ITableHeaderColumn = this.props.columns.find((tableColumn: ITableHeaderColumn) => {
-								return tableColumn.id === filter.id
-							})
-							let filterRules: Array<IStringFilterRule | INumericFilterRule> = null
-							if (filter.type === 'string') {
-								filterRules = stringFilterRules
-							} else if (filter.type === 'numeric') {
-								filterRules = numericFilterRules
+							const column: ITableColumn = this.props.columns[filter.columnKey]
+							let filterRules: Record<string, string>
+							switch (filter.type) {
+								case 'string':
+									filterRules = stringFilterRules
+									break
+								case 'number':
+									filterRules = numericFilterRules
+									break
+								case 'date':
+									filterRules = dateFilterRules
+									break
 							}
 
 							return (
-								<li key={idx} className='filter-rule'>
+								<li key={filterIndex} className='filter-rule'>
 									<Select
-										name='id'
+										name='column'
 										margin='dense'
-										value={filter.id}
-										onChange={(event: any) => {this.handleChangeFilterID(event, idx)}}
+										value={filter.columnKey}
+										onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {this.handleChangeFilterColumn(event, filterIndex)}}
 										disabled={this.state.disabled}
 									>
-										{this.props.columns.map((tableColumn: ITableHeaderColumn) => {
+										{Object.keys(this.props.columns).map((columnKey: string) => {
 											return (
-												<MenuItem key={tableColumn.id} value={tableColumn.id}>
-													{tableColumn.label}
+												<MenuItem key={columnKey} value={columnKey}>
+													{this.props.columns[columnKey].label}
 												</MenuItem>
 											)
 										})}
@@ -303,45 +279,68 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 										name='rule'
 										className={classNames({'--enum': isEnum})}
 										margin='dense'
-										value={isEnum ? filter.value : filter.rule}
-										onChange={(event: any) => isEnum
-												? this.handleChangeFilterValue(event, idx)
-												: this.handleChangeFilterRule(event, idx)
+										value={isEnum ? filter.value : (filter as ITableGenericFilter).rule}
+										onChange={(event: SelectChangeEvent) => isEnum
+											? this.handleChangeFilterValue(event, filterIndex)
+											: this.handleChangeFilterRule(event, filterIndex)
 										}
 										disabled={this.state.disabled}
 									>
 										{isEnum ? (
-											column.values.map((enumValue: string) => (
+											(column as ITableEnumColumn).values.map((enumValue: string) => (
 												<MenuItem value={enumValue} key={enumValue}>
 													{enumValue}
 												</MenuItem>
 											))
 										) : (
-											filterRules.map((filterRule: IStringFilterRule | INumericFilterRule) => (
-												<MenuItem value={filterRule.value} key={filterRule.value}>
-													{filterRule.label}
+											Object.keys(filterRules).map((filterRule: string) => (
+												<MenuItem value={filterRule} key={filterRule}>
+													{filterRules[filterRule]}
 												</MenuItem>
 											)
 										))}
 									</Select>
-									{!isEnum && (
+									{filter.type === 'string' && (
 										<TextField
 											variant='standard'
 											margin='dense'
 											placeholder='Filter value'
-											onChange={(event: any) => this.handleChangeFilterValue(event, idx)}
+											onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => this.handleChangeFilterValue(event.target.value, filterIndex)}
 											value={filter.value}
 											error={errored}
 											helperText={errored ? 'This field cannot be empty.' : undefined}
 											disabled={this.state.disabled}
 										/>
 									)}
-									<IconButton onClick={() => this.onDuplicateFilter(idx)} disabled={this.state.disabled}>
+									{filter.type === 'date' && (
+										<MuiPickersUtilsProvider utils={DateFnsUtils}>
+											<KeyboardDatePicker
+												// variant='standard'
+												margin='dense'
+												placeholder='Filter value'
+												onChange={(date: Date) => this.handleChangeFilterValue(date, filterIndex)}
+												value={filter.value}
+												disabled={this.state.disabled}
+											/>
+										</MuiPickersUtilsProvider>
+									)}
+									{filter.type === 'number' && (
+										<TextField
+											variant='standard'
+											type='number'
+											margin='dense'
+											placeholder='Filter value'
+											onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.handleChangeFilterValue(event.target.value, filterIndex)}
+											value={filter.value}
+											disabled={this.state.disabled}
+										/>
+									)}
+									<IconButton onClick={() => this.onDuplicateFilter(filterIndex)} disabled={this.state.disabled}>
 										<Icon>filter_none</Icon>
 									</IconButton>
 									<IconButton
 										disabled={this.state.filters.length === 1 || this.state.disabled}
-										onClick={() => this.onRemoveFilter(idx)}
+										onClick={() => this.onRemoveFilter(filterIndex)}
 									><Icon>close</Icon></IconButton>
 								</li>
 							)
@@ -369,3 +368,5 @@ export class EnhancedTableFilter extends React.Component<IProps, IState> {
 		)
 	}
 }
+
+export default EnhancedTableFilter

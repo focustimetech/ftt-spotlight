@@ -322,7 +322,7 @@ class EnhancedTable<T> extends React.Component<IEnhancedTableProps<T>, IEnhanced
 													console.log('column.type === date; isNumeric:', isNumeric)
 													columnData = this.props.dateFormat
 														? this.props.dateFormat(columnData)
-														: format(columnData, 'LLLL M, yyyy')
+														: format(columnData, 'LLLL d, yyyy')
 												}
 												if (column.primary) {
 													return (
@@ -333,11 +333,15 @@ class EnhancedTable<T> extends React.Component<IEnhancedTableProps<T>, IEnhanced
 															padding={selectable || index !== 0 ? 'none' : 'default'}
 															key={columnKey}
 														>
-															{columnData}
+															{column.component ? column.component(columnData) : columnData}
 														</TableCell>
 													)
 												} else {
-													return <TableCell align={isNumeric ? 'right' : 'left'} key={columnKey}>{columnData}</TableCell>
+													return (
+														<TableCell align={isNumeric ? 'right' : 'left'} key={columnKey}>
+															{column.component ? column.component(columnData) : columnData}
+														</TableCell>
+													)
 												}
 											})}
 										</TableRow>

@@ -44,7 +44,7 @@ class EnhancedTableHead<T> extends React.Component<IEnhancedTableHeadProps<T>> {
 							<TableCell
 								key={columnKey}
 								align={column.type === 'number' ? 'right' : 'left'}
-								padding={!onSelectAllClick && index === 0 ? 'default' : 'none'}
+								padding={index === 0 ? 'none' : 'default'}
 								sortDirection={orderBy === columnKey ? order : false}
 							>
 								<Tooltip

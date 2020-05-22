@@ -314,11 +314,12 @@ class EnhancedTable<T> extends React.Component<IEnhancedTableProps<T>, IEnhanced
 													<Checkbox checked={isSelected} color='primary'/>
 												</TableCell>
 											)}
-											{Object.keys(columns).map((columnKey: string, index: number) => {
+											{Object.keys(visibleColumns).map((columnKey: string, index: number) => {
 												const column: ITableColumn = columns[columnKey]
 												const isNumeric: boolean = column.type === 'number'
 												let columnData: any = row[columnKey]
 												if (column.type === 'date') {
+													console.log('column.type === date; isNumeric:', isNumeric)
 													columnData = this.props.dateFormat
 														? this.props.dateFormat(columnData)
 														: format(columnData, 'LLLL M, yyyy')
@@ -326,7 +327,7 @@ class EnhancedTable<T> extends React.Component<IEnhancedTableProps<T>, IEnhanced
 												if (column.primary) {
 													return (
 														<TableCell
-															align={isNumeric ? 'right' : 'left'}
+															align='left'
 															component='th'
 															scope='row'
 															padding={selectable || index !== 0 ? 'none' : 'default'}
@@ -336,7 +337,7 @@ class EnhancedTable<T> extends React.Component<IEnhancedTableProps<T>, IEnhanced
 														</TableCell>
 													)
 												} else {
-													return <TableCell align='right' key={columnKey}>{columnData}</TableCell>
+													return <TableCell align={isNumeric ? 'right' : 'left'} key={columnKey}>{columnData}</TableCell>
 												}
 											})}
 										</TableRow>

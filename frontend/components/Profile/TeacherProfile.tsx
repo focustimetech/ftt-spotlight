@@ -4,7 +4,7 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { ICalendar } from '../../types/calendar'
+import { ICalendar, ICalendarEvent, ICalendarEventContext } from '../../types/calendar'
 import { IProfileProps } from '../../types/components/profile'
 import API from '../../utils/api'
 import { getDisplayRole } from '../../utils/user'
@@ -12,6 +12,14 @@ import { getDisplayRole } from '../../utils/user'
 import Calendar from '../Calendar'
 import Section from '../Layout/Section'
 import TopBar, { ITabs } from '../TopBar'
+
+const getTitle = (event: ICalendarEvent): string => {
+    return event.context.topic ? event.context.topic.memo : 'No Topic'
+}
+
+const getColor = (event: ICalendarEvent): string => {
+    return event.context.topic ? event.context.topic.color : undefined
+}
 
 interface ITeacherProfileState {
     calendar: ICalendar
@@ -29,10 +37,7 @@ class TeacherProfile extends React.Component<IProfileProps, ITeacherProfileState
             const data = res.data
             const calendar: ICalendar = {}
             Object.keys(data).forEach((date: string) => {
-                calendar[date] = {
-                    events: [],
-                    blocks: data[date]
-                }
+                calendar[date] = data[date]
             })
             this.setState({ calendar })
         })
@@ -60,7 +65,7 @@ class TeacherProfile extends React.Component<IProfileProps, ITeacherProfileState
                     </Section>
                 )}
                 {this.state.tab === 1 && (
-                    <Calendar calendar={this.state.calendar} />
+                    <Calendar calendar={this.state.calendar} getTitle={getTitle} getColor={getColor} />
                 )}
             </>
         )

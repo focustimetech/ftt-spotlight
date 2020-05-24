@@ -110,6 +110,34 @@ $block-height: 92px;
     .calendar-block {
         position: absolute;
         z-index: 3;
+        right: 8px;
+        left: 0;
+
+        &__inner {
+            padding: 4px;
+            min-height: 24px;
+        }
+
+        &__content {
+            padding: 0;
+
+            p {
+                font-size: 12px !important;
+                line-height: 15px;
+                white-space: normal;
+                overflow: hidden;
+                // margin-bottom: 4px;
+            }
+        }
+
+        &__badge {
+            width: 100%;
+        }
+
+        &__card {
+            width: 100%;
+            background: #F6F6F6;
+        }
     }
 }
 

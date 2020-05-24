@@ -7,6 +7,6 @@ use Faker\Generator as Faker;
 
 $factory->define(Block::class, function (Faker $faker) {
     return [
-        'name' => $faker->sentence(2)
+        'label' => $faker->sentence(2)
     ];
 });

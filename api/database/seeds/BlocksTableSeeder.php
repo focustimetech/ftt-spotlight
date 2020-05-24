@@ -12,7 +12,7 @@ class BlocksTableSeeder extends Seeder
      */
     public function run()
     {
-        $time = strtotime('monday 9am');
+        $time = strtotime('previous monday 9am');
         $beginsOn = date('Y-m-d H:i:s', $time);
         for ($dayOfWeek = 1; $dayOfWeek <= 7; $dayOfWeek ++) {
             $time = strtotime('9am', $time);

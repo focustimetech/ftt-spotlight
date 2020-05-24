@@ -2,6 +2,7 @@ import { IFullDate, IBlock, ILedgerEntry, ISchedulePlan } from './calendar'
 import { IStudent } from './student';
 import { ISelectChip } from '../components/ChipSelect';
 
+/*
 export interface CheckInStatusBlock {
     block: IBlock
     ledger_entries: ILedgerEntry[]
@@ -36,4 +37,13 @@ export interface ICheckInRequest {
     date?: string
     type: 'student_number' | 'student_id'
     chips: ICheckInChip[]
+}
+*/
+
+export interface ILedgerEntry {
+    
+}
+
+export interface IAirCheckIn {
+
 }

@@ -11,7 +11,7 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { ICalendarEvent, ICalendarEventContext } from '../../types/calendar'
+import { ICalendarEvent, ICalendarEventContext, ICalendarContextDetails } from '../../types/calendar'
 import p from '../../utils/pluralize'
 
 import Flexbox from '../Layout/Flexbox'
@@ -31,19 +31,17 @@ export interface ICalendarContextMenuAction extends ICalendarContextMenuOption {
     icon?: string
 }
 
-interface ICalendarContextMenuProps {
+interface ICalendarContextMenuProps extends ICalendarContextDetails {
     anchorEl: Element
     onClose: () => void
-    event: ICalendarEvent
-    date: Date
-    context?: ICalendarEventContext
     actions?: ICalendarContextMenuAction[]
     options?: ICalendarContextMenuOption[]
 }
 
 const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
     const open: boolean = Boolean(props.anchorEl)
-    const { event, context, date } = props
+    const { event, date, title, color } = props
+    const { context } = event
     const isLive: boolean = true
 
     // Build context items
@@ -53,13 +51,13 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
         if (context.airCheckIns) {
             contextList.push({
                 icon: 'wifi_tethering',
-                label: `${context.airCheckIns} pending ${p('Air Check-in', context.airCheckIns)}`
+                label: `${context.airCheckIns} pending ${p('Air Check-in', context.airCheckIns.length)}`
             })
         }
         if (context.appointments) {
             contextList.push({
                 icon: 'supervised_user_circle',
-                label: `${context.appointments} ${p('Appointment', context.appointments)}`
+                label: `${context.appointments} ${p('Appointment', context.appointments.length)}`
             })
         }
         if (context.attended) {
@@ -67,8 +65,8 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
         }
         if (context.ledgerEntries) {
             contextList.push({
-                icon: context.ledgerEntries === 1 ? 'done' : 'done_all',
-                label: `${context.ledgerEntries} ${p('student', context.ledgerEntries)} checked-in`,
+                icon: context.ledgerEntries.length === 1 ? 'done' : 'done_all',
+                label: `${context.ledgerEntries} ${p('student', context.ledgerEntries.length)} checked-in`,
                 isLive
             })
         }
@@ -78,19 +76,18 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
         if (context.plans) {
             contextList.push({
                 icon: 'bookmark',
-                label: `${context.plans} ${p('student', context.plans)} anticipated`
+                label: `${context.plans} ${p('student', context.plans.length)} anticipated`
             })
         }
     }
     return (
         <Popover
-            PaperProps={{ className: 'context-menu' }}
+            PaperProps={{ className: 'context-menu', elevation: 6 }}
             open={open}
             anchorEl={props.anchorEl}
             onClose={props.onClose}
             elevation={4}
         >
-        
             <Flexbox className='context-menu__actions'>
                 <Tooltip title='Options'>
                     <IconButton><Icon>more_vert</Icon></IconButton>
@@ -107,17 +104,19 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
                 </div>
                 <Flexbox className={classNames('context-menu__row', 'context-menu__details')}>
                     <div className='context-menu__icon'>
-                        <span className='context-menu__color' style={{ background: `#${event.color}` }} />
+                        <span className='context-menu__color' style={{ background: `#${color}` }} />
                     </div>
                     <div>
-                        <Typography variant='h5'>{event.title}</Typography>
+                        <Typography variant='h5'>{title}</Typography>
                         <Typography variant='subtitle1'>{format(date, 'iiii, LLLL M')}</Typography>
                     </div>
                 </Flexbox>
-                <Flexbox className='context-menu__row'>
-                    <div className='context-menu__icon'><Icon>room</Icon></div>
-                    <div><Typography variant='subtitle1'>{event.location.name}</Typography></div>
-                </Flexbox>
+                {event.context.location && (
+                    <Flexbox className='context-menu__row'>
+                        <div className='context-menu__icon'><Icon>room</Icon></div>
+                        <div><Typography variant='subtitle1'>{event.context.location.name}</Typography></div>
+                    </Flexbox>
+                )}
                 {contextList && contextList.map((listItem: IContentMenuListItem) => (
                     <Flexbox className='context-menu__row'>
                         <div className='context-menu__icon'>

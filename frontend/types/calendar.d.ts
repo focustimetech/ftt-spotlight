@@ -1,30 +1,32 @@
+import { IAppointment } from './appointment'
+import { IAirCheckIn, ILedgerEntry } from './checkin'
 import { IClassroom } from './classroom'
+import { IPlan } from './plan'
+import { ITopic } from './topic'
 
-export type ICalendar = Record<string, ICalendarDay>
+export type ICalendar = Record<string, ICalendarEvent[]>
 
-export interface ICalendarDay {
-    events: ICalendarFullDayEvent[]
-    blocks: ICalendarEvent[]
-}
-
-export interface ICalendarFullDayEvent {
-    title: string
-    color?: string
-}
-
-export interface ICalendarEvent extends ICalendarFullDayEvent {
+export interface ICalendarEvent {
     label: string
-    startTime: string
-    endTime: string
-    location: IClassroom
+    context: ICalendarEventContext
+    startTime?: string
+    endTime?: string
 }
 
 export interface ICalendarEventContext {
-    airCheckIns?: number
-    appointments?: number
+    airCheckIns?: IAirCheckIn[]
+    appointments?: IAppointment[]
     attended?: boolean
+    ledgerEntries?: ILedgerEntry[]
+    location?: IClassroom
     missedAppointment?: boolean
-    ledgerEntries?: number
-    plans?: number
-    [key: string]: number | boolean
+    plans?: IPlan[]
+    topic?: ITopic
+}
+
+export interface ICalendarContextDetails {
+    event: ICalendarEvent
+    date: Date
+    title: string
+    color?: string
 }

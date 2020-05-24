@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Block;
+use App\Classroom;
+use App\Topic;
 use App\Http\Resources\Block as BlockResource;
+use App\Http\Resources\Classroom as ClassroomResource;
+use App\Http\Resources\Topic as TopicResource;
 use Illuminate\Http\Request;
 
 class CalendarController extends Controller
@@ -20,27 +24,22 @@ class CalendarController extends Controller
     {
         $time = $date ? strtotime($date) : time();
         $dateRange = $this->getDateRangeFromTime($time);
-        $startTime = strtotime('monday', $time);
-        
-        $calendar = [];
+        $startTime = strtotime('previous monday', $time);
 
-        $blocks = Block::where('begins_on', '>=', date('Y-m-d H:i:s', $time))
+        $teacher = auth()->user()->account();
+        $topicIds = $teacher->topics()->get()->pluck('id');
+
+        $blocks = Block::where('begins_on', '<=', date('Y-m-d H:i:s', $time))
             ->get()
-            ->mapToGroups(function ($block, $key) use ($startTime) {
-                return [date('Y-m-d', strtotime('+' . ($block->week_day - 1) . ' days', $startTime)) => new BlockResource($block)];
+            ->mapToGroups(function ($block, $key) use ($startTime, $topicIds) {
+                $date = date('Y-m-d', strtotime('+' . ($block->week_day - 1) . ' days', $startTime));
+                $context = [];
+
+                $context['location'] = new ClassroomResource(Classroom::all()->random());
+                $context['topic'] = $block->topics($date)->get()->whereIn('id', $topicIds)->first();
+                return [$date => (new BlockResource($block))->context($context)];
             });
         
-        /*
-        $teacher = Teacher::findOrFail($id);
-
-        $appointments = $teacher->appointments()
-            ->whereBetween('date', $dateRange)
-            ->get();
-        $scheduledTopics = $teacher->scheduledTopics()
-            ->whereBetween('date', $dateRange)
-            ->get();
-        */
-
         return $blocks;
 
     }

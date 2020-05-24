@@ -15,7 +15,7 @@ class ScheduledTopicsTableSeeder extends Seeder
     public function run()
     {
         $blocks = Block::all();
-        $startOfWeek = strtotime('monday');
+        $startOfWeek = strtotime('previous monday');
 
         /**
          * For each Teacher, randomly attach one of their topics to each Block of the week.
@@ -27,7 +27,7 @@ class ScheduledTopicsTableSeeder extends Seeder
                     ScheduledTopic::create([
                         'block_id' => $block->id,
                         'topic_id' => $topics->random()->id,
-                        'date' => date('Y-m-d', strtotime('+' . ($block->day_of_week + 5 ) % 7 . 'days', $startOfWeek))
+                        'date' => date('Y-m-d', strtotime('+' . ($block->week_day + 6 ) % 7 . 'days', $startOfWeek))
                     ]);
                 }
             }

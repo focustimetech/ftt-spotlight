@@ -25,21 +25,29 @@ import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
 import {
     ICalendar,
-    ICalendarDay,
     ICalendarEvent,
-    ICalendarFullDayEvent
+    ICalendarEventContext,
+    ICalendarContextDetails
 } from '../../types/calendar'
 import { getDatesOfWeek, getHoursOfDay, getTimeRangeLabels } from '../../utils/date'
 
 import Flexbox from '../Layout/Flexbox'
+import CalendarContextMenu from './CalendarContextMenu'
 import CalendarMonthLabel from './CalendarMonthLabel'
 import CalendarBlock from './CalendarBlock'
 import { DayOfWeekNumber } from '../../types/date'
 
 const BLOCK_HEIGHT: number = 92
+const initialContextDetails = {
+    date: new Date(),
+    title: '',
+    event: { label: '', context: {} }
+}
 
 interface ICalendarProps {
     calendar: ICalendar
+    getTitle: (event: ICalendarEvent) => string
+    getColor: (event: ICalendarEvent) => string
     is24Hour?: boolean
     includeWeekends?: boolean
 }
@@ -47,12 +55,16 @@ interface ICalendarProps {
 interface ICalendarState {
     currentDate: Date
     pickerRef: EventTarget & HTMLButtonElement
+    contextMenuEl: Element
+    calendarContextDetails: ICalendarContextDetails
 }
 
 class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     state: ICalendarState = {
         currentDate: new Date(),
-        pickerRef: null
+        pickerRef: null,
+        contextMenuEl: null,
+        calendarContextDetails: initialContextDetails
     }
 
     handleSetToday = () => {
@@ -83,6 +95,17 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
         this.setState({ currentDate: date, pickerRef: null })
     }
 
+    handleOpenContextMenu = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, contextDetails: ICalendarContextDetails) => {
+        this.setState({
+            contextMenuEl: event.currentTarget,
+            calendarContextDetails: contextDetails
+        })
+    }
+
+    handleCloseContextMenu = () => {
+        this.setState({ contextMenuEl: null })
+    }
+
     render() {
         const { currentDate } = this.state
         const { calendar, is24Hour, includeWeekends } = this.props
@@ -94,6 +117,11 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
         return (
             <div className='calendar'>
+                <CalendarContextMenu
+                    {...this.state.calendarContextDetails}
+                    anchorEl={this.state.contextMenuEl}
+                    onClose={this.handleCloseContextMenu}
+                />
                 <Flexbox className='calendar__header'>
                     <Button variant='outlined' onClick={() => this.handleSetToday()}>Today</Button>
                     <IconButton onClick={() => this.handlePrevious()}><Icon>chevron_left</Icon></IconButton>
@@ -153,34 +181,34 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                             </div>
                             <div className='calendar__calendar-days'>
                                 {calendarDayKeys.map((key: string) => {
-                                    const calendarDay = calendar[key]
+                                    const calendarEvents: ICalendarEvent[] = calendar[key] || []
                                     return (
                                         <div className='calendar__calendar-day'>
-                                            {calendarDay && calendarDay.blocks.map((calendarEvent: ICalendarEvent) => {
-                                                const { startTime, endTime, ...rest } = calendarEvent
-                                                const start: Date = moment(`${key} ${startTime}`).toDate()
-                                                const end: Date = moment(`${key} ${endTime}`).toDate()
-                                                const [startLabel, endLabel] = getTimeRangeLabels(start, end)
-                                                const midnight = new Date(`${key} 00:00:00`)
-                                                const hoursAfterMidnight = Math.floor(start.getTime() - midnight.getTime()) / (1000 * 60 * 60)
-                                                console.log('hoursAfterMignight:', hoursAfterMidnight)
-                                                const top: number = BLOCK_HEIGHT * (Math.round(start.getTime() - midnight.getTime()) / (1000 * 60 * 60))
-                                                console.log('top:', top)
-                                                const height: number = BLOCK_HEIGHT * Math.round(end.getTime() - start.getTime()) / (1000 * 60 * 60)
-                                                console.log('midnight:', midnight)
-                                                console.log('start:', start)
-                                                const minutes: number = getMinutes(moment(calendarEvent.startTime).toDate())
-                                                // console.log('minutes:', minutes)
+                                            {calendarEvents.filter((event: ICalendarEvent) => event.startTime && event.endTime)
+                                                .map((event: ICalendarEvent) => {
+                                                    const { startTime, endTime } = event
+                                                    const start: Date = moment(`${key} ${startTime}`).toDate()
+                                                    const end: Date = moment(`${key} ${endTime}`).toDate()
+                                                    const [startLabel, endLabel] = getTimeRangeLabels(start, end)
+                                                    const dayStart: Date = moment(`${key} 06:00:00`).toDate()
+                                                    const hoursAfterDayStart: number = Math.floor(start.getTime() - dayStart.getTime()) / (1000 * 60 * 60)
+                                                    const top: number = BLOCK_HEIGHT * (Math.round(start.getTime() - dayStart.getTime()) / (1000 * 60 * 60))
+                                                    const height: number = BLOCK_HEIGHT * Math.round(end.getTime() - start.getTime()) / (1000 * 60 * 60)
+                                                    const minutes: number = getMinutes(moment(event.startTime).toDate())
 
-                                                return (
-                                                    <CalendarBlock 
-                                                        {...rest}
-                                                        startTime={startLabel}
-                                                        endTime={endLabel}
-                                                        style={{ top, height }}
-                                                    />
-                                                )
-                                            })}
+                                                    return (
+                                                        <CalendarBlock
+                                                            numLines={Math.floor((height - 8) / 15)}
+                                                            event={{ ...event, startTime: startLabel, endTime: endLabel}}
+                                                            date={start}
+                                                            color={this.props.getColor(event)}
+                                                            title={this.props.getTitle(event)}
+                                                            style={{ top, height }}
+                                                            onClick={this.handleOpenContextMenu}
+                                                        />
+                                                    )
+                                                })
+                                            }
                                         </div>
                                     )
                                 })}

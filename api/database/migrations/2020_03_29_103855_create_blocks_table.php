@@ -18,7 +18,7 @@ class CreateBlocksTable extends Migration
 		 */
 		Schema::create('blocks', function (Blueprint $table) {
 			$table->id();
-			$table->string('name');					// Name of the block. E.g. "Focus Block"
+			$table->string('label');				// Label for the block. E.g. "Focus Block"
 			$table->time('start_time');				// Starting time of the block. E.g. "09:26:00"
 			$table->time('end_time');				// End time of the block. E.g. "10:15:00"
 			$table->timestamp('begins_on')			// Timestamp that the block begins being active

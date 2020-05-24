@@ -5,6 +5,7 @@ import {
     endOfWeek,
     endOfYesterday,
     format,
+    getMinutes,
     startOfMonth,
     startOfToday,
     startOfWeek,
@@ -156,6 +157,20 @@ export const getHoursOfDay = (is24Hour: boolean = false): string[] => {
     return hours
 }
 
+/**
+ * Returns a string representing the time range, useful for labeling calendar blocks.
+ * e.g.: ['9am', 5pm'], ['1:30', '3pm'], ['9:05am', '12:35pm']
+ * @param start The start Date.
+ * @param end The end Date.
+ * @return An array containing the time range labels.
+ */
 export const getTimeRangeLabels = (start: Date, end: Date): [string, string] => {
-    return ['5', '9pm']
+    const startPeriod = format(start, 'a').toLowerCase()
+    const endPeriod = format(end, 'a').toLowerCase()
+    const startLabel: string = format(start, getMinutes(start) === 0 ? 'h' : 'h:mm')
+    const endLabel: string = format(end, getMinutes(end) === 0 ? 'h' : 'h:mm')
+    return [
+        `${startLabel}${startPeriod !== endPeriod ? startPeriod : ''}`,
+        `${endLabel}${endPeriod}`
+    ]
 }

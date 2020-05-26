@@ -32,7 +32,7 @@ class CalendarController extends Controller
 
         $blocks = Block::where('begins_on', '<=', date('Y-m-d H:i:s', $time))
             ->get()
-            ->mapToGroups(function ($block, $key) use ($startTime, $topicIds) {
+            ->mapToGroups(function ($block, $key) use ($startTime, $topicIds, $ledgerEntries) {
                 $date = date('Y-m-d', strtotime('+' . ($block->week_day - 1) . ' days', $startTime));
                 $context = [];
                 

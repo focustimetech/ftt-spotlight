@@ -11,7 +11,7 @@ import {
 
 import { checkIn } from '../../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { ILedgerEntry } from '../../types/calendar'
+import { ILedgerEntry } from '../../types/checkin'
 import { ICheckInChip, ICheckInError, ICheckInRequest, ICheckInResponse } from '../../types/checkin'
 import {
     appendToLocalStorageArray,

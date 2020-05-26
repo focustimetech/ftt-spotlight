@@ -5,6 +5,7 @@ import { Button, Chip, Typography } from '@material-ui/core'
 import ColorPicker, { randomColor } from '../components/Form/Pickers/ColorPicker'
 import CalendarContextMenu from '../components/Calendar/CalendarContextMenu'
 import TopicsForm from '../components/Form/Forms/TopicsForm'
+import Form from '../components/Form'
 
 import EnhancedTable from '../components/Table/EnhancedTable'
 import { ITableColumn, TableColumns } from '../types/table'
@@ -68,14 +69,20 @@ export default () => {
     const [selected, setSelected] = React.useState([])
 
     return (
-        <div style={{ padding: 64, boxSizing: 'border-box', background: '#EEE' }}>
-            <EnhancedTable<IPersonData>
-                title='User Accounts'
-                data={tableData}
-                columns={personTableColumns}
-                selected={selected}
-                onSelect={setSelected} 
-            />
-        </div>
+
+        <>
+            <div style={{ padding: 64, boxSizing: 'border-box', background: '#EEE' }}>
+                <TopicsForm />
+{/*}
+                <EnhancedTable<IPersonData>
+                    title='User Accounts'
+                    data={tableData}
+                    columns={personTableColumns}
+                    selected={selected}
+                    onSelect={setSelected} 
+                />
+*/}
+            </div>
+        </>
     )
 }

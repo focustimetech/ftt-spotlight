@@ -1,4 +1,3 @@
-import DateFnsUtils from '@date-io/date-fns'
 import moment from 'moment'
 import React from 'react'
 
@@ -17,11 +16,12 @@ import {
 import {
     Button,
     ButtonBase,
+    FormControl,
     Icon,
     IconButton,
-    Typography
+    Select,
+    Typography,
 } from '@material-ui/core'
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
 import {
     ICalendar,
@@ -31,6 +31,7 @@ import {
 } from '../../types/calendar'
 import { getDatesOfWeek, getHoursOfDay, getTimeRangeLabels } from '../../utils/date'
 
+import ButtonSelect from '../Form/Components/ButtonSelect'
 import Flexbox from '../Layout/Flexbox'
 import CalendarContextMenu from './CalendarContextMenu'
 import CalendarMonthLabel from './CalendarMonthLabel'
@@ -126,22 +127,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                     <Button variant='outlined' onClick={() => this.handleSetToday()}>Today</Button>
                     <IconButton onClick={() => this.handlePrevious()}><Icon>chevron_left</Icon></IconButton>
                     <IconButton onClick={() => this.handleNext()}><Icon>chevron_right</Icon></IconButton>
-                    <CalendarMonthLabel date={datesOfWeek[0]} />
-                    <div>
-                        <IconButton onClick={this.handleOpenPicker}><Icon>today</Icon></IconButton>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <DatePicker
-                                value={this.state.currentDate}
-                                onChange={this.handleSelectDate}
-                                onClose={this.handleClosePicker}
-                                disableToolbar
-                                variant='inline'
-                                open={pickerOpen}
-                                TextFieldComponent={() => null}
-                                PopoverProps={{anchorEl: this.state.pickerRef }}
-                            />
-                        </MuiPickersUtilsProvider>
-                    </div>
+                    <CalendarMonthLabel date={datesOfWeek[0]} onChange={this.handleSelectDate} />
                 </Flexbox>
                 <div className='calendar__body'>
                     <div className='calendar__date-labels'>

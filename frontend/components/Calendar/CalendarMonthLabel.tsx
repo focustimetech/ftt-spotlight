@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core'
 
 import ButtonSelect from '../Form/Components/ButtonSelect'
 
-interface ICalendarMonthLabelProps {
+export interface ICalendarMonthLabelProps {
     date: Date
     days?: number
     includeDay?: boolean

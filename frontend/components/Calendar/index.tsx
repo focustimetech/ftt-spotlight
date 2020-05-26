@@ -23,6 +23,7 @@ import {
     Typography,
 } from '@material-ui/core'
 
+import { DayOfWeekNumber } from '../../types/date'
 import {
     ICalendar,
     ICalendarEvent,
@@ -31,12 +32,9 @@ import {
 } from '../../types/calendar'
 import { getDatesOfWeek, getHoursOfDay, getTimeRangeLabels } from '../../utils/date'
 
-import ButtonSelect from '../Form/Components/ButtonSelect'
-import Flexbox from '../Layout/Flexbox'
-import CalendarContextMenu from './CalendarContextMenu'
-import CalendarMonthLabel from './CalendarMonthLabel'
 import CalendarBlock from './CalendarBlock'
-import { DayOfWeekNumber } from '../../types/date'
+import CalendarContextMenu from './CalendarContextMenu'
+import CalendarHeader from './CalendarHeader'
 
 const BLOCK_HEIGHT: number = 92
 const initialContextDetails = {
@@ -66,10 +64,6 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
         pickerRef: null,
         contextMenuEl: null,
         calendarContextDetails: initialContextDetails
-    }
-
-    handleSetToday = () => {
-        this.setState({ currentDate: new Date()})
     }
 
     handleNext = () => {
@@ -123,12 +117,12 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                     anchorEl={this.state.contextMenuEl}
                     onClose={this.handleCloseContextMenu}
                 />
-                <Flexbox className='calendar__header'>
-                    <Button variant='outlined' onClick={() => this.handleSetToday()}>Today</Button>
-                    <IconButton onClick={() => this.handlePrevious()}><Icon>chevron_left</Icon></IconButton>
-                    <IconButton onClick={() => this.handleNext()}><Icon>chevron_right</Icon></IconButton>
-                    <CalendarMonthLabel date={datesOfWeek[0]} onChange={this.handleSelectDate} />
-                </Flexbox>
+                <CalendarHeader
+                    date={datesOfWeek[0]}
+                    onChange={this.handleSelectDate}
+                    onNext={this.handleNext}
+                    onPrevious={this.handlePrevious}
+                />
                 <div className='calendar__body'>
                     <div className='calendar__date-labels'>
                         {datesOfWeek.map((date: Date, index: number) => {

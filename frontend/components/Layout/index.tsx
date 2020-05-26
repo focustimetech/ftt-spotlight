@@ -1,3 +1,5 @@
+import Router from 'next/router'
+import nprogress from 'nprogress'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -21,6 +23,19 @@ interface ILayoutProps extends ILayoutContainerProps {
 }
 
 class Layout extends React.Component<ILayoutProps> {
+    componentDidMount() {
+        nprogress.configure({ trickleSpeed: 100, showSpinner: false })
+        Router.events.on('routeChangeStart', () => nprogress.start())
+        Router.events.on('routeChangeComplete', () => nprogress.done())
+        Router.events.on('routeChangeError', () => nprogress.done())
+    }
+
+    componentWillUnmount() {
+        Router.events.off('routeChangeStart', () => nprogress.start())
+        Router.events.off('routeChangeComplete', () => nprogress.done())
+        Router.events.off('routeChangeError', () => nprogress.done())
+    }
+
     render() {
         const { user } = this.props
 

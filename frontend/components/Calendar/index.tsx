@@ -119,6 +119,8 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                 />
                 <CalendarHeader
                     date={datesOfWeek[0]}
+                    nextLabel='Next week'
+                    previousLabel='Previous week'
                     onChange={this.handleSelectDate}
                     onNext={this.handleNext}
                     onPrevious={this.handlePrevious}

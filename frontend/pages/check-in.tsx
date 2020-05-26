@@ -1,3 +1,4 @@
+import { addDays, subDays } from 'date-fns'
 import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -21,6 +22,8 @@ import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
 
 import withAuth from '../hocs/withAuth'
+import CalendarHeader from '../components/Calendar/CalendarHeader'
+import Section from '../components/Layout/Section'
 import TopBar from '../components/TopBar'
 
 interface IReduxProps {
@@ -29,29 +32,45 @@ interface IReduxProps {
 
 interface ICheckInState {
     date: Date
-    datePickerOpen: boolean
-    errorsDialogOpen: boolean
-    loadingStatus: boolean
-    preventNavigation: boolean
-    refreshing: boolean
-    scheduledSelected: number[]
 }
 
 class CheckIn extends React.Component<IReduxProps, ICheckInState> {
     state: ICheckInState = {
         date: new Date(),
-        datePickerOpen: false,
-        errorsDialogOpen: false,
-        loadingStatus: false,
-        preventNavigation: false,
-        refreshing: false,
-        scheduledSelected: []
+    }
+
+    handleChangeDate = (date: Date) => {
+        this.setState({ date })
+    }
+
+    handleNext = () => {
+        this.setState((state: ICheckInState) => ({
+            date: addDays(state.date, 1)
+        }))
+    }
+
+    handlePrevious = () => {
+        this.setState((state: ICheckInState) => ({
+            date: subDays(state.date, 1)
+        }))
     }
 
     render() {
         return (
             <>
                 <TopBar title='Student Check-in' />
+                <Section>
+                    <CalendarHeader
+                        date={this.state.date}
+                        nextLabel='Next day'
+                        previousLabel='Previous day'
+                        onChange={this.handleChangeDate}
+                        onNext={this.handleNext}
+                        onPrevious={this.handlePrevious}
+                        days={1}
+                        includeDay
+                    />
+                </Section>
             </>
         )
     }

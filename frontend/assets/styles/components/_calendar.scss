@@ -97,14 +97,6 @@ $block-height: 92px;
         }
     }
 
-    .calendar-month-label {
-        text-transform: none !important;
-
-        &__month {
-            font-weight: 600;
-        }
-    }
-
     .calendar-block {
         position: absolute;
         z-index: 3;
@@ -141,6 +133,14 @@ $block-height: 92px;
 
 .calendar-header {
     padding: spacing(1) 0;
+}
+
+.calendar-month-label {
+    text-transform: none !important;
+
+    &__month {
+        font-weight: 600;
+    }
 }
 
 .context-menu {

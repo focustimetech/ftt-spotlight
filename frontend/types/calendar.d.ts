@@ -6,11 +6,16 @@ import { ITopic } from './topic'
 
 export type ICalendar = Record<string, ICalendarEvent[]>
 
-export interface ICalendarEvent {
+export interface IBlock {
+    id: number
     label: string
-    context: ICalendarEventContext
+    weekDay: number
     startTime?: string
     endTime?: string
+}
+
+export interface ICalendarEvent extends IBlock {
+    context: ICalendarEventContext
 }
 
 export interface ICalendarEventContext {

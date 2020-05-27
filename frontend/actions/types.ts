@@ -102,3 +102,6 @@ export const UPDATE_WIKI_GROUP = 'UPDATE_WIKI_GROUP'
 
 // Blocks
 export const FETCH_BLOCKS = 'FETCH_BLOCKS'
+
+// Calendar
+export const FETCH_CALENDAR = 'FETCH_CALENDAR'

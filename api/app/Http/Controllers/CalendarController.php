@@ -12,12 +12,14 @@ use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
-    private function getDateRangeFromTime($startTime)
+    public function selfCalendar($date = null)
     {
-        return [
-            date('Y-m-d', $startTime),
-            date('Y-m-d', strtotime('+6 days', $startTime))
-        ];
+        $user = auth()->user();
+        if ($user->account_type === 'student') {
+            return $this->studentCalendar($user->account()->id, $date);
+        } else if ($user->account_type === 'teacher') {
+            return $this->teacherCalendar($user->account()->id, $date);
+        }
     }
 
     public function teacherCalendar($id, $date = null)
@@ -53,5 +55,13 @@ class CalendarController extends Controller
     {
         $student = Student::findOrFail($id);
 
+    }
+
+    private function getDateRangeFromTime($startTime)
+    {
+        return [
+            date('Y-m-d', $startTime),
+            date('Y-m-d', strtotime('+6 days', $startTime))
+        ];
     }
 }

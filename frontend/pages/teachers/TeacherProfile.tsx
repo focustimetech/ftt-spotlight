@@ -4,7 +4,8 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { ICalendar, ICalendarEvent, ICalendarEventContext } from '../../types/calendar'
+import { ITeacher } from '../../types/auth'
+import { Calendar as ICalendar, ICalendarEvent, ICalendarEventContext } from '../../types/calendar'
 import { IProfileProps } from '../../types/components/profile'
 import API from '../../utils/api'
 import { getDisplayRole } from '../../utils/user'
@@ -26,7 +27,7 @@ interface ITeacherProfileState {
     tab: number
 }
 
-class TeacherProfile extends React.Component<IProfileProps, ITeacherProfileState> {
+class TeacherProfile extends React.Component<IProfileProps<ITeacher>, ITeacherProfileState> {
     state: ITeacherProfileState = {
         calendar: {},
         tab: 0

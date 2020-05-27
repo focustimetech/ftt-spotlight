@@ -86,6 +86,12 @@ Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
     Route::delete('topics/{id}', 'TopicsController@delete');
 });
 
+// Students, Teachers
+Route::middleware('auth:sancum', 'scopes:teacher,student')->group(function() {
+    // Calendar
+    ROute::get('calendar', 'CalendarController@selfCalendar');
+});
+
 /*
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

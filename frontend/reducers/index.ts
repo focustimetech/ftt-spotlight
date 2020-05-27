@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 
 import { authReducer } from './authReducer'
 import { blockReducer } from './blockReducer'
+import { calendarReducer } from './calendarReducer'
 import { classroomsReducer } from './classroomsReducer'
 import { clustersReducer } from './clustersReducer'
 import { notificationReducer } from './notificationReducer'
@@ -22,6 +23,7 @@ import { usersReducer } from './usersReducer'
 export const rootReducer = combineReducers({
     auth: authReducer,
     blocks: blockReducer,
+    calendar: calendarReducer,
     classrooms: classroomsReducer,
     clusters: clustersReducer,
     notifications: notificationReducer,

@@ -15,6 +15,7 @@ export interface IAvatar {
 export interface IUserDetails {
     id: number
     accountType: AccountType
+    accountId: number
     firstName: string
     lastName: string
     name: string

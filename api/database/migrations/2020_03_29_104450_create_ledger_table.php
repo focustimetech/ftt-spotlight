@@ -18,12 +18,13 @@ class CreateLedgerTable extends Migration
          */
         Schema::create('ledger', function (Blueprint $table) {
             $table->id();
-            $table->date('date');               // Date of the block used for the record
-            $table->string('memo');             // Memo for the block, typically the topic's memo
-            $table->foreignId('student_id');    // Student being checked in
-            $table->foreignId('block_id');      // Block used for the check-in
-            $table->foreignId('teacher_id');    // Teacher that checked the student in
-            $table->timestamps();               // Timestamp, which encodes when the actual check-in happened
+            $table->date('date');                                           // Date of the block used for the record
+            $table->string('memo');                                         // Memo for the block, typically the topic's memo
+            $table->enum('method', ['plan', 'air', 'search', 'number']);    // The method by which the student is checked in
+            $table->foreignId('student_id');                                // Student being checked in
+            $table->foreignId('block_id');                                  // Block used for the check-in
+            $table->foreignId('teacher_id');                                // Teacher that checked the student in
+            $table->timestamps();                                           // Timestamp, which encodes when the actual check-in happened
             // Foreign keys
             $table->foreign('student_id')->references('id')->on('students');
             $table->foreign('block_id')->references('id')->on('blocks');

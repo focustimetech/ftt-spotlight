@@ -13,13 +13,17 @@ import {
     ListItemAvatar,
     ListItemText,
     MenuItem,
+    Select,
     TextField,
     Tooltip,
     Typography
 } from '@material-ui/core'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
+import { fetchBlocks } from '../actions/blockActions'
 import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
+import { NextPageContext } from '../types'
+import { IBlock } from '../types/calendar'
 
 import withAuth from '../hocs/withAuth'
 import CalendarHeader from '../components/Calendar/CalendarHeader'
@@ -27,16 +31,25 @@ import Section from '../components/Layout/Section'
 import TopBar from '../components/TopBar'
 
 interface IReduxProps {
+    blocks: IBlock[]
+    // fetchBlocks: () => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface ICheckInState {
+    blockId: number
     date: Date
 }
 
 class CheckIn extends React.Component<IReduxProps, ICheckInState> {
+    static getInitialProps = async (context: NextPageContext) => {
+        const { store } = context
+        return await store.dispatch(fetchBlocks())
+    }
+
     state: ICheckInState = {
-        date: new Date(),
+        blockId: -1,
+        date: new Date()
     }
 
     handleChangeDate = (date: Date) => {
@@ -55,7 +68,25 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
         }))
     }
 
+    /**
+     * Change this from any to the right event type.
+     */
+    handleSelectBlock = (event: any) => {
+        const { value } = event.target
+        this.setState({ blockId: value})
+    }
+
+    /**
+     * setState the right blockId
+     */
+    componentDidMount() {
+
+    }
+
     render() {
+        const weekDay: number = 1
+        const blocks: IBlock[] = this.props.blocks.filter((block: IBlock) => block.weekDay === weekDay)
+
         return (
             <>
                 <TopBar title='Student Check-in' />
@@ -70,10 +101,21 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
                         days={1}
                         includeDay
                     />
+                    <Select margin='dense' variant='outlined' label='Block' value={this.state.blockId} onChange={this.handleSelectBlock}>
+                        {blocks.map((block: IBlock) => (
+                            <MenuItem value={block.id}>{block.label}</MenuItem>
+                        ))}
+                    </Select>
                 </Section>
             </>
         )
     }
 }
 
-export default withAuth('teacher')(CheckIn)
+const mapStateToProps = (state) => ({
+    blocks: state.blocks.items
+})
+
+const mapDispatchToProps = { fetchBlocks }
+
+export default withAuth('teacher')(connect(mapStateToProps, mapDispatchToProps)(CheckIn))

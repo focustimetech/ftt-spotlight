@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
 import { authReducer } from './authReducer'
+import { blockReducer } from './blockReducer'
 import { classroomsReducer } from './classroomsReducer'
 import { clustersReducer } from './clustersReducer'
 import { notificationReducer } from './notificationReducer'
@@ -20,6 +21,7 @@ import { usersReducer } from './usersReducer'
 
 export const rootReducer = combineReducers({
     auth: authReducer,
+    blocks: blockReducer,
     classrooms: classroomsReducer,
     clusters: clustersReducer,
     notifications: notificationReducer,

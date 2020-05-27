@@ -18,7 +18,10 @@ class Teacher extends JsonResource
     {
         $staff = new StaffResource($this->getStaff());
         return array_merge(
-            ['unavailabilityLimit' => $this->unavailability_limit],
+            [
+                'accountId' => $this->id,
+                'unavailabilityLimit' => $this->unavailability_limit
+            ],
             $staff->toArray($request)
         );
     }

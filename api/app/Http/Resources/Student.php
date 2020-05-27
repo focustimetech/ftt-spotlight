@@ -18,6 +18,7 @@ class Student extends JsonResource
         $user = new UserResource($this->user()->first());
         return array_merge(
             [
+                'accountId' => $this->id,
                 'grade' => $this->grade
             ],
             $user->toArray($request)

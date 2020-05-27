@@ -4,14 +4,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
-    Avatar,
-    Button,
-    Icon,
-    IconButton,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
+    FormControl,
+    InputLabel,
     MenuItem,
     Select,
     TextField,
@@ -80,7 +74,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
      * setState the right blockId
      */
     componentDidMount() {
-
+        
     }
 
     render() {
@@ -101,11 +95,20 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
                         days={1}
                         includeDay
                     />
-                    <Select margin='dense' variant='outlined' label='Block' value={this.state.blockId} onChange={this.handleSelectBlock}>
-                        {blocks.map((block: IBlock) => (
-                            <MenuItem value={block.id}>{block.label}</MenuItem>
-                        ))}
-                    </Select>
+                    <FormControl variant='outlined' margin='dense'>
+                        <InputLabel id='check-in-block-label'>Block</InputLabel>
+                        <Select
+                            labelId='check-in-block-label'
+                            variant='outlined'
+                            value={this.state.blockId}
+                            onChange={this.handleSelectBlock}
+                            label='Block'
+                        >
+                            {blocks.map((block: IBlock) => (
+                                <MenuItem value={block.id}>{block.label}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Section>
             </>
         )

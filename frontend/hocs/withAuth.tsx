@@ -33,7 +33,6 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
     }
 
     AuthComponent.getInitialProps = async (context: NextPageContext): Promise<T & IAuthComponentProps> => {
-        const pageProps = C.getInitialProps ? await C.getInitialProps(context) : {}
         const { store } = context
         const isServer: boolean = typeof window === 'undefined'
         let user: IUser = store.getState().auth.user // Get him from the datastore
@@ -50,7 +49,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
             })
         }
 
-        console.log('user:', user)
+        const pageProps = C.getInitialProps ? await C.getInitialProps(context) : {}
         if (user && accountMatchesWhitelist(user.accountType, accountTypes) && user.active) {
             return { ...pageProps, user }
         }

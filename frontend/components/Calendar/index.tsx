@@ -38,6 +38,8 @@ import CalendarHeader from './CalendarHeader'
 
 const BLOCK_HEIGHT: number = 92
 const initialContextDetails = {
+    id: -1,
+    weekDay: -1,
     date: new Date(),
     title: '',
     event: { label: '', context: {} }
@@ -47,6 +49,8 @@ interface ICalendarProps {
     calendar: ICalendar
     getTitle: (event: ICalendarEvent) => string
     getColor: (event: ICalendarEvent) => string
+    onNext?: (date: Date) => void
+    onPrevious?: (date: Date) => void
     is24Hour?: boolean
     includeWeekends?: boolean
 }
@@ -67,15 +71,23 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     }
 
     handleNext = () => {
-        this.setState((state: ICalendarState) => ({
-            currentDate: startOfWeek(addDays(endOfWeek(state.currentDate), 1))
-        }))
+        this.setState((state: ICalendarState) => {
+            const nextWeek: Date = startOfWeek(addDays(endOfWeek(state.currentDate), 1))
+            if (this.props.onNext) {
+                this.props.onPrevious(nextWeek)
+            }
+            return { currentDate: nextWeek }
+        })
     }
 
     handlePrevious = () => {
-        this.setState((state: ICalendarState) => ({
-            currentDate: startOfWeek(subDays(startOfWeek(state.currentDate), 1))
-        }))
+        this.setState((state: ICalendarState) => {
+            const previousWeek: Date = startOfWeek(subDays(startOfWeek(state.currentDate), 1))
+            if (this.props.onPrevious) {
+                this.props.onPrevious(previousWeek)
+            }
+            return { currentDate: previousWeek }
+        })
     }
 
     handleOpenPicker = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

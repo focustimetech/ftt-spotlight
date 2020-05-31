@@ -1,9 +1,9 @@
 import { FETCH_CALENDAR } from '../actions/types'
-import { Calendar } from '../types/calendar'
+import { ICalendar } from '../types/calendar'
 import { IReduxAction } from '../types/redux'
 
 interface IState {
-    calendar: Calendar
+    calendar: ICalendar
 }
 
 const initialState: IState = {
@@ -17,5 +17,7 @@ export const calendarReducer = (state = initialState, action: IReduxAction) => {
                 ...state,
                 calendar: action.payload
             }
+        default:
+            return state
     }
 }

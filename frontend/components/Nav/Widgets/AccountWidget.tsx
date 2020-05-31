@@ -14,7 +14,7 @@ import {
 
 import { dispatchCurrentUser, logout } from '../../../actions/authActions'
 import { IUser } from '../../../types/auth'
-import { getDisplayRole } from '../../../utils/user'
+import { getDisplayRole, getProfileLink } from '../../../utils/user'
 
 import Avatar from '../../Avatar'
 import { LoadingMenuItem } from '../../Form/Components/LoadingMenuItem'
@@ -75,7 +75,7 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
         const transformOrigin: PopoverOrigin = this.props.orientation === 'horizontal'
             ? { vertical: 'top', horizontal: 'right' }
             : { vertical: 'bottom', horizontal: 'left' }
-
+            console.log('AccountWidget.user:', user)
         return (
             <div>
                 <NavItem title='My Account' onClick={this.handleClickOpen} orientation={this.props.orientation}>
@@ -95,7 +95,7 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
                             <Typography variant='caption'>{getDisplayRole(user.accountType)}</Typography>
                         </div>
                         {user.accountType !== 'sysadmin' && user.active && (
-                            <Link href='profile'>
+                            <Link href='teachers/[teacherId]' as={getProfileLink(user)}>
                                 <MenuItem onClick={() => this.handleClose()}>Profile</MenuItem>
                             </Link>
                         )}

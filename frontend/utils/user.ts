@@ -1,4 +1,4 @@
-import { AccountType } from '../types/auth'
+import { AccountType, IUser } from '../types/auth'
 
 export const getDisplayRole = (accountType: AccountType): string => {
     switch (accountType) {
@@ -14,5 +14,23 @@ export const getDisplayRole = (accountType: AccountType): string => {
             return 'CS'
         default:
             return 'User'
+    }
+}
+
+export const getProfileLink = (user: IUser): string => {
+    const { accountType, accountId } = user
+    switch (accountType) {
+        case 'student':
+            return `students/${accountId}`
+        case 'staff':
+            return `staff/${accountId}`
+        case 'teacher':
+            return `teachers/${accountId}`
+        case 'guardian':
+            return `parents/${accountId}`
+        case 'sysadmin':
+            return `sysadmin/${accountId}`
+        default:
+            return '/'
     }
 }

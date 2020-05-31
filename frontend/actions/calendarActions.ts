@@ -15,5 +15,5 @@ export const fetchCalendar = (date?: Date) => {
 }
 
 export const fetchTeacherCalendar = (teacherId: number, date?: Date) => {
-    return API.get<ICalendar>(date ? `teacher/${teacherId}/calendar/${date.toISOString()}` : `teacher/${teacherId}/calendar`)
+    return API.get<ICalendar>(date ? `/teacher/${teacherId}/calendar/${date.toISOString()}` : `/teacher/${teacherId}/calendar`)
 }

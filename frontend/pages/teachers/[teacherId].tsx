@@ -1,3 +1,4 @@
+import Error from '../_error'
 import React from 'react'
 
 import {
@@ -31,6 +32,7 @@ interface IReduxProps {
 interface ITeacherProfileProps extends IReduxProps {
     teacher: ITeacher
     calendar: ICalendar
+    errorCode: number
 }
 
 interface ITeacherProfileState {
@@ -41,24 +43,38 @@ interface ITeacherProfileState {
 class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfileState> {
     static getInitialProps = async (context: NextPageContext) => {
         const { store } = context
-        const teacherId: number = Number(context.query)
+        const isServer: boolean = typeof window === 'undefined'
+        console.log('query:', context.query)
+        const teacherId: number = Number(context.query.teacherId)
         const currentUser: IUser = store.getState().auth.user
         const editable: boolean = currentUser.accountType === 'teacher' && currentUser.accountId === teacherId
         let calendar: ICalendar = {}
         let teacher: ITeacher = null
+        let errorCode: number
 
         if (editable) {
-            await store.dispatch(fetchCalendar())
-        } else {
-            await fetchTeacherCalendar(teacherId).then((res) => {
-                calendar = res.data
+            teacher = currentUser as ITeacher
+            await store.dispatch(fetchCalendar()).catch((err: any) => {
+                if (isServer) {
+                    errorCode = err.response.status
+                }
             })
+        } else {
             await fetchTeacher(teacherId).then((res) => {
                 teacher = res.data
+            }, (err) => {
+                if (isServer) {
+                    errorCode = err.response.status
+                }
+            })
+            await fetchTeacherCalendar(teacherId).then((res) => {
+                calendar = res.data
+            }, (err) => {
+                errorCode = err.response.status
             })
         }
 
-        return { teacher, calendar }
+        return { errorCode, teacher, calendar }
     }
 
     state: ITeacherProfileState = {
@@ -68,6 +84,9 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
 
     render() {
         const { teacher, calendar } = this.props
+        if (!teacher) {
+            return <Error statusCode={this.props.errorCode} withNavigation />
+        }
         const tabs: ITabs = {
             tabs: ['Overview', 'Calendar'],
             onChange: (tab: number) => this.setState({ tab }),
@@ -79,7 +98,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                 <TopBar
                     title={teacher.name}
                     avatar={teacher.avatar}
-                    subtitle={getDisplayRole('teacher')}
+                    subtitle={getDisplayRole(teacher.accountType)}
                     tabs={tabs}
                 />
                 {this.state.tab === 0 && (

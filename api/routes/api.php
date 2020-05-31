@@ -40,8 +40,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('staff/{id}', 'StaffController@show');
 
     // Teachers
-    Route::get('teacher', 'TeacherController@index');
-    Route::get('teacher/{id}', 'TeacherController@show');
+    Route::get('teacher', 'TeachersController@index');
+    Route::get('teachers/{id}', 'TeachersController@show');
     
         // Teacher Calendar
         Route::get('teacher/{id}/calendar/{date?}', 'CalendarController@teacherCalendar');
@@ -87,7 +87,7 @@ Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
 });
 
 // Students, Teachers
-Route::middleware('auth:sancum', 'scopes:teacher,student')->group(function() {
+Route::middleware('auth:sanctum', 'scopes:teacher,student')->group(function() {
     // Calendar
     ROute::get('calendar', 'CalendarController@selfCalendar');
 });

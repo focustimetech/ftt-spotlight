@@ -29,7 +29,7 @@ class VerticalNav extends React.Component<IVerticalNavProps> {
                             className='nav__logo'
                             title='Spotlight'
                             href='/'
-                            src='images/ft-badge-white.png'
+                            src='/images/ft-badge-white.png'
                             orientation='vertical'
                         />
                         <FavoritesWidget orientation='vertical' />

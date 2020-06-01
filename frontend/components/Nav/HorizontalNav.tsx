@@ -32,7 +32,7 @@ class HorizontalNav extends React.Component<IHorizontalNavProps> {
                         className='nav__logo'
                         title='Spotlight'
                         href='/'
-                        src='images/ft-badge-white.png'
+                        src='/images/ft-badge-white.png'
                         orientation='horizontal'
                     />
                     {this.props.hasFavorites && (

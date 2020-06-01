@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import Error from '../_error'
 import React from 'react'
 
@@ -14,7 +15,7 @@ import { ICalendar, ICalendarEvent, ICalendarEventContext } from '../../types/ca
 import { getDisplayRole } from '../../utils/user'
 
 import withAuth from '../../hocs/withAuth'
-import Calendar from '../../components/Calendar'
+import Calendar, { getNextWeek, getPreviousWeek } from '../../components/Calendar'
 import Section from '../../components/Layout/Section'
 import TopBar, { ITabs } from '../../components/TopBar'
 
@@ -84,16 +85,29 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
         tab: 0
     }
 
-    handleNextWeek = (date: Date) => {
-        //
+    fetchCalendar = (teacherId: number, date?: Date) => {
+        fetchTeacherCalendar(teacherId, date).then((res: AxiosResponse<ICalendar>) => {
+            this.setState((state: ITeacherProfileState) => ({
+                calendar: { ...state.calendar, ...res.data }
+            }))
+        })
     }
 
-    handlePreviousWeek = () => {
-        //
+    fetchNextCalendar = (date: Date) => {
+        const nextWeek: Date = getNextWeek(date)
+        this.fetchCalendar(this.props.teacher.accountId, date)
+    }
+
+    fetchPreviousCalendar = (date: Date) => {
+        const previousWeek: Date = getPreviousWeek(date)
+        this.fetchCalendar(this.props.teacher.accountId, date)
     }
 
     componentDidMount() {
-        //
+        this.setState({ calendar: this.props.calendar }, () => {
+            this.fetchNextCalendar(new Date())
+            this.fetchPreviousCalendar(new Date())
+        })
     }
 
     render() {
@@ -125,8 +139,8 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                         calendar={this.state.calendar}
                         getTitle={getTitle}
                         getColor={getColor}
-                        onPrevious={this.handlePreviousWeek}
-                        onNext={this.handleNextWeek}
+                        onPrevious={this.fetchPreviousCalendar}
+                        onNext={this.fetchNextCalendar}
                     />
                 )}
             </>

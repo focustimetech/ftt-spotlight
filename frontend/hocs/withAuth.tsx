@@ -33,25 +33,22 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
     }
 
     AuthComponent.getInitialProps = async (context: NextPageContext): Promise<T & IAuthComponentProps> => {
+        console.log('withAuth.getInitialProps')
         const { store } = context
         const isServer: boolean = typeof window === 'undefined'
         let user: IUser = store.getState().auth.user // Get him from the datastore
         let authValid: boolean = true
-        // console.log('Initial user:', user)
+        console.log('withAuth.initial_user:', user)
 
         if (!user) {
             await store.dispatch(dispatchCurrentUser()).then(() => {
                 // Get the just-fetched user from the datastore.
                 user = store.getState().auth.user
-                // console.log('New user:', user)
+                console.log('withAuth.new_user:', user)
             }, (error: any) => {
                 authValid = false
+                console.log('withAuth.authValid = false')
             })
-        }
-
-        const pageProps = C.getInitialProps ? await C.getInitialProps(context) : {}
-        if (user && accountMatchesWhitelist(user.accountType, accountTypes) && user.active) {
-            return { ...pageProps, user }
         }
 
         if (!authValid) {
@@ -62,7 +59,12 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
                 message: 'Your session has expired. Please sign back in.'
             }))
 
-            return {...pageProps, user: undefined }
+            return { user: undefined }
+        }
+
+        const pageProps = C.getInitialProps ? await C.getInitialProps(context) : {}
+        if (user && accountMatchesWhitelist(user.accountType, accountTypes) && user.active) {
+            return { ...pageProps, user }
         }
 
         if (!user.active) {

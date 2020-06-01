@@ -45,6 +45,14 @@ const initialContextDetails = {
     event: { label: '', context: {} }
 }
 
+export const getNextWeek = (date: Date): Date => {
+    return startOfWeek(addDays(endOfWeek(date), 1))
+}
+
+export const getPreviousWeek = (date: Date): Date => {
+    return startOfWeek(subDays(startOfWeek(date), 1))
+}
+
 interface ICalendarProps {
     calendar: ICalendar
     getTitle: (event: ICalendarEvent) => string
@@ -72,7 +80,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
     handleNext = () => {
         this.setState((state: ICalendarState) => {
-            const nextWeek: Date = startOfWeek(addDays(endOfWeek(state.currentDate), 1))
+            const nextWeek: Date = getNextWeek(state.currentDate)
             if (this.props.onNext) {
                 this.props.onPrevious(nextWeek)
             }
@@ -82,7 +90,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
     handlePrevious = () => {
         this.setState((state: ICalendarState) => {
-            const previousWeek: Date = startOfWeek(subDays(startOfWeek(state.currentDate), 1))
+            const previousWeek: Date = getPreviousWeek(state.currentDate)
             if (this.props.onPrevious) {
                 this.props.onPrevious(previousWeek)
             }

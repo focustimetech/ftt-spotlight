@@ -19,7 +19,8 @@ class TeachersTableSeeder extends Seeder
             'first_name' => 'Spotlight',
             'last_name' => 'Dev',
             'account_type' => 'teacher',
-            'username' => 'teacher@focustime.ca'
+            'username' => 'teacher@focustime.ca',
+            'active' => true
         ]);
         factory(Staff::class)->create([
             'user_id' => $user->id

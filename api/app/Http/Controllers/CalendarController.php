@@ -25,7 +25,8 @@ class CalendarController extends Controller
     public function teacherCalendar($id, $date = null)
     {
         $time = $date ? strtotime($date) : time();
-        $startTime = strtotime('previous monday', $time);
+        error_log("\$time = ". date('Y-m-d H:i:s', $time));
+        $startTime = strtotime('this monday', $time);
         $dateRange = $this->getDateRangeFromTime($startTime);
 
         $teacher = auth()->user()->account();

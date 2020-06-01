@@ -140,11 +140,15 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
             return (
                 <>
                     <ButtonSelect open={false} onClick={this.handleOpenTopicSelect}>
-                        <Typography variant='h5'>Hello world</Typography>
+                        <Typography variant='h5'>
+                            {event.context.topic ? event.context.topic.memo : 'No Topic'}
+                        </Typography>
                     </ButtonSelect>
                     <TopicsDialog
                         anchorEl={this.state.topicsMenuAnchorEl}
                         onClose={this.handleCloseTopicSelect}
+                        selected={event.context.topic ? event.context.topic.id : -1}
+                        onSelect={() => null}
                     />
                 </>
             )

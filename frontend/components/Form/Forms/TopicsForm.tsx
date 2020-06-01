@@ -19,12 +19,11 @@ import { ISnackbar, queueSnackbar } from '../../../actions/snackbarActions'
 import { INewClassroom, IClassroom } from '../../../types/classroom'
 import { ITopic, INewTopic } from '../../../types/topic'
 
-import Flexbox from '../../Layout/Flexbox'
 import ColorPicker, { randomColor } from '../Pickers/ColorPicker'
 import { LoadingButton } from '../Components/LoadingButton'
 import Form, { FormRow, FormRowElement } from '../'
 
-interface ITopicsFormProps extends IReduxProps {
+export interface ITopicsFormProps {
     selected: number
     onSelect: (id: number) => void
 }
@@ -49,7 +48,7 @@ interface ITopcisFormState {
     loadingTopic: boolean
 }
 
-class TopicsForm extends React.Component<ITopicsFormProps, ITopcisFormState> {
+class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcisFormState> {
     state: ITopcisFormState = {
         editing: false,
         memo: '',

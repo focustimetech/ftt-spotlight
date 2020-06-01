@@ -8,7 +8,7 @@ import LayoutContainer from './LayoutContainer'
 import LayoutContent from './LayoutContent'
 
 export const staffMenuItems: INavMenuItem[] = [
-    { label: 'Reporting', href: 'reporting', icon: 'assessment' }
+    { label: 'Reporting', href: '/reporting', icon: 'assessment' }
 ]
 
 const StaffLayout = () => {

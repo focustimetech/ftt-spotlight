@@ -11,9 +11,9 @@ import VerticalNav from '../Nav/VerticalNav'
 import LayoutContainer from './LayoutContainer'
 import LayoutContent from './LayoutContent'
 
-const teacherMenuItems: INavMenuItem[] = [
-    { label: 'Clusters', href: 'clusters', icon: 'group' },
-    { label: 'Support Tickets', href: 'support', icon: 'live_help' }
+const sysAdminMenuItems: INavMenuItem[] = [
+    { label: 'Clusters', href: '/clusters', icon: 'group' },
+    { label: 'Support Tickets', href: '/support', icon: 'live_help' }
 ]
 
 interface IReduxProps {
@@ -49,7 +49,7 @@ class SysAdminLayout extends React.Component<IReduxProps & ILayoutContainerProps
         return (
             <LayoutContainer orientation='vertical'>
                 <VerticalNav
-                    menuItems={[...teacherMenuItems, ...staffMenuItems]}
+                    menuItems={[...sysAdminMenuItems, ...staffMenuItems]}
                     hiddenMenuItems={clusters}
                     disableHiddenMenu={this.state.loadingClusters}
                 />

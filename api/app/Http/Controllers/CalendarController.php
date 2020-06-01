@@ -26,7 +26,7 @@ class CalendarController extends Controller
     {
         $time = $date ? strtotime($date) : time();
         error_log("\$time = ". date('Y-m-d H:i:s', $time));
-        $startTime = strtotime('this monday', $time);
+        $startTime = strtotime('last monday', $time);
         $dateRange = $this->getDateRangeFromTime($startTime);
 
         $teacher = auth()->user()->account();

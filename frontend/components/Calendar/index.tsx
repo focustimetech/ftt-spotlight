@@ -4,8 +4,10 @@ import React from 'react'
 import {
     addDays,
     addWeeks,
+    endOfDay,
     endOfWeek,
     isToday,
+    startOfDay,
     startOfWeek,
     subDays,
     subWeeks,
@@ -44,11 +46,11 @@ const initialContextDetails = {
 }
 
 export const getNextWeek = (date: Date): Date => {
-    return startOfWeek(addDays(endOfWeek(date), 1))
+    return startOfWeek(addDays(endOfWeek(endOfDay(date)), 1))
 }
 
 export const getPreviousWeek = (date: Date): Date => {
-    return startOfWeek(subDays(startOfWeek(date), 1))
+    return startOfWeek(subDays(startOfWeek(startOfDay(date)), 1))
 }
 
 interface ICalendarProps {

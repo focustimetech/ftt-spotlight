@@ -21,15 +21,15 @@ export const getProfileLink = (user: IUser): string => {
     const { accountType, accountId } = user
     switch (accountType) {
         case 'student':
-            return `students/${accountId}`
+            return `/students/${accountId}`
         case 'staff':
-            return `staff/${accountId}`
+            return `/staff/${accountId}`
         case 'teacher':
-            return `teachers/${accountId}`
+            return `/teachers/${accountId}`
         case 'guardian':
-            return `parents/${accountId}`
+            return `/parents/${accountId}`
         case 'sysadmin':
-            return `sysadmin/${accountId}`
+            return `/sysadmin/${accountId}`
         default:
             return '/'
     }

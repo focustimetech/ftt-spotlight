@@ -116,6 +116,9 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
     }
 
     componentDidMount() {
+        if (!this.props.teacher) {
+            return
+        }
         this.setState({ calendar: this.props.calendar }, () => {
             this.fetchNextCalendar(new Date())
             this.fetchPreviousCalendar(new Date())
@@ -123,9 +126,9 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
     }
 
     render() {
-        const { teacher, calendar } = this.props
+        const { editable, errorCode, teacher, calendar } = this.props
         if (!teacher) {
-            return <Error statusCode={this.props.errorCode} withNavigation />
+            return <Error statusCode={errorCode} withNavigation />
         }
         const tabs: ITabs = {
             tabs: ['Overview', 'Calendar'],
@@ -164,7 +167,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                     <Calendar
                         calendar={this.state.calendar}
                         getTitle={getTitle}
-                        getContextTitle={getContextTitle}
+                        getContextTitle={editable ? getContextTitle : undefined}
                         getColor={getColor}
                         onPrevious={this.fetchPreviousCalendar}
                         onNext={this.fetchNextCalendar}

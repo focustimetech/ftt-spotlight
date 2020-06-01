@@ -35,13 +35,14 @@ interface ICalendarContextMenuProps extends ICalendarContextDetails {
     anchorEl: Element
     onClose: () => void
     getTitle?: (event: ICalendarEvent) => React.ReactNode
+    editable?: boolean
     actions?: ICalendarContextMenuAction[]
     options?: ICalendarContextMenuOption[]
 }
 
 const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
     const open: boolean = Boolean(props.anchorEl)
-    const { event, date, title, color, getTitle } = props
+    const { event, date, title, color, editable, getTitle } = props
     const { context } = event
     const isLive: boolean = true
 
@@ -90,9 +91,11 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
             elevation={4}
         >
             <Flexbox className='context-menu__actions'>
-                <Tooltip title='Options'>
-                    <IconButton><Icon>more_vert</Icon></IconButton>
-                </Tooltip>
+                {editable && (
+                    <Tooltip title='Options'>
+                        <IconButton><Icon>more_vert</Icon></IconButton>
+                    </Tooltip>
+                )}
                 <Tooltip title='Close'>
                     <IconButton onClick={() => props.onClose()}>
                         <Icon>close</Icon>
@@ -109,7 +112,9 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
                     </div>
                     <div>
                         {getTitle ? getTitle(event) : <Typography variant='h5'>{title}</Typography>}
-                        <Typography variant='subtitle1'>{format(date, 'iiii, LLLL M')}</Typography>
+                        <Typography variant='subtitle1' className='context-menu__datetime'>
+                            {format(date, 'iiii, LLLL d')}<span>•</span>{event.startTime} – {event.endTime}
+                        </Typography>
                     </div>
                 </Flexbox>
                 {event.context.location && (

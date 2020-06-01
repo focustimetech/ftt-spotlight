@@ -183,7 +183,6 @@ $block-height: 92px;
 
         & + * {
             margin-left: 0;
-            // padding: spacing(1) 0;
         }
     }
 
@@ -198,6 +197,12 @@ $block-height: 92px;
     &__label {
         height: 24px;
         padding-left: 68px;
+    }
+
+    &__datetime {
+        span {
+            margin: 0 10px;
+        }
     }
 
     .button-select {

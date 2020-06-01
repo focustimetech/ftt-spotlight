@@ -15,6 +15,7 @@ export interface ITabs {
 
 interface ITopBarProps {
     title: string
+    titleAdornment?: React.ReactNode
     subtitle?: string
     breadcrumbs?: any
     children?: any
@@ -31,7 +32,10 @@ const TopBar = (props: ITopBarProps) => {
                         <Avatar size='large' avatar={props.avatar} />
                     )}
                     <div>
-                        <Typography variant='h5'>{props.title}</Typography>
+                        <Flexbox>
+                            <Typography variant='h5'>{props.title}</Typography>
+                            {props.titleAdornment}
+                        </Flexbox>
                         <Typography variant='subtitle1'>{props.subtitle}</Typography>
                     </div>
                 </Flexbox>

@@ -34,13 +34,14 @@ export interface ICalendarContextMenuAction extends ICalendarContextMenuOption {
 interface ICalendarContextMenuProps extends ICalendarContextDetails {
     anchorEl: Element
     onClose: () => void
+    getTitle?: (event: ICalendarEvent) => React.ReactNode
     actions?: ICalendarContextMenuAction[]
     options?: ICalendarContextMenuOption[]
 }
 
 const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
     const open: boolean = Boolean(props.anchorEl)
-    const { event, date, title, color } = props
+    const { event, date, title, color, getTitle } = props
     const { context } = event
     const isLive: boolean = true
 
@@ -107,7 +108,7 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
                         <span className='context-menu__color' style={{ background: `#${color}` }} />
                     </div>
                     <div>
-                        <Typography variant='h5'>{title}</Typography>
+                        {getTitle ? getTitle(event) : <Typography variant='h5'>{title}</Typography>}
                         <Typography variant='subtitle1'>{format(date, 'iiii, LLLL M')}</Typography>
                     </div>
                 </Flexbox>

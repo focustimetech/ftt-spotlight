@@ -24,6 +24,11 @@ import ColorPicker, { randomColor } from '../Pickers/ColorPicker'
 import { LoadingButton } from '../Components/LoadingButton'
 import Form, { FormRow, FormRowElement } from '../'
 
+interface ITopicsFormProps extends IReduxProps {
+    selected: number
+    onSelect: (id: number) => void
+}
+
 interface IReduxProps {
     classrooms: IClassroom[]
     topics: ITopic[]
@@ -44,7 +49,7 @@ interface ITopcisFormState {
     loadingTopic: boolean
 }
 
-class TopicsForm extends React.Component<IReduxProps, ITopcisFormState> {
+class TopicsForm extends React.Component<ITopicsFormProps, ITopcisFormState> {
     state: ITopcisFormState = {
         editing: false,
         memo: '',

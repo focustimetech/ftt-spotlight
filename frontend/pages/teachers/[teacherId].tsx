@@ -16,6 +16,8 @@ import { getDisplayRole } from '../../utils/user'
 
 import withAuth from '../../hocs/withAuth'
 import Calendar, { getNextWeek, getPreviousWeek } from '../../components/Calendar'
+import ButtonSelect from '../../components/Form/Components/ButtonSelect'
+import TopicsDialog from '../../components/Modals/TopicsDialog'
 import Section from '../../components/Layout/Section'
 import TopBar, { ITabs } from '../../components/TopBar'
 
@@ -41,13 +43,14 @@ interface ITeacherProfileProps extends IReduxProps {
 interface ITeacherProfileState {
     calendar: ICalendar
     tab: number
+    topicsMenuAnchorEl: Element
 }
 
 class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfileState> {
     static getInitialProps = async (context: NextPageContext) => {
         const { store } = context
         const isServer: boolean = typeof window === 'undefined'
-        console.log('query:', context.query)
+        // console.log('query:', context.query)
         const teacherId: number = Number(context.query.teacherId)
         const currentUser: IUser = store.getState().auth.user
         const editable: boolean = currentUser.accountType === 'teacher' && currentUser.accountId === teacherId
@@ -82,7 +85,8 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
 
     state: ITeacherProfileState = {
         calendar: {},
-        tab: 0
+        tab: 0,
+        topicsMenuAnchorEl: null
     }
 
     fetchCalendar = (teacherId: number, date?: Date) => {
@@ -103,6 +107,14 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
         this.fetchCalendar(this.props.teacher.accountId, date)
     }
 
+    handleOpenTopicSelect = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        this.setState({ topicsMenuAnchorEl: event.currentTarget })
+    }
+
+    handleCloseTopicSelect = () => {
+        this.setState({ topicsMenuAnchorEl: null })
+    }
+
     componentDidMount() {
         this.setState({ calendar: this.props.calendar }, () => {
             this.fetchNextCalendar(new Date())
@@ -119,6 +131,20 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
             tabs: ['Overview', 'Calendar'],
             onChange: (tab: number) => this.setState({ tab }),
             value: this.state.tab
+        }
+
+        const getContextTitle = (event: ICalendarEvent): React.ReactNode => {
+            return (
+                <>
+                    <ButtonSelect open={false} onClick={this.handleOpenTopicSelect}>
+                        <Typography variant='h5'>Hello world</Typography>
+                    </ButtonSelect>
+                    <TopicsDialog
+                        anchorEl={this.state.topicsMenuAnchorEl}
+                        onClose={this.handleCloseTopicSelect}
+                    />
+                </>
+            )
         }
 
         return (
@@ -138,6 +164,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                     <Calendar
                         calendar={this.state.calendar}
                         getTitle={getTitle}
+                        getContextTitle={getContextTitle}
                         getColor={getColor}
                         onPrevious={this.fetchPreviousCalendar}
                         onNext={this.fetchNextCalendar}

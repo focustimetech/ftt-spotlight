@@ -1,8 +1,10 @@
 .button-select {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+    text-transform: unset !important;
 
     &__icon {
         color: #80868B
     }
+
 }

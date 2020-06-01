@@ -38,11 +38,9 @@ import CalendarHeader from './CalendarHeader'
 
 const BLOCK_HEIGHT: number = 92
 const initialContextDetails = {
-    id: -1,
-    weekDay: -1,
     date: new Date(),
     title: '',
-    event: { label: '', context: {} }
+    event: { id: -1, weekDay: -1, label: '', context: {} }
 }
 
 export const getNextWeek = (date: Date): Date => {
@@ -57,6 +55,7 @@ interface ICalendarProps {
     calendar: ICalendar
     getTitle: (event: ICalendarEvent) => string
     getColor: (event: ICalendarEvent) => string
+    getContextTitle?: (event: ICalendarEvent) => React.ReactNode
     onNext?: (date: Date) => void
     onPrevious?: (date: Date) => void
     is24Hour?: boolean
@@ -133,6 +132,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
         return (
             <div className='calendar'>
                 <CalendarContextMenu
+                    getTitle={this.props.getContextTitle}
                     {...this.state.calendarContextDetails}
                     anchorEl={this.state.contextMenuEl}
                     onClose={this.handleCloseContextMenu}

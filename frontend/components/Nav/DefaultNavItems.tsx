@@ -12,9 +12,11 @@ const DefaultNavItems = (props: IDefaultNavItemsProps) => {
     return (
         <>
             <HelpWidget orientation={props.orientation} />
+            {/*
             {!props.noSettings && (
                 <SettingsWidget orientation={props.orientation} />
             )}
+            */}
             <AccountWidget {...props} />
         </>
     )

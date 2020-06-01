@@ -2,6 +2,7 @@ import Error from '../_error'
 import React from 'react'
 
 import {
+    Button,
     Typography
 } from '@material-ui/core'
 
@@ -32,6 +33,7 @@ interface IReduxProps {
 interface ITeacherProfileProps extends IReduxProps {
     teacher: ITeacher
     calendar: ICalendar
+    editable: boolean
     errorCode: number
 }
 
@@ -74,12 +76,24 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
             })
         }
 
-        return { errorCode, teacher, calendar }
+        return { errorCode, editable, teacher, calendar }
     }
 
     state: ITeacherProfileState = {
         calendar: {},
         tab: 0
+    }
+
+    handleNextWeek = (date: Date) => {
+        //
+    }
+
+    handlePreviousWeek = () => {
+        //
+    }
+
+    componentDidMount() {
+        //
     }
 
     render() {
@@ -107,7 +121,13 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                     </Section>
                 )}
                 {this.state.tab === 1 && (
-                    <Calendar calendar={this.state.calendar} getTitle={getTitle} getColor={getColor} />
+                    <Calendar
+                        calendar={this.state.calendar}
+                        getTitle={getTitle}
+                        getColor={getColor}
+                        onPrevious={this.handlePreviousWeek}
+                        onNext={this.handleNextWeek}
+                    />
                 )}
             </>
         )

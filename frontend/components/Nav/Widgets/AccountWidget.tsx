@@ -95,10 +95,13 @@ class AccountWidget extends React.Component<IAccountWidgetProps & IReduxProps, I
                             <Typography variant='caption'>{getDisplayRole(user.accountType)}</Typography>
                         </div>
                         {user.accountType !== 'sysadmin' && user.active && (
-                            <Link href='teachers/[teacherId]' as={getProfileLink(user)}>
+                            <Link href='/teachers/[teacherId]' as={getProfileLink(user)}>
                                 <MenuItem onClick={() => this.handleClose()}>Profile</MenuItem>
                             </Link>
                         )}
+                        <Link href='/settings/profile'>
+                            <MenuItem onClick={() => this.handleClose()}>Account settings</MenuItem>
+                        </Link>
                         <LoadingMenuItem
                             onClick={() => this.handleSignOut()}
                             loading={this.state.loading}

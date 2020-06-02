@@ -29,8 +29,7 @@
 	}
 
 	&__container {
-		text-align: center;
-		width: 640px;
+		width: 500px;
 		position: absolute;
 		top: 50%;
 		left: 50%;
@@ -70,25 +69,22 @@
 	}
 
 	&__paper {
-		margin: 32px 0 16px;
+		width: 400px;
+		margin: 32px auto 16px;
 		display: flex;
 		flex-flow: row nowrap;
 	}
 
 	&__form {
-		width: 460px;
+		width: 400px;
 		box-sizing: content;
 		padding: 32px;
-
-		h2 {
-			font-weight: 400;
-			text-align: center;
-		}
 	}
 
 	&__links {
+		width: 400px;
 		list-style: none;
-		margin: 0;
+		margin: 0 auto;
 		padding: 0 8px;
 		display: flex;
 		justify-content: flex-end;
@@ -99,17 +95,17 @@
 		}
 	}
 
+	.login__heading {
+		text-align: center;
+		margin-bottom: 8px;
+	}
+
 	.carousel img {
 		height: 100%;
 	}
 }
 
 .auth-username {
-	display: block;
-	margin: 0 auto;
-	font-weight: 400 !important;
-	text-transform: unset !important;
-
 	&__inner {
 		display: flex;
 		align-items: center;
@@ -119,19 +115,15 @@
 			margin-left: 8px;
 		}
 	}
-}
 
-.login_avatar {
-	width: 32px !important;
-	height: 32px !important;
-	font-size: 14px !important;
-}
+	&.button-select {
+		display: flex;
+		padding: 6px 8px !important;
+		text-align: center;
+		margin: 0 auto;
+	}
 
-.auth-username__list-item {
-	display: flex;
-	align-items: center;
-
-	& > * + * {
-		margin-left: 4px !important;
+	.avatar {
+		margin-right: 6px;
 	}
 }

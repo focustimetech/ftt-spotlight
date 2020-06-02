@@ -1,18 +1,14 @@
 import { AxiosResponse } from 'axios'
 import classNames from 'classnames'
+import { Router, withRouter } from 'next/router'
 import React from 'react'
 import { connect } from 'react-redux'
 
 import {
-	Avatar,
 	Button,
 	Checkbox,
-	DialogActions,
 	FormControlLabel,
 	Icon,
-	IconButton,
-	ListItemAvatar,
-	ListItemSecondaryAction,
 	ListItemText,
 	Menu,
 	MenuItem,
@@ -24,13 +20,19 @@ import {
 import { dispatchCurrentUser, getAvatar, login } from '../actions/authActions'
 import { NextPageContext } from '../types'
 import { IAvatar, ICredentials } from '../types/auth'
+import { getObjectFromLocalStorage, writeObjectToLocalStorage } from '../utils/localStorage'
 import redirect from '../utils/redirect'
 
-import Carousel, { ICarouselImage } from '../components/Carousel'
+// import Carousel, { ICarouselImage } from '../components/Carousel'
+import Avatar from '../components/Avatar'
+import Form from '../components/Form'
+import ButtonSelect from '../components/Form/Components/ButtonSelect'
 import { LoadingButton } from '../components/Form/Components/LoadingButton'
-// import API from '../utils/api'
+import Flexbox from '../components/Layout/Flexbox'
+import SwipeableViews from 'react-swipeable-views'
 
-type LoginState = 'username' | 'password'
+const REMEMBER_USERS = 'REMEMBER_USERS'
+const LAST_LOGIN_USER = 'LAST_LOGIN_USER'
 
 interface ILoginError {
     type: 'username' | 'password'
@@ -43,6 +45,10 @@ interface IRememberMe {
     color: string
 }
 
+interface IRouterProps {
+	router: Router
+}
+
 interface IReduxProps {
 	settings: any
 	dispatchCurrentUser: () => Promise<any>
@@ -50,26 +56,26 @@ interface IReduxProps {
 	login: (credentials: ICredentials) => Promise<any>
 }
 
-interface IProps extends IReduxProps {
+interface ILoginProps extends IReduxProps, IRouterProps {
 	failedSettings: boolean
 	onSignIn: () => Promise<any>
 	onImageLoad: () => void
 }
 
-interface IState {
+interface ILoginState {
 	avatar: IAvatar
 	error: ILoginError
 	loadingUsername: boolean
 	loadingNextPage: boolean
 	loadingPassword: boolean
-	loginState: LoginState
+	currentUser: IRememberMe
 	rememberMe: boolean
 	menuRef: any /** @TODO Change from any */
 	user: string
 	password: string
 }
 
-class Login extends React.Component<IProps, IState> {
+class Login extends React.Component<ILoginProps, ILoginState> {
 	static getInitialProps = async (context: NextPageContext) => {
 		const { store } = context
 		const isServer: boolean = typeof window === 'undefined'
@@ -77,20 +83,20 @@ class Login extends React.Component<IProps, IState> {
 			if (store.getState().auth.user) {
 				redirect('/', isServer ? context : undefined)
 			}
-			return
+			return {}
 		}, (error: any) => {
-			return
+			return {}
 		})
 	}
 
-	state: IState = {
+	state: ILoginState = {
 		avatar: null,
 		error: null,
 		loadingUsername: false,
 		loadingNextPage: false,
 		loadingPassword: false,
-		loginState: 'username',
 		rememberMe: false,
+		currentUser: null,
 		menuRef: null,
 		user: '',
 		password: ''
@@ -131,47 +137,48 @@ class Login extends React.Component<IProps, IState> {
 		}
 	}
 
+	isVerifying = (): boolean => {
+		return Boolean(this.props.router.query.u)
+	}
+
 	onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		if (!this.validateForm()) {
 			return
 		}
-		switch (this.state.loginState) {
-			case 'username':
-				this.setState({ loadingUsername: true })
-				getAvatar(this.state.user).then((res: AxiosResponse<IAvatar>) => {
-					this.setState({
-						avatar: res.data,
-						loadingUsername: false,
-						loginState: 'password'
-					})
-				}, () => {
-					this.setState({
-						loadingUsername: false,
-						error: {
-							type: 'username',
-							message: 'The user could not be found. Please check with your administrator.'
-						}
-					})
+		const credentials: ICredentials = { username: this.state.user, password: this.state.password }
+		if (this.isVerifying()) {
+			this.setState({ loadingPassword: true })
+			this.props.login(credentials).then(() => {
+				this.setState({ loadingPassword: false, loadingNextPage: true }, () => {
+					redirect('/')
 				})
-				return
-			case 'password':
-				this.setState({ loadingPassword: true })
-				const credentials: ICredentials = { username: this.state.user, password: this.state.password }
-				this.props.login(credentials).then(() => {
-					this.setState({ loadingPassword: false, loadingNextPage: true }, () => {
-						redirect('/')
-					})
-				}, () => {
-					this.setState({
-						loadingPassword: false,
-						error: {
-							type: 'password',
-							message: 'The given credentials were not correct.'
-						}
-					})
+			}, () => {
+				this.setState({
+					loadingPassword: false,
+					error: {
+						type: 'password',
+						message: 'The given credentials were not correct.'
+					}
 				})
-				return
+			})
+		} else {
+			this.setState({ loadingUsername: true })
+			getAvatar(this.state.user).then((res: AxiosResponse<IAvatar>) => {
+				this.props.router.push(`/login?u=${credentials.username}`, undefined, { shallow: true })
+				this.setState({
+					currentUser: { ...res.data, username: credentials.username },
+					loadingUsername: false
+				})
+			}, () => {
+				this.setState({
+					loadingUsername: false,
+					error: {
+						type: 'username',
+						message: 'The user could not be found. Please check with your administrator.'
+					}
+				})
+			})
 		}
 	}
 
@@ -182,7 +189,7 @@ class Login extends React.Component<IProps, IState> {
 			})
 			return false
 		}
-		if (this.state.password.length === 0 && this.state.loginState === 'password') {
+		if (this.state.password.length === 0 && this.isVerifying()) {
 			this.setState({
 				error: { type: 'password', message: 'A password is required to log in.' }
 			})
@@ -192,14 +199,12 @@ class Login extends React.Component<IProps, IState> {
 	}
 
 	resetLoginState = () => {
-		this.setState({
-			loginState: 'username',
-			menuRef: null
-		})
+		this.props.router.push('/login', undefined, { shallow: true })
+		this.setState({ menuRef: null })
 	}
 
 	toggleRememberUser = () => {
-		this.setState((state: IState) => ({
+		this.setState((state: ILoginState) => ({
 			rememberMe: !state.rememberMe
 		}))
 	}
@@ -211,43 +216,49 @@ class Login extends React.Component<IProps, IState> {
 	handleCloseMenu = () => {
 		this.setState({ menuRef: null })
 	}
-/*
-	rememberUserListItem = (rememberUser: AuthUsername, removable?: boolean) => (
-		<MenuItem
-			className='auth-username__list-item'
-			key={rememberUser.username}
-			onClick={() => this.handleClickAuthUsername(rememberUser)}
-			dense>
-			<Avatar className={classNames('login_avatar', `--${rememberUser.color}`)}>
-				{rememberUser.initials}
-			</Avatar>
-			<ListItemText>{rememberUser.username}</ListItemText>
-			{removable !== false && (
-				<IconButton onClick={() => this.forgetAuthUsername(rememberUser)}>
-					<Icon>delete</Icon>
-				</IconButton>
-			)}
-		</MenuItem>
-	)
-*/
+
+	handleClickRememberUser = (user: IRememberMe) => {
+		this.setState({ currentUser: user })
+		this.props.router.push(`/login?u=${user.username}`)
+	}
+
+	getRememberUsers = (): IRememberMe[] => {
+		try {
+			return getObjectFromLocalStorage<IRememberMe[]>(REMEMBER_USERS) || []
+		} catch (e) {
+			return []
+		}
+	}
 
 	componentDidMount() {
-		/*
-		this.rememberUsers = getObjectFromLocalStorage(REMEMBER_USERS) as AuthUsername[]
-		if (this.rememberUsers && this.rememberUsers.length > 0) {
-			this.setState({ authUsername: this.rememberUsers[0] })
-		} else {
-			this.setState({ loginState: 'username' })
+		const rememberUsers: IRememberMe[] = this.getRememberUsers()
+		let currentUser: IRememberMe = rememberUsers.find((user: IRememberMe) => {
+			return user.username === this.props.router.query.u as string
+		})
+		if (!currentUser) {
+			this.props.router.push('/login')
+			const lastUser: IRememberMe = rememberUsers.find((user: IRememberMe) => {
+				return user.username === getObjectFromLocalStorage<string>(LAST_LOGIN_USER)
+			})
+			if (lastUser) {
+				currentUser = lastUser
+			} else if (rememberUsers.length > 0) {
+				currentUser = rememberUsers[0]
+			}
 		}
-		*/
+		this.setState({ currentUser })
 	}
 
 	render() {
+		/*
 		const carouselImages: ICarouselImage[] = [
 			{ link: '/', src: '/images/splash/brooke-cagle-609873-unsplash.jpg' },
 			{ link: '/', src: '/images/splash/helloquence-61189-unsplash.jpg' },
 			{ link: '/', src: '/images/splash/john-schnobrich-520023-unsplash.jpg' }
 		]
+		*/
+		const { currentUser } = this.state
+		const rememberUsers: IRememberMe[] = this.getRememberUsers()
 
 		return (
 			<div className='login'>
@@ -257,58 +268,55 @@ class Login extends React.Component<IProps, IState> {
 						<Typography variant='subtitle1'>Start using powerful tools that let your self directed study blocks succeed.</Typography>
 					</a>
 					<Paper className='login__paper'>
-						<Carousel images={carouselImages} />
-						<form className='login__form' onSubmit={this.onSubmit}>
+						<Form className='login__form' onSubmit={this.onSubmit}>
 							<div className='logos-container'>
 								<img className='ft-logo' src='/images/ft-badge.png' />
-								{/*
-									<>
-										<span className='cross'>×</span>
-										<div className='school_logo'>
-											<img src={`/images/logos/${schoolLogo}`} />
-											<h3>{schoolName}</h3>
-										</div>
-									</>
-								*/}
+								<span className='cross'>×</span>
+								<div className='school_logo'>
+									<img src={`/images/logos/school.png`} />
+									<Typography variant='h6'>Test School</Typography>
+								</div>
 							</div>
-							<Typography variant='h5'>Sign in to Spotlight</Typography>
-							{/*this.state.avatar && this.state.loginState  (
-								<>
-									<Button className='auth-username' onClick={this.handleOpenMenu}>
-										<div className='auth-username__inner'>
-											{this.state.loginState === 'password' && this.state.authUsername ? (
-												<>
-													<Avatar className={classNames('login_avatar', `--${this.state.authUsername.color}`)}>
-														{this.state.authUsername.initials}
-													</Avatar>
-													<Typography>{this.state.authUsername.username}</Typography>
-												</>
-											) : (
-												<Typography>Sign in with Username</Typography>
-											)}
-											<Icon>expand_more</Icon>
-										</div>
-									</Button>
-									{(this.state.loginState === 'password' || (this.rememberUsers && this.rememberUsers.length > 0)) && (
-										<Menu
-											open={Boolean(this.state.menuRef)}
-											anchorEl={this.state.menuRef}
-											anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-											transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-											onClose={this.handleCloseMenu}
-										>
-											{(!isRemembered && this.state.authUsername) && (
-												this.rememberUserListItem(this.state.authUsername, false)
-											)}
-											{(this.rememberUsers && this.rememberUsers.length) && (
-												this.rememberUsers.map((rememberUser: AuthUsername) => this.rememberUserListItem(rememberUser))
-											)}
-											<MenuItem onClick={() => this.resetLoginState()}>Sign in with Username</MenuItem>
-										</Menu>
+							<Typography variant='h5' className='login__heading'>Sign in to Spotlight</Typography>
+							<ButtonSelect
+								className='auth-username'
+								onClick={this.handleOpenMenu}
+								open={Boolean(this.state.menuRef)}
+								disabled={rememberUsers.length === 0 && !currentUser}
+							>
+								<div className='auth-username__inner'>
+									{currentUser && this.isVerifying() ? (
+										<>
+											<Avatar size='medium' avatar={{ initials: currentUser.initials, color: currentUser.color }} />
+											<Typography>{currentUser.username}</Typography>
+										</>
+									) : (
+										<Typography variant='subtitle1'>Sign in with Username</Typography>
 									)}
-								</>
-							)*/}
-							{this.state.loginState === 'username' && (
+								</div>
+							</ButtonSelect>
+							<Menu
+								open={Boolean(this.state.menuRef)}
+								anchorEl={this.state.menuRef}
+								anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+								transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+								getContentAnchorEl={null}
+								onClose={this.handleCloseMenu}
+							>
+								{rememberUsers.map((user: IRememberMe) => (
+									<MenuItem
+										className='flexbox'
+										key={user.username}
+										onClick={() => this.handleClickRememberUser(user)}
+										dense
+									>
+										<Avatar size='medium' avatar={{ initials: user.initials, color: user.color }} />
+										<ListItemText>{user.username}</ListItemText>
+									</MenuItem>
+								))}
+								<MenuItem onClick={() => this.resetLoginState()}>Sign in with Username</MenuItem>
+							</Menu>
+							<SwipeableViews index={this.isVerifying() ? 1 : 0}>
 								<>
 									<TextField
 										name='user'
@@ -338,17 +346,15 @@ class Login extends React.Component<IProps, IState> {
 											/>
 										}
 									/>
-									<DialogActions>
+									<Flexbox>
 										<LoadingButton
 											type='submit'
 											color='primary'
 											variant='contained'
 											loading={this.state.loadingUsername}
 										>Next</LoadingButton>
-									</DialogActions>
+									</Flexbox>
 								</>
-							)}
-							{this.state.loginState === 'password' && (
 								<>
 									<TextField
 										name='password'
@@ -367,17 +373,17 @@ class Login extends React.Component<IProps, IState> {
 										autoFocus
 										fullWidth
 									/>
-									<DialogActions>
+									<Flexbox>
 										<LoadingButton
 											type='submit'
 											color='primary'
 											variant='contained'
 											loading={this.state.loadingPassword || this.state.loadingNextPage}
 										>Sign In</LoadingButton>
-									</DialogActions>
+									</Flexbox>
 								</>
-							)}
-						</form>
+							</SwipeableViews>
+						</Form>
 					</Paper>
 					<ul className='login__links'>
 						<a href='https://focustime.ca'><li><Typography>Learn More</Typography></li></a>
@@ -393,4 +399,4 @@ const mapStateToProps = (state: any) => ({
 })
 const mapDispatchToProps = { dispatchCurrentUser, login }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))

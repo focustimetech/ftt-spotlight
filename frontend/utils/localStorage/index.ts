@@ -66,7 +66,7 @@ export const appendToLocalStorageArray = (key: string, object: any) => {
  * Retrieves a plain JavaScript object from localStorage which is stored as a string.
  * @param key The key of the localStorage string to retreive
  */
-export const getObjectFromLocalStorage = (key: string): any => {
+export const getObjectFromLocalStorage = <T = any>(key: string): T => {
     const json: string = localStorage.getItem(key)
     return JSON.parse(json)
 }

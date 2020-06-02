@@ -71,10 +71,29 @@ class TopicsController extends Controller
         $teacher = auth()->user()->account();
         $topic = Topic::findOrFail($id);
         if ($topic->teacher_id !== $teacher->id) {
-            return response()->json(['message' => "Cannot delete another User's Topic.", 403]);
+            return response()->json(['message' => "Cannot delete another User's Topic."], 403);
         }
         if ($topic->delete()) {
             return new TopicResource($topic);
+        }
+    }
+
+    public function setTopic(Request $request)
+    {
+        $user = $request->user();
+        if ($user->account_type !== 'teacher') {
+            return response()->json(['message' => 'Only Teachers can set Block Topics.'], 403);
+        }
+        $teacher = $user->account();
+        $topic = Topic::findOrFail($request->input('topicId'));
+        if ($topic->teacher_id !== $teacher->id) {
+            return response()->json(['message' => "Cannot schedule another Teacher's Topic."], 403);
+        }
+        $block = Block::findOrFail($request->input('blockId'));
+        $date = $request->input('date');
+
+        if ($block->topics($date)->attach($topic->id)) {
+            return new Response('', 204);
         }
     }
 }

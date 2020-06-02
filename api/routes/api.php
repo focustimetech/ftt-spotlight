@@ -82,6 +82,7 @@ Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
     Route::get('topics', 'TopicsController@list');
     Route::get('topics/all', 'TopicsController@index');
     Route::post('topics', 'TopicsController@create');
+    Route::post('topics/schedule', 'TopicsController@setTopic');
     Route::put('topics', 'TopicsController@update');
     Route::delete('topics/{id}', 'TopicsController@delete');
 });

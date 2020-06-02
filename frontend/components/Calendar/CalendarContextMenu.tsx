@@ -31,18 +31,20 @@ export interface ICalendarContextMenuAction extends ICalendarContextMenuOption {
     icon?: string
 }
 
-interface ICalendarContextMenuProps extends ICalendarContextDetails {
+interface ICalendarContextMenuProps {
     anchorEl: Element
     onClose: () => void
-    getTitle?: (event: ICalendarEvent) => React.ReactNode
+    getTitle?: (contextDetails: ICalendarContextDetails) => React.ReactNode
     editable?: boolean
     actions?: ICalendarContextMenuAction[]
     options?: ICalendarContextMenuOption[]
+    contextDetails: ICalendarContextDetails
 }
 
 const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
     const open: boolean = Boolean(props.anchorEl)
-    const { event, date, title, color, editable, getTitle } = props
+    const { contextDetails, editable, getTitle } = props
+    const { event, date, title, color } = contextDetails
     const { context } = event
     const isLive: boolean = true
 
@@ -87,6 +89,7 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
             PaperProps={{ className: 'context-menu', elevation: 6 }}
             open={open}
             anchorEl={props.anchorEl}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             onClose={props.onClose}
             elevation={4}
         >
@@ -111,7 +114,7 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
                         <span className='context-menu__color' style={{ background: `#${color}` }} />
                     </div>
                     <div>
-                        {getTitle ? getTitle(event) : <Typography variant='h5'>{title}</Typography>}
+                        {getTitle ? getTitle(contextDetails) : <Typography variant='h5'>{title}</Typography>}
                         <Typography variant='subtitle1' className='context-menu__datetime'>
                             {format(date, 'iiii, LLLL d')}<span>•</span>{event.startTime} – {event.endTime}
                         </Typography>

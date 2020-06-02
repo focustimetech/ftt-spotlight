@@ -25,7 +25,7 @@ import Form, { FormRow, FormRowElement } from '../'
 
 export interface ITopicsFormProps {
     selected: number
-    onSelect: (id: number) => void
+    onSelect: (topic: ITopic) => void
 }
 
 interface IReduxProps {
@@ -119,6 +119,10 @@ class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcis
     isCreatingClassroom = (): boolean => {
         return this.state.classroom === -1
     }
+    
+    handleSelectTopic = (topic: ITopic) => {
+        this.props.onSelect(topic)
+    }
 
     componentDidMount() {
         if (this.props.topics.length === 0) {
@@ -137,7 +141,7 @@ class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcis
             <Form className='list-form__inner' onSubmit={this.handleSubmit} autoComplete='off'>
                 <MenuList>
                     {topics.length > 0 && topics.map((topic: ITopic) => (
-                        <MenuItem onClick={() => null}>
+                        <MenuItem onClick={() => this.handleSelectTopic(topic)}>
                             <span className='swatch' style={{ background: `#${topic.color}` }} />
                             <Typography variant='inherit' noWrap>{topic.memo}</Typography>
                         </MenuItem>

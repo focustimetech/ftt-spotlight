@@ -147,6 +147,7 @@ $block-height: 92px;
     box-sizing: border-box;
     width: 100%;
     max-width: spacing(56) !important;
+    margin: -16px 0 0 16px;
 
     &__actions {
         padding: spacing(1) spacing(1) 0 spacing(1);

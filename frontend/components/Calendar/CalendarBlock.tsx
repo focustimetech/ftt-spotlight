@@ -15,7 +15,7 @@ import { ICalendarContextDetails, ICalendarEvent } from '../../types/calendar'
 
 interface ICalendarBlocksProps extends ICalendarContextDetails, Omit<CardProps, 'onClick' | 'title'> {
     numLines: number
-    onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, contextDetails: ICalendarContextDetails) => void
+    onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }
 
 const CalendarBlock = (props: ICalendarBlocksProps) => {
@@ -23,7 +23,7 @@ const CalendarBlock = (props: ICalendarBlocksProps) => {
     const { event, date, title, color, style, onClick, numLines, ...rest } = props
     const { label, startTime, endTime, context } = event
     const { top, height } = style
-    const contextDetails: ICalendarContextDetails = { event, title, date, color }
+    // const contextDetails: ICalendarContextDetails = { event, title, date, color }
     let titleHeight: number
     if ((numLines === 4 && !context.location) || numLines === 5 || numLines === 6) {
         titleHeight = 30
@@ -48,7 +48,8 @@ const CalendarBlock = (props: ICalendarBlocksProps) => {
                     <CardActionArea
                         className={classNames('calendar-block__inner')}
                         style={{ height }}
-                        onClick={(event) => onClick(event, contextDetails)}
+                        // onClick={(event) => onClick(event, contextDetails)}
+                        onClick={onClick}
                     >
                         <CardContent className='calendar-block__content'>
                             <Typography variant='button' component='p' style={{ maxHeight: numLines >= 6 ? 30 : 15}}>

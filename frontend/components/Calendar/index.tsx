@@ -57,18 +57,24 @@ interface ICalendarProps {
     calendar: ICalendar
     getTitle: (event: ICalendarEvent) => string
     getColor: (event: ICalendarEvent) => string
-    getContextTitle?: (event: ICalendarEvent) => React.ReactNode
+    getContextTitle?: (contextDetails: ICalendarContextDetails) => React.ReactNode
     onNext?: (date: Date) => void
     onPrevious?: (date: Date) => void
     is24Hour?: boolean
     includeWeekends?: boolean
 }
 
+export interface ICalendarSelectedBlock {
+    date: Date
+    dateKey: string
+    blockIndex: number
+}
+
 interface ICalendarState {
     currentDate: Date
     pickerRef: EventTarget & HTMLButtonElement
     contextMenuEl: Element
-    calendarContextDetails: ICalendarContextDetails
+    selectedBlock: ICalendarSelectedBlock
 }
 
 class Calendar extends React.Component<ICalendarProps, ICalendarState> {
@@ -76,7 +82,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
         currentDate: new Date(),
         pickerRef: null,
         contextMenuEl: null,
-        calendarContextDetails: initialContextDetails
+        selectedBlock: null
     }
 
     handleNext = () => {
@@ -111,10 +117,10 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
         this.setState({ currentDate: date, pickerRef: null })
     }
 
-    handleOpenContextMenu = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, contextDetails: ICalendarContextDetails) => {
+    handleOpenContextMenu = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, selectedBlock: ICalendarSelectedBlock) => {
         this.setState({
             contextMenuEl: event.currentTarget,
-            calendarContextDetails: contextDetails
+            selectedBlock
         })
     }
 
@@ -123,19 +129,26 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     }
 
     render() {
-        const { currentDate } = this.state
+        const { currentDate, selectedBlock } = this.state
         const { calendar, is24Hour, includeWeekends } = this.props
         const weekStartsOn: DayOfWeekNumber = includeWeekends ? 0 : 1
         const datesOfWeek: Date[] = getDatesOfWeek(currentDate, weekStartsOn, includeWeekends ? 7 : 5)
         const hoursOfDay: string[] = getHoursOfDay(is24Hour)
         const calendarDayKeys: string[] = []
-        const pickerOpen: boolean = Boolean(this.state.pickerRef)
+
+        const calendarContextDetails: ICalendarContextDetails = selectedBlock ? {
+            date: selectedBlock.date,
+            event: calendar[selectedBlock.dateKey][selectedBlock.blockIndex],
+            color: this.props.getColor(calendar[selectedBlock.dateKey][selectedBlock.blockIndex]),
+            title: this.props.getTitle(calendar[selectedBlock.dateKey][selectedBlock.blockIndex]),
+        } : initialContextDetails
+        // const pickerOpen: boolean = Boolean(this.state.pickerRef)
 
         return (
             <div className='calendar'>
                 <CalendarContextMenu
                     getTitle={this.props.getContextTitle}
-                    {...this.state.calendarContextDetails}
+                    contextDetails={calendarContextDetails}
                     anchorEl={this.state.contextMenuEl}
                     onClose={this.handleCloseContextMenu}
                 />
@@ -189,26 +202,29 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                                     return (
                                         <div className='calendar__calendar-day'>
                                             {calendarEvents.filter((event: ICalendarEvent) => event.startTime && event.endTime)
-                                                .map((event: ICalendarEvent) => {
+                                                .map((event: ICalendarEvent, blockIndex: number) => {
                                                     const { startTime, endTime } = event
                                                     const start: Date = moment(`${key} ${startTime}`).toDate()
                                                     const end: Date = moment(`${key} ${endTime}`).toDate()
                                                     const [startLabel, endLabel] = getTimeRangeLabels(start, end)
                                                     const dayStart: Date = moment(`${key} 06:00:00`).toDate()
-                                                    const hoursAfterDayStart: number = Math.floor(start.getTime() - dayStart.getTime()) / (1000 * 60 * 60)
+                                                    // const hoursAfterDayStart: number = Math.floor(start.getTime() - dayStart.getTime()) / (1000 * 60 * 60)
                                                     const top: number = BLOCK_HEIGHT * (Math.round(start.getTime() - dayStart.getTime()) / (1000 * 60 * 60))
                                                     const height: number = BLOCK_HEIGHT * Math.round(end.getTime() - start.getTime()) / (1000 * 60 * 60)
-                                                    const minutes: number = getMinutes(moment(event.startTime).toDate())
+                                                    // const minutes: number = getMinutes(moment(event.startTime).toDate())
+
+                                                    const color: string = this.props.getColor(event)
+                                                    const title: string = this.props.getTitle(event)
 
                                                     return (
                                                         <CalendarBlock
                                                             numLines={Math.floor((height - 8) / 15)}
                                                             event={{ ...event, startTime: startLabel, endTime: endLabel}}
                                                             date={start}
-                                                            color={this.props.getColor(event)}
-                                                            title={this.props.getTitle(event)}
+                                                            color={color}
+                                                            title={title}
                                                             style={{ top, height }}
-                                                            onClick={this.handleOpenContextMenu}
+                                                            onClick={(event) => this.handleOpenContextMenu(event, { dateKey: key, blockIndex, date: start })}
                                                         />
                                                     )
                                                 })

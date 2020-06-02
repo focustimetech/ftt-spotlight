@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios'
-import Error from '../_error'
+import { format } from 'date-fns'
 import React from 'react'
+import { connect } from 'react-redux'
 
 import {
     Button,
@@ -9,9 +10,11 @@ import {
 
 import { fetchCalendar, fetchTeacherCalendar } from '../../actions/calendarActions'
 import { fetchTeacher } from '../../actions/teacherActions'
+import { createTopicSchedule } from '../../actions/topicActions'
 import { NextPageContext } from '../../types'
 import { ITeacher, IUser } from '../../types/auth'
-import { ICalendar, ICalendarEvent, ICalendarEventContext } from '../../types/calendar'
+import { ITopicSchedule, ITopic } from '../../types/topic'
+import { ICalendar, ICalendarEvent, ICalendarEventContext, ICalendarContextDetails } from '../../types/calendar'
 import { getDisplayRole } from '../../utils/user'
 
 import withAuth from '../../hocs/withAuth'
@@ -20,6 +23,7 @@ import ButtonSelect from '../../components/Form/Components/ButtonSelect'
 import TopicsDialog from '../../components/Modals/TopicsDialog'
 import Section from '../../components/Layout/Section'
 import TopBar, { ITabs } from '../../components/TopBar'
+import Error from '../_error'
 
 const getTitle = (event: ICalendarEvent): string => {
     return event.context.topic ? event.context.topic.memo : 'No Topic'
@@ -31,6 +35,7 @@ const getColor = (event: ICalendarEvent): string => {
 
 interface IReduxProps {
     currentUser: IUser
+    createTopicSchedule: (topicSchedule: ITopicSchedule) => Promise<any>
 }
 
 interface ITeacherProfileProps extends IReduxProps {
@@ -136,7 +141,17 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
             value: this.state.tab
         }
 
-        const getContextTitle = (event: ICalendarEvent): React.ReactNode => {
+        const getContextTitle = (contextDetails: ICalendarContextDetails): React.ReactNode => {
+            const { event, date } = contextDetails
+            const handleSelectTopic = (topic: ITopic) => {
+                const topicSchedule: ITopicSchedule = {
+                    topic,
+                    date: format(date, 'yyyy-MM-dd'),
+                    blockId: event.id
+                }
+                console.log('topicSchedule:', topicSchedule)
+                this.props.createTopicSchedule(topicSchedule)
+            }
             return (
                 <>
                     <ButtonSelect open={false} onClick={this.handleOpenTopicSelect}>
@@ -148,7 +163,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                         anchorEl={this.state.topicsMenuAnchorEl}
                         onClose={this.handleCloseTopicSelect}
                         selected={event.context.topic ? event.context.topic.id : -1}
-                        onSelect={() => null}
+                        onSelect={handleSelectTopic}
                     />
                 </>
             )
@@ -169,7 +184,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                 )}
                 {this.state.tab === 1 && (
                     <Calendar
-                        calendar={this.state.calendar}
+                        calendar={editable ? this.props.calendar : this.state.calendar}
                         getTitle={getTitle}
                         getContextTitle={editable ? getContextTitle : undefined}
                         getColor={getColor}
@@ -182,4 +197,11 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
     }
 }
 
-export default withAuth()(TeacherProfile)
+const mapStateToProps = (state) => ({
+    currentUser: state.auth.user,
+    calendar: state.calendar.calendar
+})
+
+const mapDispatchToProps = { createTopicSchedule }
+
+export default withAuth()(connect(mapStateToProps, mapDispatchToProps)(TeacherProfile))

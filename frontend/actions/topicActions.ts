@@ -1,6 +1,6 @@
 import { INewClassroom, IClassroom } from '../types/classroom'
 import { IReduxAction } from '../types/redux'
-import { ITopic, INewTopic } from '../types/topic'
+import { ITopic, INewTopic, ITopicSchedule } from '../types/topic'
 import { DELETE_TOPIC, DELETE_TOPIC_SCHEDULE, FETCH_TOPICS, NEW_TOPIC, NEW_TOPIC_SCHEDULE, NEW_CLASSROOM } from './types'
 import API from '../utils/api'
 
@@ -51,20 +51,17 @@ export const deleteTopic = (topicId: number) => {
     }
 }
 
-/*
-export const createTopicSchedule = (topicSchedule: ITopicScheduleRequest) => {
-    return (dispatch: (action: ReduxAction<ITopicSchedule>) => void): Promise<any> => {
-        return axios.post('/api/topics/schedule', topicSchedule)
-            .then((res: any) => {
-                const newTopicSchedule: ITopicSchedule = res.data
-                dispatch({
-                    type: NEW_TOPIC_SCHEDULE,
-                    payload: newTopicSchedule
-                })
-            })
+export const createTopicSchedule = (topicSchedule: ITopicSchedule) => {
+    return (dispatch: (action: IReduxAction<ITopicSchedule>) => void): Promise<any> => {
+        dispatch({
+            type: NEW_TOPIC_SCHEDULE,
+            payload: topicSchedule
+        })
+        return API.post<void>('/topics/schedule', topicSchedule)
     }
 }
 
+/*
 export const deleteTopicSchedule = (topicScheduleID: number) => {
     return (dispatch: (action: ReduxAction<ITopicSchedule>) => void): Promise<any> => {
         return axios.delete(`/api/topics/schedule/${topicScheduleID}`)

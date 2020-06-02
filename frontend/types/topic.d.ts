@@ -6,4 +6,10 @@ export interface ITopic {
     classroomId: number
 }
 
+export interface ITopicSchedule {
+    topic: ITopic
+    blockId: number
+    date: string
+}
+
 export type INewTopic = Omit<ITopic, 'id' | 'teacherId'>

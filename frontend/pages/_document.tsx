@@ -25,6 +25,7 @@ class SpotlightDocument extends Document {
             <meta name='description' content='Start using powerful tools that let your self-directed study blocks succeed.' />
             <link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'></link>
             <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700' rel='stylesheet' />
+            <link rel='shortcut icon' href='/images/favicon.ico' />
             </Head>
             <body>
                 <Main />

@@ -16,12 +16,15 @@ class Guardian extends JsonResource
     public function toArray($request)
     {
         $user = new UserResource($this->user()->first());
-
+        /*
         return array_merge(
             [
-                'accountId' => $this->id,
+                // 'accountId' => $this->id,
             ],
             $user->toArray($request)
         );
+        */
+
+        return $user->toArray($request);
     }
 }

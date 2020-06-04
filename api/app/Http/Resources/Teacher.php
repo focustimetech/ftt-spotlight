@@ -20,7 +20,7 @@ class Teacher extends JsonResource
         return array_merge(
             $staff->toArray($request),
             [
-                'accountId' => $this->id,
+                // 'accountId' => $this->id,
                 'unavailabilityLimit' => $this->unavailability_limit
             ],
         );

@@ -1,5 +1,6 @@
 import { addDays, subDays } from 'date-fns'
 import classNames from 'classnames'
+import Head from 'next/head'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -18,6 +19,7 @@ import { fetchBlocks } from '../actions/blockActions'
 import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
 import { NextPageContext } from '../types'
 import { IBlock } from '../types/calendar'
+import { makeDocumentTitle } from '../utils/document'
 
 import withAuth from '../hocs/withAuth'
 import CalendarHeader from '../components/Calendar/CalendarHeader'
@@ -83,6 +85,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 
         return (
             <>
+                <Head><title>{makeDocumentTitle('Student Check-in')}</title></Head>
                 <TopBar title='Student Check-in' />
                 <Section>
                     <CalendarHeader

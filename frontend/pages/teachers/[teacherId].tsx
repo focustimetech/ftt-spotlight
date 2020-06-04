@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { format } from 'date-fns'
+import Head from 'next/head'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -15,6 +16,7 @@ import { NextPageContext } from '../../types'
 import { ITeacher, IUser } from '../../types/auth'
 import { ITopicSchedule, ITopic } from '../../types/topic'
 import { ICalendar, ICalendarEvent, ICalendarEventContext, ICalendarContextDetails } from '../../types/calendar'
+import { makeDocumentTitle } from '../../utils/document'
 import { getDisplayRole } from '../../utils/user'
 
 import withAuth from '../../hocs/withAuth'
@@ -171,6 +173,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
 
         return (
             <>
+                <Head><title>{makeDocumentTitle(teacher.name)}</title></Head>
                 <TopBar
                     title={teacher.name}
                     avatar={teacher.avatar}

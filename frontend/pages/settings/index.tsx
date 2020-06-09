@@ -15,8 +15,6 @@ import {
 import { fetchSettings } from '../../actions/settingsActions'
 import { ISetting, ISettingsGroup } from '../../types/settings'
 
-import { TopNav } from '../TopNav'
-
 interface IReduxProps {
     settingsGroups: ISettingsGroup[]
     fetchSettings: () => void

@@ -1,0 +1,43 @@
+.heatmap {
+    display: flex;
+    flex-flow: row nowrap;
+
+    &__body {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    &__container {
+        display: flex;
+        flex-flow: row nowrap;
+        margin: -2px;
+        padding: 0 8px;
+    }
+
+    &__day-labels {
+        text-align: right;
+        height: 80px;
+        display: flex;
+        flex-flow: column nowrap;
+
+        span {
+            line-height: 12px;
+            margin-bottom: 20px;
+        }
+    }
+
+    &__month-labels {
+        flex: 1;
+    }
+
+    &__column {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    &__data {
+        width: 12px;
+        height: 12px;
+        margin: 2px;
+    }
+}

@@ -8,6 +8,7 @@ import TopicsForm from '../components/Form/Forms/TopicsForm'
 import Form from '../components/Form'
 
 import EnhancedTable from '../components/Table/EnhancedTable'
+import Heatmap from '../components/Heatmap'
 import { ITableColumn, TableColumns } from '../types/table'
 
 type TicketStatus =
@@ -65,6 +66,13 @@ const tableData: IPersonData[] = [
     { name: 'Curtis', age: 21, status: 'Awaiting Response', birthday: new Date(1999, 1, 19), verified: true },
 ]
 
+const data = {
+    '2020-01-01': 0.8,
+    '2020-01-02': 0.5,
+    '2020-01-31': 1,
+    '2020-02-03': 0.1
+}
+
 export default () => {
     const [selected, setSelected] = React.useState([])
 
@@ -72,14 +80,15 @@ export default () => {
 
         <>
             <div style={{ padding: 64, boxSizing: 'border-box', background: '#EEE' }}>
-                <TopicsForm />
+                <Typography variant='h4'>Heatmap</Typography>
+                <Heatmap data={data} />
 {/*}
                 <EnhancedTable<IPersonData>
                     title='User Accounts'
                     data={tableData}
                     columns={personTableColumns}
                     selected={selected}
-                    onSelect={setSelected} 
+                    onSelect={setSelected}
                 />
 */}
             </div>

@@ -1,5 +1,5 @@
 import { addDays, format } from 'date-fns'
-import moment from 'moment'
+import moment from 'moment/moment'
 import React from 'react'
 
 import DateFnsUtils from '@date-io/date-fns'

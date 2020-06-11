@@ -24,7 +24,9 @@ import { makeDocumentTitle } from '../utils/document'
 import withAuth from '../hocs/withAuth'
 import CalendarHeader from '../components/Calendar/CalendarHeader'
 import Section from '../components/Layout/Section'
+import ModalSection from '../components/ModalSection'
 import TopBar from '../components/TopBar'
+import ChipSelect from '../components/ChipSelect'
 
 interface IReduxProps {
     blocks: IBlock[]
@@ -112,6 +114,9 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
                             ))}
                         </Select>
                     </FormControl>
+                </Section>
+                <Section fullWidth>
+                    <ChipSelect />
                 </Section>
             </>
         )

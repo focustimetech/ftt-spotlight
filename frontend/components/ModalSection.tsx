@@ -8,9 +8,7 @@ import {
     Typography
 } from '@material-ui/core'
 
-import { SetState } from '../types/app'
-
-interface IProps {
+interface IModalSectionProps {
     children: any
     icon: string
     title: string
@@ -24,9 +22,9 @@ interface IProps {
     onClose?: () => void
 }
 
-export const ModalSection = (props: IProps) => {
+const ModalSection = (props: IModalSectionProps) => {
     const badgeCount: number = props.badgeCount || 0
-    const [open, setOpen]: [boolean, SetState<boolean>] = React.useState(true)
+    const [open, setOpen] = React.useState(true)
     const isOpen: boolean = props.open !== false && (props.open || open)
 
     const handleHeaderClick = () => {
@@ -70,3 +68,5 @@ export const ModalSection = (props: IProps) => {
         </div>
     )
 }
+
+export default ModalSection

@@ -26,6 +26,7 @@ import TopicsDialog from '../../components/Modals/TopicsDialog'
 import Section from '../../components/Layout/Section'
 import TopBar, { ITabs } from '../../components/TopBar'
 import Error from '../_error'
+import { getCalendarDateKey } from '../../utils/date'
 
 const getTitle = (event: ICalendarEvent): string => {
     return event.context.topic ? event.context.topic.memo : 'No Topic'
@@ -148,7 +149,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
             const handleSelectTopic = (topic: ITopic) => {
                 const topicSchedule: ITopicSchedule = {
                     topic,
-                    date: format(date, 'yyyy-MM-dd'),
+                    date: getCalendarDateKey(date),
                     blockId: event.id
                 }
                 console.log('topicSchedule:', topicSchedule)

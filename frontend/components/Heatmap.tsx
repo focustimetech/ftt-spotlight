@@ -2,6 +2,7 @@ import { addDays, addWeeks, format, startOfWeek, startOfYear } from 'date-fns'
 import React from 'react'
 
 import { Button, Tooltip, Typography } from '@material-ui/core'
+import { getCalendarDateKey } from '../utils/date'
 
 interface IHeatmapProps {
     data: Record<string, number>
@@ -27,7 +28,7 @@ class Heatmap extends React.Component<IHeatmapProps, IHeatmapState> {
         for (let j = 0; date.getFullYear() < year + 1; j ++) {
             table[j] = []
             for (let i: number = 0; i < weekLength; i ++) {
-                key = format(date, 'yyyy-MM-dd')
+                key = getCalendarDateKey(date)
                 console.log(`${key}:`, data[key])
                 if (data[key]) {
                     console.log('date[key]:', data[key])

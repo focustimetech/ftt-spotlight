@@ -174,3 +174,13 @@ export const getTimeRangeLabels = (start: Date, end: Date): [string, string] => 
         `${endLabel}${endPeriod}`
     ]
 }
+
+/**
+ * Formats a date so it can be used as a key to retrieve data from a
+ * calendar-like object.
+ * @param date The given date.
+ * @return The date formatted as an `ICalendar` object key.
+ */
+export const getCalendarDateKey = (date: Date): string => {
+    return format(date, 'yyyy-MM-dd')
+}

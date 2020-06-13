@@ -1,0 +1,9 @@
+.check-in {
+    &__block-timing {
+        color: #1976D2;
+
+        &.--pending {
+            color: #388E3C;
+        }
+    }
+}

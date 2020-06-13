@@ -21,9 +21,7 @@ import {
 } from '@material-ui/core'
 import { PopperProps } from '@material-ui/core/Popper'
 
-import { IAvatar } from '../types/app'
-
-import { LoadingIconButton } from './Form/LoadingIconButton'
+import { LoadingIconButton } from './Form/Components/LoadingIconButton'
 
 export interface ISelectChipBase<T> {
     value: T

@@ -1,18 +1,20 @@
-import { IBlock } from './calendar'
-import { IStudent } from './auth';
-
-type CheckInChipStatus =
+type LedgerChipStatus =
     | 'queued'
     | 'succeeded'
     | 'failed'
 
-export interface ICheckInChip {
+export interface INewLedgerChip {
+    blockId: number
+    date: string
+    buffer: LedgerBuffer
+}
+export interface ILedgerChip {
     value: string
     timestamp: Date
-    status: CheckInChipStatus
+    status: LedgerChipStatus
 }
 
-export type CheckInBuffer = Record<string, ICheckInChip>
+export type LedgerBuffer = Record<string, ILedgerChip>
 
 export interface ILedgerEntry {
     

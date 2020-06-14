@@ -13,28 +13,30 @@ import CalendarMonthLabel, { ICalendarMonthLabelProps } from './CalendarMonthLab
 
 interface ICalendarHeaderProps extends Exclude<ICalendarMonthLabelProps, 'date' | 'onChange'>{
     date: Date
-    nextLabel: string
-    previousLabel: string
+    variant: 'day' | 'week'
+    nextLabel?: string
+    previousLabel?: string
     onChange: (date: Date) => void
     onPrevious: () => void
     onNext: () => void
 }
 
 const CalendarHeader = (props: ICalendarHeaderProps) => {
-    const { date, nextLabel, previousLabel, onChange, onPrevious, onNext, ...rest } = props
+    const { date, days, nextLabel, previousLabel, variant, onChange, onPrevious, onNext, ...rest } = props
+    const isWeekly: boolean = variant === 'week'
     const today: Date = new Date()
     return (
         <Flexbox className='calendar-header'>
             <Tooltip title={format(today, 'MMMM d, yyyy')}>
                 <Button variant='outlined' onClick={() => onChange(today)}>Today</Button>
             </Tooltip>
-            <Tooltip title={previousLabel}>
+            <Tooltip title={previousLabel || (isWeekly ? 'Next week' : 'Next day')}>
                 <IconButton onClick={() => onPrevious()}><Icon>chevron_left</Icon></IconButton>
             </Tooltip>
-            <Tooltip title={nextLabel}>
+            <Tooltip title={nextLabel || (isWeekly ? 'Previous week' : 'Previous day')}>
                 <IconButton onClick={() => onNext()}><Icon>chevron_right</Icon></IconButton>
             </Tooltip>
-            <CalendarMonthLabel date={date} onChange={onChange} {...rest} />
+            <CalendarMonthLabel date={date} onChange={onChange} days={isWeekly ? 7 : 1} {...rest} />
         </Flexbox>
     )
 }

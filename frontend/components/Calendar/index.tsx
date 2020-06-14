@@ -60,6 +60,7 @@ interface ICalendarProps {
     getContextTitle?: (contextDetails: ICalendarContextDetails) => React.ReactNode
     onNext?: (date: Date) => void
     onPrevious?: (date: Date) => void
+    onRefresh?: () => void
     is24Hour?: boolean
     includeWeekends?: boolean
 }
@@ -130,7 +131,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
     render() {
         const { currentDate, selectedBlock } = this.state
-        const { calendar, is24Hour, includeWeekends } = this.props
+        const { calendar, is24Hour, includeWeekends, onRefresh } = this.props
         const weekStartsOn: DayOfWeekNumber = includeWeekends ? 0 : 1
         const datesOfWeek: Date[] = getDatesOfWeek(currentDate, weekStartsOn, includeWeekends ? 7 : 5)
         const hoursOfDay: string[] = getHoursOfDay(is24Hour)
@@ -159,6 +160,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                     onChange={this.handleSelectDate}
                     onNext={this.handleNext}
                     onPrevious={this.handlePrevious}
+                    onRefresh={onRefresh}
                 />
                 <div className='calendar__body'>
                     <div className='calendar__date-labels'>

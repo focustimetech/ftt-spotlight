@@ -153,7 +153,7 @@ export const getHoursOfDay = (is24Hour: boolean = false): string[] => {
     for (let i: number = is24Hour ? 0 : 6; i < lastHour; i ++) {
         hours.push(`${i % 12 || 12} ${i > 11 ? 'PM' : 'AM'}`)
     }
-    console.log('hours:', hours)
+
     return hours
 }
 

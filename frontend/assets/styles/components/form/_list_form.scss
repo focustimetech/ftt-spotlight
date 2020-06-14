@@ -11,6 +11,15 @@
         text-align: center;
     }
 
+    &__empty-state { 
+        & > * {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+    }
+
     .swatch {
         display: block;
         width: 18px;

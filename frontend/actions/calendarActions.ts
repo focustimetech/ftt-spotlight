@@ -6,6 +6,8 @@ import { FETCH_CALENDAR } from './types'
 export const fetchCalendar = (date?: Date) => {
     return (dispatch: (action: IReduxAction<ICalendar>) => void) => {
         return API.get<ICalendar>(date ? `/calendar/${date.toISOString()}` : '/calendar').then((res: any) => {
+            console.log('date:', date)
+            console.log('payload:', res.data)
             dispatch({
                 type: FETCH_CALENDAR,
                 payload: res.data

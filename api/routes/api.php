@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function() {
     // Blocks
     Route::get('blocks', 'BlocksController@index');
 
+    // Calendar
+    Route::get('teacher/{id}/calendar/{date?}', 'CalendarController@teacherCalendar');
+
     // Logout
     Route::post('logout', 'Auth\LoginController@logout');
 
@@ -42,9 +45,6 @@ Route::middleware('auth:sanctum')->group(function() {
     // Teachers
     Route::get('teacher', 'TeachersController@index');
     Route::get('teachers/{id}', 'TeachersController@show');
-    
-        // Teacher Calendar
-        Route::get('teacher/{id}/calendar/{date?}', 'CalendarController@teacherCalendar');
 
     // Topics
     Route::get('clusters', 'ClustersController@index');
@@ -71,8 +71,11 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(functi
     Route::post('clusters', 'ClustersController@create');
     Route::put('clusters', 'ClustersController@update');
     Route::delete('clusters/{id}', 'ClustersController@delete');
+});
 
-    // Students
+// Teachers, Staff, Guardians, SysAdmin
+Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin,guardian')->group(function() {
+    // Calendar
     Route::get('students/{id}/calendar/{date?}', 'CalendarController@studentCalendar');
 });
 
@@ -93,7 +96,7 @@ Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
 // Students, Teachers
 Route::middleware('auth:sanctum', 'scopes:teacher,student')->group(function() {
     // Calendar
-    ROute::get('calendar', 'CalendarController@selfCalendar');
+    ROute::get('calendar/{date?}', 'CalendarController@selfCalendar');
 });
 
 /*

@@ -38,6 +38,7 @@ const getColor = (event: ICalendarEvent): string => {
 
 interface IReduxProps {
     currentUser: IUser
+    fetchCalendar: (date: Date) => Promise<any>
     createTopicSchedule: (topicSchedule: ITopicSchedule) => Promise<any>
 }
 
@@ -58,7 +59,6 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
     static getInitialProps = async (context: NextPageContext) => {
         const { store } = context
         const isServer: boolean = typeof window === 'undefined'
-        // console.log('query:', context.query)
         const teacherId: number = Number(context.query.teacherId)
         const currentUser: IUser = store.getState().auth.user
         const editable: boolean = currentUser.accountType === 'teacher' && currentUser.accountId === teacherId
@@ -93,26 +93,40 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
 
     state: ITeacherProfileState = {
         calendar: {},
-        tab: 0,
+        tab: 1,
         topicsMenuAnchorEl: null
     }
 
-    fetchCalendar = (teacherId: number, date?: Date) => {
-        fetchTeacherCalendar(teacherId, date).then((res: AxiosResponse<ICalendar>) => {
-            this.setState((state: ITeacherProfileState) => ({
-                calendar: { ...state.calendar, ...res.data }
-            }))
-        })
+    /**
+     * Populates the calendar with more date keys.
+     * @param date The date to fetch for.
+     */
+    populateCalendar = (date: Date) => {
+        const { editable, teacher } = this.props
+        const key: string = getCalendarDateKey(date)
+        if (editable) {
+            // Fetch the current user's calendar.
+            // Appending to already defined calendar keys is handled by redycer.
+            this.props.fetchCalendar(date)
+        } else {
+            // Fetch the given teacher's calendar
+            fetchTeacherCalendar(teacher.id, date).then((res: AxiosResponse<ICalendar>) => {
+                // Append results to calendar
+                this.setState((state: ITeacherProfileState) => ({
+                    calendar: { ...state.calendar, ...res.data }
+                }))
+            })
+        }
     }
 
-    fetchNextCalendar = (date: Date) => {
+    handleNextWeek = (date: Date) => {
         const nextWeek: Date = getNextWeek(date)
-        this.fetchCalendar(this.props.teacher.accountId, date)
+        this.populateCalendar(nextWeek)
     }
 
-    fetchPreviousCalendar = (date: Date) => {
+    handlePreviousWeek = (date: Date) => {
         const previousWeek: Date = getPreviousWeek(date)
-        this.fetchCalendar(this.props.teacher.accountId, date)
+        this.populateCalendar(previousWeek)
     }
 
     handleOpenTopicSelect = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -128,8 +142,8 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
             return
         }
         this.setState({ calendar: this.props.calendar }, () => {
-            this.fetchNextCalendar(new Date())
-            this.fetchPreviousCalendar(new Date())
+            this.populateCalendar(getNextWeek(new Date()))
+            this.populateCalendar(getPreviousWeek(new Date()))
         })
     }
 
@@ -152,7 +166,6 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                     date: getCalendarDateKey(date),
                     blockId: event.id
                 }
-                console.log('topicSchedule:', topicSchedule)
                 this.props.createTopicSchedule(topicSchedule)
             }
             return (
@@ -177,7 +190,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                 <Head><title>{makeDocumentTitle(teacher.name)}</title></Head>
                 <TopBar
                     title={teacher.name}
-                    avatar={teacher.avatar}
+                    AvatarProps={{ avatar: teacher.avatar }}
                     subtitle={getDisplayRole(teacher.accountType)}
                     tabs={tabs}
                 />
@@ -188,12 +201,12 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                 )}
                 {this.state.tab === 1 && (
                     <Calendar
-                        calendar={editable ? this.props.calendar : this.state.calendar}
+                        calendar={editable ? this.props.calendar : calendar}
                         getTitle={getTitle}
                         getContextTitle={editable ? getContextTitle : undefined}
                         getColor={getColor}
-                        onPrevious={this.fetchPreviousCalendar}
-                        onNext={this.fetchNextCalendar}
+                        onPrevious={this.handlePreviousWeek}
+                        onNext={this.handleNextWeek}
                     />
                 )}
             </>
@@ -206,6 +219,6 @@ const mapStateToProps = (state) => ({
     calendar: state.calendar.calendar
 })
 
-const mapDispatchToProps = { createTopicSchedule }
+const mapDispatchToProps = { fetchCalendar, createTopicSchedule }
 
 export default withAuth()(connect(mapStateToProps, mapDispatchToProps)(TeacherProfile))

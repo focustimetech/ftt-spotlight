@@ -49,7 +49,7 @@ const CalendarHeader = (props: ICalendarHeaderProps) => {
             <Tooltip title={nextLabel || (isWeekly ? 'Previous week' : 'Previous day')}>
                 <IconButton onClick={() => onNext()}><Icon>chevron_right</Icon></IconButton>
             </Tooltip>
-            <CalendarMonthLabel date={date} onChange={onChange} days={isWeekly ? 7 : 1} {...rest} />
+            <CalendarMonthLabel date={date} onChange={onChange} includeDay={!isWeekly} days={isWeekly ? 7 : 1} {...rest} />
             {onRefresh && (
                 <Tooltip title='Refresh'>
                     <IconButton onClick={() => onRefresh()}><Icon>refresh</Icon></IconButton>

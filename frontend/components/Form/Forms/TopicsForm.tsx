@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import {
     Button,
+    CircularProgress,
     FormControl,
     Icon,
     InputLabel,
@@ -46,6 +47,7 @@ interface ITopcisFormState {
     classroom: number
     classroomName: string
     loadingTopic: boolean
+    loadingInitialTopics: boolean
 }
 
 class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcisFormState> {
@@ -56,7 +58,8 @@ class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcis
         capacity: 30,
         classroom: -1,
         classroomName: '',
-        loadingTopic: false
+        loadingTopic: false,
+        loadingInitialTopics: false
     }
 
     handleOpenEditing = () => {
@@ -126,7 +129,10 @@ class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcis
 
     componentDidMount() {
         if (this.props.topics.length === 0) {
-            this.props.fetchTopics()
+            this.setState({ loadingInitialTopics: true })
+            this.props.fetchTopics().then(() => {
+                this.setState({ loadingInitialTopics: false })
+            })
         }
         if (this.props.classrooms.length === 0) {
             this.props.fetchClassrooms()
@@ -148,9 +154,15 @@ class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcis
                     ))}
                 </MenuList>
                 <div className='list-form__actions'>
-                    {topics.length === 0 && (
-                        <Typography>Your Topics will appear here.</Typography>
-                    )}
+                    <div className='list-form__empty-state'>
+                        {this.state.loadingInitialTopics ? (
+                            <CircularProgress />
+                        ) : (
+                            topics.length === 0 && (
+                                <Typography>Your Topics will appear here.</Typography>
+                            )
+                        )}
+                    </div>
                     {this.state.editing ? (
                         <>
                             <FormRow>

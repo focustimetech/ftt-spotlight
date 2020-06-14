@@ -46,11 +46,13 @@ const initialContextDetails = {
 }
 
 export const getNextWeek = (date: Date): Date => {
-    return startOfWeek(addDays(endOfWeek(endOfDay(date)), 1))
+    // return startOfWeek(addDays(endOfWeek(endOfDay(date)), 1))
+    return addWeeks(date, 1)
 }
 
 export const getPreviousWeek = (date: Date): Date => {
-    return startOfWeek(subDays(startOfWeek(startOfDay(date)), 1))
+    // return startOfWeek(subDays(startOfWeek(startOfDay(date)), 1))
+    return subWeeks(date, 1)
 }
 
 interface ICalendarProps {
@@ -90,7 +92,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
         this.setState((state: ICalendarState) => {
             const nextWeek: Date = getNextWeek(state.currentDate)
             if (this.props.onNext) {
-                this.props.onPrevious(nextWeek)
+                this.props.onNext(nextWeek)
             }
             return { currentDate: nextWeek }
         })
@@ -161,19 +163,20 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                     onNext={this.handleNext}
                     onPrevious={this.handlePrevious}
                     onRefresh={onRefresh}
+                    variant='week'
                 />
                 <div className='calendar__body'>
                     <div className='calendar__date-labels'>
                         {datesOfWeek.map((date: Date, index: number) => {
-                            console.log('date:', date)
+                            // console.log('date:', date)
                             const dayOfWeek: string = format(date, 'iiii', { weekStartsOn })
-                            console.log('dayOfWeek:', dayOfWeek)
+                            // console.log('dayOfWeek:', dayOfWeek)
                             const dateIsToday: boolean = isToday(date)
                             const key: string = date.toISOString().substr(0, 10)
                             calendarDayKeys.push(key)
 
                             return (
-                                <div className='calendar__date-label'>
+                                <div className='calendar__date-label' key={index}>
                                     <Typography variant='overline' className='date-label-day' color={dateIsToday ? 'primary' : undefined}>
                                         {dateIsToday ? 'Today' : dayOfWeek}
                                     </Typography>
@@ -220,6 +223,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
                                                     return (
                                                         <CalendarBlock
+                                                            key={blockIndex}
                                                             numLines={Math.floor((height - 8) / 15)}
                                                             event={{ ...event, startTime: startLabel, endTime: endLabel}}
                                                             date={start}

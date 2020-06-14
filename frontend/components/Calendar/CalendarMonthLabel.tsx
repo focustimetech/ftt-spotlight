@@ -11,6 +11,7 @@ import ButtonSelect from '../Form/Components/ButtonSelect'
 
 export interface ICalendarMonthLabelProps {
     date: Date
+    includeDay?: boolean
     days?: number
     onChange: (date: Date) => void
 }
@@ -21,7 +22,7 @@ const CalendarMonthLabel = (props: ICalendarMonthLabelProps) => {
     const days: number = props.days ? props.days - 1 : 6
     const date: Date = moment(props.date).toDate()
     const end: Date = addDays(date, days)
-    const includeDay: boolean = props.days === 1
+    const { includeDay } = props
     const dateFormat: string = includeDay ? 'MMMM d' : 'MMMM'
     let label: JSX.Element
     if (date.getUTCFullYear() !== end.getUTCFullYear()) {
@@ -34,7 +35,7 @@ const CalendarMonthLabel = (props: ICalendarMonthLabelProps) => {
         </>
     } else {
         label = <>
-            <span className='calendar-month-label__month'>{format(date, dateFormat)}</span>{includeDay && ','} {format(date, 'yyyy')}
+            <span className='calendar-month-label__month'>{format(date, dateFormat)}</span>{props.includeDay && ','} {format(date, 'yyyy')}
         </>
     }
 

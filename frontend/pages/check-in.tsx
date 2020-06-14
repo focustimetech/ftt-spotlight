@@ -64,7 +64,9 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		inputValue: '',
         blockId: -1,
         date: new Date()
-    }
+	}
+	
+	timeout: number = -1
 
     handleChangeDate = (date: Date) => {
         this.setState({ date }, () => {
@@ -128,14 +130,17 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
         this.setState({ blockId: value})
     }
 
+	refresh = () => {
+		this.forceUpdate()
+	}
+
     componentDidMount() {
 		this.resetBlock()
-		window.setTimeout(this.forceUpdate, 60000)
+		this.timeout = window.setTimeout(this.refresh, 6000)
 	}
 	
 	componentWillUnmount() {
-		// @TODO fix
-		window.clearTimeout()
+		window.clearTimeout(this.timeout)
 	}
 
     render() {
@@ -167,13 +172,10 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
                 <Section>
                     <CalendarHeader
                         date={this.state.date}
-                        nextLabel='Next day'
-                        previousLabel='Previous day'
                         onChange={this.handleChangeDate}
                         onNext={this.handleNext}
                         onPrevious={this.handlePrevious}
-                        days={1}
-                        includeDay
+                        variant='day'
                     />
 					<Flexbox>
 						<FormControl variant='outlined' margin='dense'>

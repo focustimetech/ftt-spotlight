@@ -18,7 +18,7 @@ export const calendarReducer = (state = initialState, action: IReduxAction) => {
         case FETCH_CALENDAR:
             return {
                 ...state,
-                calendar: action.payload
+                calendar: { ...state.calendar, ...action.payload }
             }
         case NEW_TOPIC_SCHEDULE:
             const topicSchedule: ITopicSchedule = action.payload

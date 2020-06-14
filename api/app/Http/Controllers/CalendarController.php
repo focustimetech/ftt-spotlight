@@ -55,6 +55,14 @@ class CalendarController extends Controller
     public function studentCalendar($id, $date = null)
     {
         $student = Student::findOrFail($id);
+        $user = auth()->user();
+        if ($user->account_type === 'guardian') {
+            if (!in_array($student->id, $user->account()->students()->get()->pluck('id'))) {
+                return response()->json(['message' => 'This student is not associated with your account.'], 403);
+            }
+        }
+
+        return [];
 
     }
 

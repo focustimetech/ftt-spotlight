@@ -3,9 +3,8 @@ import React from 'react'
 
 import { Tab, Tabs, Typography } from '@material-ui/core'
 
-import { IAvatar } from '../types/auth';
-import Avatar from './Avatar'
-import Flexbox from './Layout/Flexbox';
+import Avatar, { IAvatarProps } from './Avatar'
+import Flexbox from './Layout/Flexbox'
 
 export interface ITabs {
     tabs: string[]
@@ -19,7 +18,7 @@ interface ITopBarProps {
     subtitle?: string
     breadcrumbs?: any
     children?: any
-    avatar?: IAvatar
+    AvatarProps?: IAvatarProps
     tabs?: ITabs
 }
 
@@ -28,8 +27,8 @@ const TopBar = (props: ITopBarProps) => {
         <div className={classNames('top-bar', { '--breadcrumbs': props.breadcrumbs }, { '--tabs': props.tabs })}>
             <Flexbox className='top-bar__inner'>
                 <Flexbox className='top-bar__heading'>
-                    {props.avatar && (
-                        <Avatar size='large' avatar={props.avatar} />
+                    {props.AvatarProps && (
+                        <Avatar {...props.AvatarProps} size={props.AvatarProps.size || 'large'} />
                     )}
                     <div>
                         <Flexbox>
@@ -51,7 +50,7 @@ const TopBar = (props: ITopBarProps) => {
                     indicatorColor='primary'
                 >
                     {props.tabs.tabs.map((label: string) => (
-                        <Tab label={label} />
+                        <Tab label={label} key={label} />
                     ))}
                 </Tabs>
             )}

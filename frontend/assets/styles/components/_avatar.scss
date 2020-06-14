@@ -1,19 +1,43 @@
 .avatar {
-    &.--large {
-        width: 50px !important;
-        height: 50px !important;
-        font-size: 1.325em !important;
+    position: relative;
+
+    &__component {
+        &.--large {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 1.325em !important;
+        }
+
+        &.--medium {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 0.825rem !important;
+        }
+
+        &.--small {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 0.75rem !important;
+        }
     }
 
-    &.--medium {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 0.825rem !important;
-    }
+    &.--status {
+        &::after {
+            content: '';
+            position: absolute;
+            width: 13px;
+            height: 13px;
+            bottom: -4px;
+            right: -4px;
+            background: #DDD;
+            border: 3px solid #FFF;
+            border-radius: 50%;
+        }
 
-    &.--small {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 0.75rem !important;
+        &.--active {
+            &::after {
+                background: #388E3C;
+            }
+        }
     }
 }

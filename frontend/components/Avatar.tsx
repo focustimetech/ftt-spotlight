@@ -5,32 +5,26 @@ import { Avatar } from '@material-ui/core'
 
 import { IAvatar } from '../types/auth'
 
-interface IAvatarProps {
+export interface IAvatarProps {
     avatar: IAvatar
     className?: string
     size?: 'small' | 'medium' | 'large'
+    status?: boolean
+    active?: boolean
 }
 
 const SpotlightAvatar = (props: IAvatarProps) => {
-    let size: string
-    switch (props.size) {
-        case 'small':
-            size = '--small'
-            break
-        case 'medium':
-            size = '--medium'
-            break
-        case 'large':
-            size = '--large'
-            break
-    }
+    const { avatar, className, size, status, active } = props
+
     return (
-        <Avatar
-            className={classNames('avatar', size, props.className)}
-            style={props.avatar ? {background: `#${props.avatar.color}`} : undefined}
-        >
-            {props.avatar ? props.avatar.initials : undefined}
-        </Avatar>
+        <div className={classNames('avatar', { '--status': status, '--active': active }, props.className)}>
+            <Avatar
+                className={classNames('avatar__component', `--${size || 'medium'}`)}
+                style={props.avatar ? {background: `#${props.avatar.color}`} : undefined}
+            >
+                {props.avatar ? props.avatar.initials : undefined}
+            </Avatar>
+        </div>
     )
 }
 

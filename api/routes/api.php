@@ -90,7 +90,8 @@ Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
     Route::delete('topics/{id}', 'TopicsController@delete');
 
     // Check-in
-    Route::post('ledger', 'LedgerController@updateBuffer');
+    Route::post('check-in', 'CheckInController@updateBuffer');
+    Route::get('check-in/air', 'CheckInController@createAirCode');
 });
 
 // Students, Teachers

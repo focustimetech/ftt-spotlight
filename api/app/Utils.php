@@ -46,4 +46,19 @@ class Utils
     {
         return Setting::find($key)->value;
     }
+
+    /**
+     * Generates a random code having the given number of digits.
+     * @param length The length of the code.
+     * @return code The generated code.
+     */
+    public static function generateRandomCode($length)
+    {
+        $code = '';
+        for ($i = 0; $i < $length; $i ++) {
+            $code .= '346789BCDFGHJKMPQRTVWXY'[rand(0, 22)];
+        }
+
+        return $code;
+    }
 }

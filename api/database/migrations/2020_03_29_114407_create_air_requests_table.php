@@ -21,8 +21,8 @@ class CreateAirRequestsTable extends Migration
             $table->foreignId('student_id');
             $table->foreignId('air_code_id');
             // Foreign keys
-            $table->foreign('student_id')->referenes('id')->on('students');
-            $table->foreign('air_code_id')->referenes('id')->on('air_codes');
+            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('air_code_id')->references('id')->on('air_codes');
         });
     }
 

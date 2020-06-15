@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\AirCode;
 use App\Block;
 use App\Classroom;
 use App\Topic;
+use App\Http\Resources\AirCode as AirCodeResource;
 use App\Http\Resources\Block as BlockResource;
 use App\Http\Resources\Classroom as ClassroomResource;
 use App\Http\Resources\Topic as TopicResource;
@@ -35,14 +37,23 @@ class CalendarController extends Controller
 
         $blocks = Block::where('begins_on', '<=', date('Y-m-d H:i:s', $time))
             ->get()
-            ->mapToGroups(function ($block, $key) use ($startTime, $topicIds, $ledgerEntries) {
+            ->mapToGroups(function ($block, $key) use ($startTime, $topicIds, $ledgerEntries, $teacher) {
                 $date = date('Y-m-d', strtotime('+' . ($block->week_day - 1) . ' days', $startTime));
                 $context = [];
-                
+
                 $topic = $block->topics($date)->get()->whereIn('id', $topicIds)->first();
                 if ($topic) {
                     $context['topic'] = $topic;
                     $context['location'] = new ClassroomResource($topic->classroom()->first());
+                }
+                
+                $airCode = AirCode::where('teacher_id', $teacher->id)
+                    ->where('block_id', $block->id)
+                    ->where('date', $date)
+                    ->where('expires_at', '<', date('Y-m-d H:i:s'))
+                    ->first();
+                if ($airCode) {
+                    $context['airCheckIn'] = new AirCodeResource($airCode);
                 }
                
                 return [$date => (new BlockResource($block))->context($context)];

@@ -91,7 +91,7 @@ Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
 
     // Check-in
     Route::post('check-in', 'CheckInController@updateBuffer');
-    Route::get('check-in/air', 'CheckInController@createAirCode');
+    Route::post('check-in/air', 'CheckInController@createAirCode');
 });
 
 // Students, Teachers

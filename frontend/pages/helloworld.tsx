@@ -10,6 +10,7 @@ import Form from '../components/Form'
 import EnhancedTable from '../components/Table/EnhancedTable'
 import Heatmap from '../components/Heatmap'
 import { ITableColumn, TableColumns } from '../types/table'
+import CodeEntry from '../components/Form/Components/CodeEntry'
 
 type TicketStatus =
     | 'Resolved'
@@ -81,8 +82,9 @@ export default () => {
         <>
             <div style={{ padding: 64, boxSizing: 'border-box', background: '#EEE' }}>
                 <Typography variant='h4'>Heatmap</Typography>
-                <Heatmap data={data} />
+                <CodeEntry length={6} chunkSize={3} />
 {/*}
+                <Heatmap data={data} />
                 <EnhancedTable<IPersonData>
                     title='User Accounts'
                     data={tableData}

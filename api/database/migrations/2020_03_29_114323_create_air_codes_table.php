@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAirTogglesTable extends Migration
+class CreateAirCodesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,7 @@ class CreateAirTogglesTable extends Migration
          * Event sourcing of the Air Requests status of teachers. Encodes whether or not Air Requests are enabled for
          * a given teacher, as well as how often they use the feature and for how long.
          */
-        Schema::create('air_toggles', function (Blueprint $table) {
+        Schema::create('air_codes', function (Blueprint $table) {
             $table->id();
             $table->string('code');             // The code students use to Air check-in
             $table->date('date');               // The date of the toggle
@@ -38,6 +38,6 @@ class CreateAirTogglesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('air_toggles');
+        Schema::dropIfExists('air_codes');
     }
 }

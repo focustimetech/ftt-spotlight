@@ -1,3 +1,5 @@
+import { IStudent } from "./auth"
+
 type LedgerChipStatus =
     | 'queued'
     | 'succeeded'
@@ -20,6 +22,12 @@ export interface ILedgerEntry {
     
 }
 
-export interface IAirCheckIn {
+export interface AirCheckIn {
+    code: string | null
+    requests: IStudent[]
+}
 
+export interface IAirCodeRequest {
+    blockId: number
+    date: string
 }

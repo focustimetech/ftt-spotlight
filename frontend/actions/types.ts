@@ -60,6 +60,8 @@ export const UNARCHIVE_NOTIFICATION = 'UNARCHIVE_NOTIFICATION'
 export const SEND_NOTIFICATION = 'SEND_NOTIFICATION'
 
 // Check-in
+export const NEW_AIR_CODE = 'NEW_AIR_CODE'
+export const DELETE_AIR_CODE = 'DELETE_AIR_CODE'
 export const UPDATE_LEDGER_BUFFER = 'UPDATE_LEDGER_BUFFER'
 
 // Topics
@@ -102,3 +104,5 @@ export const FETCH_BLOCKS = 'FETCH_BLOCKS'
 
 // Calendar
 export const FETCH_CALENDAR = 'FETCH_CALENDAR'
+
+// 

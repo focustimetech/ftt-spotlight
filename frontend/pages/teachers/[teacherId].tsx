@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { format } from 'date-fns'
 import Head from 'next/head'
+import { Router, withRouter } from 'next/router'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -37,6 +38,7 @@ const getColor = (event: ICalendarEvent): string => {
 }
 
 interface IReduxProps {
+    calendar: ICalendar
     currentUser: IUser
     fetchCalendar: (date: Date) => Promise<any>
     createTopicSchedule: (topicSchedule: ITopicSchedule) => Promise<any>
@@ -44,9 +46,10 @@ interface IReduxProps {
 
 interface ITeacherProfileProps extends IReduxProps {
     teacher: ITeacher
-    calendar: ICalendar
+    teacherCalendar: ICalendar
     editable: boolean
     errorCode: number
+    router: Router
 }
 
 interface ITeacherProfileState {
@@ -60,15 +63,19 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
         const { store } = context
         const isServer: boolean = typeof window === 'undefined'
         const teacherId: number = Number(context.query.teacherId)
+        let initialDate: Date = undefined
+        if (context.query.d) {
+            initialDate = new Date(context.query.d as string)
+        }
         const currentUser: IUser = store.getState().auth.user
         const editable: boolean = currentUser.accountType === 'teacher' && currentUser.accountId === teacherId
-        let calendar: ICalendar = {}
+        let teacherCalendar: ICalendar = {}
         let teacher: ITeacher = null
         let errorCode: number
 
         if (editable) {
             teacher = currentUser as ITeacher
-            await store.dispatch(fetchCalendar()).catch((err: any) => {
+            await store.dispatch(fetchCalendar(initialDate)).catch((err: any) => {
                 if (isServer) {
                     errorCode = err.response.status
                 }
@@ -81,14 +88,15 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                     errorCode = err.response.status
                 }
             })
-            await fetchTeacherCalendar(teacherId).then((res) => {
-                calendar = res.data
+            await fetchTeacherCalendar(teacherId, initialDate).then((res) => {
+                console.log('res.toda:', res.data)
+                teacherCalendar = res.data
             }, (err) => {
                 errorCode = err.response.status
             })
         }
 
-        return { errorCode, editable, teacher, calendar }
+        return { errorCode, editable, teacher, teacherCalendar }
     }
 
     state: ITeacherProfileState = {
@@ -129,6 +137,12 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
         this.populateCalendar(previousWeek)
     }
 
+    refreshQueryDate = (date: Date) => {
+        console.log('r:', this.props.router)
+        const { pathname, asPath } = this.props.router
+        this.props.router.push(pathname, asPath, { query: { d: /*getCalendarDateKey(date)*/'test' }, shallow: true })
+    }
+
     handleOpenTopicSelect = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         this.setState({ topicsMenuAnchorEl: event.currentTarget })
     }
@@ -138,10 +152,11 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
     }
 
     componentDidMount() {
+        console.log('componentDidMount.props:', this.props)
         if (!this.props.teacher) {
             return
         }
-        this.setState({ calendar: this.props.calendar }, () => {
+        this.setState({ calendar: this.props.teacherCalendar }, () => {
             this.populateCalendar(getNextWeek(new Date()))
             this.populateCalendar(getPreviousWeek(new Date()))
         })
@@ -201,12 +216,14 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                 )}
                 {this.state.tab === 1 && (
                     <Calendar
-                        calendar={editable ? this.props.calendar : calendar}
+                        calendar={editable ? calendar : this.state.calendar}
                         getTitle={getTitle}
                         getContextTitle={editable ? getContextTitle : undefined}
                         getColor={getColor}
                         onPrevious={this.handlePreviousWeek}
                         onNext={this.handleNextWeek}
+                        onDateChange={this.refreshQueryDate}
+                        initialDate={this.props.router.query.d ? new Date(this.props.router.query.d as string) : undefined}
                     />
                 )}
             </>
@@ -221,4 +238,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = { fetchCalendar, createTopicSchedule }
 
-export default withAuth()(connect(mapStateToProps, mapDispatchToProps)(TeacherProfile))
+export default withAuth()(connect(mapStateToProps, mapDispatchToProps)(withRouter(TeacherProfile)))

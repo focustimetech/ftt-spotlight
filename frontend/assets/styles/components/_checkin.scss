@@ -6,4 +6,33 @@
             color: #388E3C;
         }
     }
+
+    &__form {
+        padding: spacing(4) 0;
+        background: #F5F5F5;
+        margin: 16px 32px;
+        border-radius: 16px;
+    }
+
+    &__status {
+        margin: 12px spacing(-4) 0;
+        padding: spacing(1) spacing(4);
+        background: rgba(0, 0, 0, 0);
+        color: inherit;
+        transition-duration: 0.3s;
+        transition-property: background, color;
+
+        &.--saved {
+            background: rgb(232, 240, 254);
+            color: rgb(26, 115, 232);
+        }
+    }
+
+    .chip_select {
+        margin: spacing(1) 0 0;
+
+        &.--hasChips {
+            margin-bottom: spacing(1);
+        }
+    }
 }

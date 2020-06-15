@@ -63,6 +63,8 @@ interface ICalendarProps {
     onNext?: (date: Date) => void
     onPrevious?: (date: Date) => void
     onRefresh?: () => void
+    onDateChange?: (date: Date) => void
+    initialDate?: Date
     is24Hour?: boolean
     includeWeekends?: boolean
 }
@@ -82,7 +84,7 @@ interface ICalendarState {
 
 class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     state: ICalendarState = {
-        currentDate: new Date(),
+        currentDate: this.props.initialDate || new Date(),
         pickerRef: null,
         contextMenuEl: null,
         selectedBlock: null
@@ -94,6 +96,9 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
             if (this.props.onNext) {
                 this.props.onNext(nextWeek)
             }
+            if (this.props.onDateChange) {
+                this.props.onDateChange(nextWeek)
+            }
             return { currentDate: nextWeek }
         })
     }
@@ -103,6 +108,9 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
             const previousWeek: Date = getPreviousWeek(state.currentDate)
             if (this.props.onPrevious) {
                 this.props.onPrevious(previousWeek)
+            }
+            if (this.props.onDateChange) {
+                this.props.onDateChange(previousWeek)
             }
             return { currentDate: previousWeek }
         })
@@ -118,6 +126,9 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
     handleSelectDate = (date: Date) => {
         this.setState({ currentDate: date, pickerRef: null })
+        if (this.props.onDateChange) {
+            this.props.onDateChange(date)
+        }
     }
 
     handleOpenContextMenu = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, selectedBlock: ICalendarSelectedBlock) => {

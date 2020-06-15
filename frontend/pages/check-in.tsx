@@ -7,34 +7,37 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {
 	Chip,
-	ClickAwayListener,
+	CircularProgress,
 	Collapse,
 	FormControl,
 	FormHelperText,
 	Icon,
+	IconButton,
 	InputBase,
     InputLabel,
 	MenuItem,
 	Paper,
 	Popper,
-    Select,
+	Select,
+	Switch,
     TextField,
     Tooltip,
-    Typography
+    Typography,
 } from '@material-ui/core'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
 import { fetchBlocks } from '../actions/blockActions'
-import { updateLedgerBuffer } from '../actions/checkinActions'
+import { createAirCode, updateLedgerBuffer } from '../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
 import { NextPageContext } from '../types'
-import { IBlock, ICalendar } from '../types/calendar'
-import { LedgerBuffer, ILedgerChip, INewLedgerChip } from '../types/checkin'
+import { IBlock, ICalendar, ICalendarEvent } from '../types/calendar'
+import { AirCheckIn, LedgerBuffer, ILedgerChip, INewLedgerChip } from '../types/checkin'
 import { makeDocumentTitle } from '../utils/document'
 
 import withAuth from '../hocs/withAuth'
 import CalendarHeader from '../components/Calendar/CalendarHeader'
 import Form from '../components/Form'
+import LoadingSwitch from '../components/Form/Components/LoadingSwitch'
 import { LoadingIconButton } from '../components/Form/Components/LoadingIconButton'
 import Flexbox from '../components/Layout/Flexbox'
 import Section from '../components/Layout/Section'
@@ -44,6 +47,7 @@ import { getCalendarDateKey } from '../utils/date'
 interface IReduxProps {
 	blocks: IBlock[]
 	calendar: ICalendar
+	createAirCode: (blockId: number, date: string) => Promise<any>
 	updateLedgerBuffer: (ledgerChip: INewLedgerChip) => void
     queueSnackbar: (snackbar: ISnackbar) => void
 }
@@ -51,7 +55,11 @@ interface IReduxProps {
 interface ICheckInState {
 	inputValue: string
     blockId: number
-    date: Date
+	date: Date
+	syncing: boolean
+	lastLedgerKey: string
+	airEnabled: boolean
+	loadingAir: boolean
 }
 
 class CheckIn extends React.Component<IReduxProps, ICheckInState> {
@@ -63,10 +71,14 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
     state: ICheckInState = {
 		inputValue: '',
         blockId: -1,
-        date: new Date()
+		date: new Date(),
+		syncing: false,
+		lastLedgerKey: null,
+		airEnabled: false,
+		loadingAir: false
 	}
 	
-	timeout: number = -1
+	interval: number = -1
 
     handleChangeDate = (date: Date) => {
         this.setState({ date }, () => {
@@ -107,8 +119,8 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 
 	handleCreateChip = () => {
 		const { blockId, date, inputValue } = this.state
-		this.setState({ inputValue: '' })
 		const key: string = this.createUniqueId()
+		this.setState({ inputValue: '', syncing: true, lastLedgerKey: key })
 		const chip: ILedgerChip = {
 			value: inputValue,
 			timestamp: new Date(),
@@ -120,6 +132,11 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 			buffer: { [key]: chip }
 		}
 		this.props.updateLedgerBuffer(ledgerBuffer)
+		setTimeout(() => {
+			if (this.state.lastLedgerKey === key) {
+				this.setState({ syncing: false })
+			}
+		}, 6000)
 	}
 
     /**
@@ -134,13 +151,26 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		this.forceUpdate()
 	}
 
+	handleAirToggle = () => {
+		if (this.state.airEnabled) {
+			this.setState({ airEnabled: false })
+		} else {
+			this.setState({ loadingAir: true })
+			this.props.createAirCode(this.state.blockId, getCalendarDateKey(this.state.date)).then(() => {
+				this.setState({ loadingAir: false, airEnabled: true })
+			}, (err) => {
+				return this.setState({ loadingAir: false })
+			})
+		}	
+	}
+
     componentDidMount() {
 		this.resetBlock()
-		this.timeout = window.setTimeout(this.refresh, 6000)
+		this.interval = window.setInterval(this.refresh, 6000)
 	}
 	
 	componentWillUnmount() {
-		window.clearTimeout(this.timeout)
+		window.clearInterval(this.interval)
 	}
 
     render() {
@@ -149,24 +179,43 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		const blocks: IBlock[] = this.props.blocks.filter((block: IBlock) => block.weekDay === weekDay)
 		const currentBlock: IBlock = this.props.blocks.find((block: IBlock) => block.id === this.state.blockId)
 		const now: Date = new Date()
+		const calendarDateKey: string = getCalendarDateKey(date)
 		let blockStartDate: Date = null
 		let blockEndDate: Date = null
 		let blockHasStarted: boolean = false
 		let blockHasEnded: boolean = false
+		let calendarData: ICalendarEvent[] = []
+		let calendarIndex: number = -1
+		let ledgerBuffer: LedgerBuffer = {}
+		let airCheckIn: AirCheckIn = null
 		if (currentBlock) {
 			blockStartDate = new Date(`${date.toDateString()} ${currentBlock.startTime}`)
 			blockEndDate = new Date(`${date.toDateString()} ${currentBlock.endTime}`)
 			blockHasEnded = blockEndDate < now
 			blockHasStarted = blockStartDate < now
+			calendarData = this.props.calendar[calendarDateKey]
+			if (calendarData) {
+				calendarIndex = calendarData.findIndex((event: ICalendarEvent) => event.id === currentBlock.id)
+			}
+			if (calendarData && calendarData[calendarIndex]) {
+				ledgerBuffer = calendarData[calendarIndex].context.ledgerBuffer || {}
+				airCheckIn = calendarData[calendarIndex].context.airCheckIn
+			}
 		}
 		const blockIsPending: boolean = blockHasStarted && !blockHasEnded
+		const hasChips: boolean = ledgerBuffer && Object.keys(ledgerBuffer).length > 0
+		const airCodeLength: number = airCheckIn ? airCheckIn.code.length : -1
+		const airCode: string = airCheckIn
+			? `${airCheckIn.code.slice(0, Math.floor(airCodeLength / 2))} ${airCheckIn.code.slice(Math.floor(airCodeLength / 2))}`
+			: 'nnn nnn'
 
-		// console.log('now:', now)
-		// console.log('blockStartDate:', blockStartDate)
-		// console.log('blockEndDate:', blockEndDate)
+		console.log('calendarDateKey:', calendarDateKey)
+		console.log('calendarData:', calendarData)
+		console.log('calendarIndex:', calendarIndex)
+
 
         return (
-            <>
+            <div className='check-in'>
                 <Head><title>{makeDocumentTitle('Student Check-in')}</title></Head>
                 <TopBar title='Student Check-in' />
                 <Section>
@@ -209,8 +258,10 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 					</Flexbox>
                 </Section>
                 <Section className='check-in__form' fullWidth>
-					<ClickAwayListener onClickAway={() => null}>
-						<div className='chip_select'>
+					<Section>
+						<Typography variant='h5'>Student Entry</Typography>
+						<Typography variant='body1'>Enter Student Numbers using a barcode scanner, or type student's full name.</Typography>
+						<div className={classNames('chip_select', { '--hasChips': hasChips })}>
 							<Paper>
 								<div className='chip_select__textfield'>
 									<div className='chip_select__actions'>
@@ -242,70 +293,63 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 								</div>
 							</Paper>
 							<FormHelperText></FormHelperText>
-							<Collapse in={false}>
-								<div className={classNames('chips_container', { '--has_chips': false })}>
-									{/*this.props.chips.map((chip: ISelectChip<T>, index: number) => {
-										const isDuplicate: boolean = false
-										const avatar: JSX.Element = chip.avatar ? (
-											chip.loading ? (
-												<Avatar><CircularProgress size={24} /></Avatar>
-											) : (
-												<Avatar className={classNames('chip_avatar', {[`--${chip.avatar.color}`]: chip.avatar.color })}>
-													{chip.avatar.initials}
-												</Avatar>
-											)
-										) : undefined
+							<Collapse in={hasChips}>
+								<Flexbox className={classNames('check-in__status', { '--saved': !this.state.syncing })}>
+									{this.state.syncing ? (
+										<>
+											<CircularProgress size={22} />
+											<Typography variant='subtitle1'>Saving...</Typography>
+										</>
+									) : (
+										<>
+											<Icon>cloud_done</Icon>
+											<Typography variant='subtitle1'>All changes saved. We'll proccess these entries on our end.</Typography>
+										</>
+									)}
+								</Flexbox>
+								<div className='chips_container'>
+									{Object.keys(ledgerBuffer).map((bufferKey: string) => {
+										return (
 
-										const chipComponent: JSX.Element = (
 											<Chip
-												className={classNames({'--duplicate': isDuplicate})}
-												key={index}
-												avatar={avatar}
-												label={chip.label}
-												onDelete={() => this.handleRemoveChip(index, chip.onRemove)}
+												key={bufferKey}
+												label={ledgerBuffer[bufferKey].value}
+												onDelete={() => null}
 											/>
 										)
-										return chip.title ? <Tooltip placement='bottom-start' key={index} title={chip.title}>{chipComponent}</Tooltip> : chipComponent
-									})*/}
+									})}
 								</div>
 							</Collapse>
-							{/*
-							<Popper
-								className='chip_select__popper'
-								anchorEl={this.state.resultsRef}
-								open={resultsOpen}
-								disablePortal
-								transition
-								placement='bottom'
-							>
-								{({ TransitionProps }) => (
-									<Grow {...TransitionProps}>
-										<Paper>
-											<MenuList>
-												{this.props.queryResults.length > 0 ? (
-													this.props.queryResults.map((queryResult: ISelectItem<T>, index: number) => (
-														<MenuItem selected={queryResult.selected} key={index} onClick={() => this.handleSelectQueryResult(queryResult)}>
-															{queryResult.avatar && (
-																<Avatar className={classNames('chip_avatar', `--${queryResult.avatar.color}`)}>
-																	{queryResult.avatar.initials}
-																</Avatar>
-															)}
-															<span>{queryResult.label}</span>
-														</MenuItem>
-													))
-												) : (
-													<Typography className='no_results'>No results found.</Typography>
-												)}
-											</MenuList>
-										</Paper>
-									</Grow>
-								)}
-							</Popper>
-							*/}
 						</div>
-					</ClickAwayListener>
+					</Section>
                 </Section>
-            </>
+				<Section className='check-in__form' fullWidth>
+					<Section>
+						<Flexbox justifyContent='space-between'>
+							<div>
+								<Typography variant='h5'>Air Check-in</Typography>
+								<Typography variant='body1'>Your Air Check-in code is listed below.</Typography>
+							</div>
+							<Flexbox>
+								<Tooltip title='Use New Code'>
+									<IconButton><Icon>refresh</Icon></IconButton>
+								</Tooltip>
+								<LoadingSwitch
+									loading={this.state.loadingAir}
+									color='primary'
+									onClick={() => this.handleAirToggle()}
+									checked={this.state.airEnabled}
+								/>
+							</Flexbox>
+						</Flexbox>
+						<Collapse in={this.state.airEnabled && Boolean(airCheckIn)}>
+							<Flexbox className='check-in__code' justifyContent='space-around'>
+								<Typography variant='h4'>{airCode}</Typography>
+							</Flexbox>
+						</Collapse>
+					</Section>
+				</Section>
+            </div>
         )
     }
 }
@@ -315,6 +359,6 @@ const mapStateToProps = (state) => ({
 	calendar: state.calendar.calendar
 })
 
-const mapDispatchToProps = { fetchBlocks, updateLedgerBuffer }
+const mapDispatchToProps = { createAirCode, fetchBlocks, updateLedgerBuffer }
 
 export default withAuth('teacher')(connect(mapStateToProps, mapDispatchToProps)(CheckIn))

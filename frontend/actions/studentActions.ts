@@ -1,4 +1,4 @@
-import axios from 'axios'
+import API from '../utils/api'
 
 import { DELETE_STUDENT, FETCH_STUDENTS, NEW_STUDENT, UPDATE_STUDENT } from './types'
 
@@ -12,13 +12,14 @@ export interface IStudentRequest {
 }
 
 export const fetchStudents = () => (dispatch: any) => {
-    return axios.get('/api/students')
+    return API.get('/students')
         .then((res: any) => dispatch({
             type: FETCH_STUDENTS,
             payload: res.data
         }))
 }
 
+/*
 export const createStudent = (studentData: IStudentRequest) => (dispatch: any) => {
     return axios.post('/api/students', studentData)
         .then((res: any) => dispatch({
@@ -42,3 +43,4 @@ export const updateStudent = (studentData: IStudentRequest) => (dispatch: any) =
             payload: res.data
         }))
 }
+*/

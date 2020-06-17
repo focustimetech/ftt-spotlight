@@ -1,24 +1,28 @@
 import { DELETE_STUDENT, FETCH_STUDENTS, NEW_STUDENT, UPDATE_STUDENT } from '../actions/types'
-import { ReduxAction } from '../types/app'
-import { IStudent } from '../types/student'
+import { ReduxAction } from '../types'
+import { IStudent } from '../types/auth'
 
 interface IState {
-    items: IStudent[],
+    students: Record<number, IStudent>,
     item: IStudent
 }
 
 const initialState: IState = {
-    items: [],
+    students: {},
     item: null
 }
 
-export const studentReducer = (state = initialState, action: ReduxAction<IStudent>) => {
+export const studentReducer = (state = initialState, action: ReduxAction<IStudent[]>) => {
     switch (action.type) {
         case FETCH_STUDENTS:
             return {
                 ...state,
-                items: action.payload
+                students: action.payload.reduce((record: Record<number, IStudent>, student: IStudent) => {
+                    record[student.accountId] = student
+                    return record
+                }, {})
             }
+        /*
         case NEW_STUDENT:
             return {
                 items: [...state.items, action.payload],
@@ -37,6 +41,7 @@ export const studentReducer = (state = initialState, action: ReduxAction<IStuden
                     action.payload
                 ]
             }
+        */
         default:
             return state
     }

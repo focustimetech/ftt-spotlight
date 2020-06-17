@@ -33,18 +33,6 @@ export const FETCH_STARRED = 'FETCH_STARRED'
 export const STAR_ITEM = 'STAR_ITEM'
 export const UNSTAR_ITEM = 'UNSTAR_ITEM'
 
-// Student Profile
-export const FETCH_STUDENT_PROFILE = 'FETCH_STUDENT_PROFILE'
-
-// Student Schedule
-export const FETCH_STUDENT_SCHEDULE = 'FETCH_STUDENT_SCHEDULE'
-
-// Staff Schedule
-export const FETCH_STAFF_SCHEDULE = 'FETCH_STAFF_SCHEDULE'
-
-// Staff Profile
-export const FETCH_STAFF_PROFILE = 'FETCH_STAFF_PROFILE'
-
 // Settings
 export const FETCH_SETTINGS = 'FETCH_SETTINGS'
 
@@ -89,15 +77,6 @@ export const FETCH_REPORTS = 'FETCH_REPORTS'
 export const CREATE_REPORT = 'CREATE_REPORT'
 export const UPDATE_REPORT = 'UPDATE_REPORT'
 export const DELETE_REPORT = 'DELETE_REPORT'
-
-// Wiki
-export const FETCH_WIKI_GROUPS = 'FETCH_WIKI_GROUPS'
-export const FETCH_WIKI_GROUP_POSTS = 'FETCH_WIKI_GROUP_POSTS'
-export const FETCH_WIKI_POST = 'FETCH_WIKI_POST'
-export const CREATE_WIKI_POST = 'CREATE_WIKI_POST'
-export const CREATE_WIKI_GROUP = 'CREATE_WIKI_GROUP'
-export const UPDATE_WIKI_POST = 'UPDATE_WIKI_GROUP'
-export const UPDATE_WIKI_GROUP = 'UPDATE_WIKI_GROUP'
 
 // Blocks
 export const FETCH_BLOCKS = 'FETCH_BLOCKS'

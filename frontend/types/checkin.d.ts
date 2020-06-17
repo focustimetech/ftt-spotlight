@@ -19,7 +19,14 @@ export interface ILedgerChip {
 export type LedgerBuffer = Record<string, ILedgerChip>
 
 export interface ILedgerEntry {
-    
+    id: number
+    date: string
+    memo: string
+    method: string
+    studentId: number
+    blockId: number
+    teacherId: number
+    createdAt: string
 }
 
 export interface AirCheckIn {

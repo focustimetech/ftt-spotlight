@@ -40,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function() {
     // Calendar
     Route::get('teacher/{id}/calendar/{date?}', 'CalendarController@teacherCalendar');
 
+    // Classrooms
+    Route::get('classrooms/all', 'ClassroomsController@index');
+
     // Logout
     Route::post('logout', 'Auth\LoginController@logout');
 
@@ -67,7 +70,6 @@ Route::middleware('auth:sanctum')->group(function() {
 Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(function() {
     // Classrooms
     Route::get('classrooms', 'ClassroomsController@list');
-    Route::get('classrooms/all', 'ClassroomsController@index');
     Route::post('classrooms', 'ClassroomsController@create');
     Route::put('classrooms', 'ClassroomsController@update');
     Route::delete('classrooms/{id}', 'ClassroomsController@delete');

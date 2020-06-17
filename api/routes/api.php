@@ -26,6 +26,14 @@ Route::post('login', 'Auth\LoginController@login');
 
 // Any User
 Route::middleware('auth:sanctum')->group(function() {
+    
+    /**
+     * 
+     * @TODO Make middleware for ensuring account is active
+     * 
+     */
+
+
     // Blocks
     Route::get('blocks', 'BlocksController@index');
 
@@ -77,6 +85,9 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(functi
 Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin,guardian')->group(function() {
     // Calendar
     Route::get('students/{id}/calendar/{date?}', 'CalendarController@studentCalendar');
+
+    // Students
+    Route::get('students', 'StudentsController@index');
 });
 
 // Teachers

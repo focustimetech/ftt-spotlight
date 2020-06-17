@@ -43,7 +43,8 @@ class TeacherLayout extends React.Component<IReduxProps & ILayoutContainerProps,
     render() {
         const clusters: INavMenuItem[] = this.props.clusters.map((cluster: ICluster) => ({
             label: cluster.name,
-            href: `clusters/${cluster.id}`,
+            href: '/clusters/[clusterId]',
+            as: `/clusters/${cluster.id}`,
             icon: 'group'
         }))
 

@@ -18,9 +18,10 @@ class Student extends JsonResource
      */
     public function toArray($request)
     {
+        $now = time();
         $user = new UserResource($this->user()->first());
         $dayOfWeek = date('w');
-        $block = Block::where('week_day', $dayOfWeek)->get()->first(function (Block $block) {
+        $block = Block::where('week_day', $dayOfWeek)->get()->first(function (Block $block) use ($now) {
             return strtotime($block->start_time) <= $now && strtotime($block->end_time) > $now;
         });
 

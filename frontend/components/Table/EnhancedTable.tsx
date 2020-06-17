@@ -60,7 +60,7 @@ const getSorting = (order: SortOrder, orderBy: string) => {
 interface IEnhancedTableProps<T> {
 	title: string
 	columns: TableColumns<T>
-	data: T[]
+	data: Array<T>
 	actions?: ITableAction[]
 	defaultRowsPerPage?: number
 	searchable?: boolean
@@ -256,8 +256,8 @@ class EnhancedTable<T> extends React.Component<IEnhancedTableProps<T>, IEnhanced
 		) : (
 			this.props.data
 		)
-		console.log('props.data:', this.props.data)
-		console.log(stableSort(data, getSorting(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
+		//console.log('props.data:', this.props.data)
+		//console.log(stableSort(data, getSorting(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
 
 		return (
 			<div className='enhanced-table'>

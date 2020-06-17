@@ -60,7 +60,7 @@ const NavMenu = (props: INavMenuProps) => {
                                 <NavMenuItem
                                     {...menuItem}
                                     useListItem
-                                    active={router.pathname === menuItem.href}
+                                    active={router.asPath === menuItem.as}
                                     key={menuItem.label}
                                 />
                             ))}
@@ -73,7 +73,7 @@ const NavMenu = (props: INavMenuProps) => {
                                                 <NavMenuItem
                                                     {...menuItem}
                                                     useListItem
-                                                    active={router.pathname === menuItem.href}
+                                                    active={router.asPath === menuItem.as}
                                                     key={menuItem.label}
                                                 />
                                             ))}
@@ -104,7 +104,7 @@ const NavMenu = (props: INavMenuProps) => {
                                 <NavMenuItem
                                     {...menuItem}
                                     useListItem={false}
-                                    active={router.pathname === menuItem.href}
+                                    active={router.asPath === menuItem.as}
                                     key={menuItem.label}
                                 />
                             ))}

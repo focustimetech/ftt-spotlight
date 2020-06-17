@@ -139,8 +139,11 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
 
     refreshQueryDate = (date: Date) => {
         console.log('r:', this.props.router)
+        /*
         const { pathname, asPath } = this.props.router
-        this.props.router.push(pathname, asPath, { query: { d: /*getCalendarDateKey(date)*/'test' }, shallow: true })
+        this.props.router.push(pathname, asPath, { query: { d: getCalendarDateKey(date) }, shallow: true })
+        */
+       window.history.pushState('', '', `?d=${getCalendarDateKey(date)}`)
     }
 
     handleOpenTopicSelect = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

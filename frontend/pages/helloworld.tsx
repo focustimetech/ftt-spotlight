@@ -83,7 +83,7 @@ export default () => {
             <div style={{ padding: 64, boxSizing: 'border-box', background: '#EEE' }}>
                 <Typography variant='h4'>Heatmap</Typography>
                 <CodeEntry length={6} chunkSize={3} />
-{/*}
+
                 <Heatmap data={data} />
                 <EnhancedTable<IPersonData>
                     title='User Accounts'
@@ -92,7 +92,7 @@ export default () => {
                     selected={selected}
                     onSelect={setSelected}
                 />
-*/}
+
             </div>
         </>
     )

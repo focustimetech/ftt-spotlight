@@ -17,7 +17,8 @@ class Cluster extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'public' => $this->public == true
+            'public' => $this->public == true,
+            'studentIds' => $this->students()->get()->pluck('id')
         ];
     }
 }

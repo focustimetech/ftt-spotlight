@@ -15,6 +15,7 @@ export interface INavMenuItem {
     icon: string
     label: string
     href: string
+    as?: string
 }
 
 interface INavMenuItemProps extends INavMenuItem {
@@ -23,11 +24,11 @@ interface INavMenuItemProps extends INavMenuItem {
 }
 
 const NavMenuItem = (props: INavMenuItemProps & { useListItem: boolean }) => {
-    const { active, href, icon, label, useListItem } = props
+    const { active, as, href, icon, label, useListItem } = props
     const className: string = classNames('nav-menu__item', { '--active': active, '--expanded': !useListItem })
 
     return props.useListItem ? (
-        <Link href={href}>
+        <Link href={href} as={as}>
             <a>
                 <MenuItem className={className}>
                     <ListItemIcon><Icon>{icon}</Icon></ListItemIcon>

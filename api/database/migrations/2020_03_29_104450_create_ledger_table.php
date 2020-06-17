@@ -20,8 +20,8 @@ class CreateLedgerTable extends Migration
             $table->id();
             $table->date('date');                                           // Date of the block used for the record
             $table->string('memo');                                         // Memo for the block, typically the topic's memo
-            $table->foreignId('classroom_id');                              // ID of the classroom being checked into
             $table->enum('method', ['plan', 'air', 'search', 'number']);    // The method by which the student is checked in
+            $table->foreignId('classroom_id');                              // ID of the classroom being checked into
             $table->foreignId('student_id');                                // Student being checked in
             $table->foreignId('block_id');                                  // Block used for the check-in
             $table->foreignId('teacher_id');                                // Teacher that checked the student in

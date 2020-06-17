@@ -39,6 +39,7 @@ class CalendarController extends Controller
             ->get()
             ->mapToGroups(function ($block, $key) use ($startTime, $topicIds, $ledgerEntries, $teacher) {
                 $date = date('Y-m-d', strtotime('+' . ($block->week_day - 1) . ' days', $startTime));
+                $blockId = $block->id;
                 $context = [];
 
                 $topic = $block->topics($date)->get()->whereIn('id', $topicIds)->first();
@@ -48,14 +49,19 @@ class CalendarController extends Controller
                 }
                 
                 $airCode = AirCode::where('teacher_id', $teacher->id)
-                    ->where('block_id', $block->id)
+                    ->where('block_id', $blockId)
                     ->where('date', $date)
                     ->where('expires_at', '<', date('Y-m-d H:i:s'))
                     ->first();
                 if ($airCode) {
                     $context['airCheckIn'] = new AirCodeResource($airCode);
                 }
-               
+
+                $blockLedgerEntries = $ledgerEntries->where('date', $date)->where('block_id', $blockId);
+                if ($blockLedgerEntries) {
+                    $context['ledgerEntries'] = $blockLedgerEntries;
+                }
+
                 return [$date => (new BlockResource($block))->context($context)];
             });
         

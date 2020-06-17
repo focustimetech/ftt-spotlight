@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 
+import { appointmentReducer } from './appointmentReducer'
 import { authReducer } from './authReducer'
 import { blockReducer } from './blockReducer'
 import { calendarReducer } from './calendarReducer'
@@ -21,6 +22,7 @@ import { topicReducer } from './topicReducer'
 import { usersReducer } from './usersReducer'
 
 export const rootReducer = combineReducers({
+    appointments: appointmentReducer,
     auth: authReducer,
     blocks: blockReducer,
     calendar: calendarReducer,

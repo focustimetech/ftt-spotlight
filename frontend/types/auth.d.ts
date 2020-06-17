@@ -1,4 +1,4 @@
-import { TopicColor } from './topic'
+import { ILedgerEntry } from "./checkin"
 
 type AccountType = 'student' | 'teacher' | 'staff' | 'guardian' | 'sysadmin'
 
@@ -26,6 +26,7 @@ export interface IUserDetails {
 export interface IStudent extends IUserDetails {
     accountType: 'student'
     grade: number
+    lastCheckIn?: ILedgerEntry
 }
 
 export interface IStaff extends IUserDetails {

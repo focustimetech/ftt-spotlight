@@ -208,7 +208,7 @@ class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcis
                             {this.isCreatingClassroom() && (
                                 <FormRow>
                                     <TextField
-                                        label='Classroom'
+                                        label='Classroom name'
                                         value={this.state.classroomName}
                                         onChange={this.handleChangeClassroomName}
                                         placeholder='Your classroom name'

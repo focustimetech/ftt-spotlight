@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AirCode;
 use App\Block;
 use App\Classroom;
+use App\Teacher;
 use App\Topic;
 use App\Http\Resources\AirCode as AirCodeResource;
 use App\Http\Resources\Block as BlockResource;
@@ -39,7 +40,7 @@ class CalendarController extends Controller
 
         $blocks = Block::where('begins_on', '<=', date('Y-m-d H:i:s', $time))
             ->get()
-            ->mapToGroups(function ($block, $key) use ($startTime, $topicIds, $appointments, $ledgerEntries, $teacher) {
+            ->mapToGroups(function ($block, $key) use ($startTime, $topicIds, $appointments, $ledgerEntries, $teacher, $user) {
                 $date = date('Y-m-d', strtotime('+' . ($block->week_day - 1) . ' days', $startTime));
                 $blockId = $block->id;
                 $context = [];

@@ -81,6 +81,7 @@ export default () => {
 
         <>
             <div style={{ padding: 64, boxSizing: 'border-box', background: '#EEE' }}>
+                {/*
                 <Typography variant='h4'>Heatmap</Typography>
                 <CodeEntry length={6} chunkSize={3} />
 
@@ -92,7 +93,8 @@ export default () => {
                     selected={selected}
                     onSelect={setSelected}
                 />
-
+                */}
+                <AppointmentsForm />
             </div>
         </>
     )

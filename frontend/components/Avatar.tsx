@@ -8,7 +8,7 @@ import { IAvatar } from '../types/auth'
 export interface IAvatarProps {
     avatar: IAvatar
     className?: string
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large' | 'chip'
     status?: boolean
     active?: boolean
 }

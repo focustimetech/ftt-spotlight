@@ -94,6 +94,11 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin,guardian')->gro
 
 // Teachers
 Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
+    // Appointment
+    Route::get('appointments', 'AppointmentsController@list');
+    Route::post('appointments', 'AppointmentsController@create');
+    Route::delete('appointments', 'AppointmentsController@delete');
+
     // Topics
     Route::get('topics', 'TopicsController@list');
     Route::get('topics/all', 'TopicsController@index');

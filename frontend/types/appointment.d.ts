@@ -8,10 +8,6 @@ export interface IAppointment {
     classroomId: number
 }
 
-export interface INewAppointment {
-    memo: string
-    date: string
-    blockId: number
-    classroomId: number
+export interface INewAppointment extends Omit<IAppointment, 'id' | 'studentId' | 'teacherId'> {
     studentIds: number[]
 }

@@ -15,6 +15,7 @@ import { ICalendarEvent, ICalendarEventContext, ICalendarContextDetails } from '
 import p from '../../utils/pluralize'
 
 import Flexbox from '../Layout/Flexbox'
+import AppointmentsForm from '../Form/Forms/AppointmentsForm'
 
 interface IContentMenuListItem {
     icon: string
@@ -52,12 +53,14 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
     let contextList: IContentMenuListItem[]
     if (context) {
         contextList = []
+        /*
         if (context.airCheckIns) {
             contextList.push({
                 icon: 'wifi_tethering',
                 label: `${context.airCheckIns} pending ${p('Air Check-in', context.airCheckIns.length)}`
             })
         }
+        */
         if (context.appointments) {
             contextList.push({
                 icon: 'supervised_user_circle',
@@ -95,9 +98,14 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
         >
             <Flexbox className='context-menu__actions'>
                 {editable && (
-                    <Tooltip title='Options'>
-                        <IconButton><Icon>more_vert</Icon></IconButton>
-                    </Tooltip>
+                    <>
+                        <Tooltip title='Create Appointment'>
+                            <IconButton><Icon>supervised_user_circle</Icon></IconButton>
+                        </Tooltip>
+                        <Tooltip title='Options'>
+                            <IconButton><Icon>more_vert</Icon></IconButton>
+                        </Tooltip>
+                    </>
                 )}
                 <Tooltip title='Close'>
                     <IconButton onClick={() => props.onClose()}>
@@ -142,6 +150,7 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
                     </Flexbox>
                 ))}
             </div>
+            <AppointmentsForm event={event} date={date} />
         </Popover>
     )
 }

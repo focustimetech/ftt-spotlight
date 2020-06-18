@@ -18,10 +18,10 @@ class Appointment extends JsonResource
             'id' => $this->id,
             'memo' => $this->memo,
             'date' => $this->date,
-            'teacherId' => $this->teacherId,
-            'studentId' => $this->studentId,
-            'blockId' => $this->blockId,
-            'classroomId' => $this->classroomId
+            'teacherId' => $this->teacher_id,
+            'studentId' => $this->student_id,
+            'blockId' => $this->block_id,
+            'classroomId' => $this->classroom_id
         ];
     }
 }

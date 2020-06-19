@@ -227,6 +227,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
                         onNext={this.handleNextWeek}
                         onDateChange={this.refreshQueryDate}
                         initialDate={this.props.router.query.d ? new Date(this.props.router.query.d as string) : undefined}
+                        editable={this.props.editable}
                     />
                 )}
             </>

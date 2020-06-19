@@ -67,6 +67,7 @@ interface ICalendarProps {
     initialDate?: Date
     is24Hour?: boolean
     includeWeekends?: boolean
+    editable?: boolean
 }
 
 export interface ICalendarSelectedBlock {
@@ -165,6 +166,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
                     contextDetails={calendarContextDetails}
                     anchorEl={this.state.contextMenuEl}
                     onClose={this.handleCloseContextMenu}
+                    editable={this.props.editable}
                 />
                 <CalendarHeader
                     date={datesOfWeek[0]}

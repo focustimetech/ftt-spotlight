@@ -1,7 +1,9 @@
 import classNames from 'classnames'
 import React from 'react'
 
-const Form = (props: React.FormHTMLAttributes<HTMLFormElement>) => {
+export type IFormProps = React.FormHTMLAttributes<HTMLFormElement>
+
+const Form = (props: IFormProps) => {
     const { children, className, ...rest } = props
     return (
         <form {...rest} className={classNames('form', className)}>

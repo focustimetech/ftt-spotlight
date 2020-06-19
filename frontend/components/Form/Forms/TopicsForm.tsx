@@ -23,6 +23,7 @@ import { ITopic, INewTopic } from '../../../types/topic'
 import ColorPicker, { randomColor } from '../Pickers/ColorPicker'
 import { LoadingButton } from '../Components/LoadingButton'
 import Form, { FormRow, FormRowElement } from '../'
+import ListForm, { ListFormHeader, ListFormActionArea, ListFormContent, ListFormEmptyState, ListFormList } from '../ListForm'
 
 export interface ITopicsFormProps {
     selected: number
@@ -143,102 +144,96 @@ class TopicsForm extends React.Component<ITopicsFormProps & IReduxProps, ITopcis
         const { classrooms, topics } = this.props
 
         return (
-        
-            <Form className='list-form__inner' onSubmit={this.handleSubmit} autoComplete='off'>
-                <MenuList>
+            <ListForm className='list-form__inner' onSubmit={this.handleSubmit} autoComplete='off'>
+                <ListFormHeader>Topics</ListFormHeader>
+                <ListFormList>
                     {topics.length > 0 && topics.map((topic: ITopic) => (
                         <MenuItem onClick={() => this.handleSelectTopic(topic)}>
                             <span className='swatch' style={{ background: `#${topic.color}` }} />
                             <Typography variant='inherit' noWrap>{topic.memo}</Typography>
                         </MenuItem>
                     ))}
-                </MenuList>
-                <div className='list-form__actions'>
-                    <div className='list-form__empty-state'>
-                        {this.state.loadingInitialTopics ? (
-                            <CircularProgress />
-                        ) : (
-                            topics.length === 0 && (
-                                <Typography>Your Topics will appear here.</Typography>
-                            )
-                        )}
-                    </div>
-                    {this.state.editing ? (
-                        <>
+                </ListFormList>
+                {(this.state.loadingInitialTopics || topics.length === 0) && (
+                    <ListFormEmptyState loading={this.state.loadingInitialTopics}>Your Topics will appear here.</ListFormEmptyState>
+                )}
+                <ListFormContent visible={this.state.editing}>
+                    <>
+                        <FormRow>
+                            <TextField
+                                variant='outlined'
+                                margin='dense'
+                                fullWidth
+                                name='topic-memo'
+                                label='Memo'
+                                placeholder='Your Focus topic'
+                                value={this.state.memo}
+                                onChange={this.handleChangeMemo}
+                                required
+                            />
+                        </FormRow>
+                        <FormRow>
+                            <FormRowElement fullWidth>
+                                <FormControl variant='outlined' margin='dense' fullWidth>
+                                    <InputLabel id='classroom-select-label'>Classroom</InputLabel>
+                                    <Select
+                                        labelId='classroom-select-label'
+                                        name='topic-classroom'
+                                        value={this.state.classroom}
+                                        onChange={this.handleSelectClassroom}
+                                        label='Classroom'
+                                    >
+                                        <MenuItem value={-1}><em>New Classroom</em></MenuItem>
+                                        {classrooms && classrooms.length > 0 && classrooms.map((classroom: IClassroom) => (
+                                            <MenuItem value={classroom.id} key={classroom.id}>
+                                                <Typography variant='inherit' noWrap>{classroom.name}</Typography>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </FormRowElement>
+                            <ColorPicker
+                                value={this.state.color}
+                                onChange={this.handleSelectColor}
+                                variant='outlined'
+                                margin='dense'
+                            />
+                        </FormRow>
+                        {this.isCreatingClassroom() && (
                             <FormRow>
                                 <TextField
-                                    variant='outlined'
-                                    margin='dense'
+                                    label='Classroom name'
+                                    value={this.state.classroomName}
+                                    onChange={this.handleChangeClassroomName}
+                                    placeholder='Your classroom name'
+                                    name='topic-classroom-name'
                                     fullWidth
-                                    name='topic-memo'
-                                    label='Memo'
-                                    placeholder='Your Focus topic'
-                                    value={this.state.memo}
-                                    onChange={this.handleChangeMemo}
+                                    margin='dense'
+                                    variant='outlined'
+                                    required
+                                />
+                                <TextField
+                                    label='Capacity'
+                                    type='number'
+                                    name='topic-classroom-capacity'
+                                    value={this.state.capacity}
+                                    onChange={this.handleChangeCapacity}
+                                    margin='dense'
+                                    variant='outlined'
                                     required
                                 />
                             </FormRow>
-                            <FormRow>
-                                <FormRowElement fullWidth>
-                                    <FormControl variant='outlined' margin='dense' fullWidth>
-                                        <InputLabel id='classroom-select-label'>Classroom</InputLabel>
-                                        <Select
-                                            labelId='classroom-select-label'
-                                            name='topic-classroom'
-                                            value={this.state.classroom}
-                                            onChange={this.handleSelectClassroom}
-                                            label='Classroom'
-                                        >
-                                            <MenuItem value={-1}><em>New Classroom</em></MenuItem>
-                                            {classrooms && classrooms.length > 0 && classrooms.map((classroom: IClassroom) => (
-                                                <MenuItem value={classroom.id} key={classroom.id}>
-                                                    <Typography variant='inherit' noWrap>{classroom.name}</Typography>
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                </FormRowElement>
-                                <ColorPicker
-                                    value={this.state.color}
-                                    onChange={this.handleSelectColor}
-                                    variant='outlined'
-                                    margin='dense'
-                                />
-                            </FormRow>
-                            {this.isCreatingClassroom() && (
-                                <FormRow>
-                                    <TextField
-                                        label='Classroom name'
-                                        value={this.state.classroomName}
-                                        onChange={this.handleChangeClassroomName}
-                                        placeholder='Your classroom name'
-                                        name='topic-classroom-name'
-                                        fullWidth
-                                        margin='dense'
-                                        variant='outlined'
-                                        required
-                                    />
-                                    <TextField
-                                        label='Capacity'
-                                        type='number'
-                                        name='topic-classroom-capacity'
-                                        value={this.state.capacity}
-                                        onChange={this.handleChangeCapacity}
-                                        margin='dense'
-                                        variant='outlined'
-                                        required
-                                    />
-                                </FormRow>
-                            )}
-                            <FormRow justifyContent='flex-end'>
-                                <LoadingButton loading={this.state.loadingTopic} type='submit' variant='text' color='primary'>Create</LoadingButton>
-                            </FormRow>
-                        </>
-                    ) : (
-                        <Button variant='text' onClick={() => this.handleOpenEditing()} startIcon={<Icon>add</Icon>}>Create Topic</Button>
-                    )}
-                </div>
-            </Form>
+                        )}
+                        <FormRow justifyContent='flex-end'>
+                            <LoadingButton loading={this.state.loadingTopic} type='submit' variant='text' color='primary'>Create</LoadingButton>
+                        </FormRow>
+                    </>
+
+                </ListFormContent>
+                <ListFormActionArea visible={!this.state.editing}>
+                    <Button variant='text' onClick={() => this.handleOpenEditing()} startIcon={<Icon>add</Icon>}>Create Topic</Button>
+                </ListFormActionArea>
+            </ListForm>
         )
     }
 }

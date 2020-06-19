@@ -12,7 +12,7 @@ interface ITopicsDialogProps extends ITopicsFormProps {
 const TopicsDialog = (props: ITopicsDialogProps) => {
     const { anchorEl, onClose, ...rest } = props
     return (
-        <Popover open={Boolean(props.anchorEl)} PaperProps={{ className: 'list-form' }} anchorEl={anchorEl} onClose={onClose}>
+        <Popover open={Boolean(props.anchorEl)} anchorEl={anchorEl} onClose={onClose}>
             <TopicsForm {...rest} />
         </Popover>
     )

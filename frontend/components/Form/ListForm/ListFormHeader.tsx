@@ -12,4 +12,4 @@ const ListFormHeader = (props: TypographyProps) => {
     )
 }
 
-export default ListFormHeader
+export { ListFormHeader }

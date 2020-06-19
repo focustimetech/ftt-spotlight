@@ -12,4 +12,4 @@ const ListFormList = (props: MenuListProps) => {
     )
 }
 
-export default ListFormHeader
+export { ListFormList }

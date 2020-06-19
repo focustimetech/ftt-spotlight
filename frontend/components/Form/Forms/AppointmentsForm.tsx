@@ -38,7 +38,14 @@ import { createFilterOptions } from '../../../utils/search'
 import Avatar from '../../Avatar'
 import Flexbox from '../../Layout/Flexbox'
 import { LoadingButton } from '../Components/LoadingButton'
-import Form, { FormRow, FormRowElement } from '../'
+import ListForm, {
+    ListFormActionArea,
+    ListFormContent,
+    ListFormEmptyState,
+    ListFormHeader,
+    ListFormList
+} from '../ListForm'
+import { FormRow, FormRowElement } from '../'
 
 export interface IAppointmentsFormProps {
     event: ICalendarEvent
@@ -200,9 +207,9 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
         }
 
         return (
-            <Form className='list-form__inner' onSubmit={this.handleSubmit} autoComplete='off'>
-                <Typography variant='h5'>Appointments</Typography>
-                <MenuList>
+            <ListForm onSubmit={this.handleSubmit} autoComplete='off'>
+                <ListFormHeader>Appointments</ListFormHeader>
+                <ListFormList>
                     {appointments.length > 0 && students && Object.keys(students).length > 0 && appointments.map((appointment: IAppointment) => {
                         const student: IStudent = students[appointment.studentId]
                         const avatar: IAvatar = student ? student.avatar : undefined
@@ -214,144 +221,138 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
                             </MenuItem>
                         )
                     })}
-                </MenuList>
-                <Divider />
-                <div className='list-form__actions'>
-                    <div className='list-form__empty-state'>
-                        {this.state.loadingInitialStudents || this.state.loadingInitialAppointments ? (
-                            <CircularProgress />
-                        ) : (
-                            appointments.length === 0 && (
-                                <Typography>Your Appointments will appear here.</Typography>
-                            )
+                </ListFormList>
+                {(this.state.loadingInitialStudents || this.state.loadingInitialAppointments || appointments.length === 0) && (
+                    <ListFormEmptyState
+                        loading={this.state.loadingInitialStudents || this.state.loadingInitialAppointments}
+                    >Your Appointments will appear here.</ListFormEmptyState>
+                )}
+                <ListFormContent visible={this.state.creating || this.state.selectedAppointmentId !== -1}>
+                    <>
+                        {student && (
+                            <Flexbox>
+                                <Avatar avatar={student.avatar} />
+                                <Typography variant='h6'>{student.name}</Typography>
+                            </Flexbox>
                         )}
-                    </div>
-                    <Collapse in={this.state.creating || this.state.selectedAppointmentId !== -1}>
-                        <>
-                            {student && (
-                                <Flexbox>
-                                    <Avatar avatar={student.avatar} />
-                                    <Typography variant='h6'>{student.name}</Typography>
-                                </Flexbox>
-                            )}
-                            {students && this.state.studentId === -1 && (
-                                <Autocomplete<number>
-                                    loading={this.state.loadingInitialStudents}
-                                    disabled={Object.keys(students).length === 0}
-                                    multiple
-                                    autoComplete
-                                    fullWidth
-                                    size='small'
-                                    options={Object.keys(students).map((key: string) => Number(key))}
-                                    getOptionLabel={getOptionLabel}
-                                    getOptionDisabled={getOptionDisabled}
-                                    filterOptions={(options, { inputValue }) => filterOptions(options, inputValue)}
-                                    renderInput={(TextFieldProps) => (
-                                        <TextField
-                                            {...TextFieldProps}
-                                            variant='outlined'
-                                            label='Students'
-                                            placeholder='Student Name'
-                                        />
-                                    )}
-                                    renderTags={(value: number[], getTagProps) => {
-                                        return value.map((option: number, index: number) => {
-                                            console.log('OPT3:', option)
-                                            return (
-                                                <Chip
-                                                /*
-                                                    avatar={
-                                                        <MuiAvatar style={{ background: `#${students[option].avatar.color} `}}>
-                                                            {students[option].avatar.initials}
-                                                        </MuiAvatar>
-                                                    }
-                                                */
-                                                    avatar={<Avatar size='chip' avatar={students[option].avatar} />}
-                                                    label={students[option].name}
-                                                    variant='outlined'
-                                                    {...getTagProps({ index })}
-                                                />
-                                            )
-                                        })
-                                    }}
-                                />
-                            )}
+                        {students && this.state.studentId === -1 && (
+                            <Autocomplete<number>
+                                loading={this.state.loadingInitialStudents}
+                                disabled={Object.keys(students).length === 0}
+                                multiple
+                                autoComplete
+                                fullWidth
+                                size='small'
+                                options={Object.keys(students).map((key: string) => Number(key))}
+                                getOptionLabel={getOptionLabel}
+                                getOptionDisabled={getOptionDisabled}
+                                filterOptions={(options, { inputValue }) => filterOptions(options, inputValue)}
+                                renderInput={(TextFieldProps) => (
+                                    <TextField
+                                        {...TextFieldProps}
+                                        variant='outlined'
+                                        label='Students'
+                                        placeholder='Student Name'
+                                    />
+                                )}
+                                renderTags={(value: number[], getTagProps) => {
+                                    return value.map((option: number, index: number) => {
+                                        console.log('OPT3:', option)
+                                        return (
+                                            <Chip
+                                            /*
+                                                avatar={
+                                                    <MuiAvatar style={{ background: `#${students[option].avatar.color} `}}>
+                                                        {students[option].avatar.initials}
+                                                    </MuiAvatar>
+                                                }
+                                            */
+                                                avatar={<Avatar size='chip' avatar={students[option].avatar} />}
+                                                label={students[option].name}
+                                                variant='outlined'
+                                                {...getTagProps({ index })}
+                                            />
+                                        )
+                                    })
+                                }}
+                            />
+                        )}
+                        <FormRow>
+                            <TextField
+                                variant='outlined'
+                                margin='dense'
+                                fullWidth
+                                name='appointment-memo'
+                                label='Memo'
+                                placeholder='Reason for this Appointment'
+                                value={this.state.memo}
+                                onChange={this.handleChangeMemo}
+                                required
+                            />
+                        </FormRow>
+                        <FormRow>
+                            <FormRowElement fullWidth>
+                                <FormControl variant='outlined' margin='dense' fullWidth>
+                                    <InputLabel id='classroom-select-label'>Classroom</InputLabel>
+                                    <Select
+                                        labelId='classroom-select-label'
+                                        name='topic-classroom'
+                                        value={this.state.classroom}
+                                        onChange={this.handleSelectClassroom}
+                                        label='Classroom'
+                                    >
+                                        <MenuItem value={-1}><em>New Classroom</em></MenuItem>
+                                        {classrooms && classrooms.length > 0 && classrooms.map((classroom: IClassroom) => (
+                                            <MenuItem value={classroom.id} key={classroom.id}>
+                                                <Typography variant='inherit' noWrap>{classroom.name}</Typography>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </FormRowElement>
+                        </FormRow>
+                        {this.isCreatingClassroom() && (
                             <FormRow>
                                 <TextField
-                                    variant='outlined'
-                                    margin='dense'
+                                    label='Classroom'
+                                    value={this.state.classroomName}
+                                    onChange={this.handleChangeClassroomName}
+                                    placeholder='Your classroom name'
+                                    name='appointment-classroom-name'
                                     fullWidth
-                                    name='appointment-memo'
-                                    label='Memo'
-                                    placeholder='Reason for this Appointment'
-                                    value={this.state.memo}
-                                    onChange={this.handleChangeMemo}
+                                    margin='dense'
+                                    variant='outlined'
+                                    required
+                                />
+                                <TextField
+                                    label='Capacity'
+                                    type='number'
+                                    name='appointment-classroom-capacity'
+                                    value={this.state.capacity}
+                                    onChange={this.handleChangeCapacity}
+                                    margin='dense'
+                                    variant='outlined'
                                     required
                                 />
                             </FormRow>
-                            <FormRow>
-                                <FormRowElement fullWidth>
-                                    <FormControl variant='outlined' margin='dense' fullWidth>
-                                        <InputLabel id='classroom-select-label'>Classroom</InputLabel>
-                                        <Select
-                                            labelId='classroom-select-label'
-                                            name='topic-classroom'
-                                            value={this.state.classroom}
-                                            onChange={this.handleSelectClassroom}
-                                            label='Classroom'
-                                        >
-                                            <MenuItem value={-1}><em>New Classroom</em></MenuItem>
-                                            {classrooms && classrooms.length > 0 && classrooms.map((classroom: IClassroom) => (
-                                                <MenuItem value={classroom.id} key={classroom.id}>
-                                                    <Typography variant='inherit' noWrap>{classroom.name}</Typography>
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                </FormRowElement>
-                            </FormRow>
-                            {this.isCreatingClassroom() && (
-                                <FormRow>
-                                    <TextField
-                                        label='Classroom'
-                                        value={this.state.classroomName}
-                                        onChange={this.handleChangeClassroomName}
-                                        placeholder='Your classroom name'
-                                        name='appointment-classroom-name'
-                                        fullWidth
-                                        margin='dense'
-                                        variant='outlined'
-                                        required
-                                    />
-                                    <TextField
-                                        label='Capacity'
-                                        type='number'
-                                        name='appointment-classroom-capacity'
-                                        value={this.state.capacity}
-                                        onChange={this.handleChangeCapacity}
-                                        margin='dense'
-                                        variant='outlined'
-                                        required
-                                    />
-                                </FormRow>
-                            )}
-                            <FormRow justifyContent='flex-end'>
-                                <Button onClick={() => this.handleCancel()}>Cancel</Button>
-                                <LoadingButton
-                                    loading={this.state.loadingAppointment}
-                                    type='submit'
-                                    variant='text'
-                                    color='primary'
-                                    disabled={!savable}
-                                >Save</LoadingButton>
-                            </FormRow>
-                        </>
-                    </Collapse>
-                    {!this.state.creating && (
-                        <Button variant='text' onClick={() => this.handleOpenEditing()} startIcon={<Icon>add</Icon>}>Create Appointment</Button>
-                    )}
-                </div>
-            </Form>
+                        )}
+                        <FormRow justifyContent='flex-end'>
+                            <Button onClick={() => this.handleCancel()}>Cancel</Button>
+                            <LoadingButton
+                                loading={this.state.loadingAppointment}
+                                type='submit'
+                                variant='text'
+                                color='primary'
+                                disabled={!savable}
+                            >Save</LoadingButton>
+                        </FormRow>
+                    </>
+                </ListFormContent>
+                <ListFormActionArea visible={!this.state.creating}>
+                    <Button variant='text' onClick={() => this.handleOpenEditing()} startIcon={<Icon>add</Icon>}>Create Appointment</Button>
+                </ListFormActionArea>
+
+            </ListForm>
         )
     }
 }

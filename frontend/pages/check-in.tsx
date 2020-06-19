@@ -64,7 +64,11 @@ interface ICheckInState {
 
 class CheckIn extends React.Component<IReduxProps, ICheckInState> {
     static getInitialProps = async (context: NextPageContext) => {
-        const { store } = context
+		const { store } = context
+		
+		/**
+		 * @TODO Don't do this if blocks are already in the redux store
+		 */
         return await store.dispatch(fetchBlocks())
     }
 

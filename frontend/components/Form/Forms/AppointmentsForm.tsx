@@ -9,6 +9,7 @@ import {
     Collapse,
     FormControl,
     Icon,
+    IconButton,
     InputLabel,
     MenuItem,
     ListItemAvatar,
@@ -16,7 +17,9 @@ import {
     Select,
     Typography,
     TextField,
-    Divider
+    Divider,
+    ListItemText,
+    ListItemSecondaryAction
 } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 
@@ -159,6 +162,10 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
         })
     }
 
+    handleCancel = () => {
+        this.setState({ creating: false, selectedAppointmentId: -1 })
+    }
+
     componentDidMount() {
         if (this.props.appointments.length === 0) {
             this.setState({ loadingInitialAppointments: true })
@@ -178,16 +185,19 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
     }
 
     render() {
-        const { classrooms, appointments, students } = this.props
+        const { classrooms, appointments, students, event, date } = this.props
         const student: IStudent = this.props.students[this.state.studentId]
         const selectedAppointment = appointments.find((a: IAppointment) => a.id === this.state.selectedAppointmentId)
-        const hasUpdated: boolean = selectedAppointment
+        const savable: boolean = selectedAppointment
             ? this.state.memo !== selectedAppointment.memo || this.state.classroom !== selectedAppointment.classroomId
-            : false
+            : this.state.memo.length > 0 && (this.state.classroom > -1 || this.state.classroomName.length > 0)
         console.log('students:', students)
 
         const getOptionLabel = (key: number) => students[key].name
         const filterOptions = createFilterOptions(students, { stringify: getOptionLabel })
+        const getOptionDisabled = (key: number) => {
+            return appointments.some((a: IAppointment) => a.studentId === key && a.blockId === event.id && a.date === getCalendarDateKey(date))
+        }
 
         return (
             <Form className='list-form__inner' onSubmit={this.handleSubmit} autoComplete='off'>
@@ -199,7 +209,8 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
                         return (
                             <MenuItem onClick={() => this.handleSelectAppointment(appointment)} selected={appointment.id === this.state.selectedAppointmentId}>
                                 <ListItemAvatar><Avatar avatar={avatar} /></ListItemAvatar>
-                                <Typography variant='inherit' noWrap>{student.name}</Typography>
+                                <ListItemText primary={student.name} secondary={appointment.memo} />
+                                <ListItemSecondaryAction><IconButton><Icon>more_vert</Icon></IconButton></ListItemSecondaryAction>
                             </MenuItem>
                         )
                     })}
@@ -223,7 +234,7 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
                                     <Typography variant='h6'>{student.name}</Typography>
                                 </Flexbox>
                             )}
-                            {this.state.creating && students && (
+                            {students && this.state.studentId === -1 && (
                                 <Autocomplete<number>
                                     loading={this.state.loadingInitialStudents}
                                     disabled={Object.keys(students).length === 0}
@@ -233,7 +244,7 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
                                     size='small'
                                     options={Object.keys(students).map((key: string) => Number(key))}
                                     getOptionLabel={getOptionLabel}
-                                    getOptionDisabled={(option) => appointments.some((a: IAppointment) => a.studentId === Number(option))}
+                                    getOptionDisabled={getOptionDisabled}
                                     filterOptions={(options, { inputValue }) => filterOptions(options, inputValue)}
                                     renderInput={(TextFieldProps) => (
                                         <TextField
@@ -325,12 +336,13 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
                                 </FormRow>
                             )}
                             <FormRow justifyContent='flex-end'>
+                                <Button onClick={() => this.handleCancel()}>Cancel</Button>
                                 <LoadingButton
                                     loading={this.state.loadingAppointment}
                                     type='submit'
                                     variant='text'
                                     color='primary'
-                                    disabled={!hasUpdated}
+                                    disabled={!savable}
                                 >Save</LoadingButton>
                             </FormRow>
                         </>

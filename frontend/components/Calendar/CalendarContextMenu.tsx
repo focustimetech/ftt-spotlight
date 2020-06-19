@@ -21,6 +21,7 @@ interface IContentMenuListItem {
     icon: string
     label: string
     isLive?: boolean
+    onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
 export interface ICalendarContextMenuOption {
@@ -43,6 +44,10 @@ interface ICalendarContextMenuProps {
 }
 
 const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
+    const [appointmentsRef, setAppointmentsRef] = React.useState(null)
+    const handleShowAppointments = (event: any) => {
+
+    }
     const open: boolean = Boolean(props.anchorEl)
     const { contextDetails, editable, getTitle } = props
     const { event, date, title, color } = contextDetails
@@ -64,7 +69,8 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
         if (context.appointments) {
             contextList.push({
                 icon: 'supervised_user_circle',
-                label: `${context.appointments} ${p('Appointment', context.appointments.length)}`
+                label: `${context.appointments} ${p('Appointment', context.appointments.length)}`,
+                onClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => setAppointmentsRef(event.currentTarget)
             })
         }
         if (context.attended) {
@@ -139,14 +145,14 @@ const CalendarContextMenu = (props: ICalendarContextMenuProps) => {
                         <div className='context-menu__icon'>
                             <Icon>{listItem.icon}</Icon>
                         </div>
-                        <div>
+                        <a onClick={listItem.onClick}>
                             <Typography variant='subtitle1'>
                                 {listItem.isLive && (
                                     <span className='--live' />
                                 )}
                                 {listItem.label}
                             </Typography>
-                        </div>
+                        </a>
                     </Flexbox>
                 ))}
             </div>

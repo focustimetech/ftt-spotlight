@@ -12,7 +12,6 @@ import LayoutContainer from './LayoutContainer'
 import LayoutContent from './LayoutContent'
 
 const sysAdminMenuItems: INavMenuItem[] = [
-    { label: 'Clusters', href: '/clusters', icon: 'group' },
     { label: 'Support Tickets', href: '/support', icon: 'live_help' }
 ]
 

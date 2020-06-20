@@ -85,7 +85,7 @@ class IStarredWidget extends React.Component<IFavoritesWidgetProps, IState> {
 
     componentDidMount() {
         document.addEventListener('keydown', this.escFunction, false)
-        this.fetchStarred()
+        // this.fetchStarred()
     }
 
     componentWillUnmount() {

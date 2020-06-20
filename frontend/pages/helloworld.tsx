@@ -4,13 +4,14 @@ import { Button, Chip, Typography } from '@material-ui/core'
 
 import ColorPicker, { randomColor } from '../components/Form/Pickers/ColorPicker'
 import CalendarContextMenu from '../components/Calendar/CalendarContextMenu'
-import TopicsForm from '../components/Form/Forms/TopicsForm'
+import ClustersForm from '../components/Form/Forms/ClustersForm'
 import Form from '../components/Form'
 
 import EnhancedTable from '../components/Table/EnhancedTable'
 import Heatmap from '../components/Heatmap'
 import { ITableColumn, TableColumns } from '../types/table'
 import CodeEntry from '../components/Form/Components/CodeEntry'
+import PrivacyPicker, { PrivacySetting } from '../components/Form/Components/PrivacyPicker'
 
 type TicketStatus =
     | 'Resolved'
@@ -75,7 +76,7 @@ const data = {
 }
 
 export default () => {
-    const [selected, setSelected] = React.useState([])
+    const [selected, setSelected]: [PrivacySetting, any] = React.useState('public')
 
     return (
 
@@ -94,7 +95,8 @@ export default () => {
                     onSelect={setSelected}
                 />
                 */}
-                <AppointmentsForm />
+                <ClustersForm studentIds={[1]}/>
+                <PrivacyPicker value={selected} onSelect={(setting) => setSelected(setting)}/>
             </div>
         </>
     )

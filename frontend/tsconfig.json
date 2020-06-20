@@ -20,7 +20,12 @@
     "noEmit": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "types": ["jest"]
+    "types": ["jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["./components/*"],
+      "@actions/*": ["./actions/*"]
+    },
   },
   "include": [
     "./resources/**/*"

@@ -17,25 +17,26 @@ import Flexbox from '../../Layout/Flexbox'
 
 export type PrivacySetting = 'public' | 'private' | 'unlisted'
 
-interface IPrivacyPickerProps extends Omit<SelectProps, 'onSelect'> {
+interface IPrivacyPickerProps extends Omit<SelectProps, 'onChange'> {
     value: PrivacySetting
-    onSelect: (setting: PrivacySetting) => void
+    onChange: (setting: PrivacySetting) => void
     MenuProps?: MenuProps
     unlistable?: boolean
 }
 
 const PrivacyPicker = (props: IPrivacyPickerProps) => {
-    const { value, onSelect, unlistable, MenuProps } = props
+    const { value, onChange, unlistable, MenuProps, ...rest } = props
 
     const handleSelect = (event: React.ChangeEvent<{ value: PrivacySetting }>) => {
         const { value } = event.target
-        onSelect(value)
+        onChange(value)
     }
 
     return (
         <FormControl className='privacy-picker' variant={'outlined'} margin={undefined}>
             <InputLabel id='privacy-picker-label'>Privacy</InputLabel>
             <Select
+                {...rest}
                 value={value}
                 onChange={handleSelect}
                 labelId='privacy-picker-label'
@@ -61,7 +62,7 @@ const PrivacyPicker = (props: IPrivacyPickerProps) => {
                         secondary='Anyone can search for and view'
                     />
                 </MenuItem>
-                {props.unlistable !== false && (
+                {unlistable !== false && (
                     <MenuItem value='unlisted'>
                         <ListItemIcon>
                             <Radio color='primary' checked={value === 'unlisted'} />

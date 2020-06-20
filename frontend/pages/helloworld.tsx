@@ -96,7 +96,6 @@ export default () => {
                 />
                 */}
                 <ClustersForm studentIds={[1]}/>
-                <PrivacyPicker value={selected} onSelect={(setting) => setSelected(setting)}/>
             </div>
         </>
     )

@@ -28,6 +28,7 @@ import ListForm, {
     ListFormList
 } from '../ListForm'
 import { LoadingButton } from '../Components/LoadingButton'
+import PrivacyPicker, { PrivacySetting } from '../Components/PrivacyPicker'
 
 interface IReduxProps {
     clusters: ICluster[]
@@ -45,6 +46,7 @@ interface IClustersFormState {
     loadingCluster: boolean
     loadingInitialClusters: boolean
     inputValue: string
+    isPublic: boolean
 }
 
 class ClustersForm extends React.Component<IClusterFormProps, IClustersFormState> {
@@ -52,7 +54,8 @@ class ClustersForm extends React.Component<IClusterFormProps, IClustersFormState
         creating: false,
         loadingCluster: false,
         loadingInitialClusters: false,
-        inputValue: ''
+        inputValue: '',
+        isPublic: false
     }
 
     componentDidMount() {
@@ -82,6 +85,10 @@ class ClustersForm extends React.Component<IClusterFormProps, IClustersFormState
         //
     }
 
+    handlePrivacyChange = (setting: PrivacySetting) => {
+        this.setState({ isPublic: setting === 'public' })
+    }
+
     render() {
         const { clusters, studentIds } = this.props
 
@@ -90,7 +97,7 @@ class ClustersForm extends React.Component<IClusterFormProps, IClustersFormState
                 <ListFormHeader>Clusters</ListFormHeader>
                 <ListFormList>
                     {clusters && clusters.length > 0 && clusters.map((cluster: ICluster) => (
-                        <MenuItem onClick={() => this.handleAddToCluster(cluster)} disableRipple>
+                        <MenuItem onClick={() => this.handleAddToCluster(cluster)} disableRipple key={cluster.name}>
                             <ListItemIcon>
                                 <Checkbox
                                     edge='start'
@@ -108,17 +115,27 @@ class ClustersForm extends React.Component<IClusterFormProps, IClustersFormState
                 <ListFormContent visible={this.state.creating}>
                     <>
                         <FormRow>
-                            <TextField
-                                variant='outlined'
-                                margin='dense'
-                                fullWidth
-                                name='cluster-name'
-                                label='Cluster'
-                                placeholder='Your Cluster name'
-                                value={this.state.inputValue}
-                                onChange={this.handleChange}
-                                required
-                            />
+                            <FormRowElement>
+                                <TextField
+                                    variant='outlined'
+                                    margin='dense'
+                                    fullWidth
+                                    name='cluster-name'
+                                    label='Cluster'
+                                    placeholder='Your Cluster name'
+                                    value={this.state.inputValue}
+                                    onChange={this.handleChange}
+                                    required
+                                />
+                            </FormRowElement>
+                            <FormRowElement>
+                                <PrivacyPicker
+                                    margin='dense'
+                                    value={this.state.isPublic ? 'public' : 'private'}
+                                    onChange={this.handlePrivacyChange}
+                                    unlistable={false}
+                                />
+                            </FormRowElement>
                         </FormRow>
                         <FormRow justifyContent='flex-end'>
                             <LoadingButton loading={this.state.loadingCluster} type='submit' variant='text' color='primary'>Create</LoadingButton>

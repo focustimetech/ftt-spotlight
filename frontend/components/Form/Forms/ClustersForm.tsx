@@ -3,26 +3,31 @@ import { connect } from 'react-redux'
 
 import {
     Button,
+    Checkbox,
     FormControl,
     Icon,
     InputLabel,
+    ListItem,
+    ListItemIcon,
     MenuItem,
-    MenuList,
-    Popover,
-    Select,
     Typography,
-    TextField
+    TextField,
 } from '@material-ui/core'
 
-import { createClusters, deleteClusters, fetchClusters } from '../../actions/clusterActions'
-import { ISnackbar, queueSnackbar } from '../../actions/snackbarActions'
-import { ICluster, INewCluster } from '../../types/cluster'
+import { createCluster, deleteCluster, fetchClusters } from '../../../actions/clusterActions'
+import { ISnackbar, queueSnackbar } from '../../../actions/snackbarActions'
+import { ICluster, INewCluster } from '../../../types/cluster'
 
-import Flexbox from '../Layout/Flexbox'
-import Form from './Form'
-import FormRow from './FormRow'
-import FormRowElement from './FormRowElement'
-import { LoadingButton } from './LoadingButton'
+import Flexbox from '../../Layout/Flexbox'
+import { FormRow, FormRowElement } from '..'
+import ListForm, {
+    ListFormActionArea,
+    ListFormContent,
+    ListFormEmptyState,
+    ListFormHeader,
+    ListFormList
+} from '../ListForm'
+import { LoadingButton } from '../Components/LoadingButton'
 
 interface IReduxProps {
     clusters: ICluster[]
@@ -31,125 +36,107 @@ interface IReduxProps {
     fetchClusters: () => Promise<any>
 }
 
-interface IClustersFormState {
-    
+interface IClusterFormProps extends IReduxProps {
+    studentIds: number[]
 }
 
-class ClustersForm extends React.Component<IReduxProps, IClustersFormState> {
+interface IClustersFormState {
+    creating: boolean
+    loadingCluster: boolean
+    loadingInitialClusters: boolean
+    inputValue: string
+}
+
+class ClustersForm extends React.Component<IClusterFormProps, IClustersFormState> {
     state: IClustersFormState = {
-        
+        creating: false,
+        loadingCluster: false,
+        loadingInitialClusters: false,
+        inputValue: ''
     }
 
     componentDidMount() {
         if (!this.props.clusters || this.props.clusters.length === 0) {
-            this.props.fetchClusters()
+            this.setState({ loadingInitialClusters: true })
+            this.props.fetchClusters().then(() => {
+                this.setState({ loadingInitialClusters: false })
+            })
         }
     }
 
+    handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        const { value } = event.target
+        this.setState({ inputValue: value })
+    }
+
+    handleOpenCreating = () => {
+        this.setState({ creating: true })
+    }
+
+    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        //
+    }
+
+    handleAddToCluster = (cluster: ICluster) => {
+        //
+    }
+
     render() {
-        const { clusters } = this.props
+        const { clusters, studentIds } = this.props
 
         return (
-            <Popover open={true} PaperProps={{ className: 'list-form' }}>
-                <Form className='list-form__inner' onSubmit={this.handleSubmit} autoComplete='off'>
-                    <MenuList>
-                        {topics.length > 0 && topics.map((topic: ITopic) => (
-                            <MenuItem onClick={() => null}>
-                                <span className='swatch' style={{ background: `#${topic.color}` }} />
-                                <Typography variant='inherit' noWrap>{topic.memo}</Typography>
-                            </MenuItem>
-                        ))}
-                    </MenuList>
-                    <div className='list-form__actions'>
-                        {topics.length === 0 && (
-                            <Typography>Your Topics will appear here.</Typography>
-                        )}
-                        {this.state.editing ? (
-                            <>
-                                <FormRow>
-                                    <TextField
-                                        variant='outlined'
-                                        margin='dense'
-                                        fullWidth
-                                        name='topic-memo'
-                                        label='Memo'
-                                        placeholder='Your Focus topic'
-                                        value={this.state.memo}
-                                        onChange={this.handleChangeMemo}
-                                        required
-                                    />
-                                </FormRow>
-                                <FormRow>
-                                    <FormRowElement fullWidth>
-                                        <FormControl variant='outlined' margin='dense' fullWidth>
-                                            <InputLabel id='classroom-select-label'>Classroom</InputLabel>
-                                            <Select
-                                                labelId='classroom-select-label'
-                                                name='topic-classroom'
-                                                value={this.state.classroom}
-                                                onChange={this.handleSelectClassroom}
-                                                label='Classroom'
-                                            >
-                                                <MenuItem value={-1}><em>New Classroom</em></MenuItem>
-                                                {classrooms && classrooms.length > 0 && classrooms.map((classroom: IClassroom) => (
-                                                    <MenuItem value={classroom.id} key={classroom.id}>
-                                                        <Typography variant='inherit' noWrap>{classroom.name}</Typography>
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </FormRowElement>
-                                    <ColorPicker
-                                        value={this.state.color}
-                                        onChange={this.handleSelectColor}
-                                        variant='outlined'
-                                        margin='dense'
-                                    />
-                                </FormRow>
-                                {this.isCreatingClassroom() && (
-                                    <FormRow>
-                                        <TextField
-                                            label='Classroom'
-                                            value={this.state.classroomName}
-                                            onChange={this.handleChangeClassroomName}
-                                            placeholder='Your classroom name'
-                                            name='topic-classroom-name'
-                                            fullWidth
-                                            margin='dense'
-                                            variant='outlined'
-                                            required
-                                        />
-                                        <TextField
-                                            label='Capacity'
-                                            type='number'
-                                            name='topic-classroom-capacity'
-                                            value={this.state.capacity}
-                                            onChange={this.handleChangeCapacity}
-                                            margin='dense'
-                                            variant='outlined'
-                                            required
-                                        />
-                                    </FormRow>
-                                )}
-                                <FormRow justifyContent='flex-end'>
-                                    <LoadingButton loading={this.state.loadingTopic} type='submit' variant='text' color='primary'>Create</LoadingButton>
-                                </FormRow>
-                            </>
-                        ) : (
-                            <Button variant='text' onClick={() => this.handleOpenEditing()} startIcon={<Icon>add</Icon>}>Create Topic</Button>
-                        )}
-                    </div>
-                </Form>
-            </Popover>
+            <ListForm onSubmit={this.handleSubmit} autoComplete='off'>
+                <ListFormHeader>Clusters</ListFormHeader>
+                <ListFormList>
+                    {clusters && clusters.length > 0 && clusters.map((cluster: ICluster) => (
+                        <MenuItem onClick={() => this.handleAddToCluster(cluster)} disableRipple>
+                            <ListItemIcon>
+                                <Checkbox
+                                    edge='start'
+                                    checked={cluster.studentIds.some((id: number) => studentIds.some((studentId: number) => id === studentId))}
+                                    indeterminate={!cluster.studentIds.every((id: number) => studentIds.some((studentId: number) => id === studentId))}
+                                />
+                            </ListItemIcon>
+                            <Typography variant='inherit' noWrap>{cluster.name}</Typography>
+                        </MenuItem>
+                    ))}
+                </ListFormList>
+                {clusters && clusters.length === 0 || this.state.loadingInitialClusters && (
+                    <ListFormEmptyState loading={this.state.loadingInitialClusters}>Your Topics will appear here.</ListFormEmptyState>
+                )}
+                <ListFormContent visible={this.state.creating}>
+                    <>
+                        <FormRow>
+                            <TextField
+                                variant='outlined'
+                                margin='dense'
+                                fullWidth
+                                name='cluster-name'
+                                label='Cluster'
+                                placeholder='Your Cluster name'
+                                value={this.state.inputValue}
+                                onChange={this.handleChange}
+                                required
+                            />
+                        </FormRow>
+                        <FormRow justifyContent='flex-end'>
+                            <LoadingButton loading={this.state.loadingCluster} type='submit' variant='text' color='primary'>Create</LoadingButton>
+                        </FormRow>
+                    </>
+                </ListFormContent>
+                <ListFormActionArea visible={!this.state.creating}>
+                    <Button variant='text' onClick={() => this.handleOpenCreating()} startIcon={<Icon>add</Icon>}>Create Cluster</Button>
+                </ListFormActionArea>
+            </ListForm>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    topics: state.topics.items,
-    classrooms: state.classrooms.items
+    clusters: state.clusters.items,
 })
 
-const mapDispatchToProps = { createTopic, deleteTopic, fetchClassrooms, fetchTopics, queueSnackbar }
+const mapDispatchToProps = { createCluster, deleteCluster, fetchClusters, queueSnackbar }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TopicsForm)
+export default connect(mapStateToProps, mapDispatchToProps)(ClustersForm)

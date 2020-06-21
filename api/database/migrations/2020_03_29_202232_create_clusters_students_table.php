@@ -21,6 +21,11 @@ class CreateClustersStudentsTable extends Migration
             $table->foreignId('cluster_id');    // The cluster
             $table->foreignId('student_id');    // The student belonging to the cluster
             $table->timestamps();
+            // Foreign keys
+            $table->foreign('cluster_id')->references('id')->on('clusters');
+            $table->foreign('student_id')->references('id')->on('students');
+            // Unique keys
+            $table->unique(['cluster_id', 'student_id']);
         });
     }
 

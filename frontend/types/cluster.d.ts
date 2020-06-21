@@ -1,13 +1,16 @@
 import { IStaff, IStudent, ITeacher } from './auth'
 
-export interface IClusterDetails {
+export interface ICluster {
     id: number
+    studentIds: number[]
+    public: boolean
     name: string
     userId: number
 }
 
-export interface ICluster extends IClusterDetails {
+export type INewCluster = Omit<ICluster, 'id' | 'userId' | 'studentIds'>
+
+export interface IClusterPivot {
+    clusterId: number
     studentIds: number[]
 }
-
-export type INewCluster = Omit<IClusterDetails, 'id' | 'userId'>

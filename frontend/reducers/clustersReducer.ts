@@ -1,12 +1,12 @@
 import {
     ATTACH_STUDENTS,
     DELETE_CLUSTER,
-    DETATCH_STUDENTS,
+    DETACH_STUDENTS,
     FETCH_CLUSTERS,
     NEW_CLUSTER,
     UPDATE_CLUSTER,
 } from '../actions/types'
-import { ICluster } from '../types/cluster'
+import { ICluster, IClusterPivot } from '../types/cluster'
 import { IReduxAction } from '../types/redux'
 
 interface IState {
@@ -18,23 +18,44 @@ const initialState: IState = {
 }
 
 export const clustersReducer = (state = initialState, action: IReduxAction) => {
+    let pivot: IClusterPivot
+    let clusterIndex: number
+    let clusters: ICluster[]
     switch (action.type) {
         case FETCH_CLUSTERS:
             return {
                 ...state,
                 items: action.payload
             }
-        /*
-        case ATTACH_STUDENTS:
+        case NEW_CLUSTER:
             return {
                 ...state,
-                prev: state.prev.filter((item: any) => (
-                    action.payload.every((payloadItem: any) => item.id !== payloadItem.id)
-                )),
-                next: action.payload
+                items: [...state.items, action.payload]
             }
-        */
-
+        case ATTACH_STUDENTS:
+            pivot = action.payload
+            clusterIndex = state.items.findIndex((c: ICluster) => c.id === pivot.clusterId)
+            clusters = [ ...state.items ]
+            clusters[clusterIndex].studentIds = [
+                ...clusters[clusterIndex].studentIds.filter((id: number) => !pivot.studentIds.some((studentId: number) => studentId === id)),
+                ...pivot.studentIds
+            ]
+            return {
+                ...state,
+                items: clusters
+            }
+        case DETACH_STUDENTS:
+            pivot = action.payload
+            clusterIndex = state.items.findIndex((c: ICluster) => c.id === pivot.clusterId)
+            clusters = [ ...state.items ]
+            clusters[clusterIndex].studentIds = [
+                ...clusters[clusterIndex].studentIds.filter((id: number) => !pivot.studentIds.some((studentId: number) => studentId === id))
+            ]
+            return {
+                ...state,
+                items: clusters
+            }
+            
         default:
             return state
     }

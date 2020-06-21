@@ -4,19 +4,24 @@ import { connect } from 'react-redux'
 import {
     Button,
     Checkbox,
-    FormControl,
     Icon,
-    InputLabel,
-    ListItem,
     ListItemIcon,
+    ListItemSecondaryAction,
     MenuItem,
     Typography,
     TextField,
 } from '@material-ui/core'
 
-import { createCluster, deleteCluster, fetchClusters } from '../../../actions/clusterActions'
+import {
+    addToCluster,
+    createCluster,
+    deleteCluster,
+    fetchClusters,
+    removeFromCluster
+} from '../../../actions/clusterActions'
 import { ISnackbar, queueSnackbar } from '../../../actions/snackbarActions'
-import { ICluster, INewCluster } from '../../../types/cluster'
+import { ICluster, INewCluster, IClusterPivot } from '../../../types/cluster'
+import p from '../../../utils/pluralize'
 
 import Flexbox from '../../Layout/Flexbox'
 import { FormRow, FormRowElement } from '..'
@@ -32,9 +37,12 @@ import PrivacyPicker, { PrivacySetting } from '../Components/PrivacyPicker'
 
 interface IReduxProps {
     clusters: ICluster[]
+    addToCluster: (clusterId: number, studentIds: number[]) => Promise<any>
+    removeFromCluster: (clusterId: number, studentIds: number[]) => Promise<any>
     createCluster: (cluster: INewCluster) => Promise<any>
     deleteCluster: (clusterId: number) => Promise<any>
     fetchClusters: () => Promise<any>
+    queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface IClusterFormProps extends IReduxProps {
@@ -78,11 +86,32 @@ class ClustersForm extends React.Component<IClusterFormProps, IClustersFormState
 
     handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        //
+        const cluster: INewCluster = {
+            name: this.state.inputValue,
+            public: this.state.isPublic,
+        }
+        this.setState({ loadingCluster: true })
+        this.props.createCluster(cluster).then(() => {
+            this.props.queueSnackbar({ message: 'Created new Cluster.'})
+            this.setState({ loadingCluster: false, inputValue: '', isPublic: false })
+        }, () => {
+            this.props.queueSnackbar({ message: 'Could not create new Cluster.'})
+            this.setState({ loadingCluster: false })
+        })
     }
 
-    handleAddToCluster = (cluster: ICluster) => {
-        //
+    handleSelectCluster = (cluster: ICluster, attach: boolean) => {
+        if (this.props.studentIds.length === 0) {
+            return
+        }
+        const syncCluster: (clusterId: number, studentIds: number[]) => Promise<any> = attach
+            ? this.props.addToCluster
+            : this.props.removeFromCluster
+        syncCluster(cluster.id, this.props.studentIds).then(() => {
+            this.props.queueSnackbar({ message: attach ? 'Added students to Cluster.' : 'Removed students from Cluster.'})
+        }, (err: any) => {
+            this.props.queueSnackbar({ message: 'Could not modify the Cluster.'})
+        })
     }
 
     handlePrivacyChange = (setting: PrivacySetting) => {
@@ -94,20 +123,38 @@ class ClustersForm extends React.Component<IClusterFormProps, IClustersFormState
 
         return (
             <ListForm onSubmit={this.handleSubmit} autoComplete='off'>
-                <ListFormHeader>Clusters</ListFormHeader>
+                <ListFormHeader>
+                    {studentIds.length > 0
+                        ? `Add ${studentIds.length > 1 ? `${studentIds.length} ` : ''}${p('student', studentIds.length)} to...`
+                        : 'Clusters'
+                    }
+                </ListFormHeader>
                 <ListFormList>
-                    {clusters && clusters.length > 0 && clusters.map((cluster: ICluster) => (
-                        <MenuItem onClick={() => this.handleAddToCluster(cluster)} disableRipple key={cluster.name}>
-                            <ListItemIcon>
-                                <Checkbox
-                                    edge='start'
-                                    checked={cluster.studentIds.some((id: number) => studentIds.some((studentId: number) => id === studentId))}
-                                    indeterminate={!cluster.studentIds.every((id: number) => studentIds.some((studentId: number) => id === studentId))}
-                                />
-                            </ListItemIcon>
-                            <Typography variant='inherit' noWrap>{cluster.name}</Typography>
-                        </MenuItem>
-                    ))}
+                    {clusters && clusters.length > 0 && clusters.map((cluster: ICluster) => {
+                        const checked: boolean = studentIds.length > 0 && studentIds.every((id: number) => cluster.studentIds.some((studentId: number) => id === studentId))
+                        const indeterminate: boolean = studentIds.length > 0 && cluster.studentIds.length > 0 && !checked && studentIds.some((id: number) => cluster.studentIds.some((studentId: number) => id === studentId))
+                        const attach: boolean = !checked || indeterminate
+                        return (
+                            <MenuItem onClick={() => this.handleSelectCluster(cluster, attach)} disableRipple key={cluster.name}>
+
+                                <ListItemIcon>
+                                    <Checkbox
+                                        color='primary'
+                                        edge='start'
+                                        checked={checked || indeterminate}
+                                        indeterminate={indeterminate}
+                                        disabled={studentIds.length === 0}
+                                    />
+                                </ListItemIcon>
+                                {/*
+                                <ListItemSecondaryAction>
+                                    <Icon>{cluster.public ? 'public' : 'lock'}</Icon>
+                                </ListItemSecondaryAction>
+                                */}
+                                <Typography variant='inherit' noWrap>{cluster.name}</Typography>
+                            </MenuItem>
+                        )
+                    })}
                 </ListFormList>
                 {clusters && clusters.length === 0 || this.state.loadingInitialClusters && (
                     <ListFormEmptyState loading={this.state.loadingInitialClusters}>Your Topics will appear here.</ListFormEmptyState>
@@ -154,6 +201,13 @@ const mapStateToProps = (state) => ({
     clusters: state.clusters.items,
 })
 
-const mapDispatchToProps = { createCluster, deleteCluster, fetchClusters, queueSnackbar }
+const mapDispatchToProps = {
+    addToCluster,
+    createCluster,
+    deleteCluster,
+    fetchClusters,
+    removeFromCluster,
+    queueSnackbar
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClustersForm)

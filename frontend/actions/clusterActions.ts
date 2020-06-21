@@ -1,11 +1,11 @@
-import { ICluster, INewCluster } from '../types/cluster'
+import { ICluster, INewCluster, IClusterPivot } from '../types/cluster'
 import { Dispatch } from '../types/redux'
 import API from '../utils/api'
 
 import {
     ATTACH_STUDENTS,
     DELETE_CLUSTER,
-    DETATCH_STUDENTS,
+    DETACH_STUDENTS,
     FETCH_CLUSTERS,
     NEW_CLUSTER,
     UPDATE_CLUSTER,
@@ -21,7 +21,7 @@ export const fetchClusters = () => (dispatch: Dispatch) => {
 }
 
 export const createCluster = (cluster: INewCluster) => (dispatch: Dispatch) => {
-    return API.post('/clusters').then((res: any) => {
+    return API.post('/clusters', cluster).then((res: any) => {
         dispatch({
             type: NEW_CLUSTER,
             payload: res.data
@@ -37,20 +37,21 @@ export const deleteCluster = (clusterId: number) => (dispatch: Dispatch) => {
         })
     })
 }
-/*
-export const attachStudents = (studentClusters: any) => (dispatch: any) => {
-    return API.post('/clusters/students', studentClusters)
-        .then((res: any) => dispatch({
-            type: ATTACH_STUDENTS,
-            payload: res.data
-        }))
+
+export const addToCluster = (clusterId: number, studentIds: number[]) => (dispatch: any) => {
+    const pivot: IClusterPivot = { studentIds, clusterId }
+    dispatch({
+        type: ATTACH_STUDENTS,
+        payload: pivot
+    })
+    return API.post(`/clusters/${clusterId}/attach`, { studentIds })
 }
 
-export const detatchStudents = (studentClusters: any) => (dispatch: any) => {
-    return API.delete('/clusters/students', studentClusters)
-        .then((res: any) => dispatch({
-            type: DETATCH_STUDENTS,
-            payload: res.data
-        }))
+export const removeFromCluster = (clusterId: number, studentIds: number[]) => (dispatch: any) => {
+    const pivot: IClusterPivot = { studentIds, clusterId }
+    dispatch({
+        type: DETACH_STUDENTS,
+        payload: pivot
+    })
+    return API.post(`/clusters/${clusterId}/detach`, { studentIds })
 }
-*/

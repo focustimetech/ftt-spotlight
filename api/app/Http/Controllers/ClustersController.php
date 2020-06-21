@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Cluster;
 use App\Http\Resources\Cluster as ClusterResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ClustersController extends Controller
 {
@@ -52,11 +54,15 @@ class ClustersController extends Controller
         $user = auth()->user();
         $cluster = Cluster::findOrFail($request->input('id'));
 
-        $cluster->name = $request->input('name');
-        $cluster->public = $request->input('public');
+        if ($cluster->user()->first()->id === $user->id) {
+            $cluster->name = $request->input('name');
+            $cluster->public = $request->input('public');
 
-        if ($cluster->save()) {
-            return new ClusterResource($cluster);
+            if ($cluster->save()) {
+                return new ClusterResource($cluster);
+            }
+        } else {
+            return response()->json(['message' => 'You do not have access to this Cluster.', 403]);
         }
     }
 
@@ -65,10 +71,38 @@ class ClustersController extends Controller
         $user = auth()->user();
         $cluster = Cluster::findOrFail($id);
 
-        if ($cluster->isPublic() || $cluster->user()->first()->id === $user->id) {
+        if ($cluster->user()->first()->id === $user->id) {
             if ($cluster->delete()) {
                 return new ClusterResource($cluster);
             }
+        } else {
+            return response()->json(['message' => 'You do not have access to this Cluster.', 403]);
+        }
+    }
+
+    public function addStudents(Request $request)
+    {
+        $user = auth()->user();
+        $clusterId = $request->route('id');
+        $cluster = Cluster::findOrFail($clusterId);
+
+        if ($cluster->user()->first()->id === $user->id) {
+            $cluster->students()->syncWithoutDetaching($request->input('studentIds'));
+            return new Response('', 204);
+        } else {
+            return response()->json(['message' => 'You do not have access to this Cluster.', 403]);
+        }
+    }
+
+    public function removeStudents(Request $request)
+    {
+        $user = auth()->user();
+        $clusterId = $request->route('id');
+        $cluster = Cluster::findOrFail($clusterId);
+
+        if ($cluster->user()->first()->id === $user->id) {
+            $cluster->students()->detach($request->input('studentIds'));
+            return new Response('', 204);
         } else {
             return response()->json(['message' => 'You do not have access to this Cluster.', 403]);
         }

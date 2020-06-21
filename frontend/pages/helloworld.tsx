@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Chip, Typography } from '@material-ui/core'
+import { Button, Chip, Typography, TextField } from '@material-ui/core'
 
 import ColorPicker, { randomColor } from '../components/Form/Pickers/ColorPicker'
 import CalendarContextMenu from '../components/Calendar/CalendarContextMenu'
@@ -77,6 +77,14 @@ const data = {
 
 export default () => {
     const [selected, setSelected]: [PrivacySetting, any] = React.useState('public')
+    const [value, setValue] = React.useState('')
+
+    let json: number[]
+    try {
+        json = JSON.parse(value)
+    } catch (e) {
+        json = []
+    }
 
     return (
 
@@ -95,7 +103,14 @@ export default () => {
                     onSelect={setSelected}
                 />
                 */}
-                <ClustersForm studentIds={[1]}/>
+                <TextField
+                    value={value}
+                    onChange={ e => setValue(e.target.value)}
+                    label='JSON'
+                    variant='filled'
+                    margin='normal'
+                />
+                <ClustersForm studentIds={json}/>
             </div>
         </>
     )

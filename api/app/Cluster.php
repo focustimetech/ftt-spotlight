@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cluster extends Model
 {
     protected $table = 'clusters';
+    protected $fillable = ['name', 'public', 'user_id'];
 
     public static function search($query) {
         $queryString = Utils::prepareFullTextQuery($query);

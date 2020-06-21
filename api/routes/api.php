@@ -43,6 +43,9 @@ Route::middleware('auth:sanctum')->group(function() {
     // Classrooms
     Route::get('classrooms/all', 'ClassroomsController@index');
 
+    // Clusters
+    Route::get('clusters', 'ClustersController@index');
+
     // Logout
     Route::post('logout', 'Auth\LoginController@logout');
 
@@ -58,7 +61,6 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('teachers/{id}', 'TeachersController@show');
 
     // Topics
-    Route::get('clusters', 'ClustersController@index');
     Route::get('topics/{id}', 'TopicsController@show');
 
     // User
@@ -81,6 +83,8 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(functi
     Route::post('clusters', 'ClustersController@create');
     Route::put('clusters', 'ClustersController@update');
     Route::delete('clusters/{id}', 'ClustersController@delete');
+    Route::post('clusters/{id}/attach', 'ClustersController@addStudents');
+    Route::post('clusters/{id}/detach', 'ClustersController@removeStudents');
 });
 
 // Teachers, Staff, Guardians, SysAdmin

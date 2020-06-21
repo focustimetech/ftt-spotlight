@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { fetchClusters } from '../../actions/clusterActions'
 import { ICluster } from '../../types/cluster'
 import { ILayoutContainerProps } from '../../types/layout'
-import { staffMenuItems } from './StaffLayout'
+import { staffAndTeacherMenuItems } from './StaffLayout'
 
 import { INavMenuItem } from '../Nav/NavMenuItem'
 import VerticalNav from '../Nav/VerticalNav'
@@ -50,7 +50,7 @@ class TeacherLayout extends React.Component<IReduxProps & ILayoutContainerProps,
         return (
             <LayoutContainer orientation='vertical'>
                 <VerticalNav
-                    menuItems={[...teacherMenuItems, ...staffMenuItems]}
+                    menuItems={[...teacherMenuItems, ...staffAndTeacherMenuItems]}
                     hiddenMenuItems={clusters}
                     disableHiddenMenu={this.state.loadingClusters}
                 />

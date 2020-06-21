@@ -13,7 +13,7 @@ import { Orientation } from '../../types/layout'
 export interface INavItemProps {
     title: string
     orientation: Orientation
-    onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    onClick?: (event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
     children?: any
     className?: string
     href?: string

@@ -27,10 +27,4 @@
       "@actions/*": ["./actions/*"]
     },
   },
-  "include": [
-    "./resources/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
 }

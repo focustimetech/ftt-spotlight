@@ -1,0 +1,11 @@
+.survey {
+    &__editor {
+        padding: spacing(2) 0;
+    }
+
+    &__header,
+    &__question {
+        margin-top: spacing(4);
+        padding: spacing(3);
+    }
+}

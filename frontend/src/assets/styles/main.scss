@@ -30,6 +30,7 @@
 @import "components/selectable_list";
 @import "components/setup";
 @import "components/splash";
+@import "components/survey";
 @import "components/table";
 @import "components/topbar";
 
@@ -38,6 +39,7 @@
     @import "components/form/color_picker";
     @import "components/form/form";
     @import "components/form/list_form";
+    @import "components/form/title_field";
 
     /* Modals */
     @import "components/modals/context_menu";

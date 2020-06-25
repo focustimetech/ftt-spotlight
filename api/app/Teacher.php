@@ -90,4 +90,9 @@ class Teacher extends Model
     {
         return Staff::firstWhere('user_id', $this->user_id);
     }
+
+    public function surveys()
+    {
+        return $this->hasMany('App\Survey');
+    }
 }

@@ -13,6 +13,7 @@ import LayoutContent from './LayoutContent'
 
 export const teacherMenuItems: INavMenuItem[] = [
     { label: 'Student Check-in', href: '/check-in', icon: 'how_to_vote' },
+    { label: 'Surveys', href: '/surveys', icon: 'fact_check' },
 ]
 
 interface IReduxProps {

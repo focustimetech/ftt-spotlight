@@ -7,7 +7,7 @@ export interface ISurvey {
 
 export type INewSurvey = Omit<ISurvey, 'id'>
 
-export type ISurveyQuestion = ISurveyTextQuestion | ISurveyOptionQuestion & {
+export type ISurveyQuestion = (ISurveyTextQuestion | ISurveyOptionQuestion) & {
     prompt: string
     required: boolean
 }

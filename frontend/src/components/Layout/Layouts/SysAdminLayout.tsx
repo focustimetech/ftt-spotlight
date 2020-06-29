@@ -1,15 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { fetchClusters } from '../../actions/clusterActions'
-import { ICluster } from '../../types/cluster'
-import { ILayoutContainerProps } from '../../types/layout'
+import { fetchClusters } from '../../../actions/clusterActions'
+import { ICluster } from '../../../types/cluster'
+import { ILayoutContainerProps } from '../../../types/layout'
 import { staffAndTeacherMenuItems } from './StaffLayout'
 
-import { INavMenuItem } from '../Nav/NavMenuItem'
-import VerticalNav from '../Nav/VerticalNav'
-import LayoutContainer from './LayoutContainer'
-import LayoutContent from './LayoutContent'
+import { INavMenuItem } from '../../Nav/NavMenuItem'
+import VerticalNav from '../../Nav/VerticalNav'
+import LayoutContainer from '../LayoutContainer'
+import LayoutContent from '../LayoutContent'
 
 const sysAdminMenuItems: INavMenuItem[] = [
     { label: 'Support Tickets', href: '/support', icon: 'live_help' }

@@ -41,7 +41,9 @@ class App extends NextApp {
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
                     <>
-                        <Layout user={pageProps ? pageProps.user : undefined}><Component {...pageProps} /></Layout>
+                        <Layout user={pageProps ? pageProps.user : undefined} getLayout={Component.getLayout || (page => page)}>
+                            <Component {...pageProps} />
+                        </Layout>
                         <SnackbarProvider />
                     </>
                 </Provider>

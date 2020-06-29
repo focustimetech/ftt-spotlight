@@ -1,15 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { fetchClusters } from '../../actions/clusterActions'
-import { ICluster } from '../../types/cluster'
-import { ILayoutContainerProps } from '../../types/layout'
+import { fetchClusters } from '../../../actions/clusterActions'
+import { ICluster } from '../../../types/cluster'
+import { ILayoutContainerProps } from '../../../types/layout'
 
-import UploadDialog from '../Modals/UploadDialog'
-import { INavMenuItem } from '../Nav/NavMenuItem'
-import VerticalNav from '../Nav/VerticalNav'
-import LayoutContainer from './LayoutContainer'
-import LayoutContent from './LayoutContent'
+import UploadDialog from '../../Modals/UploadDialog'
+import { INavMenuItem } from '../../Nav/NavMenuItem'
+import VerticalNav from '../../Nav/VerticalNav'
+import LayoutContainer from '../LayoutContainer'
+import LayoutContent from '../LayoutContent'
 
 export const staffAndTeacherMenuItems: INavMenuItem[] = [
     { label: 'Reporting', href: '/reporting', icon: 'assessment' }
@@ -75,7 +75,7 @@ class StaffLayout extends React.Component<IReduxProps & ILayoutContainerProps, I
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     clusters: state.clusters.items
 })
 

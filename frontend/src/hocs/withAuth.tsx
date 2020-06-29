@@ -23,14 +23,16 @@ interface IAuthComponentProps {
     statusCode?: number
 }
 
-const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextPage<T>) => {
-    const AuthComponent: NextPage<T & IAuthComponentProps> = (props: T & IAuthComponentProps) => {
+const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextPage<T> & { getLayout?: (node: React.ReactNode) => React.ReactNode }) => {
+    const AuthComponent: NextPage<T & IAuthComponentProps> & { getLayout?: (node: React.ReactNode) => React.ReactNode } = (props: T & IAuthComponentProps) => {
         return props.statusCode ? (
             <Error statusCode={props.statusCode} />
         ) : (
             <C {...props} />
         )
     }
+
+    AuthComponent.getLayout = C.getLayout
 
     AuthComponent.getInitialProps = async (context: NextPageContext): Promise<T & IAuthComponentProps> => {
         console.log('withAuth.getInitialProps')

@@ -1,0 +1,13 @@
+.docs {
+    padding-top: spacing(4);
+
+    &__menu {
+        flex: 1;
+        max-width: 240px;
+        padding-right: spacing(4);
+    }
+
+    &__content {
+        flex: 1;
+    }
+}

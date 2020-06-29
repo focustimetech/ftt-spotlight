@@ -9,12 +9,12 @@ import { ILayoutContainerProps, Orientation } from '../../types/layout'
 import HorizontalNav from '../Nav/HorizontalNav'
 import VerticalNav from '../Nav/VerticalNav'
 
-import GuardianLayout from './GuardianLayout'
+import GuardianLayout from './Layouts/GuardianLayout'
 import LayoutContainer from './LayoutContainer'
-import StaffLayout from './StaffLayout'
-import StudentLayout from './StudentLayout'
-import SysAdminLayout from './SysAdminLayout'
-import TeacherLayout from './TeacherLayout'
+import StaffLayout from './Layouts/StaffLayout'
+import StudentLayout from './Layouts/StudentLayout'
+import SysAdminLayout from './Layouts/SysAdminLayout'
+import TeacherLayout from './Layouts/TeacherLayout'
 
 const DEFAULT_ORIENTATION: Orientation = 'horizontal'
 
@@ -39,7 +39,9 @@ class Layout extends React.Component<ILayoutProps> {
     render() {
         const { user } = this.props
 
-        if (user && user.accountType) {
+        if (this.props.getLayout) {
+            return this.props.getLayout({ children: this.props.children} )
+        } else if (user && user.accountType) {
             switch (user.accountType) {
                 case 'guardian':
                     return <GuardianLayout>{this.props.children}</GuardianLayout>
@@ -69,7 +71,7 @@ class Layout extends React.Component<ILayoutProps> {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     currentUser: state.auth.user
 })
 

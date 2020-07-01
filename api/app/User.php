@@ -40,6 +40,11 @@ class User extends Authenticatable
         'password', /* 'remember_token' */
     ];
 
+    public function findForPassport($username)
+    {
+        return $this->firstWhere('username', $username);
+    }
+
     public static function findByUsername(String $username)
     {
         return User::firstWhere('username', $username);

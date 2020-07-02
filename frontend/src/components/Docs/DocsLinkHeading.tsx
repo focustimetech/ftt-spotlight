@@ -2,9 +2,7 @@ import React from 'react'
 
 import { Typography } from '@material-ui/core'
 
-
-
-class DocsHeader extends React.Component {
+class DocsLinkHeading extends React.Component {
     render() {
         return (
             <Typography variant='h1' />
@@ -12,4 +10,4 @@ class DocsHeader extends React.Component {
     }
 }
 
-export default DocsHeader
+export default DocsLinkHeading

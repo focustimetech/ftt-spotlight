@@ -40,6 +40,7 @@ class Layout extends React.Component<ILayoutProps> {
         const { user } = this.props
 
         if (this.props.getLayout) {
+            // console.log('getLayout:', this.props.getLayout)
             return this.props.getLayout({ children: this.props.children })
         } else if (user && user.accountType) {
             switch (user.accountType) {

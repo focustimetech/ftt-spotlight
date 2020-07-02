@@ -12,6 +12,7 @@ import Heatmap from '../components/Heatmap'
 import { ITableColumn, TableColumns } from '../types/table'
 import CodeEntry from '../components/Form/Components/CodeEntry'
 import PrivacyPicker, { PrivacySetting } from '../components/Form/Components/PrivacyPicker'
+import MarkdownElement from '../components/Docs/MarkdownElement'
 
 type TicketStatus =
     | 'Resolved'
@@ -111,6 +112,7 @@ export default () => {
                     margin='normal'
                 />
                 <ClustersForm studentIds={json}/>
+                <MarkdownElement renderedMarkdown='<h1>Hello world!</h1>' />
             </div>
         </>
     )

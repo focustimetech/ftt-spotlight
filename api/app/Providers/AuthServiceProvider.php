@@ -26,6 +26,23 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Passport::routes();
+        Passport::routes(function ($router) {
+            $router->forAccessTokens();
+        });
+
+        Passport::tokensExpireIn(now()->addMinutes(10));
+
+        Passport::refreshTokensExpireIn(now()->addDays(10));
+
+        // Register user permissions
+        Passport::tokensCan([
+            'student' => 'Student',
+            'teacher' => 'Teacher',
+            'admin' => 'Administrator',
+            'sysadmin' => 'Systems Admin',
+            'guardian' => 'Parent or Guardian'
+        ]);
+
+        Passport::cookie('spotlight_session');
     }
 }

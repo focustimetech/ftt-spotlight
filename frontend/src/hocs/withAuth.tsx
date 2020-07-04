@@ -31,7 +31,7 @@ const withAuth = <T extends object>(...accountTypes: AccountType[]) => (C: NextP
             <C {...props} />
         )
     }
-    console.log('C.getLayout:', C.getLayout)
+
     AuthComponent.getLayout = C.getLayout
 
     AuthComponent.getInitialProps = async (context: NextPageContext): Promise<T & IAuthComponentProps> => {

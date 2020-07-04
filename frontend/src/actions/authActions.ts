@@ -2,10 +2,11 @@ import { AxiosResponse } from 'axios'
 import cookies from 'js-cookie'
 
 import { ReduxAction } from '../types'
-import { IAvatar, ICredentials, IUser } from '../types/auth'
+import { IAvatar, ICredentials, IUser, IAuthorization } from '../types/auth'
 import API, { axios } from '../utils/api'
 import redirect from '../utils/redirect'
 import { SET_CURRENT_USER, UNSET_CURRENT_USER } from './types'
+import { setAuthorizationToken } from 'src/utils/auth'
 
 export const dispatchCurrentUser = () => dispatch => {
     return API.get('/user').then((res: AxiosResponse<IUser>) => {
@@ -21,22 +22,21 @@ export const getAvatar = (username: string) => {
 }
 
 export const login = (credentials: ICredentials) => dispatch => {
-    return getCsrfCookie().then(() => {
-        return API.post('/login', credentials).then((res: AxiosResponse<IUser>) => {
+    return API.post('/login', credentials).then((res: AxiosResponse<IAuthorization>) => {
+        setAuthorizationToken(res.data.accessToken)
+        return API.get('/user').then((userRes: AxiosResponse<IUser>) => {
             return dispatch({
                 type: SET_CURRENT_USER,
-                payload: res.data
+                payload: userRes.data
             })
         })
     })
 }
 
-export const getCsrfCookie = () => {
-    return axios.get(`${API.getBaseUrl()}/sanctum/csrf-cookie`)
-}
 
 export const logout = () => dispatch => {
     return API.post('/logout').then(() => {
+        setAuthorizationToken()
         redirect('/login')
         return dispatch({
             type: UNSET_CURRENT_USER

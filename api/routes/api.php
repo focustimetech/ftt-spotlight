@@ -18,14 +18,14 @@ use Illuminate\Support\Facades\Route;
  * Unauthenticated routes
  */
 Route::get('avatar/{username}', 'UserController@findAvatar');
-Route::post('login', 'Auth\LoginController@login');
+Route::post('login', 'LoginController@login');
 
 /**
  * Authenticates routes
  */
 
 // Any User
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:api')->group(function() {
     
     /**
      * 
@@ -69,7 +69,7 @@ Route::middleware('auth:sanctum')->group(function() {
 });
 
 // Teachers, Staff, SysAdmin
-Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(function() {
+Route::middleware('auth:api', 'scope:staff,teacher,sysadmin')->group(function() {
     // Classrooms
     Route::get('classrooms', 'ClassroomsController@list');
     Route::post('classrooms', 'ClassroomsController@create');
@@ -88,7 +88,7 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin')->group(functi
 });
 
 // Teachers, Staff, Guardians, SysAdmin
-Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin,guardian')->group(function() {
+Route::middleware('auth:api', 'scope:staff,teacher,sysadmin,guardian')->group(function() {
     // Calendar
     Route::get('students/{id}/calendar/{date?}', 'CalendarController@studentCalendar');
 
@@ -97,7 +97,7 @@ Route::middleware('auth:sanctum', 'scopes:staff,teacher,sysadmin,guardian')->gro
 });
 
 // Teachers
-Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
+Route::middleware('auth:api', 'scope:teacher')->group(function() {
     // Appointment
     Route::get('appointments', 'AppointmentsController@list');
     Route::post('appointments', 'AppointmentsController@create');
@@ -117,13 +117,13 @@ Route::middleware('auth:sanctum', 'scopes:teacher')->group(function() {
 });
 
 // Students, Teachers
-Route::middleware('auth:sanctum', 'scopes:teacher,student')->group(function() {
+Route::middleware('auth:api', 'scope:teacher,student')->group(function() {
     // Calendar
     ROute::get('calendar/{date?}', 'CalendarController@selfCalendar');
 });
 
 /*
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 */

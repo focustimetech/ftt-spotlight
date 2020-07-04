@@ -32,12 +32,11 @@ import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
 import { NextPageContext } from '../types'
 import { IStudent } from '../types/auth'
 import { IBlock, ICalendar, ICalendarEvent } from '../types/calendar'
-import { AirCheckIn, LedgerBuffer, ILedgerChip, INewLedgerChip } from '../types/checkin'
+import { AirCheckIn, ILedgerChip, INewLedgerChip, LedgerBuffer} from '../types/checkin'
 import { getCalendarDateKey } from '../utils/date'
 import { makeDocumentTitle } from '../utils/document'
 
-import BlockPicker from '../components/Calendar/BlockPicker'
-import CalendarHeader from '../components/Calendar/CalendarHeader'
+import DateBlockPicker from '../components/Calendar/DateBlockPicker'
 import Form from '../components/Form'
 import { LoadingIconButton } from '../components/Form/Components/LoadingIconButton'
 import LoadingSwitch from '../components/Form/Components/LoadingSwitch'
@@ -224,16 +223,15 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
             <div className='check-in'>
                 <Head><title>{makeDocumentTitle('Student Check-in')}</title></Head>
                 <TopBar title='Student Check-in'>
-					<Flexbox justifyContent='space-between'>
-						<CalendarHeader
-							date={this.state.date}
-							onChange={this.handleChangeDate}
-							onNext={this.handleNext}
-							onPrevious={this.handlePrevious}
-							variant='day'
-						/>
-						<BlockPicker onSelectBlock={this.handleSelectBlock} blockId={this.state.blockId} date={date} />
-					</Flexbox>
+					<DateBlockPicker
+						date={date}
+						onChange={this.handleChangeDate}
+						onNext={this.handleNext}
+						onPrevious={this.handlePrevious}
+						variant='day'
+						onSelectBlock={this.handleSelectBlock}
+						blockId={this.state.blockId}
+					/>
 				</TopBar>
                 <Section className='check-in__form' fullWidth>
 					<Section>

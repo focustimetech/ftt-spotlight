@@ -20,14 +20,14 @@ interface IReduxProps {
     blocks: IBlock[]
 }
 
-interface IBlockPickerProps extends IReduxProps {
+export interface IBlockPickerProps {
     date: Date
     blockId: number
     showTimeDiff?: boolean
     onSelectBlock: (event: React.ChangeEvent<{ name?: string, value: number }>) => void
 }
 
-class BlockPicker extends React.Component<IBlockPickerProps> {
+class BlockPicker extends React.Component<IBlockPickerProps & IReduxProps> {
     render() {
         const { date, blockId, onSelectBlock, showTimeDiff } = this.props
         const weekDay: number = Number(format(date, 'i'))
@@ -66,7 +66,7 @@ class BlockPicker extends React.Component<IBlockPickerProps> {
                     </Select>
                 </FormControl>
                 {blockStartDate && blockEndDate && showTimeDiff !== false && (
-                    <Typography variant='caption' component='p' className={classNames('check-in__block-timing', { '--pending': blockIsPending })}>
+                    <Typography variant='caption' className={classNames('date-block-picker__block-timing', { '--pending': blockIsPending })}>
                         {blockHasEnded
                             ? `Ended ${formatDistance(now, blockEndDate)} ago`
                             : (!blockHasStarted ? `Starts in ${formatDistance(now, blockStartDate)}` : (

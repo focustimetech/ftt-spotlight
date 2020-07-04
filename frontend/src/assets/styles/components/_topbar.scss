@@ -2,7 +2,7 @@
     padding: 0 spacing(4);
 
     &__inner {
-        padding: spacing(2) 0;
+        padding: spacing(2) 0 spacing(1);
     }
 
     .avatar + * {
@@ -10,9 +10,6 @@
     }
 
     &.--tabs {
-        .top-bar__inner {
-            padding-bottom: spacing(1);
-        }
         border-bottom: 2px solid #EEE;
         
         .top-bar__tabs {

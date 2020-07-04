@@ -11,7 +11,7 @@ import {
 import Flexbox from '../Layout/Flexbox'
 import CalendarMonthLabel, { ICalendarMonthLabelProps } from './CalendarMonthLabel'
 
-interface ICalendarHeaderProps extends Exclude<ICalendarMonthLabelProps, 'date' | 'onChange'>{
+export interface ICalendarHeaderProps extends Exclude<ICalendarMonthLabelProps, 'date' | 'onChange'>{
     date: Date
     variant: 'day' | 'week'
     nextLabel?: string

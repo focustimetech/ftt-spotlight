@@ -198,7 +198,6 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
         const savable: boolean = selectedAppointment
             ? this.state.memo !== selectedAppointment.memo || this.state.classroom !== selectedAppointment.classroomId
             : this.state.memo.length > 0 && (this.state.classroom > -1 || this.state.classroomName.length > 0)
-        console.log('students:', students)
 
         const getOptionLabel = (key: number) => students[key].name
         const filterOptions = createFilterOptions(students, { stringify: getOptionLabel })
@@ -260,13 +259,6 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
                                         console.log('OPT3:', option)
                                         return (
                                             <Chip
-                                            /*
-                                                avatar={
-                                                    <MuiAvatar style={{ background: `#${students[option].avatar.color} `}}>
-                                                        {students[option].avatar.initials}
-                                                    </MuiAvatar>
-                                                }
-                                            */
                                                 avatar={<Avatar size='chip' avatar={students[option].avatar} />}
                                                 label={students[option].name}
                                                 variant='outlined'
@@ -357,7 +349,7 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     appointments: state.appointments.items,
     newAppointment: state.appointments.item,
     classrooms: state.classrooms.items,

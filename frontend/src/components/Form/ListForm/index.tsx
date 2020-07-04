@@ -5,19 +5,15 @@ import Paper, { PaperProps } from '@material-ui/core/Paper'
 
 import Form, { IFormProps } from '../'
 
-interface IListFormProps extends IFormProps {
-    PaperProps?: PaperProps
-}
-
-class ListForm extends React.Component<IListFormProps> {
+class ListForm extends React.Component<IFormProps> {
     render() {
-        const { PaperProps, ...ListFormProps } = this.props
+        const { className, ...rest} = this.props
         return (
-            <Paper {...PaperProps} className={classNames('list-form', PaperProps && PaperProps.className)}>
-                <Form {...ListFormProps } className={classNames('list-form__form', this.props.className)}>
+            <div className='list-form'>
+                <Form {...rest } className={classNames('list-form__form', className)}>
                     {this.props.children}
                 </Form>
-            </Paper>
+            </div>
         )
     }
 }

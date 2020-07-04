@@ -61,8 +61,6 @@ class LoginController extends Controller
 
             $responseData = json_decode($response->getContent());
 
-
-
             return (new UserResource($user))
                 ->response()
                 ->cookie(

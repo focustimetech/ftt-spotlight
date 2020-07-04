@@ -30,19 +30,20 @@ import { fetchBlocks } from '../actions/blockActions'
 import { createAirCode, updateLedgerBuffer } from '../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
 import { NextPageContext } from '../types'
+import { IStudent } from '../types/auth'
 import { IBlock, ICalendar, ICalendarEvent } from '../types/calendar'
 import { AirCheckIn, LedgerBuffer, ILedgerChip, INewLedgerChip } from '../types/checkin'
+import { getCalendarDateKey } from '../utils/date'
 import { makeDocumentTitle } from '../utils/document'
 
-import withAuth from '../hocs/withAuth'
 import CalendarHeader from '../components/Calendar/CalendarHeader'
 import Form from '../components/Form'
-import LoadingSwitch from '../components/Form/Components/LoadingSwitch'
 import { LoadingIconButton } from '../components/Form/Components/LoadingIconButton'
+import LoadingSwitch from '../components/Form/Components/LoadingSwitch'
 import Flexbox from '../components/Layout/Flexbox'
 import Section from '../components/Layout/Section'
 import TopBar from '../components/TopBar'
-import { getCalendarDateKey } from '../utils/date'
+import withAuth from '../hocs/withAuth'
 
 interface IReduxProps {
 	blocks: IBlock[]
@@ -65,11 +66,12 @@ interface ICheckInState {
 class CheckIn extends React.Component<IReduxProps, ICheckInState> {
     static getInitialProps = async (context: NextPageContext) => {
 		const { store } = context
-		
-		/**
-		 * @TODO Don't do this if blocks are already in the redux store
-		 */
-        return await store.dispatch(fetchBlocks())
+		const blocks: IBlock[] = store.getState().blocks.items
+		const students: IStudent[] = store.getState().students.items
+
+		if (!blocks || blocks.length === 0) {
+			return await store.dispatch(fetchBlocks())
+		}
     }
 
     state: ICheckInState = {
@@ -213,10 +215,9 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 			? `${airCheckIn.code.slice(0, Math.floor(airCodeLength / 2))} ${airCheckIn.code.slice(Math.floor(airCodeLength / 2))}`
 			: 'nnn nnn'
 
-		console.log('calendarDateKey:', calendarDateKey)
-		console.log('calendarData:', calendarData)
-		console.log('calendarIndex:', calendarIndex)
-
+		// console.log('calendarDateKey:', calendarDateKey)
+		// console.log('calendarData:', calendarData)
+		// console.log('calendarIndex:', calendarIndex)
 
         return (
             <div className='check-in'>
@@ -238,10 +239,9 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 								variant='outlined'
 								value={this.state.blockId}
 								onChange={this.handleSelectBlock}
-								label='Block'
+								// label='Block'
 								disabled={!blocks || blocks.length <= 1}
 							>
-								<MenuItem value={-1}><em>Select Block</em></MenuItem>
 								{blocks.map((block: IBlock) => (
 									<MenuItem value={block.id}>{block.label}</MenuItem>
 								))}
@@ -358,7 +358,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
 	blocks: state.blocks.items,
 	calendar: state.calendar.calendar
 })

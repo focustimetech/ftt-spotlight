@@ -24,7 +24,7 @@ interface ITopBarProps {
 
 const TopBar = (props: ITopBarProps) => {
     return (
-        <div className={classNames('top-bar', { '--breadcrumbs': props.breadcrumbs }, { '--tabs': props.tabs })}>
+        <div className={classNames('top-bar', { '--breadcrumbs': props.breadcrumbs }, { '--tabs': props.tabs }, { '--children': props.children })}>
             <Flexbox className='top-bar__inner'>
                 <Flexbox className='top-bar__heading'>
                     {props.AvatarProps && (
@@ -38,10 +38,8 @@ const TopBar = (props: ITopBarProps) => {
                         <Typography variant='subtitle1'>{props.subtitle}</Typography>
                     </div>
                 </Flexbox>
-                {props.children && (
-                    <Flexbox className='top-bar__tools'>{props.children}</Flexbox>
-                )}
             </Flexbox>
+            {props.children}
             {props.tabs && (
                 <Tabs
                     className='top-bar__tabs'

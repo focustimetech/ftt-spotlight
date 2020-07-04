@@ -36,6 +36,7 @@ import { AirCheckIn, LedgerBuffer, ILedgerChip, INewLedgerChip } from '../types/
 import { getCalendarDateKey } from '../utils/date'
 import { makeDocumentTitle } from '../utils/document'
 
+import BlockPicker from '../components/Calendar/BlockPicker'
 import CalendarHeader from '../components/Calendar/CalendarHeader'
 import Form from '../components/Form'
 import { LoadingIconButton } from '../components/Form/Components/LoadingIconButton'
@@ -222,45 +223,18 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
         return (
             <div className='check-in'>
                 <Head><title>{makeDocumentTitle('Student Check-in')}</title></Head>
-                <TopBar title='Student Check-in' />
-                <Section>
-                    <CalendarHeader
-                        date={this.state.date}
-                        onChange={this.handleChangeDate}
-                        onNext={this.handleNext}
-                        onPrevious={this.handlePrevious}
-                        variant='day'
-                    />
-					<Flexbox>
-						<FormControl variant='outlined' margin='dense'>
-							<InputLabel id='check-in-block-label'>Block</InputLabel>
-							<Select
-								labelId='check-in-block-label'
-								variant='outlined'
-								value={this.state.blockId}
-								onChange={this.handleSelectBlock}
-								// label='Block'
-								disabled={!blocks || blocks.length <= 1}
-							>
-								{blocks.map((block: IBlock) => (
-									<MenuItem value={block.id}>{block.label}</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-						{blockStartDate && blockEndDate && (
-							<Typography variant='body1' className={classNames('check-in__block-timing', { '--pending': blockIsPending })}>
-								{blockHasEnded
-									? `Ended ${formatDistance(now, blockEndDate)} ago`
-									: (!blockHasStarted ? `Starts in ${formatDistance(now, blockStartDate)}` : (
-										differenceInSeconds(now, blockStartDate) < differenceInSeconds(now, blockEndDate)
-											? `Started ${formatDistance(now, blockStartDate)} ago`
-											: `Ends in ${formatDistance(now, blockEndDate)}`
-									))
-								}
-							</Typography>
-						)}
+                <TopBar title='Student Check-in'>
+					<Flexbox justifyContent='space-between'>
+						<CalendarHeader
+							date={this.state.date}
+							onChange={this.handleChangeDate}
+							onNext={this.handleNext}
+							onPrevious={this.handlePrevious}
+							variant='day'
+						/>
+						<BlockPicker onSelectBlock={this.handleSelectBlock} blockId={this.state.blockId} date={date} />
 					</Flexbox>
-                </Section>
+				</TopBar>
                 <Section className='check-in__form' fullWidth>
 					<Section>
 						<Typography variant='h5'>Student Entry</Typography>

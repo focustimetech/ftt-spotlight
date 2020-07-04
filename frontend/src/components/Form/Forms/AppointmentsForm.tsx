@@ -27,14 +27,15 @@ import { createAppointment, deleteAppointment, fetchAppointments } from '../../.
 import { fetchClassrooms } from '../../../actions/classroomActions'
 import { ISnackbar, queueSnackbar } from '../../../actions/snackbarActions'
 import { fetchStudents } from '../../../actions/studentActions'
+import { IAppointment, INewAppointment } from '../../../types/appointment'
 import { IAvatar, IStudent } from '../../../types/auth'
 import { ICalendarEvent } from '../../../types/calendar'
-import { INewClassroom, IClassroom } from '../../../types/classroom'
-import { IAppointment, INewAppointment } from '../../../types/appointment'
+import { IClassroom, INewClassroom } from '../../../types/classroom'
 import { getCalendarDateKey } from '../../../utils/date'
 import p from '../../../utils/pluralize'
 import { createFilterOptions } from '../../../utils/search'
 
+import { FormRow, FormRowElement } from '../'
 import Avatar from '../../Avatar'
 import Flexbox from '../../Layout/Flexbox'
 import { LoadingButton } from '../Components/LoadingButton'
@@ -45,7 +46,6 @@ import ListForm, {
     ListFormHeader,
     ListFormList
 } from '../ListForm'
-import { FormRow, FormRowElement } from '../'
 
 export interface IAppointmentsFormProps {
     event: ICalendarEvent
@@ -208,19 +208,21 @@ class AppointmentsForm extends React.Component<IAppointmentsFormProps & IReduxPr
         return (
             <ListForm onSubmit={this.handleSubmit} autoComplete='off'>
                 <ListFormHeader>Appointments</ListFormHeader>
-                <ListFormList>
-                    {appointments.length > 0 && students && Object.keys(students).length > 0 && appointments.map((appointment: IAppointment) => {
-                        const student: IStudent = students[appointment.studentId]
-                        const avatar: IAvatar = student ? student.avatar : undefined
-                        return (
-                            <MenuItem onClick={() => this.handleSelectAppointment(appointment)} selected={appointment.id === this.state.selectedAppointmentId}>
-                                <ListItemAvatar><Avatar avatar={avatar} /></ListItemAvatar>
-                                <ListItemText primary={student.name} secondary={appointment.memo} />
-                                <ListItemSecondaryAction><IconButton><Icon>more_vert</Icon></IconButton></ListItemSecondaryAction>
-                            </MenuItem>
-                        )
-                    })}
-                </ListFormList>
+                {appointments.length > 0 && students && Object.keys(students).length > 0 && (
+                    <ListFormList>
+                        {appointments.map((appointment: IAppointment) => {
+                            const appointmentStudent: IStudent = students[appointment.studentId]
+                            const avatar: IAvatar = student ? appointmentStudent.avatar : undefined
+                            return (
+                                <MenuItem onClick={() => this.handleSelectAppointment(appointment)} selected={appointment.id === this.state.selectedAppointmentId}>
+                                    <ListItemAvatar><Avatar avatar={avatar} /></ListItemAvatar>
+                                    <ListItemText primary={appointmentStudent.name} secondary={appointment.memo} />
+                                    <ListItemSecondaryAction><IconButton><Icon>more_vert</Icon></IconButton></ListItemSecondaryAction>
+                                </MenuItem>
+                            )
+                        })}
+                    </ListFormList>
+                )}
                 {(this.state.loadingInitialStudents || this.state.loadingInitialAppointments || appointments.length === 0) && (
                     <ListFormEmptyState
                         loading={this.state.loadingInitialStudents || this.state.loadingInitialAppointments}

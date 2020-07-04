@@ -61,7 +61,7 @@ class SysAdminLayout extends React.Component<IReduxProps & ILayoutContainerProps
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     clusters: state.clusters.items
 })
 

@@ -66,7 +66,7 @@ class LoginController extends Controller
                 ->cookie(
                     self::ACCESS_TOKEN,
                     $responseData->access_token,
-                    600,                    // 10 minutes
+                    6000,                   // 100 minutes
                     null,                   // $path
                     null,                   // $domain
                     false,                  // $secure

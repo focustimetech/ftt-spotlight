@@ -12,7 +12,8 @@ import LayoutContainer from '../LayoutContainer'
 import LayoutContent from '../LayoutContent'
 
 export const staffAndTeacherMenuItems: INavMenuItem[] = [
-    { label: 'Reporting', href: '/reporting', icon: 'assessment' }
+    { label: 'Classrooms', href: '/classrooms', icon: 'room' },
+    { label: 'Reporting', href: '/reporting', icon: 'analytics' }
 ]
 
 interface IReduxProps {

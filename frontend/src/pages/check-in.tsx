@@ -67,7 +67,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
     static getInitialProps = async (context: NextPageContext) => {
 		const { store } = context
 		const blocks: IBlock[] = store.getState().blocks.items
-		const students: IStudent[] = store.getState().students.items
+		const students: Record<number, IStudent[]> = store.getState().students.students
 
 		if (!blocks || blocks.length === 0) {
 			return await store.dispatch(fetchBlocks())
@@ -181,24 +181,13 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 
     render() {
 		const { date } = this.state
-        const weekDay: number = Number(format(date, 'i'))
-		const blocks: IBlock[] = this.props.blocks.filter((block: IBlock) => block.weekDay === weekDay)
 		const currentBlock: IBlock = this.props.blocks.find((block: IBlock) => block.id === this.state.blockId)
-		const now: Date = new Date()
 		const calendarDateKey: string = getCalendarDateKey(date)
-		let blockStartDate: Date = null
-		let blockEndDate: Date = null
-		let blockHasStarted: boolean = false
-		let blockHasEnded: boolean = false
 		let calendarData: ICalendarEvent[] = []
 		let calendarIndex: number = -1
 		let ledgerBuffer: LedgerBuffer = {}
 		let airCheckIn: AirCheckIn = null
 		if (currentBlock) {
-			blockStartDate = new Date(`${date.toDateString()} ${currentBlock.startTime}`)
-			blockEndDate = new Date(`${date.toDateString()} ${currentBlock.endTime}`)
-			blockHasEnded = blockEndDate < now
-			blockHasStarted = blockStartDate < now
 			calendarData = this.props.calendar[calendarDateKey]
 			if (calendarData) {
 				calendarIndex = calendarData.findIndex((event: ICalendarEvent) => event.id === currentBlock.id)
@@ -208,16 +197,11 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 				airCheckIn = calendarData[calendarIndex].context.airCheckIn
 			}
 		}
-		const blockIsPending: boolean = blockHasStarted && !blockHasEnded
 		const hasChips: boolean = ledgerBuffer && Object.keys(ledgerBuffer).length > 0
 		const airCodeLength: number = airCheckIn ? airCheckIn.code.length : -1
 		const airCode: string = airCheckIn
 			? `${airCheckIn.code.slice(0, Math.floor(airCodeLength / 2))} ${airCheckIn.code.slice(Math.floor(airCodeLength / 2))}`
 			: 'nnn nnn'
-
-		// console.log('calendarDateKey:', calendarDateKey)
-		// console.log('calendarData:', calendarData)
-		// console.log('calendarIndex:', calendarIndex)
 
         return (
             <div className='check-in'>

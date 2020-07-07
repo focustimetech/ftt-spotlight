@@ -13,6 +13,7 @@ import { snackbarReducer } from './snackbarReducer'
 import { staffReducer } from './staffReducer'
 import { starReducer } from './starReducer'
 import { studentReducer } from './studentReducer'
+import { teacherReducer } from './teacherReducer'
 import { topicReducer } from './topicReducer'
 import { usersReducer } from './usersReducer'
 
@@ -30,6 +31,7 @@ export const rootReducer = combineReducers({
     starred: starReducer,
     students: studentReducer,
     reports: reportReducer,
+    teachers: teacherReducer,
     topics: topicReducer,
     users: usersReducer
 })

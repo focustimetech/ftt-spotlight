@@ -57,7 +57,7 @@ Route::middleware('auth:api')->group(function() {
     //Route::get('staff/{id}', 'StaffController@show');
 
     // Teachers
-    Route::get('teacher', 'TeachersController@index');
+    Route::get('teachers', 'TeachersController@index');
     Route::get('teachers/{id}', 'TeachersController@show');
 
     // Topics
@@ -72,9 +72,6 @@ Route::middleware('auth:api')->group(function() {
 Route::middleware('auth:api', 'scope:staff,teacher,sysadmin')->group(function() {
     // Classrooms
     Route::get('classrooms', 'ClassroomsController@list');
-    Route::post('classrooms', 'ClassroomsController@create');
-    Route::put('classrooms', 'ClassroomsController@update');
-    Route::delete('classrooms/{id}', 'ClassroomsController@delete');
 
     // Clusters
     Route::get('clusters', 'ClustersController@index');
@@ -120,6 +117,14 @@ Route::middleware('auth:api', 'scope:teacher')->group(function() {
 Route::middleware('auth:api', 'scope:teacher,student')->group(function() {
     // Calendar
     ROute::get('calendar/{date?}', 'CalendarController@selfCalendar');
+});
+
+// Staff, SysAdmin
+Route::middleware('auth:api', 'scope:staff,sysadmin')->group(function() {
+    // Classrooms
+    Route::post('classrooms', 'ClassroomsController@create');
+    Route::put('classrooms', 'ClassroomsController@update');
+    Route::delete('classrooms/{id}', 'ClassroomsController@delete');
 });
 
 /*

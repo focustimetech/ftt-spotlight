@@ -8,6 +8,7 @@ export interface ITableGenericColumn {
 	hidden?: boolean
 	sortLabel?: string
 	type: TableColumnType
+	render?: (value: any) => React.ReactNode
 }
 
 export interface ITableEnumColumn extends ITableGenericColumn {
@@ -39,7 +40,6 @@ export interface ITableStringFilter extends ITableGenericFilter {
 	type: 'string'
 	rule: ITableStringFilterType
 	value: string
-	component: (value: string) => React.ReactNode
 }
 
 export interface ITableNumericFilter extends ITableGenericFilter {
@@ -47,14 +47,12 @@ export interface ITableNumericFilter extends ITableGenericFilter {
 	type: 'number'
 	rule: ITableNumericFilterType
 	value: number
-	component: (value: number) => React.ReactNode
 }
 
 export interface ITableEnumFilter {
 	columnKey: string
 	type: 'enum'
 	value: string
-	component: (value: string) => React.ReactNode
 }
 
 export interface ITableDateFilter extends ITableGenericFilter {
@@ -62,7 +60,6 @@ export interface ITableDateFilter extends ITableGenericFilter {
 	type: 'date'
 	rule: ITableDateFilterType
 	value: Date
-	component: (value: Date) => React.ReactNode
 }
 
 export type ITableStringFilterType = 

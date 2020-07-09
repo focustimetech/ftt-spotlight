@@ -1,5 +1,5 @@
 import { IAppointment } from './appointment'
-import { AirCheckIn, ILedgerEntry, LedgerBuffer } from './checkin'
+import { AirCheckIn, ILedgerEntry } from './checkin'
 import { IClassroom } from './classroom'
 import { IPlan } from './plan'
 import { ITopic } from './topic'
@@ -22,7 +22,6 @@ export interface ICalendarEventContext {
     airCheckIn?: AirCheckIn
     appointments?: IAppointment[]
     attended?: boolean
-    ledgerBuffer?: LedgerBuffer
     ledgerEntries?: ILedgerEntry[]
     location?: IClassroom
     missedAppointment?: boolean

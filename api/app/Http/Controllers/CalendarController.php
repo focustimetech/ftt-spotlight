@@ -27,7 +27,7 @@ class CalendarController extends Controller
 
     public function teacherCalendar($id, $date = null)
     {
-        $user = auth()->user()->account();
+        $user = auth()->user();
         $time = $date ? strtotime($date) : time();
         error_log("\$time = ". date('Y-m-d H:i:s', $time));
         $startTime = strtotime('last monday', $time);
@@ -37,7 +37,6 @@ class CalendarController extends Controller
         $topicIds = $teacher->topics()->get()->pluck('id');
         $appointments = $teacher->appointments()->whereBetween('date', $dateRange)->get();
         $ledgerEntries = $teacher->ledgerEntries()->whereBetween('date', $dateRange)->get();
-
         $blocks = Block::where('begins_on', '<=', date('Y-m-d H:i:s', $time))
             ->get()
             ->mapToGroups(function ($block, $key) use ($startTime, $topicIds, $appointments, $ledgerEntries, $teacher, $user) {
@@ -61,7 +60,7 @@ class CalendarController extends Controller
                     if ($airCode) {
                         $context['airCheckIn'] = new AirCodeResource($airCode);
                     }
-
+                    // error_log("_COUNT=". $blockLedgerEntries);
                     $blockLedgerEntries = $ledgerEntries
                         ->where('date', $date)
                         ->where('block_id', $blockId);

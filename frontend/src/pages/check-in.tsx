@@ -1,4 +1,4 @@
-import { addDays, differenceInSeconds, format, formatDistance, subDays } from 'date-fns'
+import { addDays, differenceInSeconds, format, formatDistance, subDays, formatDistanceToNow } from 'date-fns'
 import classNames from 'classnames'
 import Head from 'next/head'
 import React from 'react'
@@ -27,14 +27,16 @@ import {
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 
 import { fetchBlocks } from '../actions/blockActions'
-import { createAirCode, updateLedgerBuffer } from '../actions/checkinActions'
+import { createAirCode } from '../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
+import { fetchStudents } from '../actions/studentActions'
 import { NextPageContext } from '../types'
 import { IStudent } from '../types/auth'
-import { IBlock, ICalendar, ICalendarEvent } from '../types/calendar'
-import { AirCheckIn, ILedgerChip, INewLedgerChip, LedgerBuffer} from '../types/checkin'
+import { IBlock, ICalendar, ICalendarEvent, ICalendarEventContext } from '../types/calendar'
+import { AirCheckIn, ILedgerEntry} from '../types/checkin'
 import { getCalendarDateKey } from '../utils/date'
 import { makeDocumentTitle } from '../utils/document'
+import { createFilterOptions } from '../utils/search'
 
 import DateBlockPicker from '../components/Calendar/DateBlockPicker'
 import Form from '../components/Form'
@@ -44,12 +46,23 @@ import Flexbox from '../components/Layout/Flexbox'
 import Section from '../components/Layout/Section'
 import TopBar from '../components/TopBar'
 import withAuth from '../hocs/withAuth'
+import { Autocomplete } from '@material-ui/lab'
+import { TableColumns } from 'src/types/table'
+import EnhancedTable from '..//components/Table/EnhancedTable'
+
+interface ILedgerTable {
+	studentId: number
+	method: MethodType
+	checkInDate: Date
+}
+
+type MethodType = 'Roll-call' | 'Air Check-in' | 'Name entry' | 'Number entry'
 
 interface IReduxProps {
 	blocks: IBlock[]
 	calendar: ICalendar
+	students: Record<number, IStudent>
 	createAirCode: (blockId: number, date: string) => Promise<any>
-	updateLedgerBuffer: (ledgerChip: INewLedgerChip) => void
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
@@ -70,8 +83,14 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		const students: Record<number, IStudent[]> = store.getState().students.students
 
 		if (!blocks || blocks.length === 0) {
-			return await store.dispatch(fetchBlocks())
+			await store.dispatch(fetchBlocks())
 		}
+
+		if (!students || Object.keys(students).length === 0) {
+			await store.dispatch(fetchStudents())
+		}
+
+		return {}
     }
 
     state: ICheckInState = {
@@ -83,27 +102,11 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		airEnabled: false,
 		loadingAir: false
 	}
-	
+
 	interval: number = -1
 
     handleChangeDate = (date: Date) => {
         this.setState({ date }, () => {
-			this.resetBlock()
-		})
-    }
-
-    handleNext = () => {
-        this.setState((state: ICheckInState) => ({
-            date: addDays(state.date, 1)
-        }), () => {
-			this.resetBlock()
-		})
-    }
-
-    handlePrevious = () => {
-        this.setState((state: ICheckInState) => ({
-            date: subDays(state.date, 1)
-        }), () => {
 			this.resetBlock()
 		})
     }
@@ -115,14 +118,22 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		this.setState({ blockId })
 	}
 
+	handleSelectStudent = (thing: any) => {
+		// const { value } = event.target
+		console.log('thing=', thing)
+	}
+
+	/*
 	createUniqueId = (): string => {
 		return uuidv4()
 	}
+	*/
 
 	handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 		this.setState({ inputValue: event.target.value })
 	}
 
+	/*
 	handleCreateChip = () => {
 		const { blockId, date, inputValue } = this.state
 		const key: string = this.createUniqueId()
@@ -144,6 +155,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 			}
 		}, 6000)
 	}
+	*/
 
     /**
      * Change this from any to the right event type.
@@ -167,41 +179,60 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 			}, (err) => {
 				return this.setState({ loadingAir: false })
 			})
-		}	
+		}
 	}
 
     componentDidMount() {
 		this.resetBlock()
 		this.interval = window.setInterval(this.refresh, 6000)
 	}
-	
+
 	componentWillUnmount() {
 		window.clearInterval(this.interval)
 	}
 
     render() {
-		const { date } = this.state
+		const { date, blockId } = this.state
+		const { students, calendar } = this.props
+		const dateKey: string = getCalendarDateKey(date)
 		const currentBlock: IBlock = this.props.blocks.find((block: IBlock) => block.id === this.state.blockId)
 		const calendarDateKey: string = getCalendarDateKey(date)
 		let calendarData: ICalendarEvent[] = []
 		let calendarIndex: number = -1
-		let ledgerBuffer: LedgerBuffer = {}
+		let calendarContext: ICalendarEventContext = {}
 		let airCheckIn: AirCheckIn = null
 		if (currentBlock) {
 			calendarData = this.props.calendar[calendarDateKey]
 			if (calendarData) {
 				calendarIndex = calendarData.findIndex((event: ICalendarEvent) => event.id === currentBlock.id)
+				calendarContext = calendar[dateKey][calendarIndex].context
 			}
 			if (calendarData && calendarData[calendarIndex]) {
-				ledgerBuffer = calendarData[calendarIndex].context.ledgerBuffer || {}
 				airCheckIn = calendarData[calendarIndex].context.airCheckIn
 			}
 		}
-		const hasChips: boolean = ledgerBuffer && Object.keys(ledgerBuffer).length > 0
+
+		const ledgerEntries: ILedgerEntry[] = calendarContext.ledgerEntries || []
+		console.log('ledgerEntries:', ledgerEntries)
+		const ledgerTableColumns: TableColumns<ILedgerTable> = {
+			studentId: { label: 'Student', searchable: false, filterable: false, type: 'string' },
+			method: { label: 'Method', searchable: false, filterable: true, type: 'enum', values: []},
+			checkInDate: { label: 'Time', searchable: false, filterable: true, type: 'date' }
+		}
+		const ledgerTableData: ILedgerTable[] = ledgerEntries.map((entry: ILedgerEntry) => ({
+			studentId: entry.studentId,
+			method: entry.method as MethodType,
+			checkInDate: new Date(entry.createdAt)
+		}))
+
 		const airCodeLength: number = airCheckIn ? airCheckIn.code.length : -1
 		const airCode: string = airCheckIn
 			? `${airCheckIn.code.slice(0, Math.floor(airCodeLength / 2))} ${airCheckIn.code.slice(Math.floor(airCodeLength / 2))}`
 			: 'nnn nnn'
+
+		const getOptionLabel = (key: number) => students[key].name
+		const filterOptions = createFilterOptions(students, { stringify: getOptionLabel })
+		const getOptionDisabled = (key: number) => false
 
         return (
             <div className='check-in'>
@@ -210,18 +241,42 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 					<DateBlockPicker
 						date={date}
 						onChange={this.handleChangeDate}
-						onNext={this.handleNext}
-						onPrevious={this.handlePrevious}
 						variant='day'
 						onSelectBlock={this.handleSelectBlock}
 						blockId={this.state.blockId}
 					/>
 				</TopBar>
+				<Section className='check-in__form' fullWidth>
+					<Autocomplete<number>
+						// loading={this.state.loadingInitialStudents}
+						disabled={Object.keys(students).length === 0}
+						multiple
+						autoComplete
+						fullWidth
+						// size='small'
+						options={Object.keys(students).map((key: string) => Number(key))}
+						getOptionLabel={getOptionLabel}
+						getOptionDisabled={getOptionDisabled}
+						filterOptions={(options, { inputValue }) => filterOptions(options, inputValue)}
+						renderInput={(TextFieldProps) => (
+							<Paper>
+								<TextField
+									{...TextFieldProps}
+									// label='Students'
+									placeholder='Enter full name or Student Number'
+								/>
+							</Paper>
+						)}
+						renderTags={(value: number[], getTagProps) => null}
+						onChange={(e, val) => this.handleSelectStudent(val)}
+						value={[20]}
+					/>
+				</Section>
                 <Section className='check-in__form' fullWidth>
 					<Section>
 						<Typography variant='h5'>Student Entry</Typography>
 						<Typography variant='body1'>Enter Student Numbers using a barcode scanner, or type student's full name.</Typography>
-						<div className={classNames('chip_select', { '--hasChips': hasChips })}>
+						<div className={classNames('chip_select', { '--hasChips': true })}>
 							<Paper>
 								<div className='chip_select__textfield'>
 									<div className='chip_select__actions'>
@@ -244,7 +299,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 											)
 										) : (*/
 											<Tooltip title='Add (Enter)'>
-												<LoadingIconButton loading={false} disabled={false} onClick={() => this.handleCreateChip()}>
+												<LoadingIconButton loading={false} disabled={false} onClick={() => null}>
 													<Icon>keyboard_return</Icon>
 												</LoadingIconButton>
 											</Tooltip>
@@ -253,7 +308,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 								</div>
 							</Paper>
 							<FormHelperText></FormHelperText>
-							<Collapse in={hasChips}>
+							<Collapse in={true}>
 								<Flexbox className={classNames('check-in__status', { '--saved': !this.state.syncing })}>
 									{this.state.syncing ? (
 										<>
@@ -268,16 +323,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 									)}
 								</Flexbox>
 								<div className='chips_container'>
-									{Object.keys(ledgerBuffer).map((bufferKey: string) => {
-										return (
-
-											<Chip
-												key={bufferKey}
-												label={ledgerBuffer[bufferKey].value}
-												onDelete={() => null}
-											/>
-										)
-									})}
+									
 								</div>
 							</Collapse>
 						</div>
@@ -309,6 +355,16 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 						</Collapse>
 					</Section>
 				</Section>
+				<Section className='check-in__form' fullWidth>
+					<Section>
+						<EnhancedTable<ILedgerTable>
+							columns={ledgerTableColumns}
+							data={ledgerTableData}
+							dateFormat={(value: Date) => formatDistanceToNow(value)}
+							title='Checked in'
+						/>
+					</Section>
+				</Section>
             </div>
         )
     }
@@ -316,9 +372,10 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 
 const mapStateToProps = (state: any) => ({
 	blocks: state.blocks.items,
-	calendar: state.calendar.calendar
+	calendar: state.calendar.calendar,
+	students: state.students.students
 })
 
-const mapDispatchToProps = { createAirCode, fetchBlocks, updateLedgerBuffer }
+const mapDispatchToProps = { createAirCode, fetchBlocks, fetchStudents }
 
 export default withAuth('teacher')(connect(mapStateToProps, mapDispatchToProps)(CheckIn))

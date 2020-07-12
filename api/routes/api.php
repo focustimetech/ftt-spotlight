@@ -91,6 +91,14 @@ Route::middleware('auth:api', 'scope:staff,teacher,sysadmin')->group(function() 
 Route::middleware('auth:api', 'scope:staff,teacher,sysadmin,guardian')->group(function() {
     // Calendar
     Route::get('students/{id}/calendar/{date?}', 'CalendarController@studentCalendar');
+    
+    Route::get('tickets', 'TicketController@list');
+    Route::get('tickets/{id}', 'TicketController@history');
+    Route::get('tickets/all' ,'TicketController@index');
+    Route::post('tickets', 'TicketController@create');
+    Route::post('tickets/reply', 'TicketController@reply');
+    Route::put('tickets/reopen', 'TicketController@reopenTikcet');
+    Route::put('tickets/close', 'TicketController@closeTicket');
 
     // Students
     Route::get('students', 'StudentsController@index');

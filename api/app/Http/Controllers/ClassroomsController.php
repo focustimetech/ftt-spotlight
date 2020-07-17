@@ -13,13 +13,6 @@ class ClassroomsController extends Controller
         return ClassroomResource::collection(Classroom::all());
     }
 
-    public function list(Request $request)
-    {
-        $classrooms = $request->user()->account()->classrooms()->get();
-
-        return ClassroomResource::collection($classrooms);
-    }
-
     public function show($id)
     {
         $classroom = Classroom::findOrFail($id);

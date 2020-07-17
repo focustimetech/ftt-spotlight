@@ -15,6 +15,14 @@ use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
+    private function getDateRangeFromTime($startTime)
+    {
+        return [
+            date('Y-m-d', $startTime),
+            date('Y-m-d', strtotime('+6 days', $startTime))
+        ];
+    }
+
     public function selfCalendar($date = null)
     {
         $user = auth()->user();
@@ -29,7 +37,6 @@ class CalendarController extends Controller
     {
         $user = auth()->user();
         $time = $date ? strtotime($date) : time();
-        error_log("\$time = ". date('Y-m-d H:i:s', $time));
         $startTime = strtotime('last monday', $time);
         $dateRange = $this->getDateRangeFromTime($startTime);
 
@@ -97,11 +104,13 @@ class CalendarController extends Controller
 
     }
 
-    private function getDateRangeFromTime($startTime)
+    public function classroomCalendar($id, $date = null)
     {
-        return [
-            date('Y-m-d', $startTime),
-            date('Y-m-d', strtotime('+6 days', $startTime))
-        ];
+        return [];
+    }
+
+    public function allClassroomsCalendar($date)
+    {
+        return [];
     }
 }

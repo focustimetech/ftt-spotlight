@@ -41,7 +41,11 @@ Route::middleware('auth:api')->group(function() {
     Route::get('teacher/{id}/calendar/{date?}', 'CalendarController@teacherCalendar');
 
     // Classrooms
-    Route::get('classrooms/all', 'ClassroomsController@index');
+    Route::get('classrooms', 'ClassroomsController@index');
+
+    // Classroom Calendar
+    Route::get('classrooms/{id}/calendar/{date?}', 'CalendarController@classroomCalendar');
+    Route::get('classrooms/calendar/{date}', 'CalendarController@allClassroomsCalendar');
 
     // Clusters
     Route::get('clusters', 'ClustersController@index');
@@ -70,9 +74,6 @@ Route::middleware('auth:api')->group(function() {
 
 // Teachers, Staff, SysAdmin
 Route::middleware('auth:api', 'scope:staff,teacher,sysadmin')->group(function() {
-    // Classrooms
-    Route::get('classrooms', 'ClassroomsController@list');
-
     // Clusters
     Route::get('clusters', 'ClustersController@index');
     Route::get('clusters', 'ClustersController@list');

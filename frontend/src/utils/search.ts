@@ -9,11 +9,11 @@ interface IFilterOptionsConfig<T> {
     ignoreCase?: boolean
     limit?: number
     matchFrom?: 'any' | 'start'
-    stringify?: (key: number) => string
+    stringify?: (key: string | number) => string
     trim?: boolean
 }
 
-export const createFilterOptions = <T>(dictionary: Record<number, T>, config: IFilterOptionsConfig<T> = {}) => {
+export const createFilterOptions = <T>(dictionary: Record<string | number, T>, config: IFilterOptionsConfig<T> = {}) => {
     const {
         ignoreAccents = true,
         ignoreCase = true,
@@ -21,30 +21,29 @@ export const createFilterOptions = <T>(dictionary: Record<number, T>, config: IF
         matchFrom = 'any',
         stringify,
         trim = false,
-    } = config;
+    } = config
 
-    return (keys: number[], inputValue: string, getOptionLabel: (key: number) => string = stringify) => {
-        let input = trim ? inputValue.trim() : inputValue;
+    return (keys: Array<string | number>, inputValue: string, getOptionLabel: (key: string | number) => string = stringify) => {
+        let input = trim ? inputValue.trim() : inputValue
         if (ignoreCase) {
-            input = input.toLowerCase();
+            input = input.toLowerCase()
         }
         if (ignoreAccents) {
-            input = stripDiacritics(input);
+            input = stripDiacritics(input)
         }
-  
-        console.log('_keys:', keys)
-        const filteredOptions = keys.filter((key: number) => {
+
+        const filteredOptions = keys.filter((key: string | number) => {
             let candidate: string = getOptionLabel(key) // option;
             if (ignoreCase) {
-                candidate = candidate.toLowerCase();
+                candidate = candidate.toLowerCase()
             }
             if (ignoreAccents) {
-                candidate = stripDiacritics(candidate);
+                candidate = stripDiacritics(candidate)
             }
 
-            return matchFrom === 'start' ? candidate.indexOf(input) === 0 : candidate.indexOf(input) > -1;
-        });
+            return matchFrom === 'start' ? candidate.indexOf(input) === 0 : candidate.indexOf(input) > -1
+        })
 
-        return limit ? filteredOptions.slice(0, limit) : filteredOptions;
+        return limit ? filteredOptions.slice(0, limit) : filteredOptions
     }
 }

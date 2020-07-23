@@ -1,7 +1,18 @@
-import API from '../utils/api'
+import { AirCheckIn, ILedgerEntry } from '../types/checkin'
 import { IReduxAction } from '../types/redux'
-import { NEW_AIR_CODE, DELETE_AIR_CODE, UPDATE_LEDGER_BUFFER } from './types'
-import { LedgerBuffer, INewLedgerChip, AirCheckIn } from '../types/checkin'
+import { DELETE_AIR_CODE, NEW_AIR_CODE, STUDENT_CHECK_IN } from './types'
+
+import API from '../utils/api'
+
+export const studentCheckIn = (ledgerEntry: ILedgerEntry) => {
+    return (dispatch: (action: IReduxAction<ILedgerEntry>) => void) => {
+        dispatch({
+            type: STUDENT_CHECK_IN,
+            payload: ledgerEntry
+        })
+        return API.post('/check-in/', ledgerEntry)
+    }
+}
 
 export const createAirCode = (blockId: number, date: string) => {
     return (dispatch: (action: IReduxAction<AirCheckIn>) => void) => {

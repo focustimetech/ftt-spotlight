@@ -181,6 +181,6 @@ export const getTimeRangeLabels = (start: Date, end: Date): [string, string] => 
  * @param date The given date.
  * @return The date formatted as an `ICalendar` object key.
  */
-export const getCalendarDateKey = (date: Date): string => {
-    return format(date, 'yyyy-MM-dd')
+export const getCalendarDateKey = (date?: Date): string => {
+    return format(date || new Date(), 'yyyy-MM-dd')
 }

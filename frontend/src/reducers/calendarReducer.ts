@@ -1,4 +1,4 @@
-import { FETCH_CALENDAR, NEW_TOPIC_SCHEDULE, UPDATE_LEDGER_BUFFER } from '../actions/types'
+import { FETCH_CALENDAR, NEW_TOPIC_SCHEDULE, STUDENT_CHECK_IN } from '../actions/types'
 import { ICalendar, ICalendarEvent, ICalendarEventContext } from '../types/calendar'
 import { IReduxAction } from '../types/redux'
 import { ITopicSchedule } from '../types/topic'
@@ -24,10 +24,8 @@ export const calendarReducer = (state = initialState, action: IReduxAction) => {
             const topicSchedule: ITopicSchedule = action.payload
             context.topic = topicSchedule.topic
             break
-        case UPDATE_LEDGER_BUFFER:
-            const ledgerChip: INewLedgerChip = action.payload
-            context.ledgerBuffer = ledgerChip.buffer
-            break
+        case STUDENT_CHECK_IN:
+            return state
         default:
             return state
     }
@@ -45,9 +43,6 @@ export const calendarReducer = (state = initialState, action: IReduxAction) => {
 
     if (context.topic) {
         calendarContext.topic = context.topic
-    }
-    if (context.ledgerBuffer) {
-        calendarContext.ledgerBuffer = { ...calendarContext.ledgerBuffer, ...context.ledgerBuffer } 
     }
 
     calendarData[calendarIndex] = {

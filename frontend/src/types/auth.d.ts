@@ -26,6 +26,7 @@ export interface IUserDetails {
 export interface IStudent extends IUserDetails {
     accountType: 'student'
     grade: number
+    studentNumber: string
     lastCheckIn?: ILedgerEntry
 }
 

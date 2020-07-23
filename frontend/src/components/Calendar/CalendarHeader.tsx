@@ -1,5 +1,6 @@
 import { addDays, addWeeks, format, subDays, subWeeks } from 'date-fns'
 import React from 'react'
+import { connect } from 'react-redux'
 
 import {
     Button,
@@ -10,6 +11,13 @@ import {
 
 import Flexbox from '../Layout/Flexbox'
 import CalendarMonthLabel, { ICalendarMonthLabelProps } from './CalendarMonthLabel'
+
+import { fetchCalendar } from '../../actions/calendarActions'
+import { IUser } from '../../types/auth'
+
+interface IReduxProps {
+    currentUser: IUser
+}
 
 const getNextDate = (date: Date): Date => {
     return addDays(date, 1)
@@ -32,19 +40,21 @@ export interface ICalendarHeaderProps extends Exclude<ICalendarMonthLabelProps, 
     variant: 'day' | 'week'
     nextLabel?: string
     previousLabel?: string
+    updateCalendar?: boolean
     onChange: (date: Date) => void
     onPrevious?: () => void
     onNext?: () => void
     onRefresh?: () => void
 }
 
-const CalendarHeader = (props: ICalendarHeaderProps) => {
+const CalendarHeader = (props: ICalendarHeaderProps & IReduxProps) => {
     const {
         date,
         days,
         nextLabel,
         previousLabel,
         variant,
+        updateCalendar,
         onChange,
         onPrevious,
         onNext,
@@ -63,16 +73,69 @@ const CalendarHeader = (props: ICalendarHeaderProps) => {
         onChange(variant === 'day' ? getNextDate(date) : getNextWeek(date))
     }
 
+    /**
+     * @TODO Finish this method.
+     * @param date 
+     * @param variant 
+     */
+    const populateCalendar = (date: Date, variant: 'day' | 'week') => {
+        /*
+        const { currentUser } = props
+        const key: string = getCalendarDateKey(date)
+        if (editable) {
+            // Fetch the current user's calendar.
+            // Appending to already defined calendar keys is handled by redycer.
+            props.fetchCalendar(date)
+        } else {
+            // Fetch the given teacher's calendar
+            fetchTeacherCalendar(teacher.id, date).then((res: AxiosResponse<ICalendar>) => {
+                // Append results to calendar
+                this.setState((state: ITeacherProfileState) => ({
+                    calendar: { ...state.calendar, ...res.data }
+                }))
+            })
+        }
+        */
+    }
+
+    const handleNext = () => {
+        // const nextWeek: Date = getNextWeek(date)
+        // this.populateCalendar(nextWeek)
+        const next: Date = variant === 'day' ? getNextDate(date) : getNextWeek(date)
+        if (onNext) {
+            onNext()
+        } else {
+            onChange(next)
+        }
+        if (updateCalendar) {
+            populateCalendar(next, variant)
+        }
+    }
+
+    const handlePrevious = () => {
+        // const previousWeek: Date = getPreviousWeek(date)
+        // this.populateCalendar(previousWeek)
+        const previous: Date = variant === 'day' ? getPreviousDate(date) : getPreviousWeek(date)
+        if (onPrevious) {
+            onPrevious()
+        } else {
+            onChange(previous)
+        }
+        if (props.updateCalendar) {
+            populateCalendar(previous, variant)
+        }
+    }
+
     return (
         <Flexbox className='calendar-header'>
             <Tooltip title={format(today, 'MMMM d, yyyy')}>
                 <Button variant='outlined' onClick={() => onChange(today)}>Today</Button>
             </Tooltip>
             <Tooltip title={previousLabel || (isWeekly ? 'Next week' : 'Next day')}>
-                <IconButton onClick={() => onPrevious ? onPrevious() : onPreviousFallback()}><Icon>chevron_left</Icon></IconButton>
+                <IconButton onClick={() => handlePrevious()}><Icon>chevron_left</Icon></IconButton>
             </Tooltip>
             <Tooltip title={nextLabel || (isWeekly ? 'Previous week' : 'Previous day')}>
-                <IconButton onClick={() => onNext ? onNext() : onNextFallback()}><Icon>chevron_right</Icon></IconButton>
+                <IconButton onClick={() => handleNext()}><Icon>chevron_right</Icon></IconButton>
             </Tooltip>
             <CalendarMonthLabel date={date} onChange={onChange} includeDay={!isWeekly} days={isWeekly ? 7 : 1} {...rest} />
             {onRefresh && (
@@ -84,4 +147,10 @@ const CalendarHeader = (props: ICalendarHeaderProps) => {
     )
 }
 
-export default CalendarHeader
+const mapStateToProps = (state: any) => ({
+    currentUser: state.auth.user
+})
+
+const mapDispatchToProps = { fetchCalendar }
+
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarHeader)

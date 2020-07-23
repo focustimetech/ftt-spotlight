@@ -4,14 +4,41 @@ namespace App\Http\Controllers;
 
 use Utils;
 use App\AirCode;
+use App\LedgerEntry;
+use App\Student;
 use App\Http\Resources\AirCode as AirCodeResource;
+use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use Illuminate\Http\Request;
 
 class CheckInController extends Controller
 {
-    public function updateBuffer(Request $request)
+    public function studentCheckIn(Request $request)
     {
+        $studentId = $request->input('studentId');
+        if (!Student::find($studentId)) {
+            return response()->json(['message' => 'The student could not be found.'], 404);
+        }
+        $teacher = auth()->user()->account();
+        $blockId = $request->input('blockId');
+        try {
+            $date = date('Y-m-d', strtotime($request->input('date')));
+        } catch (Exception $e) {
+            $date = date('Y-m-d');
+        }
+        $topic = $teacher->topic($date, $blockId)->first();
+        if (!$topic) {
+            return response()->json(['message' => 'No Topic was scheduled for the given block.'], 404);
+        }
 
+        return new LedgerEntryResource(LedgerEntry::create([
+            'date' => $date,
+            'memo' => $topic->memo,
+            'method' => 'search',
+            'classroom_id' => $topic->classroom_id,
+            'student_id' => $studentId,
+            'block_id' => $blockId,
+            'teacher_id' => $teacher->id
+        ]));
     }
 
     public function createAirCode(Request $request)

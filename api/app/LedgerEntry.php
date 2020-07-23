@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class LedgerEntry extends Model
 {
     protected $table = 'ledger';
+    protected $fillable = ['date', 'memo', 'method', 'classroom_id', 'student_id', 'block_id', 'teacher_id'];
 
     public function student()
     {

@@ -6,7 +6,7 @@ type LedgerChipStatus =
     | 'failed'
 
 export interface ILedgerEntry {
-    id: number
+    // id: number // Removed from Resource
     date: string
     memo: string
     method: 'plan' | 'air' | 'search' | 'number'

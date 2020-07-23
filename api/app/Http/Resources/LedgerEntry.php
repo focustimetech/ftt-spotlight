@@ -15,7 +15,7 @@ class LedgerEntry extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            // 'id' => $this->id,
             'date' => $this->date,
             'memo' => $this->memo,
             'method' => $this->method,

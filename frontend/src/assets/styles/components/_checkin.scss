@@ -2,19 +2,26 @@
     &__form {
         padding: spacing(4) 0;
         background: #F5F5F5;
-        margin: 16px 32px;
+        margin: 16px auto;
         border-radius: 16px;
     }
 
+    &__entry {
+        padding: spacing(1);
+    }
+
     &__status {
-        margin: 12px spacing(-4) 0;
+        margin: spacing(1.5) 0;
         padding: spacing(1) spacing(4);
-        background: rgba(0, 0, 0, 0);
-        color: inherit;
+        background: rgb(255, 249, 232);
+        color:rgb(255,179,0);
         transition-duration: 0.3s;
         transition-property: background, color;
+        justify-content: space-between;
+        min-height: 36px;
 
         &.--saved {
+            // justify-content: unset;
             background: rgb(232, 240, 254);
             color: rgb(26, 115, 232);
         }

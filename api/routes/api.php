@@ -110,14 +110,14 @@ Route::middleware('auth:api', 'scope:teacher')->group(function() {
     Route::delete('topics/{id}', 'TopicsController@delete');
 
     // Check-in
-    Route::post('check-in', 'CheckInController@updateBuffer');
+    Route::post('check-in', 'CheckInController@studentCheckIn');
     Route::post('check-in/air', 'CheckInController@createAirCode');
 });
 
 // Students, Teachers
 Route::middleware('auth:api', 'scope:teacher,student')->group(function() {
     // Calendar
-    ROute::get('calendar/{date?}', 'CalendarController@selfCalendar');
+    Route::get('calendar/{date?}', 'CalendarController@selfCalendar');
 });
 
 // Staff, SysAdmin

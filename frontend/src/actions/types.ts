@@ -50,7 +50,7 @@ export const SEND_NOTIFICATION = 'SEND_NOTIFICATION'
 // Check-in
 export const NEW_AIR_CODE = 'NEW_AIR_CODE'
 export const DELETE_AIR_CODE = 'DELETE_AIR_CODE'
-export const UPDATE_LEDGER_BUFFER = 'UPDATE_LEDGER_BUFFER'
+export const STUDENT_CHECK_IN = 'STUDENT_CHECK_IN'
 
 // Topics
 export const FETCH_TOPICS = 'FETCH_TOPICS'

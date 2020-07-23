@@ -6,7 +6,7 @@ import BlockPicker, { IBlockPickerProps } from './BlockPicker'
 import CalendarHeader, { ICalendarHeaderProps } from './CalendarHeader'
 
 const DateBlockPicker = (props: IBlockPickerProps & ICalendarHeaderProps) => {
-    const { date, onSelectBlock, blockId, showTimeDiff, ...rest } = props
+    const { date, onSelectBlock, blockId, showTimeDiff, topics, getBlockDisabled, ...rest } = props
     return (
         <Flexbox className='date-block-picker' justifyContent='space-between' alignItems='flex-start'>
             <CalendarHeader
@@ -18,6 +18,8 @@ const DateBlockPicker = (props: IBlockPickerProps & ICalendarHeaderProps) => {
                 onSelectBlock={onSelectBlock}
                 blockId={blockId}
                 showTimeDiff={showTimeDiff}
+                topics={topics}
+                getBlockDisabled={getBlockDisabled}
             />
         </Flexbox>
     )

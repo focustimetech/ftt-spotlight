@@ -20,13 +20,16 @@ class Student extends JsonResource
     {
         $now = time();
         $user = new UserResource($this->user()->first());
-        $dayOfWeek = date('w');
+        $dayOfWeek = date('N');
         $block = Block::where('week_day', $dayOfWeek)->get()->first(function (Block $block) use ($now) {
             return strtotime($block->start_time) <= $now && strtotime($block->end_time) > $now;
         });
 
         $params = array_merge(
-            [ 'grade' => $this->grade ],
+            [
+                'grade' => $this->grade,
+                'studentNumber' => hash('sha256', $this->student_number)
+            ],
             $user->toArray($request)
         );
 

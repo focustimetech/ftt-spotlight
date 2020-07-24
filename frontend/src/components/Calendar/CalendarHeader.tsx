@@ -63,29 +63,29 @@ const CalendarHeader = (props: ICalendarHeaderProps & IReduxProps) => {
         ...rest
     } = props
 
+    React.useEffect(() => {
+        const next: Date = variant === 'day' ? getNextDate(date) : getNextWeek(date)
+        const previous: Date = variant === 'day' ? getPreviousDate(date) : getPreviousWeek(date)
+        // populateCalendar(date) // Not needed
+        populateCalendar(next)
+        populateCalendar(previous)
+    }, [])
+
     const isWeekly: boolean = variant === 'week'
     const today: Date = new Date()
 
-    const onPreviousFallback = () => {
-        onChange(variant === 'day' ? getPreviousDate(date) : getPreviousWeek(date))
-    }
-
-    const onNextFallback = () => {
-        onChange(variant === 'day' ? getNextDate(date) : getNextWeek(date))
-    }
-
-    /**
-     * @TODO Finish this method.
-     * @param date 
-     * @param variant 
-     */
     const populateCalendar = (d: Date) => {
         props.fetchCalendar(variant === 'day' ? d : startOfWeek(d))
     }
 
+    const handleChange = (newDate: Date) => {
+        if (updateCalendar) {
+            populateCalendar(variant === 'day' ? newDate : startOfWeek(newDate))
+        }
+        onChange(newDate)
+    }
+
     const handleNext = () => {
-        // const nextWeek: Date = getNextWeek(date)
-        // this.populateCalendar(nextWeek)
         const next: Date = variant === 'day' ? getNextDate(date) : getNextWeek(date)
         if (onNext) {
             onNext()
@@ -93,13 +93,11 @@ const CalendarHeader = (props: ICalendarHeaderProps & IReduxProps) => {
             onChange(next)
         }
         if (updateCalendar) {
-            populateCalendar(next)
+            populateCalendar(variant === 'day' ? getNextDate(next) : getNextWeek(next))
         }
     }
 
     const handlePrevious = () => {
-        // const previousWeek: Date = getPreviousWeek(date)
-        // this.populateCalendar(previousWeek)
         const previous: Date = variant === 'day' ? getPreviousDate(date) : getPreviousWeek(date)
         if (onPrevious) {
             onPrevious()
@@ -107,14 +105,14 @@ const CalendarHeader = (props: ICalendarHeaderProps & IReduxProps) => {
             onChange(previous)
         }
         if (props.updateCalendar) {
-            populateCalendar(previous)
+            populateCalendar(variant === 'day' ? getPreviousDate(previous) : getPreviousWeek(previous))
         }
     }
 
     return (
         <Flexbox className='calendar-header'>
             <Tooltip title={format(today, 'MMMM d, yyyy')}>
-                <Button variant='outlined' onClick={() => onChange(today)}>Today</Button>
+                <Button variant='outlined' onClick={() => handleChange(today)}>Today</Button>
             </Tooltip>
             <Tooltip title={previousLabel || (isWeekly ? 'Next week' : 'Next day')}>
                 <IconButton onClick={() => handlePrevious()}><Icon>chevron_left</Icon></IconButton>
@@ -122,7 +120,7 @@ const CalendarHeader = (props: ICalendarHeaderProps & IReduxProps) => {
             <Tooltip title={nextLabel || (isWeekly ? 'Previous week' : 'Previous day')}>
                 <IconButton onClick={() => handleNext()}><Icon>chevron_right</Icon></IconButton>
             </Tooltip>
-            <CalendarMonthLabel date={date} onChange={onChange} includeDay={!isWeekly} days={isWeekly ? 7 : 1} {...rest} />
+            <CalendarMonthLabel date={date} onChange={handleChange} includeDay={!isWeekly} days={isWeekly ? 7 : 1} {...rest} />
             {onRefresh && (
                 <Tooltip title='Refresh'>
                     <IconButton onClick={() => onRefresh()}><Icon>refresh</Icon></IconButton>

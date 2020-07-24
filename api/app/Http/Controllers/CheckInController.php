@@ -9,6 +9,7 @@ use App\Student;
 use App\Http\Resources\AirCode as AirCodeResource;
 use App\Http\Resources\LedgerEntry as LedgerEntryResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CheckInController extends Controller
 {
@@ -24,6 +25,14 @@ class CheckInController extends Controller
             $date = date('Y-m-d', strtotime($request->input('date')));
         } catch (Exception $e) {
             $date = date('Y-m-d');
+        }
+        $existingEntry = LedgerEntry::where('date', $date)
+            ->where('block_id', $blockId)
+            ->where('student_id', $studentId)
+            ->where('teacher_id', $teacher->id)
+            ->first();
+        if ($existingEntry) {
+            return new LedgerEntryResource($existingEntry);
         }
         $topic = $teacher->topic($date, $blockId)->first();
         if (!$topic) {

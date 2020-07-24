@@ -9,6 +9,8 @@ import {
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
         margin: `0 -${theme.spacing(0.5)}px`,
+        display: 'flex',
+        flexFlow: 'row wrap',
 
         '& > *': {
             margin: theme.spacing(0.5)

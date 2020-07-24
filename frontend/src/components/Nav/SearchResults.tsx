@@ -50,21 +50,21 @@ const SearchResults = (props: ISearchResultProps) => {
                         resultListItems = results.teacher.map((teacher: ITeacher) => ({
                             avatar: teacher.avatar,
                             value: teacher.name,
-                            link: `teachers/${teacher.id}`
+                            link: `teachers/${teacher.accountId}`
                         }))
                         break
                     case 'staff':
                         resultListItems = results.staff.map((staff: IStaff) => ({
                             avatar: staff.avatar,
                             value: staff.name,
-                            link: `staff/${staff.id}`
+                            link: `staff/${staff.accountId}`
                         }))
                         break
                     case 'student':
                         resultListItems = results.student.map((student: IStudent) => ({
                             avatar: student.avatar,
                             value: student.name,
-                            link: `students/${student.id}`
+                            link: `students/${student.accountId}`
                         }))
                         break
                     case 'classroom':
@@ -83,7 +83,7 @@ const SearchResults = (props: ISearchResultProps) => {
                         resultListItems = results.topic.map((topic: ITopic) => ({
                             value: topic.memo,
                             link: `topics/${topic.id}`,
-                            avatar: topic.owner.avatar
+                            // avatar: topic.owner.avatar
                         }))
                         break
                     default:

@@ -1,6 +1,6 @@
-export interface IReduxAction<T = any> {
-    type: string
-    payload: T
+export interface IReduxAction<T = string, P = any> {
+    type: T
+    payload: P
 }
 
 export type Dispatch<T = any> = (action: IReduxAction<T>) => void

@@ -35,3 +35,9 @@ export interface ICalendarContextDetails {
     title: string
     color?: string
 }
+
+export interface INewCalendarContext {
+    blockId: number
+    date: string
+    context: ICalendarEventContext
+}

@@ -50,7 +50,6 @@ export const SEND_NOTIFICATION = 'SEND_NOTIFICATION'
 // Check-in
 export const NEW_AIR_CODE = 'NEW_AIR_CODE'
 export const DELETE_AIR_CODE = 'DELETE_AIR_CODE'
-export const STUDENT_CHECK_IN = 'STUDENT_CHECK_IN'
 
 // Topics
 export const FETCH_TOPICS = 'FETCH_TOPICS'
@@ -83,6 +82,7 @@ export const FETCH_BLOCKS = 'FETCH_BLOCKS'
 
 // Calendar
 export const FETCH_CALENDAR = 'FETCH_CALENDAR'
+export const UPDATE_CALENDAR_CONTEXT = 'UPDATE_CALENDAR_CONTEXT'
 
 // Appointments
 export const FETCH_APPOINTMENTS = 'FETCH_APPOINTMENTS'

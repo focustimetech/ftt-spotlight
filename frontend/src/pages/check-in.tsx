@@ -30,6 +30,7 @@ import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { Autocomplete } from '@material-ui/lab'
 
 import { fetchBlocks } from '../actions/blockActions'
+import { fetchCalendar } from '../actions/calendarActions'
 import { createAirCode, studentCheckIn } from '../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
 import { fetchStudents } from '../actions/studentActions'
@@ -85,6 +86,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		const blocks: IBlock[] = store.getState().blocks.items
 		const students: Record<number, IStudent[]> = store.getState().students.students
 		const topics: ITopic[] = store.getState().topics.items
+		const calendar: ICalendar = store.getState().calendar.calendar
 
 		if (!blocks || blocks.length === 0) {
 			await store.dispatch(fetchBlocks())
@@ -96,6 +98,10 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 
 		if (!topics || topics.length === 0) {
 			await store.dispatch(fetchTopics())
+		}
+
+		if (!calendar[getCalendarDateKey()]) {
+			await store.dispatch(fetchCalendar)
 		}
 
 		return {}
@@ -136,7 +142,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		const ledgerEntry: ILedgerEntry = {
 			date: getCalendarDateKey(this.state.date),
 			blockId,
-			studentId: student.id,
+			studentId: student.accountId,
 			memo: topic ? topic.memo : '',
 			createdAt: getCalendarDateKey(),
 			teacherId: this.props.currentUser.accountId,
@@ -326,6 +332,6 @@ const mapStateToProps = (state: any) => ({
 	topics: state.topics.items
 })
 
-const mapDispatchToProps = { createAirCode, fetchBlocks, fetchStudents, studentCheckIn }
+const mapDispatchToProps = { createAirCode, fetchBlocks, fetchStudents, studentCheckIn, queueSnackbar }
 
 export default withAuth('teacher')(connect(mapStateToProps, mapDispatchToProps)(CheckIn))

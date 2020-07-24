@@ -70,7 +70,7 @@ const BlockPicker = (props: IBlockPickerProps & IReduxProps) => {
                     <Select
                         labelId='check-in-block-label'
                         variant='outlined'
-                        value={blockId === -1 ? undefined : blockId}
+                        value={blockId === -1 ? '' : blockId}
                         onChange={onSelectBlock}
                         label='Block'
                         disabled={!blocks || blocks.length <= 1}

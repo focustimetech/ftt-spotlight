@@ -8,7 +8,7 @@ import {
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
-        margin: `-${theme.spacing(0.5)}px`,
+        margin: `0 -${theme.spacing(0.5)}px`,
 
         '& > *': {
             margin: theme.spacing(0.5)

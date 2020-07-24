@@ -31,14 +31,12 @@ export const calendarReducer = (state = initialState, action: IReduxAction) => {
     }
 
     const { date, blockId } = action.payload
-    console.log('action.payload:', action.payload)
-    console.log('state.calendar:', state.calendar)
 
     const calendarData: ICalendarEvent[] = [...state.calendar[date]]
     const calendarIndex: number = state.calendar[date].findIndex((event: ICalendarEvent) => {
         return event.id === blockId
     })
-    console.log('calendarIndex:', calendarIndex)
+
     const calendarContext: ICalendarEventContext = { ...calendarData[calendarIndex].context }
 
     if (context.topic) {

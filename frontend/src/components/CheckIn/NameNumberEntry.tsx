@@ -25,17 +25,18 @@ import Flexbox from '../Layout/Flexbox'
 
 interface INameNumberEntryProps {
     students: Record<number, IStudent>
+    disabled?: boolean
     onSelectStudent: (student: IStudent) => void
     onEnterNumber: (entry: React.ReactText) => void
     matchesStudentNumber: (value: React.ReactText) => boolean
-    disabled?: (student: IStudent) => boolean
+    getStudentDisabled?: (student: IStudent) => boolean
     onChange?: (event?: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void
 }
 
 const ITEM_HEIGHT: number = 36
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
-        marginTop: theme.spacing(1),
+        margin: `${theme.spacing(1)}px 0`,
         padding: theme.spacing(1),
         position: 'relative'
     },
@@ -56,7 +57,7 @@ const NameNumberEntry = (props: INameNumberEntryProps) => {
     const classes = useStyles()
     const theme: Theme = useTheme()
     const maxHeight: number = theme.spacing() + ITEM_HEIGHT * 10
-    const { students, disabled, matchesStudentNumber } = props
+    const { students, disabled, getStudentDisabled, matchesStudentNumber } = props
 
     const [menuRef, setMenuRef]: [Element, React.Dispatch<React.SetStateAction<Element>>] = React.useState(null)
     const [inputValue, setInputValue] = React.useState('')
@@ -142,7 +143,7 @@ const NameNumberEntry = (props: INameNumberEntryProps) => {
         }
         const student: IStudent = data[index]
         return (
-            <MenuItem disabled={disabled && disabled(student)} style={style} key={index} onClick={() => handleClickStudent(student)}>
+            <MenuItem disabled={getStudentDisabled && getStudentDisabled(student)} style={style} key={index} onClick={() => handleClickStudent(student)}>
                 {student.name}
             </MenuItem>
         )
@@ -197,6 +198,7 @@ const NameNumberEntry = (props: INameNumberEntryProps) => {
                     onKeyDown={handleKeyDown}
                     // onBlur={() => handleMenuClose()}
                     value={inputValue}
+                    disabled={disabled}
                     endAdornment={
                         <InputAdornment position='end'>
                             <Flexbox>

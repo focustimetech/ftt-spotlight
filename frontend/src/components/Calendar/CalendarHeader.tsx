@@ -1,4 +1,4 @@
-import { addDays, addWeeks, format, subDays, subWeeks } from 'date-fns'
+import { addDays, addWeeks, format, subDays, subWeeks, startOfWeek } from 'date-fns'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -17,6 +17,7 @@ import { IUser } from '../../types/auth'
 
 interface IReduxProps {
     currentUser: IUser
+    fetchCalendar: (date: Date) => Promise<any>
 }
 
 const getNextDate = (date: Date): Date => {
@@ -78,24 +79,8 @@ const CalendarHeader = (props: ICalendarHeaderProps & IReduxProps) => {
      * @param date 
      * @param variant 
      */
-    const populateCalendar = (date: Date, variant: 'day' | 'week') => {
-        /*
-        const { currentUser } = props
-        const key: string = getCalendarDateKey(date)
-        if (editable) {
-            // Fetch the current user's calendar.
-            // Appending to already defined calendar keys is handled by redycer.
-            props.fetchCalendar(date)
-        } else {
-            // Fetch the given teacher's calendar
-            fetchTeacherCalendar(teacher.id, date).then((res: AxiosResponse<ICalendar>) => {
-                // Append results to calendar
-                this.setState((state: ITeacherProfileState) => ({
-                    calendar: { ...state.calendar, ...res.data }
-                }))
-            })
-        }
-        */
+    const populateCalendar = (d: Date) => {
+        props.fetchCalendar(variant === 'day' ? d : startOfWeek(d))
     }
 
     const handleNext = () => {
@@ -108,7 +93,7 @@ const CalendarHeader = (props: ICalendarHeaderProps & IReduxProps) => {
             onChange(next)
         }
         if (updateCalendar) {
-            populateCalendar(next, variant)
+            populateCalendar(next)
         }
     }
 
@@ -122,7 +107,7 @@ const CalendarHeader = (props: ICalendarHeaderProps & IReduxProps) => {
             onChange(previous)
         }
         if (props.updateCalendar) {
-            populateCalendar(previous, variant)
+            populateCalendar(previous)
         }
     }
 

@@ -7,7 +7,7 @@ interface IAppWithReduxProps {
 
 const __NEXT_REDUX_STORE__ = '__NEXT_REDUX_STORE__'
 
-const getOrCreateStore = (initialState?: RootState) => {
+export const getOrCreateStore = (initialState?: RootState) => {
     // Always make a new store if server, otherwise state is shared between requests
     if (typeof window === 'undefined') {
         return initializeStore(initialState)

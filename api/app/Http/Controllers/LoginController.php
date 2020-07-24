@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Http\Resources\User as UserResource;
+use App\Traits\RefreshToken;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 class LoginController extends Controller
 {
+    // use RefreshToken;
+
     const REFRESH_TOKEN = 'spotlight_refresh-token';
     const ACCESS_TOKEN = 'spotlight_access-token';
 

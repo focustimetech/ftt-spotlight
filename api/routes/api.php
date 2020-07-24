@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('avatar/{username}', 'UserController@findAvatar');
 Route::post('login', 'LoginController@login');
+Route::post('refresh-token', 'LoginController@refreshToken');
 
 /**
  * Authenticates routes
@@ -32,7 +33,11 @@ Route::middleware('auth:api')->group(function() {
      * @TODO Make middleware for ensuring account is active
      * 
      */
-
+    
+    // Auth
+    Route::post('logout', 'LoginController@logout');
+    Route::get('user', 'UserController@currentUser');
+    Route::post('user/activate', 'UserController@activate');
 
     // Blocks
     Route::get('blocks', 'BlocksController@index');
@@ -50,8 +55,6 @@ Route::middleware('auth:api')->group(function() {
     // Clusters
     Route::get('clusters', 'ClustersController@index');
 
-    // Logout
-    Route::post('logout', 'Auth\LoginController@logout');
 
     // Search
     Route::get('search/{query}', 'SearchController@search');
@@ -66,10 +69,6 @@ Route::middleware('auth:api')->group(function() {
 
     // Topics
     Route::get('topics/{id}', 'TopicsController@show');
-
-    // User
-    Route::get('user', 'UserController@currentUser');
-    Route::post('user/activate', 'UserController@activate');
 });
 
 // Teachers, Staff, SysAdmin

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Ticket;
 use App\User;
+use App\Observers\TicketObserver;
 use App\Observers\UserObserver;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Schema;
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
 
         // Register Observers
+        Ticket::observe(TicketObserver::class);
         User::observe(UserObserver::class);
     }
 }

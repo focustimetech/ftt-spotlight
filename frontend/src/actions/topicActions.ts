@@ -1,7 +1,8 @@
+import { INewCalendarContext } from '../types/calendar'
 import { INewClassroom, IClassroom } from '../types/classroom'
 import { IReduxAction } from '../types/redux'
 import { ITopic, INewTopic, ITopicSchedule } from '../types/topic'
-import { DELETE_TOPIC, DELETE_TOPIC_SCHEDULE, FETCH_TOPICS, NEW_TOPIC, NEW_TOPIC_SCHEDULE, NEW_CLASSROOM } from './types'
+import { DELETE_TOPIC, FETCH_TOPICS, NEW_TOPIC, NEW_CLASSROOM, UPDATE_CALENDAR_CONTEXT } from './types'
 import API from '../utils/api'
 
 export const fetchTopics = () => {
@@ -52,26 +53,16 @@ export const deleteTopic = (topicId: number) => {
 }
 
 export const createTopicSchedule = (topicSchedule: ITopicSchedule) => {
-    return (dispatch: (action: IReduxAction<ITopicSchedule>) => void): Promise<any> => {
+    const { date, blockId, topic } = topicSchedule
+    return (dispatch: (action: IReduxAction<'UPDATE_CALENDAR_CONTEXT', INewCalendarContext>) => void): Promise<any> => {
         dispatch({
-            type: NEW_TOPIC_SCHEDULE,
-            payload: topicSchedule
+            type: UPDATE_CALENDAR_CONTEXT,
+            payload: {
+                date,
+                blockId,
+                context: { topic }
+            }
         })
-        return API.post<void>('/topics/schedule', topicSchedule)
+        return API.post<void>('/topics/schedule', { date, blockId, topicId: topic.id })
     }
 }
-
-/*
-export const deleteTopicSchedule = (topicScheduleID: number) => {
-    return (dispatch: (action: ReduxAction<ITopicSchedule>) => void): Promise<any> => {
-        return axios.delete(`/api/topics/schedule/${topicScheduleID}`)
-            .then((res: any) => {
-                const topicSchedule: ITopicSchedule = res.data
-                dispatch({
-                    type: DELETE_TOPIC_SCHEDULE,
-                    payload: topicSchedule
-                })
-            })
-    }
-}
-*/

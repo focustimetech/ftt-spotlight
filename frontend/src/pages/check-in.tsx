@@ -1,11 +1,12 @@
-import { addDays, differenceInSeconds, format, formatDistance, subDays } from 'date-fns'
 import classNames from 'classnames'
+import { addDays, differenceInSeconds, format, formatDistance, subDays, formatDistanceToNow } from 'date-fns'
+import { sha256 } from 'js-sha256'
 import Head from 'next/head'
-import React from 'react'
+import React, { ReactText } from 'react'
 import { connect } from 'react-redux'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
+	Button,
 	Chip,
 	CircularProgress,
 	Collapse,
@@ -13,6 +14,7 @@ import {
 	FormHelperText,
 	Icon,
 	IconButton,
+	Input,
 	InputBase,
     InputLabel,
 	MenuItem,
@@ -22,22 +24,29 @@ import {
 	Switch,
     TextField,
     Tooltip,
-    Typography,
+    Typography
 } from '@material-ui/core'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
+import { Autocomplete } from '@material-ui/lab'
 
 import { fetchBlocks } from '../actions/blockActions'
-import { createAirCode, updateLedgerBuffer } from '../actions/checkinActions'
+import { fetchCalendar } from '../actions/calendarActions'
+import { createAirCode, studentCheckIn } from '../actions/checkinActions'
 import { ISnackbar, queueSnackbar } from '../actions/snackbarActions'
+import { fetchStudents } from '../actions/studentActions'
+import { fetchTopics } from '../actions/topicActions'
 import { NextPageContext } from '../types'
-import { IStudent } from '../types/auth'
-import { IBlock, ICalendar, ICalendarEvent } from '../types/calendar'
-import { AirCheckIn, LedgerBuffer, ILedgerChip, INewLedgerChip } from '../types/checkin'
+import { IStudent, ITeacher } from '../types/auth'
+import { IBlock, ICalendar, ICalendarEvent, ICalendarEventContext } from '../types/calendar'
+import { AirCheckIn, ILedgerEntry} from '../types/checkin'
+import { ITopic } from '../types/topic'
 import { getCalendarDateKey } from '../utils/date'
 import { makeDocumentTitle } from '../utils/document'
+import { createFilterOptions } from '../utils/search'
 
-import BlockPicker from '../components/Calendar/BlockPicker'
-import CalendarHeader from '../components/Calendar/CalendarHeader'
+import Avatar from '../components/Avatar'
+import DateBlockPicker from '../components/Calendar/DateBlockPicker'
+import NameNumberEntry from '../components/CheckIn/NameNumberEntry'
 import Form from '../components/Form'
 import { LoadingIconButton } from '../components/Form/Components/LoadingIconButton'
 import LoadingSwitch from '../components/Form/Components/LoadingSwitch'
@@ -45,21 +54,28 @@ import Flexbox from '../components/Layout/Flexbox'
 import Section from '../components/Layout/Section'
 import TopBar from '../components/TopBar'
 import withAuth from '../hocs/withAuth'
+import { TableColumns } from 'src/types/table'
+import EnhancedTable from '../components/Table/EnhancedTable'
+import ChipContainer from 'src/components/ChipContainer'
+
+interface IStudentNumber {
+	value: number
+	isValid: boolean
+}
 
 interface IReduxProps {
 	blocks: IBlock[]
 	calendar: ICalendar
+	currentUser: ITeacher
+	students: Record<number, IStudent>
 	createAirCode: (blockId: number, date: string) => Promise<any>
-	updateLedgerBuffer: (ledgerChip: INewLedgerChip) => void
+	studentCheckIn: (ledgerEntry: ILedgerEntry) => Promise<any>
     queueSnackbar: (snackbar: ISnackbar) => void
 }
 
 interface ICheckInState {
-	inputValue: string
-    blockId: number
+	blockId: number
 	date: Date
-	syncing: boolean
-	lastLedgerKey: string
 	airEnabled: boolean
 	loadingAir: boolean
 }
@@ -68,43 +84,40 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
     static getInitialProps = async (context: NextPageContext) => {
 		const { store } = context
 		const blocks: IBlock[] = store.getState().blocks.items
-		const students: IStudent[] = store.getState().students.items
+		const students: Record<number, IStudent[]> = store.getState().students.students
+		const topics: ITopic[] = store.getState().topics.items
+		const calendar: ICalendar = store.getState().calendar.calendar
 
 		if (!blocks || blocks.length === 0) {
-			return await store.dispatch(fetchBlocks())
+			await store.dispatch(fetchBlocks())
 		}
+
+		if (!students || Object.keys(students).length === 0) {
+			await store.dispatch(fetchStudents())
+		}
+
+		if (!topics || topics.length === 0) {
+			await store.dispatch(fetchTopics())
+		}
+
+		if (!calendar[getCalendarDateKey()]) {
+			await store.dispatch(fetchCalendar)
+		}
+
+		return {}
     }
 
     state: ICheckInState = {
-		inputValue: '',
-        blockId: -1,
+		blockId: -1,
 		date: new Date(),
-		syncing: false,
-		lastLedgerKey: null,
 		airEnabled: false,
 		loadingAir: false
 	}
-	
+
 	interval: number = -1
 
     handleChangeDate = (date: Date) => {
         this.setState({ date }, () => {
-			this.resetBlock()
-		})
-    }
-
-    handleNext = () => {
-        this.setState((state: ICheckInState) => ({
-            date: addDays(state.date, 1)
-        }), () => {
-			this.resetBlock()
-		})
-    }
-
-    handlePrevious = () => {
-        this.setState((state: ICheckInState) => ({
-            date: subDays(state.date, 1)
-        }), () => {
 			this.resetBlock()
 		})
     }
@@ -116,34 +129,32 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 		this.setState({ blockId })
 	}
 
-	createUniqueId = (): string => {
-		return uuidv4()
+	handleEnterNumber = (studentNumber: number) => {
+		this.handleSelectStudent(this.findStudentByNumber(studentNumber))
 	}
 
-	handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-		this.setState({ inputValue: event.target.value })
-	}
-
-	handleCreateChip = () => {
-		const { blockId, date, inputValue } = this.state
-		const key: string = this.createUniqueId()
-		this.setState({ inputValue: '', syncing: true, lastLedgerKey: key })
-		const chip: ILedgerChip = {
-			value: inputValue,
-			timestamp: new Date(),
-			status: 'queued'
+	handleSelectStudent = (student: IStudent) => {
+		if (!student) {
+			return
 		}
-		const ledgerBuffer: INewLedgerChip = {
+		const { blockId } = this.state
+		const topic: ITopic = this.getBlockTopics()[blockId]
+		const ledgerEntry: ILedgerEntry = {
+			date: getCalendarDateKey(this.state.date),
 			blockId,
-			date: getCalendarDateKey(date),
-			buffer: { [key]: chip }
+			studentId: student.accountId,
+			memo: topic ? topic.memo : '',
+			createdAt: getCalendarDateKey(),
+			teacherId: this.props.currentUser.accountId,
+			method: 'search'
 		}
-		this.props.updateLedgerBuffer(ledgerBuffer)
-		setTimeout(() => {
-			if (this.state.lastLedgerKey === key) {
-				this.setState({ syncing: false })
-			}
-		}, 6000)
+		this.props.studentCheckIn(ledgerEntry).then(() => {
+			this.props.queueSnackbar({ message: 'Checked in student successfully.' })
+		})
+	}
+
+	handleRemoveLedgerEntry = (index: number) => {
+		//
 	}
 
     /**
@@ -168,164 +179,145 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 			}, (err) => {
 				return this.setState({ loadingAir: false })
 			})
-		}	
+		}
+	}
+
+	findStudentByNumber = (value: React.ReactText) => {
+		const str: string = value.toString()
+		const hash: string = sha256(str)
+		return Object.values(this.props.students).find((student: IStudent) => student.studentNumber === hash)
 	}
 
     componentDidMount() {
 		this.resetBlock()
-		this.interval = window.setInterval(this.refresh, 6000)
+		// this.interval = window.setInterval(this.refresh, 6000)
 	}
-	
+
 	componentWillUnmount() {
 		window.clearInterval(this.interval)
 	}
 
+	getBlockTopics = (): Record<number, ITopic> => {
+		const blockTopics: Record<number, ITopic> = {}
+		const dateKey: string = getCalendarDateKey(this.state.date)
+		const calendarData: ICalendarEvent[] = this.props.calendar[dateKey]
+		if (calendarData) {
+			calendarData.forEach((event: ICalendarEvent) => {
+				if (event.context && event.context.topic) {
+					blockTopics[event.id] = event.context.topic
+				}
+			})
+		}
+		return blockTopics
+	}
+
     render() {
-		const { date } = this.state
-        const weekDay: number = Number(format(date, 'i'))
-		const blocks: IBlock[] = this.props.blocks.filter((block: IBlock) => block.weekDay === weekDay)
-		const currentBlock: IBlock = this.props.blocks.find((block: IBlock) => block.id === this.state.blockId)
-		const now: Date = new Date()
-		const calendarDateKey: string = getCalendarDateKey(date)
-		let blockStartDate: Date = null
-		let blockEndDate: Date = null
-		let blockHasStarted: boolean = false
-		let blockHasEnded: boolean = false
-		let calendarData: ICalendarEvent[] = []
+		const { date, blockId } = this.state
+		const { students, calendar } = this.props
+		const dateKey: string = getCalendarDateKey(date)
+		const currentBlock: IBlock = this.props.blocks.find((block: IBlock) => block.id === blockId)
+		console.log('currentBlock:', currentBlock)
+		console.log('this.props.blocks', this.props.blocks)
+		console.log('this.state.blockId', blockId)
+		const blockTopics: Record<number, ITopic> = this.getBlockTopics()
+		const calendarData: ICalendarEvent[] = calendar[dateKey]
 		let calendarIndex: number = -1
-		let ledgerBuffer: LedgerBuffer = {}
+		let calendarContext: ICalendarEventContext = {}
 		let airCheckIn: AirCheckIn = null
-		if (currentBlock) {
-			blockStartDate = new Date(`${date.toDateString()} ${currentBlock.startTime}`)
-			blockEndDate = new Date(`${date.toDateString()} ${currentBlock.endTime}`)
-			blockHasEnded = blockEndDate < now
-			blockHasStarted = blockStartDate < now
-			calendarData = this.props.calendar[calendarDateKey]
-			if (calendarData) {
+
+		if (calendarData) {
+			if (currentBlock) {
 				calendarIndex = calendarData.findIndex((event: ICalendarEvent) => event.id === currentBlock.id)
-			}
-			if (calendarData && calendarData[calendarIndex]) {
-				ledgerBuffer = calendarData[calendarIndex].context.ledgerBuffer || {}
-				airCheckIn = calendarData[calendarIndex].context.airCheckIn
+				if (calendarData[calendarIndex]) {
+					calendarContext = calendarData[calendarIndex].context
+					airCheckIn = calendarData[calendarIndex].context.airCheckIn
+				}
 			}
 		}
-		const blockIsPending: boolean = blockHasStarted && !blockHasEnded
-		const hasChips: boolean = ledgerBuffer && Object.keys(ledgerBuffer).length > 0
+
+		const ledgerEntries: ILedgerEntry[] = calendarContext.ledgerEntries || []
+		console.log('ledgerEntries:', ledgerEntries)
+
 		const airCodeLength: number = airCheckIn ? airCheckIn.code.length : -1
 		const airCode: string = airCheckIn
 			? `${airCheckIn.code.slice(0, Math.floor(airCodeLength / 2))} ${airCheckIn.code.slice(Math.floor(airCodeLength / 2))}`
 			: 'nnn nnn'
 
-		// console.log('calendarDateKey:', calendarDateKey)
-		// console.log('calendarData:', calendarData)
-		// console.log('calendarIndex:', calendarIndex)
-
         return (
             <div className='check-in'>
                 <Head><title>{makeDocumentTitle('Student Check-in')}</title></Head>
                 <TopBar title='Student Check-in'>
-					<Flexbox justifyContent='space-between'>
-						<CalendarHeader
-							date={this.state.date}
-							onChange={this.handleChangeDate}
-							onNext={this.handleNext}
-							onPrevious={this.handlePrevious}
-							variant='day'
-						/>
-						<BlockPicker onSelectBlock={this.handleSelectBlock} blockId={this.state.blockId} date={date} />
-					</Flexbox>
+					<DateBlockPicker
+						updateCalendar
+						date={date}
+						onChange={this.handleChangeDate}
+						variant='day'
+						onSelectBlock={this.handleSelectBlock}
+						blockId={blockId}
+						topics={blockTopics}
+						getBlockDisabled={(block: IBlock) => !blockTopics[block.id]}
+					/>
 				</TopBar>
-                <Section className='check-in__form' fullWidth>
-					<Section>
-						<Typography variant='h5'>Student Entry</Typography>
-						<Typography variant='body1'>Enter Student Numbers using a barcode scanner, or type student's full name.</Typography>
-						<div className={classNames('chip_select', { '--hasChips': hasChips })}>
-							<Paper>
-								<div className='chip_select__textfield'>
-									<div className='chip_select__actions'>
-										{false && (
-											<span><Icon>search</Icon></span>
-										)}
-										<InputBase
-											className='chip_select__input'
-											value={this.state.inputValue}
-											onChange={this.handleInputChange}
-											// onFocus={this.handleInputFocus}
-											placeholder='Enter full name or Student Number'
-											// onKeyDown={this.onKeyDown}
-											// onPaste={this.onPaste}
-											autoFocus
-										/>
-										{/*searchable || !this.props.onCreateChip ? (
-											this.props.loading && (
-												<div className='chip_select__loading'><CircularProgress size={24} /></div>
-											)
-										) : (*/
-											<Tooltip title='Add (Enter)'>
-												<LoadingIconButton loading={false} disabled={false} onClick={() => this.handleCreateChip()}>
-													<Icon>keyboard_return</Icon>
-												</LoadingIconButton>
-											</Tooltip>
-										/*)*/}
-									</div>
-								</div>
-							</Paper>
-							<FormHelperText></FormHelperText>
-							<Collapse in={hasChips}>
-								<Flexbox className={classNames('check-in__status', { '--saved': !this.state.syncing })}>
-									{this.state.syncing ? (
-										<>
-											<CircularProgress size={22} />
-											<Typography variant='subtitle1'>Saving...</Typography>
-										</>
-									) : (
-										<>
-											<Icon>cloud_done</Icon>
-											<Typography variant='subtitle1'>All changes saved. We'll proccess these entries on our end.</Typography>
-										</>
-									)}
-								</Flexbox>
-								<div className='chips_container'>
-									{Object.keys(ledgerBuffer).map((bufferKey: string) => {
-										return (
-
-											<Chip
-												key={bufferKey}
-												label={ledgerBuffer[bufferKey].value}
-												onDelete={() => null}
-											/>
+				<Section>
+					<section className='check-in__form'>
+						<Section>
+							<Typography variant='h5'>Student Entry</Typography>
+							<Typography variant='body1'>Enter Student Numbers using a barcode scanner, or type student's full name.</Typography>
+							<NameNumberEntry
+								students={Object.values(students)}
+								onSelectStudent={this.handleSelectStudent}
+								onEnterNumber={this.handleEnterNumber}
+								matchesStudentNumber={(value) => this.findStudentByNumber(value) && (new RegExp(/^\d+$/)).test(value.toString())}
+								disabled={!currentBlock}
+							/>
+						</Section>
+						<Collapse in={ledgerEntries.length > 0}>
+							<Section>
+								<ChipContainer>
+									{ledgerEntries.map((ledgerEntry: ILedgerEntry, index: number) => {
+										const student: IStudent = students[ledgerEntry.studentId]
+										return student ? (
+											<li key={index}>
+												<Chip
+													avatar={<Avatar size='chip' avatar={student.avatar} />}
+													label={student.name}
+													// onDelete={() => this.handleRemoveLedgerEntry(index)}
+												/>
+											</li>
+										) : (
+											<li key={index}><Chip label='Unkown Student' /></li>
 										)
 									})}
-								</div>
-							</Collapse>
-						</div>
-					</Section>
-                </Section>
-				<Section className='check-in__form' fullWidth>
-					<Section>
-						<Flexbox justifyContent='space-between'>
-							<div>
-								<Typography variant='h5'>Air Check-in</Typography>
-								<Typography variant='body1'>Your Air Check-in code is listed below.</Typography>
-							</div>
-							<Flexbox>
-								<Tooltip title='Use New Code'>
-									<IconButton><Icon>refresh</Icon></IconButton>
-								</Tooltip>
-								<LoadingSwitch
-									loading={this.state.loadingAir}
-									color='primary'
-									onClick={() => this.handleAirToggle()}
-									checked={this.state.airEnabled}
-								/>
-							</Flexbox>
-						</Flexbox>
-						<Collapse in={this.state.airEnabled && Boolean(airCheckIn)}>
-							<Flexbox className='check-in__code' justifyContent='space-around'>
-								<Typography variant='h4'>{airCode}</Typography>
-							</Flexbox>
+								</ChipContainer>
+							</Section>
 						</Collapse>
-					</Section>
+					</section>
+					<section className='check-in__form'>
+						<Section>
+							<Flexbox justifyContent='space-between'>
+								<div>
+									<Typography variant='h5'>Air Check-in</Typography>
+									<Typography variant='body1'>Your Air Check-in code is listed below.</Typography>
+								</div>
+								<Flexbox>
+									<Tooltip title='Use New Code'>
+										<IconButton><Icon>refresh</Icon></IconButton>
+									</Tooltip>
+									<LoadingSwitch
+										loading={this.state.loadingAir}
+										color='primary'
+										onClick={() => this.handleAirToggle()}
+										checked={this.state.airEnabled}
+									/>
+								</Flexbox>
+							</Flexbox>
+							<Collapse in={this.state.airEnabled && Boolean(airCheckIn)}>
+								<Flexbox className='check-in__code' justifyContent='space-around'>
+									<Typography variant='h4'>{airCode}</Typography>
+								</Flexbox>
+							</Collapse>
+						</Section>
+					</section>
 				</Section>
             </div>
         )
@@ -334,9 +326,12 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 
 const mapStateToProps = (state: any) => ({
 	blocks: state.blocks.items,
-	calendar: state.calendar.calendar
+	calendar: state.calendar.calendar,
+	currentUser: state.auth.user,
+	students: state.students.students,
+	topics: state.topics.items
 })
 
-const mapDispatchToProps = { createAirCode, fetchBlocks, updateLedgerBuffer }
+const mapDispatchToProps = { createAirCode, fetchBlocks, fetchStudents, studentCheckIn, queueSnackbar }
 
 export default withAuth('teacher')(connect(mapStateToProps, mapDispatchToProps)(CheckIn))

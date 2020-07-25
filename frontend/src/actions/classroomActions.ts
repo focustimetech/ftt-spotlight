@@ -10,7 +10,7 @@ import {
 
 export const fetchClassrooms = () => {
     return (dispatch: (action: IReduxAction<IClassroom[]>) => void) => {
-        return API.get('/classrooms/all').then((res: any) => {
+        return API.get<IClassroom[]>('/classrooms').then((res) => {
             dispatch({
                 type: FETCH_CLASSROOMS,
                 payload: res.data

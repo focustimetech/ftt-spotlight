@@ -44,6 +44,11 @@ class Student extends Model
         )->limit(20);
     }
 
+    public static function findByStudentNumber($studentNumber)
+    {
+        return Student::firstWhere('student_number', $studentNumber);
+    }
+
     public function amendments()
     {
         return $this->hasMany('App\Amendment');

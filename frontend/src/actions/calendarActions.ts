@@ -3,11 +3,9 @@ import { IReduxAction } from '../types/redux'
 import API from '../utils/api'
 import { FETCH_CALENDAR } from './types'
 
-export const fetchCalendar = (date?: Date) => {
+export const fetchCalendar = (date?: Date, numDays?: number) => {
     return (dispatch: (action: IReduxAction<ICalendar>) => void) => {
-        return API.get<ICalendar>(date ? `/calendar/${date.toISOString()}` : '/calendar').then((res: any) => {
-            console.log('date:', date)
-            console.log('payload:', res.data)
+        return API.get<ICalendar>(`${date ? `/calendar/${date.toISOString()}` : '/calendar'}${numDays ? `?n=${numDays}` : ''}`).then((res: any) => {
             dispatch({
                 type: FETCH_CALENDAR,
                 payload: res.data

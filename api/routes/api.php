@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('avatar/{username}', 'UserController@findAvatar');
 Route::post('login', 'LoginController@login');
+Route::post('refresh-token', 'LoginController@refreshToken');
 
 /**
  * Authenticates routes
@@ -32,7 +33,11 @@ Route::middleware('auth:api')->group(function() {
      * @TODO Make middleware for ensuring account is active
      * 
      */
-
+    
+    // Auth
+    Route::post('logout', 'LoginController@logout');
+    Route::get('user', 'UserController@currentUser');
+    Route::post('user/activate', 'UserController@activate');
 
     // Blocks
     Route::get('blocks', 'BlocksController@index');
@@ -41,13 +46,15 @@ Route::middleware('auth:api')->group(function() {
     Route::get('teacher/{id}/calendar/{date?}', 'CalendarController@teacherCalendar');
 
     // Classrooms
-    Route::get('classrooms/all', 'ClassroomsController@index');
+    Route::get('classrooms', 'ClassroomsController@index');
+
+    // Classroom Calendar
+    Route::get('classrooms/{id}/calendar/{date?}', 'CalendarController@classroomCalendar');
+    Route::get('classrooms/calendar/{date}', 'CalendarController@allClassroomsCalendar');
 
     // Clusters
     Route::get('clusters', 'ClustersController@index');
 
-    // Logout
-    Route::post('logout', 'Auth\LoginController@logout');
 
     // Search
     Route::get('search/{query}', 'SearchController@search');
@@ -57,25 +64,15 @@ Route::middleware('auth:api')->group(function() {
     //Route::get('staff/{id}', 'StaffController@show');
 
     // Teachers
-    Route::get('teacher', 'TeachersController@index');
+    Route::get('teachers', 'TeachersController@index');
     Route::get('teachers/{id}', 'TeachersController@show');
 
     // Topics
     Route::get('topics/{id}', 'TopicsController@show');
-
-    // User
-    Route::get('user', 'UserController@currentUser');
-    Route::post('user/activate', 'UserController@activate');
 });
 
 // Teachers, Staff, SysAdmin
 Route::middleware('auth:api', 'scope:staff,teacher,sysadmin')->group(function() {
-    // Classrooms
-    Route::get('classrooms', 'ClassroomsController@list');
-    Route::post('classrooms', 'ClassroomsController@create');
-    Route::put('classrooms', 'ClassroomsController@update');
-    Route::delete('classrooms/{id}', 'ClassroomsController@delete');
-
     // Clusters
     Route::get('clusters', 'ClustersController@index');
     Route::get('clusters', 'ClustersController@list');
@@ -120,14 +117,22 @@ Route::middleware('auth:api', 'scope:teacher')->group(function() {
     Route::delete('topics/{id}', 'TopicsController@delete');
 
     // Check-in
-    Route::post('check-in', 'CheckInController@updateBuffer');
+    Route::post('check-in', 'CheckInController@studentCheckIn');
     Route::post('check-in/air', 'CheckInController@createAirCode');
 });
 
 // Students, Teachers
 Route::middleware('auth:api', 'scope:teacher,student')->group(function() {
     // Calendar
-    ROute::get('calendar/{date?}', 'CalendarController@selfCalendar');
+    Route::get('calendar/{date?}', 'CalendarController@selfCalendar');
+});
+
+// Staff, SysAdmin
+Route::middleware('auth:api', 'scope:staff,sysadmin')->group(function() {
+    // Classrooms
+    Route::post('classrooms', 'ClassroomsController@create');
+    Route::put('classrooms', 'ClassroomsController@update');
+    Route::delete('classrooms/{id}', 'ClassroomsController@delete');
 });
 
 /*

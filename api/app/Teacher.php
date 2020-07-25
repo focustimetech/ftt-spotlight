@@ -53,14 +53,14 @@ class Teacher extends Model
     {
         return $this->hasMany('App\Appointment');
     }
-
+/*
     public function classrooms()
     {
         return $this->belongsToMany('App\Classroom', 'teachers_classrooms')
             ->withPivot('default')
             ->withTimestamps();
     }
-
+*/
     public function clusters()
     {
         return $this->user()->first()->clusters();
@@ -79,6 +79,11 @@ class Teacher extends Model
     public function topics()
     {
         return $this->hasMany('App\Topic');
+    }
+
+    public function topic($date, $blockId)
+    {
+        return Block::findOrFail($blockId)->topics($date)->where('teacher_id', $this->id);
     }
 
     public function unavailabilities()

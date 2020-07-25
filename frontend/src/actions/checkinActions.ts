@@ -1,14 +1,21 @@
-import API from '../utils/api'
+import { INewCalendarContext } from '../types/calendar'
+import { AirCheckIn, ILedgerEntry } from '../types/checkin'
 import { IReduxAction } from '../types/redux'
-import { NEW_AIR_CODE, DELETE_AIR_CODE, UPDATE_LEDGER_BUFFER } from './types'
-import { LedgerBuffer, INewLedgerChip, AirCheckIn } from '../types/checkin'
+import { DELETE_AIR_CODE, NEW_AIR_CODE, UPDATE_CALENDAR_CONTEXT } from './types'
 
-export const updateLedgerBuffer = (ledgerChip: INewLedgerChip) => {
-    return (dispatch: (action: IReduxAction) => void) => {
+import API from '../utils/api'
+
+export const studentCheckIn = (ledgerEntry: ILedgerEntry) => {
+    return (dispatch: (action: IReduxAction<'UPDATE_CALENDAR_CONTEXT', INewCalendarContext>) => void) => {
         dispatch({
-            type: UPDATE_LEDGER_BUFFER,
-            payload: ledgerChip
+            type: UPDATE_CALENDAR_CONTEXT,
+            payload: {
+                date: ledgerEntry.date,
+                blockId: ledgerEntry.blockId,
+                context: { ledgerEntries: [ledgerEntry] }
+            }
         })
+        return API.post('/check-in/', ledgerEntry)
     }
 }
 

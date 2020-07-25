@@ -5,24 +5,11 @@ type LedgerChipStatus =
     | 'succeeded'
     | 'failed'
 
-export interface INewLedgerChip {
-    blockId: number
-    date: string
-    buffer: LedgerBuffer
-}
-export interface ILedgerChip {
-    value: string
-    timestamp: Date
-    status: LedgerChipStatus
-}
-
-export type LedgerBuffer = Record<string, ILedgerChip>
-
 export interface ILedgerEntry {
-    id: number
+    // id: number // Removed from Resource
     date: string
     memo: string
-    method: string
+    method: 'plan' | 'air' | 'search' | 'number'
     studentId: number
     blockId: number
     teacherId: number

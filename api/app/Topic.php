@@ -19,7 +19,7 @@ class Topic extends Model
 
     public function blocks($date)
     {
-        return $this->belongsToMany('App\Topic', 'topics_blocks')
+        return $this->belongsToMany('App\Block', 'topics_blocks')
             ->withPivot('date')
             ->wherePivot('date', $date)
             ->withTimestamps();

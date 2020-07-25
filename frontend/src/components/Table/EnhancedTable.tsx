@@ -333,13 +333,13 @@ class EnhancedTable<T> extends React.Component<IEnhancedTableProps<T>, IEnhanced
 															padding={selectable || index !== 0 ? 'none' : 'default'}
 															key={columnKey}
 														>
-															{column.component ? column.component(columnData) : columnData}
+															{column.render ? column.render(columnData) : columnData}
 														</TableCell>
 													)
 												} else {
 													return (
 														<TableCell align={isNumeric ? 'right' : 'left'} key={columnKey}>
-															{column.component ? column.component(columnData) : columnData}
+															{column.render ? column.render(columnData) : columnData}
 														</TableCell>
 													)
 												}

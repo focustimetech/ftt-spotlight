@@ -15,19 +15,24 @@ import { fetchTeacher } from '../../actions/teacherActions'
 import { createTopicSchedule } from '../../actions/topicActions'
 import { NextPageContext } from '../../types'
 import { ITeacher, IUser } from '../../types/auth'
-import { ITopicSchedule, ITopic } from '../../types/topic'
-import { ICalendar, ICalendarEvent, ICalendarEventContext, ICalendarContextDetails } from '../../types/calendar'
+import {
+    ICalendar,
+    ICalendarContextDetails,
+    ICalendarEvent,
+    ICalendarEventContext
+} from '../../types/calendar'
+import { ITopic, ITopicSchedule } from '../../types/topic'
+import { getCalendarDateKey } from '../../utils/date'
 import { makeDocumentTitle } from '../../utils/document'
 import { getDisplayRole } from '../../utils/user'
 
-import withAuth from '../../hocs/withAuth'
 import Calendar, { getNextWeek, getPreviousWeek } from '../../components/Calendar'
 import ButtonSelect from '../../components/Form/Components/ButtonSelect'
-import TopicsDialog from '../../components/Modals/TopicsDialog'
 import Section from '../../components/Layout/Section'
+import TopicsDialog from '../../components/Modals/TopicsDialog'
 import TopBar, { ITabs } from '../../components/TopBar'
+import withAuth from '../../hocs/withAuth'
 import Error from '../_error'
-import { getCalendarDateKey } from '../../utils/date'
 
 const getTitle = (event: ICalendarEvent): string => {
     return event.context.topic ? event.context.topic.memo : 'No Topic'
@@ -235,7 +240,7 @@ class TeacherProfile extends React.Component<ITeacherProfileProps, ITeacherProfi
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     currentUser: state.auth.user,
     calendar: state.calendar.calendar
 })

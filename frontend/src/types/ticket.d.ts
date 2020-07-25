@@ -1,27 +1,33 @@
+type TicketStatus = 'OPEN' | 'CLOSED' | 'REOPENED' | 'RESOLVED'
+
 export interface ITicket {
-    title: string
+    subject: string
     id: number
-    userId : number
+    userId: number
     assigneeId : number
-    status: TicketAction
+    status: TicketStatus
 }
 
 export interface ITicketEvent {
-    message: string
     id: number
     ticketId: number
-    action: TicketAction
-    files: ITicketEventFile[]
+    userId: number
+    message: string
+    files?: ITicketEventFile[]
 }
 
 export interface ITicketEventFile {
-    path: string
     id: number
+    path: string
     ticketEventId: number
 }
 
-type TicketAction = 'OPEN' | 'CLOSED' | 'AWAIT' | 'REOPEN' | 'RESOLVED'
 
+export interface INewTicket extends Pick<ITicket, 'subject'> {
+    body: string
+    filesPaths?: string[]
+}
 
-
-export type INewTicket = Omit<ITicket, 'assigneeId' | 'userId' | 'id'>
+export interface INewTicketEvent extends Omit<ITicketEvent, 'id' | 'files'> {
+    filePaths?: string[]
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Block;
 use App\Classroom;
 use App\Topic;
 use App\User;
@@ -81,9 +82,6 @@ class TopicsController extends Controller
     public function setTopic(Request $request)
     {
         $user = $request->user();
-        if ($user->account_type !== 'teacher') {
-            return response()->json(['message' => 'Only Teachers can set Block Topics.'], 403);
-        }
         $teacher = $user->account();
         $topic = Topic::findOrFail($request->input('topicId'));
         if ($topic->teacher_id !== $teacher->id) {

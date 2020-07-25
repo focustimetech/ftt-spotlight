@@ -281,7 +281,7 @@ class CheckIn extends React.Component<IReduxProps, ICheckInState> {
 												<Chip
 													avatar={<Avatar size='chip' avatar={student.avatar} />}
 													label={student.name}
-													onDelete={() => this.handleRemoveLedgerEntry(index)}
+													// onDelete={() => this.handleRemoveLedgerEntry(index)}
 												/>
 											</li>
 										) : (

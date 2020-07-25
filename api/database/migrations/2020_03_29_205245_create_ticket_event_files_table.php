@@ -21,6 +21,8 @@ class CreateTicketEventFilesTable extends Migration
             $table->string('path');                 // Path to the file
             $table->foreignId('ticket_event_id');   // The ticket event attaching the file to
             $table->timestamps();
+            // Foreign keys
+            $table->foreign('ticket_event_id')->references('id')->on('ticket_events');
         });
     }
 

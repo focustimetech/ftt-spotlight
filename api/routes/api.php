@@ -89,13 +89,11 @@ Route::middleware('auth:api', 'scope:staff,teacher,sysadmin,guardian')->group(fu
     // Calendar
     Route::get('students/{id}/calendar/{date?}', 'CalendarController@studentCalendar');
     
+    // Tickets
     Route::get('tickets', 'TicketController@list');
-    Route::get('tickets/{id}', 'TicketController@history');
-    Route::get('tickets/all' ,'TicketController@index');
     Route::post('tickets', 'TicketController@create');
-    Route::post('tickets/reply', 'TicketController@reply');
-    Route::put('tickets/reopen', 'TicketController@reopenTikcet');
-    Route::put('tickets/close', 'TicketController@closeTicket');
+    Route::get('tickets/{ticketId}', 'TicketController@ticketEvents');
+    Route::post('tickets/{ticketId}/reply', 'TicketController@createTicketEvent');
 
     // Students
     Route::get('students', 'StudentsController@index');
@@ -119,6 +117,13 @@ Route::middleware('auth:api', 'scope:teacher')->group(function() {
     // Check-in
     Route::post('check-in', 'CheckInController@studentCheckIn');
     Route::post('check-in/air', 'CheckInController@createAirCode');
+});
+
+// Sysadmins
+Route::middleware('auth:api', 'scope:sysadmin')->group(function() {
+    // Tickets
+    Route::get('tickets/all' ,'TicketController@index');
+    Route::update('tickets/{ticketId}/status', 'TicketController@updateTicketStatus');
 });
 
 // Students, Teachers

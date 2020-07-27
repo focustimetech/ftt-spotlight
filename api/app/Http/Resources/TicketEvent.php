@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Http\Resources\TicketEventFile;
+use App\Http\Resources\User;
 
 class TicketEvent extends JsonResource
 {
@@ -18,9 +19,9 @@ class TicketEvent extends JsonResource
     {
         return [
             'id' => $this->id,
-            'action' => $this->action,
-            'message' => $this->message,
             'ticketId' => $this->ticket_id,
+            'message' => $this->message,
+            'user' => new UserResource(User::findOrFail($this->user_id)),
             'files' => TicketEventFile::collection($this->ticketEventFiles()->get())
         ];
     }

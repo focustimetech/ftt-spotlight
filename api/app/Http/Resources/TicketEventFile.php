@@ -16,8 +16,8 @@ class TicketEventFile extends JsonResource
     {
         return [
             'id' => $this->id,
-            'path' => $this->path,
-            'ticketEventId' => $this->ticket_event_id
+            'name' => $this->name,
+            'size' => $this->size
         ];
     }
 }

@@ -1,3 +1,5 @@
+import { IUser } from './auth'
+
 type TicketStatus = 'OPEN' | 'CLOSED' | 'REOPENED' | 'RESOLVED'
 
 export interface ITicket {
@@ -11,7 +13,7 @@ export interface ITicket {
 export interface ITicketEvent {
     id: number
     ticketId: number
-    userId: number
+    user: IUser
     message: string
     files?: ITicketEventFile[]
 }
@@ -20,7 +22,6 @@ export interface ITicketEventFile {
     id: number
     name: string
     size: number
-    path: string
 }
 
 

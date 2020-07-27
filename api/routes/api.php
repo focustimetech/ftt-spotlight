@@ -123,8 +123,6 @@ Route::middleware('auth:api', 'scope:teacher')->group(function() {
 
 // Sysadmins
 Route::middleware('auth:api', 'scope:sysadmin')->group(function() {
-    // Tickets
-    Route::get('tickets/all' ,'TicketController@index');
     Route::put('tickets/{ticketId}/status', 'TicketController@updateTicketStatus');
 });
 

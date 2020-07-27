@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import Head from 'next/head'
 import React from 'react'
 
@@ -6,6 +7,7 @@ import {
     Button,
     Chip,
     CircularProgress,
+    Collapse,
     createStyles,
     Icon,
     IconButton,
@@ -14,6 +16,8 @@ import {
     Theme,
     Tooltip,
     Typography,
+    withStyles,
+    WithStyles
 } from '@material-ui/core'
 
 import { NextPageContext } from '../types'
@@ -46,12 +50,18 @@ interface IReduxProps {
     sysadmin: Record<number, ISysAdmin>
 }
 
-interface IFile {
+interface ITicketPageState {
+    inputValue: string
+    fileUploads: IFileUpload[]
+}
+
+interface IFileUpload {
     file: File
     filesize: string
     status: 'loading' | 'done' | 'error'
     progress: number
     removed: boolean
+    path: string
 }
 
 const testTicket: ITicket = {
@@ -73,7 +83,7 @@ const testEvents: ITicketEvent[] = [
 
 const exampleProps: ITicketPageProps = { ticket: testTicket, ticketEvents: testEvents }
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+const useStyles = (theme: Theme) => createStyles({
     root: {
         alignItems: 'normal',
         height: '100vh',
@@ -92,11 +102,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         paddingBottom: theme.spacing(1)
     },
     form: {
-        flex: '0',
         width: '100%',
-    },
-    entry: {
-        padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`
+        flex: '0',
+        borderTop: '1px solid #EEE',
+        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px ${theme.spacing(1.5)}px`,
+        boxSizing: 'border-box'
     },
     textField: {
         flex: '1'
@@ -180,202 +190,224 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     fileContent: {
         padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
         minWidth: 120
+    },
+    fileUploads: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+        paddingBottom: theme.spacing(1)
+    },
+    fileChipIcon: {
+        width: 18,
+        height: 18
     }
-}))
+})
 
-const TicketPage = (props: ITicketPageProps & IReduxProps) => {
-    const classes = useStyles()
-    const { ticket, ticketEvents } = exampleProps
-    const [inputValue, setInputValue] = React.useState('')
-    const [fileStatuses, setFileStatuses]: [IFile[], React.Dispatch<React.SetStateAction<IFile[]>>] = React.useState([])
+class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithStyles<typeof useStyles>, ITicketPageState> {
+    static getInitialProps = async (context: NextPageContext) => {
+        return {}
+    }
+ 
+    state: ITicketPageState = {
+        inputValue: '',
+        fileUploads: []
+    }
 
-    const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const { value } = event.target
-        setInputValue(value)
+        this.setState({ inputValue: value })
     }
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         //
     }
 
-    const handleDownload = (path: string) => {
+    handleDownload = (path: string) => {
         //
     }
 
-    const handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('handleUploadFile()')
         event.preventDefault()
         const { files } = event.target
-        let previousFiles: IFile[] = []
-        setFileStatuses(Array.from(files).map((file: File) => {
-            const index: number = fileStatuses.length
-            const filename: string = file.name
-            return {
+        Array.from(files).forEach((file: File) => {
+            let index: number
+            const upload: IFileUpload = {
                 file,
                 filesize: getFileSizeStringFromBytes(file.size),
                 status: 'loading',
                 progress: 0,
-                removed: false
+                removed: false,
+                path: null
             }
-        }))
-
-        fileStatuses.forEach((file: IFile) => {
-            const formData: FormData = new FormData()
-            formData.append('file', file)
-            API.post('/tickets/file', file, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-                onUploadProgress: (progressEvent: any) => {
-                    previousFiles = [...fileStatuses]
-                    console.log('previousFiles:', previousFiles)
-                    console.log('fileStatuses:', fileStatuses)
-                    console.log('before:', previousFiles[index])
-                    previousFiles[index] = { ...previousFiles[index], progress: (100 * progressEvent.loaded) / progressEvent.total }
-                    console.log('after:', previousFiles[index])
-                    setFileStatuses(previousFiles)
-                }
-            }).then(() => {
-                previousFiles = [...fileStatuses]
-                previousFiles[index] = { ...previousFiles[index], status: 'done' }
-                setFileStatuses(previousFiles)
-            }, (error: any) => {
-                previousFiles = [...fileStatuses]
-                previousFiles[index] = { ...previousFiles[index], status: 'done' }
-                setFileStatuses(previousFiles)
+            this.setState((state: ITicketPageState) => {
+                index = state.fileUploads.length
+                return { fileUploads: [...state.fileUploads, upload] }
+            }, () => {
+                const formData: FormData = new FormData()
+                formData.append('file', file)
+                API.post('/tickets/file', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    onUploadProgress: (progressEvent: any) => {
+                        this.setState((state: ITicketPageState) => {
+                            const nextUploads: IFileUpload[] = [...state.fileUploads]
+                            nextUploads[index] = { ...nextUploads[index], progress: (100 * progressEvent.loaded) / progressEvent.total }
+                            return { fileUploads: nextUploads}
+                        })
+                    }
+                }).then((res: AxiosResponse<string>) => {
+                    const path: string = res.data
+                    this.setState((state: ITicketPageState) => {
+                        const nextUploads: IFileUpload[] = [...state.fileUploads]
+                        nextUploads[index] = { ...nextUploads[index], status: 'done', path }
+                        return { fileUploads: nextUploads}
+                    })
+                }, (error: any) => {
+                    this.setState((state: ITicketPageState) => {
+                        const nextUploads: IFileUpload[] = [...state.fileUploads]
+                        nextUploads[index] = { ...nextUploads[index], status: 'error' }
+                        return { fileUploads: nextUploads}
+                    })
+                })
             })
         })
+
         // console.log('fileList:', files)
     }
 
-    const handleRemoveFile = (index: number) => {
+    handleRemoveFile = (index: number) => {
         //
     }
 
-    return (
-        <div>
-            <Head><title>{makeDocumentTitle(truncate(ticket.subject, 20))}</title></Head>
-            <Flexbox flexDirection='column' className={classes.root} disableSpacing>
-                <TopBar title={ticket.subject}></TopBar>
-                <Section className={classes.ticketEvents}>
-                    <Flexbox flexDirection='column' disableSpacing>
-                        {ticketEvents.map((ticketEvent: ITicketEvent) => {
-                            const user: IUser = null
-                            const hasFiles: boolean = ticketEvent.files && ticketEvent.files.length > 0
-                            return (
-                                <Flexbox key={ticketEvent.id} className={classes.ticketEvent} disableSpacing>
-                                    <div className={classes.avatar}>
-                                        <Avatar avatar={{ initials: 'CU', color: 'FF0000' }} />
-                                    </div>
-                                    <div className={classes.ticketEventBody}>
-                                        <div className={classes.userDetails}>
-                                            <Typography variant='h6'>Jeff Laird</Typography>
-                                            <Flexbox>
-                                                <Typography variant='body1'>Jan 5, 7:16 AM</Typography>
-                                                {hasFiles && (
-                                                    <Icon>attachment</Icon>
-                                                )}
-                                            </Flexbox>
-                                        </div>
-                                        <Typography variant='body1'>{ticketEvent.message}</Typography>
-                                        {hasFiles && (
-                                            <div className={classes.files}>
-                                                <Typography variant='subtitle1'>{`${ticketEvent.files.length} ${p('Attachment', ticketEvent.files.length)}`}</Typography>
-                                                <ChipContainer>
-                                                    {ticketEvent.files.map((file: ITicketEventFile) => {
-                                                        const fileParts: string[] = file.path.split('.')
-                                                        const extension: string = fileParts[fileParts.length - 1]
-                                                        return (
-                                                            <li className={classes.file}>
-                                                                <a>
-                                                                    <IconButton onClick={() => handleDownload(file.path)} color='inherit'>
-                                                                        <Icon>cloud_download</Icon>
-                                                                    </IconButton>
-                                                                </a>
-                                                                <Flexbox className={classes.fileContent}>
-                                                                    <MuiAvatar><Icon>{getIconFromFileExtension(extension)}</Icon></MuiAvatar>
-                                                                    <div>
-                                                                        <Typography variant='body1'>{file.name}</Typography>
-                                                                        <Typography variant='body2'>{getFileSizeStringFromBytes(file.size)}</Typography>
-                                                                    </div>
-                                                                </Flexbox>
-                                                            </li>
-                                                        )
-                                                    })}
-                                                </ChipContainer>
-                                            </div>
-                                        )}
-                                    </div>
-                                </Flexbox>
-                            )
-                        })}
-                    </Flexbox>
-                </Section>
-                <form className={classes.form} onSubmit={(e) => handleSubmit}>
-                    {fileStatuses.length > 0 && (
-                        <ChipContainer>
-                            {fileStatuses.map((file: IFile, index: number) => {
-                                const { filename } = file
-                                console.log("F2_:", file)
-                                const fileParts: string[] = filename.split('.')
-                                const extension: string = fileParts[fileParts.length - 1]
+    render() {
+        console.log('STATE:', this.state)
+        const { classes } = this.props
+        const { ticket, ticketEvents } = exampleProps
+        const { fileUploads, inputValue } = this.state
+
+        return (
+            <div>
+                <Head><title>{makeDocumentTitle(truncate(ticket.subject, 20))}</title></Head>
+                <Flexbox flexDirection='column' className={classes.root} disableSpacing>
+                    <TopBar title={ticket.subject}></TopBar>
+                    <Section className={classes.ticketEvents}>
+                        <Flexbox flexDirection='column' disableSpacing>
+                            {ticketEvents.map((ticketEvent: ITicketEvent) => {
+                                const user: IUser = null
+                                const hasFiles: boolean = ticketEvent.files && ticketEvent.files.length > 0
                                 return (
-                                    <Chip
-                                        avatar={
-                                            <MuiAvatar>
-                                                {file.status === 'error' && (
-                                                    <Icon>error</Icon>
-                                                )}
-                                                {file.status === 'done' && (
-                                                    <Icon>{getIconFromFileExtension(extension)}</Icon>
-                                                )}
-                                                {file.status === 'loading' && (
-                                                    <CircularProgress variant='static' value={file.progress} />
-                                                )}
-                                            </MuiAvatar>
-                                        }
-                                        label={`${file.filename} (${file.fileSize})`}
-                                        onDelete={() => handleRemoveFile(index)}
-                                    />
-                                    )
+                                    <Flexbox key={ticketEvent.id} className={classes.ticketEvent} disableSpacing>
+                                        <div className={classes.avatar}>
+                                            <Avatar avatar={{ initials: 'CU', color: 'FF0000' }} />
+                                        </div>
+                                        <div className={classes.ticketEventBody}>
+                                            <div className={classes.userDetails}>
+                                                <Typography variant='h6'>Jeff Laird</Typography>
+                                                <Flexbox>
+                                                    <Typography variant='body1'>Jan 5, 7:16 AM</Typography>
+                                                    {hasFiles && (
+                                                        <Icon>attachment</Icon>
+                                                    )}
+                                                </Flexbox>
+                                            </div>
+                                            <Typography variant='body1'>{ticketEvent.message}</Typography>
+                                            {hasFiles && (
+                                                <div className={classes.files}>
+                                                    <Typography variant='subtitle1'>{`${ticketEvent.files.length} ${p('Attachment', ticketEvent.files.length)}`}</Typography>
+                                                    <ChipContainer>
+                                                        {ticketEvent.files.map((file: ITicketEventFile, index: number) => {
+                                                            const fileParts: string[] = file.path.split('.')
+                                                            const extension: string = fileParts[fileParts.length - 1]
+                                                            return (
+                                                                <li className={classes.file} key={index}>
+                                                                    <a>
+                                                                        <IconButton onClick={() => this.handleDownload(file.path)} color='inherit'>
+                                                                            <Icon>cloud_download</Icon>
+                                                                        </IconButton>
+                                                                    </a>
+                                                                    <Flexbox className={classes.fileContent}>
+                                                                        <MuiAvatar><Icon>{getIconFromFileExtension(extension)}</Icon></MuiAvatar>
+                                                                        <div>
+                                                                            <Typography variant='body1'>{file.name}</Typography>
+                                                                            <Typography variant='body2'>{getFileSizeStringFromBytes(file.size)}</Typography>
+                                                                        </div>
+                                                                    </Flexbox>
+                                                                </li>
+                                                            )
+                                                        })}
+                                                    </ChipContainer>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </Flexbox>
+                                )
                             })}
-                        </ChipContainer>
-                    )}
-                    <Flexbox className={classes.entry} flexDirection='row'>
-                        <div className={classes.entryAction}>
-                            <Tooltip title='Add attachments'>
-                                <IconButton component='label'>
-                                    <input
-                                        type='file'
-                                        onChange={handleUploadFile}
-                                        style={{ display: 'none' }}
-                                        id='ticket-file-upload'
-                                        multiple
-                                    />
-                                    <Icon>attachment</Icon>
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                        <TextField
-                            variant='outlined'
-                            label='Your message'
-                            placeholder='How can we help?'
-                            className={classes.textField}
-                            fullWidth
-                            multiline
-                            value={inputValue}
-                            onChange={handleChange}
-                        />
-                        <div className={classes.entryAction}>
-                            <Button type='submit' color='primary' disabled={inputValue.length === 0}>Send</Button>
-                        </div>
-                    </Flexbox>
-                </form>
-            </Flexbox>
-        </div>
-    )
+                        </Flexbox>
+                    </Section>
+                    <form className={classes.form} onSubmit={this.handleSubmit}>
+                        <Collapse in={fileUploads.length > 0}>
+                            <ChipContainer className={classes.fileUploads}>
+                                {fileUploads.map((upload: IFileUpload, index: number) => {
+                                    const { file } = upload
+                                    const fileParts: string[] = file.name.split('.')
+                                    const extension: string = fileParts[fileParts.length - 1]
+                                    return (
+                                        <Chip
+                                            key={index}
+                                            avatar={
+                                                <MuiAvatar>
+                                                    {upload.status === 'error' && (
+                                                        <Icon className={classes.fileChipIcon}>error</Icon>
+                                                    )}
+                                                    {upload.status === 'done' && (
+                                                        <Icon className={classes.fileChipIcon}>{getIconFromFileExtension(extension)}</Icon>
+                                                    )}
+                                                    {upload.status === 'loading' && (
+                                                        <CircularProgress size={18} variant='static' value={upload.progress} />
+                                                    )}
+                                                </MuiAvatar>
+                                            }
+                                            label={`${file.name} (${upload.filesize})`}
+                                            onDelete={() => this.handleRemoveFile(index)}
+                                        />
+                                    )
+                                })}
+                            </ChipContainer>
+                        </Collapse>
+                        <Flexbox alignItems='flex-end' flexDirection='row'>
+                            <div className={classes.entryAction}>
+                                <Tooltip title='Add attachments'>
+                                    <IconButton component='label'>
+                                        <input
+                                            type='file'
+                                            onChange={this.handleUploadFile}
+                                            style={{ display: 'none' }}
+                                            id='ticket-file-upload'
+                                            multiple
+                                        />
+                                        <Icon>attachment</Icon>
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                            <TextField
+                                variant='outlined'
+                                label='Your message'
+                                placeholder='How can we help?'
+                                className={classes.textField}
+                                fullWidth
+                                multiline
+                                value={inputValue}
+                                onChange={this.handleChange}
+                            />
+                            <div className={classes.entryAction}>
+                                <Button type='submit' color='primary' disabled={inputValue.length === 0}>Send</Button>
+                            </div>
+                        </Flexbox>
+                    </form>
+                </Flexbox>
+            </div>
+        )
+    }
 }
 
-TicketPage.getInitialProps = async (context: NextPageContext) => {
-    return {}
-}
-
-export default TicketPage
+export default withStyles(useStyles)(TicketPage)

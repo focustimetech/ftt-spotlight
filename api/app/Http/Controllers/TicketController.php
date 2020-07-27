@@ -125,6 +125,8 @@ class TicketController extends Controller {
     public function uploadFile(Request $request)
     {
         $file = $request->file;
-        return $file->store('ticketFiles');
+        $storedFilename = Storage::putFile('ticketFiles', $file, 'private');
+
+        return $storedFilename;
     }
 }

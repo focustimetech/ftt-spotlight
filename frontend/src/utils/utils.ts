@@ -133,11 +133,11 @@ export const getFileSizeStringFromBytes = (fileSize: number, si: boolean = true,
     if (fileSize <= 0) {
         return '0 B'
     }
-    const base: number = si ? 1000 : 1024
+    const base: number = si ? 1024 : 1000 // Swapped?
     const i: number = Math.floor(Math.log(fileSize) / Math.log(base))
     const units: string = si
-        ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][i]
-        : ['kiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'][i]
+        ? ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][i]
+        : ['B', 'kiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'][i]
     const value: number = fileSize / Math.pow(base, i)
     return `${value.toFixed(length - String(Math.floor(value)).length)} ${units}`
 }
@@ -151,7 +151,7 @@ export const getIconFromFileExtension = (extension: string): string => {
     switch (extension.toLowerCase()) {
         // Image
         case 'jpg':
-        case 'jepg':
+        case 'jpeg':
         case 'jfif':
         case 'exif':
         case 'tiff':

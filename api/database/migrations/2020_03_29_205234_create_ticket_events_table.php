@@ -18,7 +18,7 @@ class CreateTicketEventsTable extends Migration
          */
         Schema::create('ticket_events', function (Blueprint $table) {
             $table->id();
-            $table->string('message');
+            $table->text('message');
             $table->foreignId('ticket_id');
             $table->foreignId('user_id');
             $table->timestamps();

@@ -19,6 +19,8 @@ class CreateTicketEventFilesTable extends Migration
         Schema::create('ticket_event_files', function (Blueprint $table) {
             $table->id();
             $table->string('path');                 // Path to the file
+            $table->string('name');                 // Original name of the file
+            $table->bigInteger('size');             // Size of the file (in bytes)
             $table->foreignId('ticket_event_id');   // The ticket event attaching the file to
             $table->timestamps();
             // Foreign keys

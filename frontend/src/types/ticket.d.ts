@@ -18,8 +18,9 @@ export interface ITicketEvent {
 
 export interface ITicketEventFile {
     id: number
+    name: string
+    size: number
     path: string
-    ticketEventId: number
 }
 
 

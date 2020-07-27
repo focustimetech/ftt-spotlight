@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('avatar/{username}', 'UserController@findAvatar');
 Route::post('login', 'LoginController@login');
 Route::post('refresh-token', 'LoginController@refreshToken');
+Route::get('test-dl', 'TicketController@testDL');
 
 /**
  * Authenticates routes
@@ -94,6 +95,7 @@ Route::middleware('auth:api', 'scope:staff,teacher,sysadmin,guardian')->group(fu
     Route::post('tickets', 'TicketController@create');
     Route::get('tickets/{ticketId}', 'TicketController@ticketEvents');
     Route::post('tickets/{ticketId}/reply', 'TicketController@createTicketEvent');
+    Route::post('tickets/file', 'TicketController@uploadFile');
 
     // Students
     Route::get('students', 'StudentsController@index');
@@ -123,7 +125,7 @@ Route::middleware('auth:api', 'scope:teacher')->group(function() {
 Route::middleware('auth:api', 'scope:sysadmin')->group(function() {
     // Tickets
     Route::get('tickets/all' ,'TicketController@index');
-    Route::update('tickets/{ticketId}/status', 'TicketController@updateTicketStatus');
+    Route::put('tickets/{ticketId}/status', 'TicketController@updateTicketStatus');
 });
 
 // Students, Teachers

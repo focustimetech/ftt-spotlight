@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Storage;
 use App\Ticket;
 use App\TicketEvent;
 use App\TicketEventFile;
@@ -12,6 +13,10 @@ use Illuminate\Http\Request;
 
 
 class TicketController extends Controller {
+    public function testDL()
+    {
+        return Storage::download('https://via.placeholder.com/150.jpg', 'onefifty');
+    }
     private function attachFiles($ticketEventId, array $filePaths)
     {
         if (!count($filePaths)) {
@@ -115,5 +120,11 @@ class TicketController extends Controller {
         if ($ticket->save()) {
             return new TicketResource($ticket);
         }
+    }
+
+    public function uploadFile(Request $request)
+    {
+        $file = $request->file;
+        return $file->store('ticketFiles');
     }
 }

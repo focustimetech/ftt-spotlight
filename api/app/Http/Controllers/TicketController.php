@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
 
 
 class TicketController extends Controller {
-    public function testDL()
-    {
-        return Storage::download('https://via.placeholder.com/150.jpg', 'onefifty');
-    }
     private function attachFiles($ticketEventId, array $filePaths)
     {
         if (!count($filePaths)) {
@@ -42,8 +38,8 @@ class TicketController extends Controller {
     public function list(Request $request)
     {
         $user = auth()->user();
-        if (in_array(!$user->account_type, ['staff', 'teacher', 'sysadmin'])) {
-            return response()->json(['message' => 'This user cannot view or create Support Tickets.'], 403);
+        if ($user->account_type === 'sysadmin') {
+            return $this->index($request);
         }
         $account = $user->account();
         return TicketResource::collection($account->tickets()->get());

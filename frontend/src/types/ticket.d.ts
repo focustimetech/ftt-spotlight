@@ -15,6 +15,7 @@ export interface ITicketEvent {
     ticketId: number
     user: IUser
     message: string
+    createdAt: string
     files?: ITicketEventFile[]
 }
 

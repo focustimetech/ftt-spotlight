@@ -25,12 +25,13 @@ export interface ITicketEventFile {
     size: number
 }
 
-
-export interface INewTicket extends Pick<ITicket, 'subject'> {
-    body: string
-    filesPaths?: string[]
+export interface INewTicketEventFile extends Omit<ITicketEventFile, 'id'> {
+    path: string
 }
 
-export interface INewTicketEvent extends Omit<ITicketEvent, 'id' | 'files'> {
-    filePaths?: string[]
+export type INewTicket = Pick<ITicket, 'subject'> & INewTicketEvent
+
+export interface INewTicketEvent {
+    message: string
+    files: INewTicketEventFile[]
 }

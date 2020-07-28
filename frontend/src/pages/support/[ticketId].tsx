@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios'
+import { format, formatDistance } from 'date-fns'
 import Head from 'next/head'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -21,9 +22,9 @@ import {
     WithStyles
 } from '@material-ui/core'
 
-import { fetchTicketEvents, fetchTickets } from '../../actions/ticketActions'
+import { createTicketEvent, fetchTicketEvents, fetchTickets } from '../../actions/ticketActions'
 import { NextPageContext } from '../../types'
-import { IStaff, ISysAdmin, ITeacher } from '../../types/auth'
+import { IUser } from '../../types/auth'
 import {
     INewTicketEvent,
     ITicket,
@@ -33,11 +34,12 @@ import {
 import API from '../../utils/api'
 import { makeDocumentTitle, truncate } from '../../utils/document'
 import p from '../../utils/pluralize'
-import redirect from '../..//utils/redirect'
+import redirect from '../../utils/redirect'
 import { getFileSizeStringFromBytes, getIconFromFileExtension } from '../../utils/utils'
 
 import Avatar from '../../components/Avatar'
 import ChipContainer from '../../components/ChipContainer'
+import LoadingButton from '../../components/Form/Components/LoadingButton'
 import Flexbox from '../../components/Layout/Flexbox'
 import Section from '../../components/Layout/Section'
 import TopBar from '../../components/TopBar'
@@ -52,12 +54,15 @@ interface ITicketPageProps {
 
 interface IReduxProps {
     // tickets: ITicket[]
+    currentUser: IUser
     ticketEvents: ITicketEvent[]
+    createTicketEvent: (ticketId: number, newTicketEvent: INewTicketEvent) => Promise<any>
 }
 
 interface ITicketPageState {
     inputValue: string
     fileUploads: IFileUpload[]
+    sending: boolean
 }
 
 interface IFileUpload {
@@ -193,6 +198,9 @@ const useStyles = (theme: Theme) => createStyles({
     fileChipIcon: {
         width: 18,
         height: 18
+    },
+    timestamp: {
+        color: '#5F6368'
     }
 })
 
@@ -223,7 +231,8 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
 
     state: ITicketPageState = {
         inputValue: '',
-        fileUploads: []
+        fileUploads: [],
+        sending: false,
     }
 
     handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -233,11 +242,24 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
 
     handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        //
+        const newTicketEvent: INewTicketEvent = {
+            message: this.state.inputValue,
+            files: this.state.fileUploads.map((file: IFileUpload) => ({
+                name: file.file.name,
+                size: file.file.size,
+                path: file.path
+            }))
+        }
+        this.setState({ sending: true })
+        this.props.createTicketEvent(this.props.ticket.id, newTicketEvent).then(() => {
+            this.setState({ sending: false, fileUploads: [], inputValue: '' })
+        }, (error: any) => {
+            this.setState({ sending: false })
+        })
     }
 
-    handleDownload = (path: string) => {
-        //
+    handleDownload = (file: ITicketEventFile) => {
+        //`${API.getBaseUrl()}/tickets/file/${file.id}`)
     }
 
     handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -297,7 +319,7 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
         console.log('STATE:', this.state)
         console.log('PROPS:', this.props)
         const { classes, ticket, ticketEvents } = this.props
-        const { fileUploads, inputValue } = this.state
+        const { fileUploads, inputValue, sending } = this.state
 
         return (
             <div>
@@ -317,8 +339,8 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
                                         <div className={classes.ticketEventBody}>
                                             <div className={classes.userDetails}>
                                                 <Typography variant='h6'>{user.name}</Typography>
-                                                <Flexbox>
-                                                    <Typography variant='body1'>{ticketEvent.createdAt}</Typography>
+                                                <Flexbox className={classes.timestamp}>
+                                                    <Typography variant='body1'>{format(new Date(ticketEvent.createdAt), 'MMM d, h:mm aa')}</Typography>
                                                     {hasFiles && (
                                                         <Icon>attachment</Icon>
                                                     )}
@@ -330,26 +352,26 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
                                                     <Typography variant='subtitle1'>{`${ticketEvent.files.length} ${p('Attachment', ticketEvent.files.length)}`}</Typography>
                                                     <ChipContainer>
                                                         {ticketEvent.files.map((file: ITicketEventFile, index: number) => {
-                                                            /*
-                                                            const fileParts: string[] = file.path.split('.')
+                                                            const fileParts: string[] = file.name.split('.')
                                                             const extension: string = fileParts[fileParts.length - 1]
                                                             return (
-                                                                <li className={classes.file} key={index}>
-                                                                    <a>
-                                                                        <IconButton onClick={() => this.handleDownload(file.path)} color='inherit'>
-                                                                            <Icon>cloud_download</Icon>
-                                                                        </IconButton>
-                                                                    </a>
-                                                                    <Flexbox className={classes.fileContent}>
-                                                                        <MuiAvatar><Icon>{getIconFromFileExtension(extension)}</Icon></MuiAvatar>
-                                                                        <div>
-                                                                            <Typography variant='body1'>{file.name}</Typography>
-                                                                            <Typography variant='body2'>{getFileSizeStringFromBytes(file.size)}</Typography>
-                                                                        </div>
-                                                                    </Flexbox>
+                                                                <li key={index}>
+                                                                    <form className={classes.file} action={`${API.getBaseUrl()}/api/tickets/file/${file.id}`} method='get'>
+                                                                        <a>
+                                                                            <IconButton type='submit' color='inherit'>
+                                                                                <Icon>cloud_download</Icon>
+                                                                            </IconButton>
+                                                                        </a>
+                                                                        <Flexbox className={classes.fileContent}>
+                                                                            <MuiAvatar><Icon>{getIconFromFileExtension(extension)}</Icon></MuiAvatar>
+                                                                            <div>
+                                                                                <Typography variant='body1'>{file.name}</Typography>
+                                                                                <Typography variant='body2'>{getFileSizeStringFromBytes(file.size)}</Typography>
+                                                                            </div>
+                                                                        </Flexbox>
+                                                                    </form>
                                                                 </li>
                                                             )
-                                                            */
                                                         })}
                                                     </ChipContainer>
                                                 </div>
@@ -364,9 +386,10 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
                         <Collapse in={fileUploads.length > 0}>
                             <ChipContainer className={classes.fileUploads}>
                                 {fileUploads.map((upload: IFileUpload, index: number) => {
-                                    const { file } = upload
+                                    const { file, path } = upload
                                     const fileParts: string[] = file.name.split('.')
                                     const extension: string = fileParts[fileParts.length - 1]
+                                    const label: string = `${file.name} (${upload.filesize})`
                                     return (
                                         <Chip
                                             key={index}
@@ -379,11 +402,15 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
                                                         <Icon className={classes.fileChipIcon}>{getIconFromFileExtension(extension)}</Icon>
                                                     )}
                                                     {upload.status === 'loading' && (
-                                                        <CircularProgress size={18} variant='static' value={upload.progress} />
+                                                        <CircularProgress
+                                                            size={18}
+                                                            variant={upload.progress < 100 ? 'static' : 'indeterminate'}
+                                                            value={upload.progress}
+                                                        />
                                                     )}
                                                 </MuiAvatar>
                                             }
-                                            label={`${file.name} (${upload.filesize})`}
+                                            label={label}
                                             onDelete={() => this.handleRemoveFile(index)}
                                         />
                                     )
@@ -416,7 +443,12 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
                                 onChange={this.handleChange}
                             />
                             <div className={classes.entryAction}>
-                                <Button type='submit' color='primary' disabled={inputValue.length === 0}>Send</Button>
+                                <LoadingButton
+                                    type='submit'
+                                    color='primary'
+                                    disabled={inputValue.length === 0}
+                                    loading={sending}
+                                >Send</LoadingButton>
                             </div>
                         </Flexbox>
                     </form>
@@ -427,7 +459,10 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
 }
 
 const mapStateToProps = (state: any) => ({
+    currentUser: state.auth.user,
     ticketEvents: state.tickets.ticketEvents
 })
 
-export default withAuth('sysadmin', 'teacher', 'staff')(connect(mapStateToProps, null)(withStyles(useStyles)(TicketPage)))
+const mapDispatchToProps = { createTicketEvent }
+
+export default withAuth('sysadmin', 'teacher', 'staff')(connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(TicketPage)))

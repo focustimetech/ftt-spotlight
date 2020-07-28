@@ -52,6 +52,32 @@ const TopBar = (props: ITopBarProps) => {
                     ))}
                 </Tabs>
             )}
+            <Tabs indicatorColor='primary' value={0} variant='fullWidth'>
+                <Tab label={
+                    <Flexbox>
+                        <Typography variant='h3'>56</Typography>
+                        <Typography variant='button'>Tickets</Typography>
+                    </Flexbox>
+                } key={0} />
+                <Tab label={
+                    <Flexbox>
+                        <Typography variant='h3'>12</Typography>
+                        <Typography variant='button'>Open Tickets</Typography>
+                    </Flexbox>
+                } key={1} />
+                <Tab label={
+                    <Flexbox>
+                        <Typography variant='h3'>13</Typography>
+                        <Typography variant='button'>Tickets Resolved</Typography>
+                    </Flexbox>
+                } key={2} />
+                <Tab label={
+                    <Flexbox>
+                        <Typography variant='h3'>5</Typography>
+                        <Typography variant='button'>Awaiting Response</Typography>
+                    </Flexbox>
+                } key={3} />
+            </Tabs>
         </div>
     )
 }

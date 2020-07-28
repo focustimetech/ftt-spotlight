@@ -13,19 +13,24 @@ use Illuminate\Http\Request;
 
 
 class TicketController extends Controller {
-    private function attachFiles($ticketEventId, array $filePaths)
+    private function attachFiles($ticketEventId, array $files)
     {
-        if (!count($filePaths)) {
+        if (!$files || count($files) === 0) {
             return;
         }
         $ticketEvent = TicketEvent::find($ticketEventId);
         if (!$ticketEvent) {
             return response()->json(['message' => 'No such Ticket Event was found while attaching files.'], 404);
         }
-        foreach ($filePaths as $filePath) {
+        foreach ($files as $file) {
+            if (!$file['path']) {
+                continue;
+            }
             TicketEventFile::create([
-                'ticket_event_id' => $ticketEventId,
-                'path' => $filePath
+                'path' => $file['path'],
+                'name' => $file['name'],
+                'size' => $file['size'],
+                'ticket_event_id' => $ticketEvent->id
             ]);
         }
     }
@@ -61,21 +66,19 @@ class TicketController extends Controller {
     {
         $user = auth()->user();
         $subject = $request->input('subject');
-        $body = $request->input('body');
+        $message = $request->input('message');
         $filePaths = $request->input('filePaths');
 
         $ticket = Ticket::create([
             'user_id' => $user->id,
             'subject' => $subject,
-            // 'assignee_id' => 0,
         ]);
         $ticketEvent = TicketEvent::create([
             'ticket_id' => $ticket->id,
             'user_id' => $user->id,
-            'message' => $body
+            'message' => $message
         ]);
         $this->attachFiles($ticketEvent->id, $filePaths);
-        
 
         return new TicketResource($ticket);
     }
@@ -84,6 +87,8 @@ class TicketController extends Controller {
     {
         $user = auth()->user();
         $ticketId = $request->route('ticketId');
+        $message = $request->input('message');
+        $files = $request->input('files');
         $ticket = Ticket::find($ticketId);
 
         if (!$ticket) {
@@ -92,13 +97,14 @@ class TicketController extends Controller {
 
         }
         
-        $ticket_event = TicketEvent::create([
-            'ticket_id' => $request->input('ticket_id'),
-            'action' => $request->input('action'),
-            'message' => $request->input('message')
+        $ticketEvent = TicketEvent::create([
+            'ticket_id' => $ticketId,
+            'message' => $message,
+            'user_id' => $user->id
         ]);
+        $this->attachFiles($ticketEvent->id, $files);
 
-        return new TicketEventResource($ticket_event);
+        return new TicketEventResource($ticketEvent);
     }
 
     public function updateTicketStatus(Request $request)
@@ -124,5 +130,24 @@ class TicketController extends Controller {
         $storedFilename = Storage::putFile('ticketFiles', $file, 'private');
 
         return $storedFilename;
+    }
+
+    public function downloadFile(Request $request)
+    {
+        $user = auth()->user();
+        $fileId = $request->route('fileId');
+
+        $ticketEventFile = TicketEventFile::findOrFail($fileId);
+        $ticketEvent = $ticketEventFile->ticketEvent()->first();
+        $path = $ticketEventFile->path;
+        $filename = $ticketEventFile->name;
+
+        if ($user->account_type !== 'sysadmin' && $user->id !== $ticketEvent->user_id) {
+            return response()->json(['message' => "You don't have access to this file."], 403);
+        }
+
+        return response()->download(storage_path("app/$path"), $filename, [
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ]);
     }
 }

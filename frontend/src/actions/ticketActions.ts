@@ -1,7 +1,7 @@
-import { ITicketEvent } from '../types/ticket'
+import { INewTicketEvent, ITicketEvent } from '../types/ticket'
 import API from '../utils/api'
 
-import { FETCH_TICKET_EVENTS, FETCH_TICKETS } from './types'
+import { FETCH_TICKET_EVENTS, FETCH_TICKETS, NEW_TICKET_EVENT } from './types'
 
 export const fetchTickets = () => {
     return (dispatch: any) => {
@@ -23,6 +23,18 @@ export const fetchTicketEvents = (ticketId: number) => {
             dispatch({
                 type: FETCH_TICKET_EVENTS,
                 payload: ticketEvents
+            })
+        })
+    }
+}
+
+export const createTicketEvent = (ticketId: number, newTicketEvent: INewTicketEvent) => {
+    return (dispatch: any) => {
+        return API.post<ITicketEvent>(`/tickets/${ticketId}/reply`, newTicketEvent).then((res) => {
+            const ticketEvent: ITicketEvent = res.data
+            dispatch({
+                type: NEW_TICKET_EVENT,
+                payload: ticketEvent
             })
         })
     }

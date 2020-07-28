@@ -96,6 +96,7 @@ Route::middleware('auth:api', 'scope:staff,teacher,sysadmin,guardian')->group(fu
     Route::get('tickets/{ticketId}', 'TicketController@ticketEvents');
     Route::post('tickets/{ticketId}/reply', 'TicketController@createTicketEvent');
     Route::post('tickets/file', 'TicketController@uploadFile');
+    Route::get('tickets/file/{fileId}', 'TicketController@downloadFile');
 
     // Students
     Route::get('students', 'StudentsController@index');

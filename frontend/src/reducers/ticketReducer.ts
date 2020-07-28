@@ -24,6 +24,11 @@ export const ticketReducer = (state = initialState, action: IReduxAction<string,
                 ...state,
                 ticketEvents: action.payload
             }
+        case NEW_TICKET_EVENT:
+            return {
+                ...state,
+                ticketEvents: [...state.ticketEvents, action.payload]
+            }
         default:
             return state
     }

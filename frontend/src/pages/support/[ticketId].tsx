@@ -42,6 +42,7 @@ import ChipContainer from '../../components/ChipContainer'
 import LoadingButton from '../../components/Form/Components/LoadingButton'
 import Flexbox from '../../components/Layout/Flexbox'
 import Section from '../../components/Layout/Section'
+import MessageEntry, { IFileUpload } from '../../components/Tickets/MessageEntry'
 import TopBar from '../../components/TopBar'
 import withAuth from '../../hocs/withAuth'
 
@@ -50,6 +51,10 @@ interface ITicketPageProps {
     ticket: ITicket
 }
 
+interface ITicketPageState {
+    inputValue: string
+    sending: boolean
+}
 
 
 interface IReduxProps {
@@ -57,21 +62,6 @@ interface IReduxProps {
     currentUser: IUser
     ticketEvents: ITicketEvent[]
     createTicketEvent: (ticketId: number, newTicketEvent: INewTicketEvent) => Promise<any>
-}
-
-interface ITicketPageState {
-    inputValue: string
-    fileUploads: IFileUpload[]
-    sending: boolean
-}
-
-interface IFileUpload {
-    file: File
-    filesize: string
-    status: 'loading' | 'done' | 'error'
-    progress: number
-    removed: boolean
-    path: string
 }
 
 const testTicket: ITicket = {
@@ -100,27 +90,11 @@ const useStyles = (theme: Theme) => createStyles({
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1)
     },
-    form: {
-        width: '100%',
-        flex: '0',
-        borderTop: '1px solid #EEE',
-        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px ${theme.spacing(1.5)}px`,
-        boxSizing: 'border-box'
-    },
-    textField: {
-        flex: '1'
-    },
-    entryAction: {
-        display: 'flex',
-        height: 56,
-        alignItems: 'center',
-        flexFlow: 'row nowrap'
-    },
     ticketEvent: {
         paddingTop: theme.spacing(1),
         width: '100%',
         alignItems: 'flex-start',
-        // marginBottom: theme.spacing(2),
+        marginBottom: theme.spacing(2),
 
         '& + *': {
             marginTop: theme.spacing(2),
@@ -149,6 +123,15 @@ const useStyles = (theme: Theme) => createStyles({
         '& > p': {
             lineHeight: `${theme.spacing(2)}px`
         }
+    },
+    paragraph: {
+        '& + p': {
+            marginBottom: theme.spacing(1)
+        }
+    },
+    fileContent: {
+        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+        minWidth: 120
     },
     files: {
         paddingTop: theme.spacing(1),
@@ -186,19 +169,6 @@ const useStyles = (theme: Theme) => createStyles({
             visibility: 'visible'
         }
     },
-    fileContent: {
-        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
-        minWidth: 120
-    },
-    fileUploads: {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(2),
-        paddingBottom: theme.spacing(1)
-    },
-    fileChipIcon: {
-        width: 18,
-        height: 18
-    },
     timestamp: {
         color: '#5F6368'
     }
@@ -231,8 +201,7 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
 
     state: ITicketPageState = {
         inputValue: '',
-        fileUploads: [],
-        sending: false,
+        sending: false
     }
 
     handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -240,11 +209,11 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
         this.setState({ inputValue: value })
     }
 
-    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    handleSubmit = (event: React.FormEvent<HTMLFormElement>, fileUploads: IFileUpload[]) => {
         event.preventDefault()
         const newTicketEvent: INewTicketEvent = {
             message: this.state.inputValue,
-            files: this.state.fileUploads.map((file: IFileUpload) => ({
+            files: fileUploads.map((file: IFileUpload) => ({
                 name: file.file.name,
                 size: file.file.size,
                 path: file.path
@@ -252,74 +221,15 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
         }
         this.setState({ sending: true })
         this.props.createTicketEvent(this.props.ticket.id, newTicketEvent).then(() => {
-            this.setState({ sending: false, fileUploads: [], inputValue: '' })
+            this.setState({ sending: false, inputValue: '' })
         }, (error: any) => {
             this.setState({ sending: false })
         })
     }
 
-    handleDownload = (file: ITicketEventFile) => {
-        //`${API.getBaseUrl()}/tickets/file/${file.id}`)
-    }
-
-    handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log('handleUploadFile()')
-        event.preventDefault()
-        const { files } = event.target
-        Array.from(files).forEach((file: File) => {
-            let index: number
-            const upload: IFileUpload = {
-                file,
-                filesize: getFileSizeStringFromBytes(file.size),
-                status: 'loading',
-                progress: 0,
-                removed: false,
-                path: null
-            }
-            this.setState((state: ITicketPageState) => {
-                index = state.fileUploads.length
-                return { fileUploads: [...state.fileUploads, upload] }
-            }, () => {
-                const formData: FormData = new FormData()
-                formData.append('file', file)
-                API.post('/tickets/file', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    onUploadProgress: (progressEvent: any) => {
-                        this.setState((state: ITicketPageState) => {
-                            const nextUploads: IFileUpload[] = [...state.fileUploads]
-                            nextUploads[index] = { ...nextUploads[index], progress: (100 * progressEvent.loaded) / progressEvent.total }
-                            return { fileUploads: nextUploads}
-                        })
-                    }
-                }).then((res: AxiosResponse<string>) => {
-                    const path: string = res.data
-                    this.setState((state: ITicketPageState) => {
-                        const nextUploads: IFileUpload[] = [...state.fileUploads]
-                        nextUploads[index] = { ...nextUploads[index], status: 'done', path }
-                        return { fileUploads: nextUploads}
-                    })
-                }, (error: any) => {
-                    this.setState((state: ITicketPageState) => {
-                        const nextUploads: IFileUpload[] = [...state.fileUploads]
-                        nextUploads[index] = { ...nextUploads[index], status: 'error' }
-                        return { fileUploads: nextUploads}
-                    })
-                })
-            })
-        })
-
-        // console.log('fileList:', files)
-    }
-
-    handleRemoveFile = (index: number) => {
-        //
-    }
-
     render() {
-        console.log('STATE:', this.state)
-        console.log('PROPS:', this.props)
         const { classes, ticket, ticketEvents } = this.props
-        const { fileUploads, inputValue, sending } = this.state
+        console.log('ticketEvents:', ticketEvents)
 
         return (
             <div>
@@ -346,7 +256,11 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
                                                     )}
                                                 </Flexbox>
                                             </div>
-                                            <Typography variant='body1'>{ticketEvent.message}</Typography>
+                                            {ticketEvent.message.split('\n').map((paragraph: string) => (
+                                                <Typography component='p' className={classes.paragraph} variant='body1'>
+                                                    {paragraph}
+                                                </Typography>
+                                            ))}
                                             {hasFiles && (
                                                 <div className={classes.files}>
                                                     <Typography variant='subtitle1'>{`${ticketEvent.files.length} ${p('Attachment', ticketEvent.files.length)}`}</Typography>
@@ -382,76 +296,12 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
                             })}
                         </Flexbox>
                     </Section>
-                    <form className={classes.form} onSubmit={this.handleSubmit}>
-                        <Collapse in={fileUploads.length > 0}>
-                            <ChipContainer className={classes.fileUploads}>
-                                {fileUploads.map((upload: IFileUpload, index: number) => {
-                                    const { file, path } = upload
-                                    const fileParts: string[] = file.name.split('.')
-                                    const extension: string = fileParts[fileParts.length - 1]
-                                    const label: string = `${file.name} (${upload.filesize})`
-                                    return (
-                                        <Chip
-                                            key={index}
-                                            avatar={
-                                                <MuiAvatar>
-                                                    {upload.status === 'error' && (
-                                                        <Icon className={classes.fileChipIcon}>error</Icon>
-                                                    )}
-                                                    {upload.status === 'done' && (
-                                                        <Icon className={classes.fileChipIcon}>{getIconFromFileExtension(extension)}</Icon>
-                                                    )}
-                                                    {upload.status === 'loading' && (
-                                                        <CircularProgress
-                                                            size={18}
-                                                            variant={upload.progress < 100 ? 'static' : 'indeterminate'}
-                                                            value={upload.progress}
-                                                        />
-                                                    )}
-                                                </MuiAvatar>
-                                            }
-                                            label={label}
-                                            onDelete={() => this.handleRemoveFile(index)}
-                                        />
-                                    )
-                                })}
-                            </ChipContainer>
-                        </Collapse>
-                        <Flexbox alignItems='flex-end' flexDirection='row'>
-                            <div className={classes.entryAction}>
-                                <Tooltip title='Add attachments'>
-                                    <IconButton component='label'>
-                                        <input
-                                            type='file'
-                                            onChange={this.handleUploadFile}
-                                            style={{ display: 'none' }}
-                                            id='ticket-file-upload'
-                                            multiple
-                                        />
-                                        <Icon>attachment</Icon>
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                            <TextField
-                                variant='outlined'
-                                label='Your message'
-                                placeholder='How can we help?'
-                                className={classes.textField}
-                                fullWidth
-                                multiline
-                                value={inputValue}
-                                onChange={this.handleChange}
-                            />
-                            <div className={classes.entryAction}>
-                                <LoadingButton
-                                    type='submit'
-                                    color='primary'
-                                    disabled={inputValue.length === 0}
-                                    loading={sending}
-                                >Send</LoadingButton>
-                            </div>
-                        </Flexbox>
-                    </form>
+                    <MessageEntry
+                        inputValue={this.state.inputValue}
+                        onChange={this.handleChange}
+                        onSubmit={this.handleSubmit}
+                        sending={this.state.sending}
+                    />
                 </Flexbox>
             </div>
         )

@@ -4,11 +4,16 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
-    Button
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle
 } from '@material-ui/core'
 
 import { fetchTickets } from '../../actions/ticketActions'
 import { NextPageContext } from '../../types'
+import { TableColumns } from '../../types/table'
 import { ITicket } from '../../types/ticket'
 import { makeDocumentTitle } from '../../utils/document'
 
@@ -22,30 +27,41 @@ interface IReduxProps {
 }
 
 interface ISupportTableData {
-    subject : string
+    subject: string
 }
 
-const supportTableColumns = {
-    subject : { label : 'Subject', type : 'string', primary: true, searchable : true, filterable : true}
+const supportTableColumns: TableColumns<ISupportTableData> = {
+    subject: { label : 'Subject', type : 'string', primary: true, searchable : true, filterable : true}
 }
-
 
 interface ISupportProps extends IReduxProps {
     tickets: ITicket[]
 }
 
 const Support: NextPage<ISupportProps> = (props: ISupportProps) => {
-    const tableData: ISupportTableData[] = props.tickets.map(ticket => ({subject: ticket.title}))
+    const [dialogOpen, setDialogOpen] = React.useState(false)
+
+    const tableData: ISupportTableData[] = props.tickets.map((ticket: ITicket) => {
+        return {
+            subject: ticket.subject
+        }
+    })
 
     return (
         <div>
             <Head>{makeDocumentTitle('Support')}</Head>
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+                <DialogTitle>Create Ticket</DialogTitle>
+                <DialogContent>
+                    Hello
+                </DialogContent>
+            </Dialog>
             <TopBar title='Support Tickets'>
-                <Button color='primary' variant='text'>Create Ticket</Button>
+                <Button color='primary' variant='text' onClick={() => setDialogOpen(true)}>Create Ticket</Button>
             </TopBar>
             <Section fullWidth>
                 <Table<ISupportTableData>
-                    columns={supportTableColumns} 
+                    columns={supportTableColumns}
                     // title={'My Support Tickets :^)'}
                     data={tableData}
                     selected={[]}

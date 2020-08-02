@@ -8,6 +8,7 @@ import {
     CircularProgress,
     Collapse,
     createStyles,
+    FormHelperText,
     Icon,
     IconButton,
     TextField,
@@ -36,15 +37,17 @@ export interface IFileUpload {
 
 interface IMessageEntryProps {
     inputValue: string
+    fileUploads: IFileUpload[]
     sending: boolean
     placeholder?: string
     disabled?: boolean
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void
-    onSubmit: (event: React.FormEvent<HTMLFormElement>, files: IFileUpload[]) => void
+    onChangeFiles: (uploads: IFileUpload[]) => void
+    onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }
 
-interface IMessageEntryState {
-    fileUploads: IFileUpload[]
+const fileTooLarge = (upload: IFileUpload): boolean => {
+    return upload.file.size > 20971520 // 20 MB file limit
 }
 
 const useStyles = (theme: Theme) => createStyles({
@@ -58,36 +61,32 @@ const useStyles = (theme: Theme) => createStyles({
     textField: {
         flex: '1'
     },
-    entryAction: {
+    entryAction: (props: IMessageEntryProps) => ({
         display: 'flex',
         height: 56,
         alignItems: 'center',
-        flexFlow: 'row nowrap'
-    },
+        flexFlow: 'row nowrap',
+        marginBottom: props.fileUploads.some((file: IFileUpload) => fileTooLarge(file)) ? 22 : 0
+    }),
     fileUploads: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(2),
         paddingBottom: theme.spacing(1)
     },
     fileChipIcon: {
-        width: 18,
-        height: 18
+        fontSize: 18
     },
     timestamp: {
         color: '#5F6368'
     }
 })
 
-class MessageEntry extends React.Component<IMessageEntryProps & WithStyles<typeof useStyles>, IMessageEntryState> {
-    state: IMessageEntryState = {
-        fileUploads: []
-    }
-
+class MessageEntry extends React.Component<IMessageEntryProps & WithStyles<typeof useStyles>> {
     handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault()
         const { files } = event.target
         Array.from(files).forEach((file: File) => {
-            let index: number
+            const index: number = this.props.fileUploads.length
             const upload: IFileUpload = {
                 file,
                 filesize: getFileSizeStringFromBytes(file.size),
@@ -96,58 +95,48 @@ class MessageEntry extends React.Component<IMessageEntryProps & WithStyles<typeo
                 removed: false,
                 path: null
             }
-            this.setState((state: IMessageEntryState) => {
-                index = state.fileUploads.length
-                return { fileUploads: [...state.fileUploads, upload] }
-            }, () => {
-                const formData: FormData = new FormData()
-                formData.append('file', file)
-                API.post('/tickets/file', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    onUploadProgress: (progressEvent: any) => {
-                        this.setState((state: IMessageEntryState) => {
-                            const nextUploads: IFileUpload[] = [...state.fileUploads]
-                            nextUploads[index] = { ...nextUploads[index], progress: (100 * progressEvent.loaded) / progressEvent.total }
-                            return { fileUploads: nextUploads}
-                        })
-                    }
-                }).then((res: AxiosResponse<string>) => {
-                    const path: string = res.data
-                    this.setState((state: IMessageEntryState) => {
-                        const nextUploads: IFileUpload[] = [...state.fileUploads]
-                        nextUploads[index] = { ...nextUploads[index], status: 'done', path }
-                        return { fileUploads: nextUploads}
-                    })
-                }, (error: any) => {
-                    this.setState((state: IMessageEntryState) => {
-                        const nextUploads: IFileUpload[] = [...state.fileUploads]
-                        nextUploads[index] = { ...nextUploads[index], status: 'error' }
-                        return { fileUploads: nextUploads}
-                    })
-                })
+            this.props.onChangeFiles([...this.props.fileUploads, upload])
+            const formData: FormData = new FormData()
+            formData.append('file', file)
+            API.post('/tickets/file', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                onUploadProgress: (progressEvent: any) => {
+
+                    const nextUploads: IFileUpload[] = [...this.props.fileUploads]
+                    nextUploads[index] = { ...nextUploads[index], progress: (100 * progressEvent.loaded) / progressEvent.total }
+                    this.props.onChangeFiles(nextUploads)
+
+                }
+            }).then((res: AxiosResponse<string>) => {
+                const path: string = res.data
+                const nextUploads: IFileUpload[] = [...this.props.fileUploads]
+                nextUploads[index] = { ...nextUploads[index], status: 'done', path }
+                this.props.onChangeFiles(nextUploads)
+            }, (error: any) => {
+                const nextUploads: IFileUpload[] = [...this.props.fileUploads]
+                nextUploads[index] = { ...nextUploads[index], status: 'error' }
+                this.props.onChangeFiles(nextUploads)
             })
         })
-
-        // console.log('fileList:', files)
     }
 
     handleRemoveFile = (index: number) => {
-        //
-    }
-
-    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        this.props.onSubmit(event, this.state.fileUploads)
+        const nextUploads: IFileUpload[] = [...this.props.fileUploads]
+        nextUploads[index] = { ...nextUploads[index], removed: true }
+        this.props.onChangeFiles(nextUploads)
     }
 
     render() {
-        const { fileUploads } = this.state
-        const { classes, disabled, inputValue, sending } = this.props
+        const { classes, disabled, inputValue, fileUploads, sending } = this.props
 
         return (
-            <form className={classes.form} onSubmit={this.handleSubmit}>
+            <form className={classes.form} onSubmit={this.props.onSubmit}>
                 <Collapse in={fileUploads.length > 0}>
                     <ChipContainer className={classes.fileUploads}>
                         {fileUploads.map((upload: IFileUpload, index: number) => {
+                            if (upload.removed || fileTooLarge(upload)) {
+                                return
+                            }
                             const { file, path } = upload
                             const fileParts: string[] = file.name.split('.')
                             const extension: string = fileParts[fileParts.length - 1]
@@ -188,7 +177,7 @@ class MessageEntry extends React.Component<IMessageEntryProps & WithStyles<typeo
                                     onChange={this.handleUploadFile}
                                     style={{ display: 'none' }}
                                     id='ticket-file-upload'
-                                    multiple
+                                    // multiple
                                 />
                                 <Icon>attachment</Icon>
                             </IconButton>
@@ -205,6 +194,12 @@ class MessageEntry extends React.Component<IMessageEntryProps & WithStyles<typeo
                         value={inputValue}
                         onChange={this.props.onChange}
                         disabled={sending || disabled}
+                        helperText={this.props.fileUploads.some((upload: IFileUpload) => fileTooLarge(upload)) ? (
+                            this.props.fileUploads.length > 1
+                                ? 'One of the files you uploaded exceeds the maximum file limit (20 MB).'
+                                : 'The file you uploaded exceeds the maximum file limit (20 MB).'
+                        ) : undefined}
+                       FormHelperTextProps={{ color: 'error' }}
                     />
                     <div className={classes.entryAction}>
                         <LoadingButton

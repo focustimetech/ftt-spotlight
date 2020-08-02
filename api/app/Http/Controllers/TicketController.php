@@ -67,7 +67,7 @@ class TicketController extends Controller {
         $user = auth()->user();
         $subject = $request->input('subject');
         $message = $request->input('message');
-        $filePaths = $request->input('filePaths');
+        $files = $request->input('files');
 
         $ticket = Ticket::create([
             'user_id' => $user->id,
@@ -78,7 +78,7 @@ class TicketController extends Controller {
             'user_id' => $user->id,
             'message' => $message
         ]);
-        $this->attachFiles($ticketEvent->id, $filePaths);
+        $this->attachFiles($ticketEvent->id, $files);
 
         return new TicketResource($ticket);
     }
@@ -94,7 +94,7 @@ class TicketController extends Controller {
         if (!$ticket) {
             return response()->json(['message' => 'No such Ticket was found'], 404);
         } else if ($ticket->user_id !== $user->id && $user->account_type !== 'sysadmin') {
-
+            //
         }
         
         $ticketEvent = TicketEvent::create([

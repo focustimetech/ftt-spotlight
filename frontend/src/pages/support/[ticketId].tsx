@@ -53,6 +53,7 @@ interface ITicketPageProps {
 
 interface ITicketPageState {
     inputValue: string
+    fileUploads: IFileUpload[]
     sending: boolean
 }
 
@@ -201,6 +202,7 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
 
     state: ITicketPageState = {
         inputValue: '',
+        fileUploads: [],
         sending: false
     }
 
@@ -209,19 +211,25 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
         this.setState({ inputValue: value })
     }
 
-    handleSubmit = (event: React.FormEvent<HTMLFormElement>, fileUploads: IFileUpload[]) => {
+    handleChangeFiles = (fileUploads: IFileUpload[]) => {
+        this.setState({ fileUploads })
+    }
+
+    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const newTicketEvent: INewTicketEvent = {
             message: this.state.inputValue,
-            files: fileUploads.map((file: IFileUpload) => ({
-                name: file.file.name,
-                size: file.file.size,
-                path: file.path
-            }))
+            files: this.state.fileUploads
+                .filter((file: IFileUpload) => !file.removed)
+                .map((file: IFileUpload) => ({
+                    name: file.file.name,
+                    size: file.file.size,
+                    path: file.path
+                }))
         }
         this.setState({ sending: true })
         this.props.createTicketEvent(this.props.ticket.id, newTicketEvent).then(() => {
-            this.setState({ sending: false, inputValue: '' })
+            this.setState({ sending: false, inputValue: '', fileUploads: [] })
         }, (error: any) => {
             this.setState({ sending: false })
         })
@@ -298,7 +306,9 @@ class TicketPage extends React.Component<ITicketPageProps & IReduxProps & WithSt
                     </Section>
                     <MessageEntry
                         inputValue={this.state.inputValue}
+                        fileUploads={this.state.fileUploads}
                         onChange={this.handleChange}
+                        onChangeFiles={this.handleChangeFiles}
                         onSubmit={this.handleSubmit}
                         sending={this.state.sending}
                     />

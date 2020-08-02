@@ -1,4 +1,4 @@
-import { FETCH_TICKET_EVENTS, FETCH_TICKETS, NEW_TICKET_EVENT } from '../actions/types'
+import { FETCH_TICKET_EVENTS, FETCH_TICKETS, NEW_TICKET, NEW_TICKET_EVENT } from '../actions/types'
 import { IReduxAction } from '../types/redux'
 import { ITicket, ITicketEvent } from '../types/ticket'
 
@@ -28,6 +28,11 @@ export const ticketReducer = (state = initialState, action: IReduxAction<string,
             return {
                 ...state,
                 ticketEvents: [...state.ticketEvents, action.payload]
+            }
+        case NEW_TICKET:
+            return {
+                ...state,
+                tickets: [...state.tickets, action.payload]
             }
         default:
             return state

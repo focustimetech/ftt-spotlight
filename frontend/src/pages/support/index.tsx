@@ -18,6 +18,7 @@ import { ITicket } from '../../types/ticket'
 import { makeDocumentTitle } from '../../utils/document'
 
 import Section from '../../components/Layout/Section'
+import NewTicketDialog from '../../components/Modals/NewTicketDialog'
 import Table from '../../components/Table/EnhancedTable'
 import TopBar from '../../components/TopBar'
 import withAuth from '../../hocs/withAuth'
@@ -50,12 +51,7 @@ const Support: NextPage<ISupportProps> = (props: ISupportProps) => {
     return (
         <div>
             <Head>{makeDocumentTitle('Support')}</Head>
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-                <DialogTitle>Create Ticket</DialogTitle>
-                <DialogContent>
-                    Hello
-                </DialogContent>
-            </Dialog>
+            <NewTicketDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
             <TopBar title='Support Tickets'>
                 <Button color='primary' variant='text' onClick={() => setDialogOpen(true)}>Create Ticket</Button>
             </TopBar>

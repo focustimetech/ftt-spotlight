@@ -100,4 +100,9 @@ class Teacher extends Model
     {
         return $this->hasMany('App\Survey');
     }
+
+    public function tickets()
+    {
+        return $this->hasMany('App\Ticket', 'user_id', 'user_id');
+    }
 }

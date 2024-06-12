@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     protected $table = 'tickets';
+    protected $fillable = ['subject', 'user_id'];
 
     public function user()
     {

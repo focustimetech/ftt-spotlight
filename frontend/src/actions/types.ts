@@ -92,3 +92,9 @@ export const DELETE_APPOINTMENT = 'DELETE_APPOINTMENT'
 
 // Teachers
 export const FETCH_TEACHERS = 'FETCH_TEACHERS'
+
+// Support Tickets
+export const NEW_TICKET = 'NEW_TICKET'
+export const NEW_TICKET_EVENT = 'NEW_TICKET_EVENT'
+export const FETCH_TICKETS = 'FETCH_TICKETS'
+export const FETCH_TICKET_EVENTS = 'FETCH_TICKET_EVENTS'

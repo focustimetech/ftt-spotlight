@@ -3,8 +3,10 @@
     flex-flow: row nowrap;
     align-items: center;
 
-    & > * + * {
-        margin-left: spacing(1) !important;
+    &:not(.--disable-spacing) {
+        & > * + * {
+            margin-left: spacing(1) !important;
+        }
     }
 
     &.--padding {

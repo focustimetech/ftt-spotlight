@@ -16,7 +16,7 @@ class CreateSurveysTable extends Migration
         Schema::create('surveys', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->jsonb('data');
+            $table->text('json');
             $table->foreignId('teacher_id');
             $table->timestamps();
             // Foreign keys

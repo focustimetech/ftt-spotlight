@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import React from 'react'
 
 import {
@@ -18,11 +19,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }))
 
-const ChipContainer = (props: { children: any }) => {
+const ChipContainer = (props: { children: any, className?: string }) => {
     const classes = useStyles()
 
     return (
-        <ul className={classes.root}>{props.children}</ul>
+        <ul className={classNames(classes.root, props.className)}>{props.children}</ul>
     )
 }
 

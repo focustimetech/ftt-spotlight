@@ -128,3 +128,227 @@ export const downloadCsv = (rows: Array<Array<string | number>>, filename?: stri
         window.open(encodedUri)
     }
 }
+
+export const getFileSizeStringFromBytes = (fileSize: number, si: boolean = true, length: number = 3): string => {
+    if (fileSize <= 0) {
+        return '0 B'
+    }
+    const base: number = si ? 1024 : 1000 // Swapped?
+    const i: number = Math.floor(Math.log(fileSize) / Math.log(base))
+    const units: string = si
+        ? ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][i]
+        : ['B', 'kiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'][i]
+    const value: number = fileSize / Math.pow(base, i)
+    return `${value.toFixed(length - String(Math.floor(value)).length)} ${units}`
+}
+
+/**
+ * Returns a Material-UI icon name representing a file when given a file extension.
+ * @param extension The file extension
+ * @return The icon name
+ */
+export const getIconFromFileExtension = (extension: string): string => {
+    switch (extension.toLowerCase()) {
+        // Image
+        case 'jpg':
+        case 'jpeg':
+        case 'jfif':
+        case 'exif':
+        case 'tiff':
+        case 'gif':
+        case 'bmp':
+        case 'png':
+        case 'psd':
+        case 'img':
+        case 'pdn':
+        case 'dng':
+        case 'ico':
+            return 'image'
+
+        // Video
+        case 'mp4':
+        case 'mov':
+        case 'avi':
+        case 'mkv':
+        case 'webm':
+        case 'flv':
+        case 'vob':
+        case 'gifv':
+        case 'wmv':
+        case 'yuv':
+        case 'asf':
+        case 'm4p':
+        case 'mpg':
+        case 'mpeg':
+        case 'mp2':
+        case 'mpv':
+        case 'm4v':
+        case 'f4v':
+        case '3gp':
+            return 'videocam'
+
+        // Spreadsheet, Tabulated
+        case '123':
+        case 'aws':
+        case 'csv':
+        case 'gsheet':
+        case 'numbers':
+        case 'ods':
+        case 'ots':
+        case 'stc':
+        case 'sxc':
+        case 'bcsv':
+        case 'wks':
+        case 'xls':
+        case 'xlsb':
+        case 'xlsm':
+        case 'xlsx':
+        case 'xlr':
+        case 'xlt':
+        case 'xltm':
+        case 'xlw':
+        case 'osheet':
+            return 'insert_chart'
+
+        // Document, Text
+        case 'markdown':
+        case 'md':
+        case 'doc':
+        case 'docx':
+        case 'dot':
+        case 'dotx':
+        case 'gdoc':
+        case 'mcw':
+        case 'txt':
+        case 'text':
+        case 'tex':
+        case 'info':
+        case 'pages':
+        case 'dita':
+        case 'me':
+            return 'text_snippet'
+
+        // Presentation
+        case 'ppt':
+        case 'pptx':
+        case 'gslides':
+        case 'odp':
+        case 'otp':
+        case 'pps':
+        case 'sti':
+        case 'sxi':
+        case 'key':
+        case 'keynote':
+            return 'slideshow'
+
+        // Archive
+        case 'zip':
+        case '7z':
+        case 'deb':
+        case 'jar':
+        case 'gzip':
+        case 'tar':
+        case 'tgz':
+        case 'gz':
+        case 'rar':
+        case 'z':
+            return 'snippet_folder'
+
+        // Audio
+        case 'mp3':
+        case 'wav':
+        case 'flac':
+        case 'aiff':
+        case 'aifc':
+        case 'aif':
+        case 'bwf':
+        case 'la':
+        case 'wma':
+        case 'dts':
+        case 'ac3':
+        case 'amr':
+        case 'mp1':
+        case 'aac':
+        case 'ots':
+        case 'mpc':
+        case 'ogg':
+            return 'audiotrack'
+
+        // Playlist
+        case 'm3u':
+        case 'm3u8':
+        case 'pls':
+            return 'queue_music'
+
+        // Contact
+        case 'vcf':
+            return 'perm_contact_calendar'
+
+        // Calendar
+        case 'sc2':
+        case 'ical':
+        case 'cal':
+            return 'today'
+
+        // Email
+        case 'pst':
+        case 'ost':
+        case 'eml':
+            return 'email'
+
+        // Phone
+        case 'xap':
+            return 'phone'
+
+        // PDF
+        case 'pdf':
+            return 'picture_as_pdf'
+
+        // Web
+        case 'htm':
+        case 'html':
+        case 'xhtml':
+        case 'xml':
+        case 'mhtml':
+        case 'dtd':
+        case 'css':
+            return 'web'
+
+        // Database
+        case 'sql':
+            return 'storage'
+
+        // Font
+        case 'ttf':
+        case 'woff':
+        case 'woff2':
+            return 'font_download'
+
+        // Code
+        case 'c':
+        case 'cc':
+        case 'cpp':
+        case 'cs':
+        case 'lua':
+        case 'php':
+        case 'js':
+        case 'jsx':
+        case 'tsx':
+        case 'class':
+        case 'java':
+        case 'r':
+        case 'py':
+        case 'bat':
+        case 'kt':
+        case 'vbs':
+        case 'rs':
+        case 'scss':
+        case 'sass':
+        case 'json':
+            return 'code'
+
+        // Other
+        default:
+            return 'widgets'
+    }
+}

@@ -18,9 +18,10 @@ class CreateTicketsTable extends Migration
          */
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('title');            // Title of the ticket
+            $table->string('subject');          // Subject of the ticket
             $table->foreignId('user_id');       // User that opened the ticket
             $table->foreignId('assignee_id');   // Spotlight team member assigned with the ticket
+            $table->enum('status', ['OPEN', 'CLOSED', 'RESOLVED', 'REOPENED']); // Status of the ticket
             $table->timestamps();
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');

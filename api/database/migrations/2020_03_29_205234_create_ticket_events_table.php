@@ -18,20 +18,13 @@ class CreateTicketEventsTable extends Migration
          */
         Schema::create('ticket_events', function (Blueprint $table) {
             $table->id();
-            /**
-             * Actions for the ticket. Each action indicates the following:
-             * OPEN: User leaves a message for Spotlight, and it is Spotlight's turn to respond
-             * CLOSED: Spotlight has closed the ticket
-             * RESOLVED: The ticket has been resolved by Spotlight
-             * REOPENED: Spotlight has chosen to reopen the ticket
-             * AWAIT: Awaiting a response from the user
-             */
-            $table->enum('action', ['OPEN', 'CLOSED', 'RESOLVED', 'REOPENED', 'AWAIT']);
-            $table->string('message');
+            $table->text('message');
             $table->foreignId('ticket_id');
+            $table->foreignId('user_id');
             $table->timestamps();
             // Foreign keys
             $table->foreign('ticket_id')->references('id')->on('tickets');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

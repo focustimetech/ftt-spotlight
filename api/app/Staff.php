@@ -62,4 +62,9 @@ class Staff extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function tickets()
+    {
+        return $this->hasMany('App\Ticket', 'user_id', 'user_id');
+    }
 }

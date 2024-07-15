@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('avatar/{username}', 'UserController@findAvatar');
 Route::post('login', 'LoginController@login');
 Route::post('refresh-token', 'LoginController@refreshToken');
+Route::get('test-dl', 'TicketController@testDL');
 
 /**
  * Authenticates routes
@@ -88,6 +89,14 @@ Route::middleware('auth:api', 'scope:staff,teacher,sysadmin')->group(function() 
 Route::middleware('auth:api', 'scope:staff,teacher,sysadmin,guardian')->group(function() {
     // Calendar
     Route::get('students/{id}/calendar/{date?}', 'CalendarController@studentCalendar');
+    
+    // Tickets
+    Route::get('tickets', 'TicketController@list');
+    Route::post('tickets', 'TicketController@create');
+    Route::get('tickets/{ticketId}', 'TicketController@ticketEvents');
+    Route::post('tickets/{ticketId}/reply', 'TicketController@createTicketEvent');
+    Route::post('tickets/file', 'TicketController@uploadFile');
+    Route::get('tickets/file/{fileId}', 'TicketController@downloadFile');
 
     // Students
     Route::get('students', 'StudentsController@index');
@@ -111,6 +120,11 @@ Route::middleware('auth:api', 'scope:teacher')->group(function() {
     // Check-in
     Route::post('check-in', 'CheckInController@studentCheckIn');
     Route::post('check-in/air', 'CheckInController@createAirCode');
+});
+
+// Sysadmins
+Route::middleware('auth:api', 'scope:sysadmin')->group(function() {
+    Route::put('tickets/{ticketId}/status', 'TicketController@updateTicketStatus');
 });
 
 // Students, Teachers

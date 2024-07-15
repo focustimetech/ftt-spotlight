@@ -20,3 +20,5 @@ export const LoadingButton: React.SFC<IProps> = (props) => {
         </Button>
     )
 }
+
+export default LoadingButton
